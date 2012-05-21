@@ -12,50 +12,52 @@
     
     <pipeline name="main">
         <execute name="1" href="id.xsl">
-            <include href="userinput.xsl"/>
+            <include href="main/userinput.xsl"/>
         </execute>
         <execute name="2" href="id.xsl">
-            <include href="views.xsl"/>
+            <include href="main/views.xsl"/>
         </execute>
         <execute name="3" href="id.xsl">
-            <include href="data-build.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         
         <execute name="4" href="id.xsl">
-            <include href="extend.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/extend.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="5" href="id.xsl">
-            <include href="data.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/data.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         
         <execute name="6" href="id.xsl">
-            <include href="data-after.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/data-after.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="7" href="id.xsl">
-            <include href="workflow.xsl"/>
+            <include href="main/workflow.xsl"/>
         </execute>
-        <execute name="last" href="stage-last.xsl" commit="true" />
+        <execute name="last" href="id.xsl" commit="true" >
+            <include href="stage-last.xsl"/>
+        </execute>
         <execute name="out" href="datasync/datasync.xsl" output="xml"/>
     </pipeline>
 
     <pipeline name="download">
         <execute name="1" href="id.xsl">
-            <include href="userinput.xsl"/>
+            <include href="main/userinput.xsl"/>
         </execute>
         <execute name="2" href="id.xsl" commit="true">
-            <include href="data-build.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         
         <execute name="3" href="id.xsl">
-            <include href="extend.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/extend.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="4" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data.xsl"/>
         </execute>
         
         <execute name="out" href="datasync/datasync.xsl" output="xml"/>
@@ -66,11 +68,11 @@
         
         <execute name="build-xmlq" href="id.xsl">
             <include href="datasync/upload.xsl"/>
-            <include href="extend-build.xsl"/>
+            <include href="main/extend-build.xsl"/>
         </execute>
         
         <execute name="exec-xmlq" href="id.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute>
         
         <execute name="set-modified" href="id.xsl">
@@ -79,20 +81,20 @@
         
         <execute name="build-persist" href="id.xsl">
             <include href="datasync/upload.xsl"/>
-            <include href="extend-build.xsl"/>
+            <include href="main/extend-build.xsl"/>
         </execute>
         
         <execute name="exec-persist" href="id.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute>
         
         <execute name="build-response" href="id.xsl">
             <include href="datasync/upload.xsl"/>
-            <include href="extend-build.xsl"/>
+            <include href="main/extend-build.xsl"/>
         </execute>
         
         <execute name="exec-response" href="id.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute>
         
         <execute name="out" href="id.xsl" output="xml">

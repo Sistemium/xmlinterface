@@ -8,6 +8,7 @@
     <xsl:output method="xml" indent="no" encoding="utf-8"/>  
 
     <xsl:param name="userinput" select="/*/xi:userinput/xi:command"/>
+    <xsl:param name="model" select="document('domain.xml')/xi:domain"/>
     <xsl:variable name="thisdoc" select="/"/>
     <xsl:variable name="session" select="/*/xi:session"/>
 

@@ -265,84 +265,88 @@
     
     <pipeline name="main">
         <execute name="stage1" href="id.xsl">
-            <include href="userinput.xsl"/>
+            <include href="main/userinput.xsl"/>
         </execute>
         <execute name="stage2" href="id.xsl">
-            <include href="views.xsl"/>
-            <include href="xpath-compute.xsl"/>
-            <include href="synthesize.xsl"/>
+            <include href="main/views.xsl"/>
+            <include href="main/xpath-compute.xsl"/>
+            <include href="main/synthesize.xsl"/>
         </execute>
         <execute name="stage3" href="id.xsl">
-            <include href="data-build.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="stage4" href="id.xsl">
-            <include href="extend.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/extend.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <!--execute name="stage5" href="id.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute-->
         <execute name="stage6" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data.xsl"/>
         </execute>
         <execute name="stage7" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data-after.xsl"/>
-            <include href="xpath-compute.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data-after.xsl"/>
+            <include href="main/xpath-compute.xsl"/>
         </execute>
         <execute name="stage8" href="id.xsl">
-            <include href="workflow.xsl"/>
-            <include href="synthesize.xsl"/>
+            <include href="main/workflow.xsl"/>
+            <include href="main/synthesize.xsl"/>
         </execute>
-        <execute name="stage-last" href="stage-last.xsl" commit="true"/>
+        <execute name="stage-last" href="id.xsl" commit="true">
+            <include href="main/stage-last.xsl" />
+        </execute>
         <execute name="html" href="html.xsl" output="html"/>
     </pipeline>
 
     <pipeline name="views">
         <execute name="stage1" href="id.xsl">
-            <include href="userinput.xsl"/>
+            <include href="main/userinput.xsl"/>
         </execute>
         <execute name="stage2" href="id.xsl">
-            <include href="views.xsl"/>
+            <include href="main/views.xsl"/>
         </execute>
         <execute name="stage3" href="id.xsl">
-            <include href="data-build.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="stage4" href="id.xsl">
-            <include href="extend.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/extend.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <!--execute name="stage5" href="id.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute-->
         <execute name="stage6" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data.xsl"/>
         </execute>
 
 
         <execute name="stage61" href="id.xsl">
-            <include href="extend-build.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/extend-build.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <!--execute name="stage62" href="id.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute-->
         <execute name="stage63" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data.xsl"/>
         </execute>
 
 
         <execute name="stage7" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data-after.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data-after.xsl"/>
         </execute>
         <execute name="stage8" href="id.xsl">
-            <include href="workflow.xsl"/>
+            <include href="main/workflow.xsl"/>
         </execute>
-        <execute name="stage-last" href="stage-last.xsl" commit="true"/>
+        <execute name="stage-last" href="id.xsl" commit="true">
+            <include href="main/stage-last.xsl" />
+        </execute>
         <execute name="html" href="html.xsl" output="html"/>
     </pipeline>
 
@@ -353,45 +357,47 @@
 
     <pipeline name="xijax">
         <execute name="stage1" href="id.xsl">
-            <include href="userinput.xsl"/>
+            <include href="main/userinput.xsl"/>
         </execute>
         <execute name="stage2" href="id.xsl">
-            <include href="views.xsl"/>
-            <include href="xpath-compute.xsl"/>
+            <include href="main/views.xsl"/>
+            <include href="main/xpath-compute.xsl"/>
         </execute>
         <execute name="stage3" href="id.xsl">
-            <include href="data-build.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="stage4" href="id.xsl">
-            <include href="extend.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/extend.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="stage5" href="id.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute>
         <execute name="stage6" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data.xsl"/>
         </execute>
         <execute name="stage7" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data-after.xsl"/>
-            <include href="xpath-compute.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data-after.xsl"/>
+            <include href="main/xpath-compute.xsl"/>
        </execute>
         <execute name="stage8" href="id.xsl">
-            <include href="workflow.xsl"/>
+            <include href="main/workflow.xsl"/>
         </execute>
-        <execute name="stage-last" href="stage-last.xsl" commit="true"/>
+        <execute name="stage-last" href="id.xsl" commit="true">
+            <include href="main/stage-last.xsl" />
+        </execute>
         <execute name="stage-xijax" href="stage-xijax.xsl" output="xml"/>
     </pipeline>
 
 
     <pipeline name="csv1251">
         <execute name="extend" href="id.xsl">
-            <include href="extend.xsl"/>
+            <include href="main/extend.xsl"/>
         </execute>
         <!--execute name="xmlq" href="id.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute-->
         <execute  name="csv-out" href="csv.xsl" output="x-csv" header="Content-disposition: attachment;filename=system-export.csv"/>
     </pipeline>
@@ -400,71 +406,75 @@
     <pipeline name="rawdata">
         <execute name="build-request" href="rawdata.xsl"/>
         <execute name="xmlq" href="id.xsl" output="xml">
-            <include href="xmlq.xsl"/>
-            <include href="rawdata.xsl"/>
+            <include href="main/xmlq.xsl"/>
+            <include href="main/rawdata.xsl"/>
         </execute>
     </pipeline>
 
     <pipeline name="download">
         <execute name="build-request" href="download.xsl"/>
         <execute name="xmlq" href="id.xsl" output-="xml" >
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute>
         <execute name="output" href="csv.xsl" output="base64decode" header="Content-disposition: attachment;filename=system-export.txt"/>
     </pipeline>
 
     <pipeline name="clientData">
         <execute name="1" href="clientdata.xsl">
-            <include href="extend-build.xsl"/>
+            <include href="main/extend-build.xsl"/>
         </execute>
         <execute name="2" href="clientdata.xsl">
-            <include href="xmlq.xsl"/>
+            <include href="main/xmlq.xsl"/>
         </execute>
         <execute name="3" href="clientdata.xsl">
-            <include href="data-build.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="4" href="clientdata.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data-after.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data-after.xsl"/>
         </execute>
         <execute name="5" href="clientdata.xsl" output="xml">
-            <include href="clientdata-html.xsl"/>
+            <include href="main/clientdata-html.xsl"/>
         </execute>
     </pipeline>
 
     <pipeline name="json">
         <execute name="stage1" href="id.xsl">
-            <include href="userinput.xsl"/>
+            <include href="main/userinput.xsl"/>
         </execute>
         <execute name="stage2" href="id.xsl">
-            <include href="views.xsl"/>
-            <include href="xpath-compute.xsl"/>
+            <include href="main/views.xsl"/>
+            <include href="main/xpath-compute.xsl"/>
         </execute>
         <execute name="stage3" href="id.xsl">
-            <include href="data-build.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="stage4" href="id.xsl">
-            <include href="extend.xsl"/>
-            <include href="data-build.xsl"/>
+            <include href="main/extend.xsl"/>
+            <include href="main/data-build.xsl"/>
         </execute>
         <execute name="stage6" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data.xsl"/>
         </execute>
         <execute name="stage7" href="id.xsl">
-            <include href="data-build.xsl"/>
-            <include href="data-after.xsl"/>
-            <include href="xpath-compute.xsl"/>
+            <include href="main/data-build.xsl"/>
+            <include href="main/data-after.xsl"/>
+            <include href="main/xpath-compute.xsl"/>
         </execute>
         <execute name="stage8" href="id.xsl">
-            <include href="workflow.xsl"/>
+            <include href="main/workflow.xsl"/>
         </execute>
-        <execute name="stage-last" href="stage-last.xsl" commit="true" />
+        <execute name="stage-last" href="id.xsl" commit="true">
+            <include href="main/stage-last.xsl" />
+        </execute>
         <execute name="out" href="json.xsl" output="plain; charset=utf-8" />
     </pipeline>
     
     <pipeline name="meta">
-        <execute name="out" href="stage-last.xsl" output="xml"/>
+        <execute name="stage-last" href="id.xsl" commit="true">
+            <include href="main/stage-last.xsl" />
+        </execute>
     </pipeline>
 
     <pipeline name="mirror">
