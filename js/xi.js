@@ -8,7 +8,10 @@ function domready () {
             showAnim: '',
             onSelect: function(dateText, inst) {
                 $(this).trigger('change');
-                if (this.getAttribute('xi:option')) this.form.submit();
+                if (this.getAttribute('xi:option')) {
+                    $(this).parents('.view').mask('Загрузка ...');
+                    this.form.submit();
+                }
             }
     });
     
@@ -25,6 +28,10 @@ function domready () {
         $(this).parent().toggleClass('collapsed');
     });
 
+    $('body').delegate('.boolean input, input.radio, a.button','click',
+        function(e) {$(e.target).parents('.view').mask('Загрузка ...');}
+    );
+    
     $('body').delegate('input.text','keydown',
         function(e) {return keypress(e.target,e)}
     );
@@ -77,7 +84,8 @@ function xijaxSuccess (req){
     var nl = req.responseXML.documentElement.childNodes;
 
 //    if (nl.length==0) location.replace(location.protocol+'//'+location.host+location.pathname);
-    
+    $('.view.masked').unmask();
+
     for( var i = 0; i < nl.length; i++ )
     {
         var nli = nl.item( i );
@@ -122,6 +130,7 @@ function xijaxSuccess (req){
                              break;
                     }              
             }
+            
         } else if (nli.tagName=='deleted' || nli.tagName=='inserted') fullReload();
     }
     
@@ -181,6 +190,7 @@ function itemChanged (element) {
         element.form.enctype='multipart/form-data';
         element.form.submit();
     } else if (!element.name ) {
+        
         href='?'+element.id+'='+element.value;
         
         $(element.form).addClass('xiSent');
@@ -189,7 +199,11 @@ function itemChanged (element) {
         $(element).addClass('xiSent');
         
         xijax(href);
+        
     }
+    
+    $(element).parents('.view').mask('Загрузка');
+    
 }
 
 function selectChanged(element){
@@ -283,6 +297,7 @@ function keypress(element, event) {
       } else if (option) {
 //        element.form.action += option;
         if (!element.name) element.name=element.id;
+        $(element).parents('.view').mask('Загрузка ...')
         element.form.submit();
         return false;
       } else {
@@ -487,7 +502,6 @@ function noLocation() {
     }
 
 
- function BlockMove(event) {
-  // Tell Safari not to move the window.
-  event.preventDefault() ;
- }
+    function BlockMove(event) {
+        event.preventDefault();
+    }

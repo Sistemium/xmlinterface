@@ -137,7 +137,11 @@
                 </xsl:if>
                 <script type="text/javascript" src="jquery/js/jquery.ui.datepicker-ru.js"></script>
                 <script type="text/javascript">$(document).ready(domready);</script>
-        	</xsl:if>
+                
+                <link href="../libs/loadmask/jquery.loadmask.css" rel="stylesheet" type="text/css" />
+                <script type="text/javascript" src="../libs/loadmask/jquery.loadmask.min.js"></script>
+                
+            </xsl:if>
             <xsl:for-each select="xi:views/xi:view[not(@hidden) and xi:view-schema/@client-js]">
                 <script type="text/javascript" src="views/{@name}.js"></script>
             </xsl:for-each>

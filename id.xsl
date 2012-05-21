@@ -6,7 +6,9 @@
  exclude-result-prefixes="php"
 >
     <xsl:output method="xml" indent="no" encoding="utf-8"/>  
-
+    
+    <xsl:param name="counter">1</xsl:param>
+    
     <xsl:param name="userinput" select="/*/xi:userinput/xi:command"/>
     <xsl:param name="model" select="document('domain.xml')/xi:domain"/>
     <xsl:variable name="thisdoc" select="/"/>
@@ -61,7 +63,7 @@
     <xsl:template match="@*|node()" mode="build-id" name="build-id">
         
         <xsl:param name="name">id</xsl:param>
-        <xsl:param name="id-value" select="concat($thisdoc/*/@counter,translate(generate-id(),'id',''))"/>
+        <xsl:param name="id-value" select="concat(translate(generate-id(),'id',''),'c',$counter)"/>
         
         <xsl:attribute name="{$name}">
             <xsl:value-of select="$id-value"/>

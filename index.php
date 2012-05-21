@@ -261,7 +261,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             $repeatCount = 0;
             
             do {
-                $uncommitted->documentElement->setAttribute('counter', ++$_SESSION['id-counter']); 
+                $xslt->setParameter('', 'counter', ++$_SESSION['id-counter']);
                 $uncommitted = $xslt->transformToDoc($uncommitted);
                 
                 $command=$uncommitted->documentElement->getAttribute('pipeline');            

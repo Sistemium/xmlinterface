@@ -388,7 +388,7 @@
         <execute name="stage-last" href="id.xsl" commit="true">
             <include href="main/stage-last.xsl" />
         </execute>
-        <execute name="stage-xijax" href="stage-xijax.xsl" output="xml"/>
+        <execute name="stage-xijax" href="main/stage-xijax.xsl" output="xml"/>
     </pipeline>
 
 
@@ -399,7 +399,7 @@
         <!--execute name="xmlq" href="id.xsl">
             <include href="main/xmlq.xsl"/>
         </execute-->
-        <execute  name="csv-out" href="csv.xsl" output="x-csv" header="Content-disposition: attachment;filename=system-export.csv"/>
+        <execute  name="csv-out" href="main/csv.xsl" output="x-csv" header="Content-disposition: attachment;filename=system-export.csv"/>
     </pipeline>
     
 
@@ -433,7 +433,7 @@
             <include href="main/data-build.xsl"/>
             <include href="main/data-after.xsl"/>
         </execute>
-        <execute name="5" href="clientdata.xsl" output="xml">
+        <execute name="5" href="main/clientdata.xsl" output="xml">
             <include href="main/clientdata-html.xsl"/>
         </execute>
     </pipeline>
@@ -468,7 +468,7 @@
         <execute name="stage-last" href="id.xsl" commit="true">
             <include href="main/stage-last.xsl" />
         </execute>
-        <execute name="out" href="json.xsl" output="plain; charset=utf-8" />
+        <execute name="out" href="main/json.xsl" output="plain; charset=utf-8" />
     </pipeline>
     
     <pipeline name="meta">
