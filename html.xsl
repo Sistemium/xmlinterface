@@ -56,14 +56,14 @@
             <xsl:for-each select="xi:userinput/@*|.|*">
                 <xsl:variable name="css-file">
                     <xsl:choose>
-                        <xsl:when test="self::xi:userinput[not(@ipad-agent- or @safari-agent-)]">desktop</xsl:when>
+                        <xsl:when test="self::xi:userinput[not(@ipad-agent- or @safari-agent-)]">css/desktop</xsl:when>
                         <xsl:when test="xi:userinput[not(@spb-agent)]">jquery/css/jquery</xsl:when>
-                        <xsl:when test="local-name()='msie-agent-'">ie</xsl:when>
-                        <xsl:when test="local-name()='safari-agent-'">touch</xsl:when>
+                        <xsl:when test="local-name()='msie-agent-'">css/ie</xsl:when>
+                        <xsl:when test="local-name()='safari-agent-'">css/touch</xsl:when>
                     </xsl:choose>
                 </xsl:variable>
                 <xsl:if test="string-length($css-file)&gt;0">
-                    <link rel="stylesheet" type="text/css" href="css/{$css-file}.css"/>
+                    <link rel="stylesheet" type="text/css" href="{$css-file}.css"/>
                 </xsl:if>
             </xsl:for-each>
             
