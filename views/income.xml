@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="income" label="Приемка">
+
+    <view-schema>
+        <form name="warehouse" label="Склад">
+            <parameter name="username">
+                <init with="username"/>
+            </parameter>
+	    
+            <field name="id" />
+            <field name="name" label="Склад"/>
+            
+            <form name="wms-income" label="Планируемая поставка" expect-choise="true">
+            	<field name="id"/>
+            	<field name="date"/>
+            	<field name="ndoc">
+		    <secure xpath="not(/*/xi:session/@spb-agent)" editable="true"/>
+		</field>
+		
+		<field name="isFinished"/>
+		
+            	<order-by name="date" dir="desc"/>
+            	
+                <form name="current-goods" concept="goods" label="Товар" new-only="true">
+		    <parameter name="barcode" type="string" label="Штрих-код" editable="true"/>
+		    
+		    <field name="name" type="string" label="Наименование"/>
+		    <field name="id" type="int"/>
+		    
+		    <form name="wms-supply-goods" label="Товар поставки">
+			<field name="xid" />
+			<join name="wms-supply"/>
+			<field name="vol-plan" sql-compute="select sum(vol) from dbo.supply where id=[wms-supply].id"/>
+			<field name="vol-fact" xpath-compute="sum(descendant::*[@name='wms-income-position']/xi:datum[@name='vol'])" />
+			<field name="vol-doc" editable="true"/>
+		    
+			<form name="wms-income-position" label="Партия товара" is-set="true" extendable="true" deletable="true">
+			    <field name="xid" />
+			    <field name="volume" type="int" label="Количество" editable="true"/>
+			    <field name="production-date" type="date" label="Дата изготовления" editable="true"/>
+			    <form name="wms-palette" label="Палета">
+				<parameter name="barcode" type="string" label="Код палеты" editable="true" />
+				<field name="xid" />
+				<field name="code" />
+			    </form>
+			</form>
+		    </form>
+                    
+                    <form name="package-cache" concept="package" label="Упаковка" is-set="true">
+                    	<field name="name" label="Упаковка"/>
+                    	<field name="id" type="int"/>
+                    	<field name="rel" type="int"/>
+			<join name="current-goods" field="barcode"/>
+			<order-by name="relevance" dir="desc"/>
+                    </form>
+                    
+                </form>       	
+            </form>
+        </form>
+    </view-schema>
+    
+    <workflow>
+        <step label="Этап 1">
+            <display>
+                <input form="wms-supply"/>
+            </display>
+            <validate>
+                <nonempty form="supply"/>
+            </validate>
+        </step>
+    </workflow>
+    
+</view-definition>

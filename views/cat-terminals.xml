@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="cat-terminals" label="Терминалы" pipeline="views">
+    <view-schema>
+        <form name="branch" label="Отделение" expect-choise="true">
+            <parameter name="username" type="string" label="Логин оператора"/>
+            <field name="id" />
+            <field name="name" />
+            <form name="catterminal" is-set="true">
+                <field name="xid"/>
+            	<field name="id"/>
+            	<field name="lifestatus"/>
+                <form name="processing" >
+                    <field name="name" label="Процессинг"/>
+                    <field name="id"/>
+                </form>
+            	<field name="terminalid" label="ИД"/>
+            	<field name="name" label="Название"/>
+            	<field name="address" label="Адрес"/>
+            	<field name="branch-route.name" label="Зона" editable="true"/>
+            	<order-by name="isdeleted"/>
+            	<order-by name="name"/>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <input form="branch" />
+                <grid form="catterminal">
+                    <group>
+                        <by field="lifestatus"/>
+                    </group>
+                </grid>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

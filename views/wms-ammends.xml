@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="wms-ammends" label="Забрать со стока">
+    <view-schema>
+        <form name="sysuser">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+            <field name="id"/>
+            <form name="warehouse">
+                <field name="id"/>
+                <form name="wms-cell-cat" label="Место хранения">
+                    <parameter name="searcher" editable="true" label="Поиск"/>
+                    <field name="id"/>
+                    <field name="name"/>
+                    <form name="goods" label="Товар">
+                        <field name="id" />
+                        <field name="name" label="Товар"/>
+                        <field name="code" label="Артикул"/>
+                        <form name="warehouse-goods" label="Пикинг">
+                            <field name="address" label="Адрес пикинга"/>
+                            <field name="remains" label="Всего остаток шт."/>
+                            <field name="mc-remains" label="Всего остаток кор."/>
+                            <join name="warehouse" />
+                        </form>
+                        <form name="wms-cell-get">
+                            <field name="xid"/>
+                            <field name="taken" editable="true" label="Сколько забрали" use-with-insert="true"/>
+                            <join name="wms-cell-cat"/>
+                            <join name="sysuser"/>
+                            <!--field name="remains" editable="true" label="Сколько осталось"/-->
+                        </form>
+                    </form>
+                    <field name="remains" editable="true" label="Сколько было"/>
+                </form>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step label="Поиск ячейки">
+            <display>
+                <input form="wms-cell-cat" field="searcher" />
+                <print form="wms-cell-cat" field="name"/>
+                <print form="goods" field="name"/>
+            </display>
+            <validate>
+                <nonempty form="wms-cell-cat"/>
+            </validate>
+        </step>
+        <step label="Изятие товара">
+            <display>
+                <print form="wms-cell-cat" field="name"/>
+                <print form="goods" field="name"/>
+                <print form="goods" field="code"/>
+                <input form="wms-cell-get" field="taken" />
+                <print form="warehouse-goods" field="address"/>
+            </display>
+            <validate>
+                <nonempty field="remains"/>
+            </validate>
+        </step>
+        <step label="Проверьте данные">
+            <display>
+                <print form="wms-cell-cat" field="name"/>
+                <print form="goods" field="name"/>
+                <print form="wms-cell-cat" field="remains"/>
+                <print form="wms-cell-get" field="taken"/>
+                <print form="warehouse-goods" field="address"/>
+            </display>
+            <choise>
+                <option label="Подтвердить">
+                    <command name="save"/>
+                    <command name="refresh"/>
+                </option>
+            </choise>
+        </step>
+    </workflow>
+</view-definition>

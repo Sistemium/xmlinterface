@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="palettes" label="Палеты">
+    <view-schema>
+        <form name="income-position" label="Приемка товара">
+        	<parameter name="palette" type="string" label="Код палеты" editable="true"/>
+            <field name="xid" type="string" key="true"/>
+            <form name="goodspackage" label="Товар в упаковке">
+            	<form name="goods" label="Товар">
+                	<field name="name" type="string" label="Наименование"/>
+                	<field name="id" type="int"/>
+                </form>
+            	<form name="package" label="Упаковка">
+                	<field name="name" label="Упаковка"/>
+                	<field name="id" type="int"/>
+                </form>
+            </form>
+            <form name="palette-placement" set="true">
+                <form name="storage-place">
+                    <field name="name" label="Адрес хранения"/>
+                </form>
+            </form>
+        	<field name="volume" type="number" label="Количество" editable="true"/>
+        	<field name="production-date" type="date" label="Дата изготовления" editable="true"/>
+        </form> 
+    </view-schema>
+    <workflow>
+        <step label="Идентификация палеты">
+            <display>
+                <input field="palette"/>
+            </display>
+            <validate>
+                <nonempty field="palette"/>
+            </validate>
+        </step>
+        <step label="Корректировка данных">
+            <display>
+                <print field="palette"/>
+                <print field="name" form="goods"/>
+                <print field="name" form="package"/>
+                <grid form="palette-placement"/>
+                <input field="volume"/>
+                <input field="production-date"/>                
+            </display>
+            <validate>
+                <nonempty field="production-date"/>                
+            </validate>
+        </step>
+        <step label="Сохранение результатов">
+            <display>
+                <print field="palette"/>
+                <print field="name" form="goods"/>
+                <print field="volume"/>
+                <print field="name" form="package"/>
+                <print field="production-date"/>
+            </display>
+            <choise>
+                <option label="Сохранить и закрыть">
+                    <command name="save"/>
+                    <command name="close"/>
+                </option>
+                <option label="Сохранить и продолжить">
+                    <command name="save"/>
+                    <command name="refresh"/>
+                </option>
+            </choise>
+        </step>
+    </workflow>
+</view-definition>

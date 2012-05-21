@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="branches" label="Отделения">
+    <view-schema>
+        <form name="sysuser">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+            <parameter name="username">
+                <init with="username"/>
+            </parameter>
+            <field name="id"/>
+            <form name="branch" label="Отделение" is-set="true">
+                <join name="sysuser" field="username" />
+                <field name="id" />
+                <field name="name" editable="true"/>
+                <field name="office-name" editable="true"/>
+                <field name="headcashier-position" editable="true"/>
+                <secure role="it"><field name="grantees" editable="true"/></secure>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <grid form="branch"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

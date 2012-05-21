@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="subdealer-balance" label="Балансовая ведомость">
+    <view-schema>
+        <form name="subdealer" expect-choise="true" label="Субдилер">
+            <parameter name="username">
+                <init with="username"/>
+            </parameter>
+            <field name="id"/>
+        	<field name="name" label="Субдилер" />
+            <form name="month" expect-choise="true" label="Период">
+                <field name="id"/>
+            	<field name="name" label="Период" />
+            	<form name="preprocessing" is-set="true">
+                    <form name="dates">
+                        <field name="date" mdx-name="Caption"/>
+                    </form>
+                    <field name="processed-total" totals="sum"/>
+                    <field name="subdealer-payments-in" totals="sum" />
+                    <field name="subdealer-payments-out" totals="sum"/>
+                    <field name="subdealer-balance" />
+                    <join name="subdealer"/>
+                    <where name="criteria">2</where>
+                </form>
+                <order-by name="id" dir="desc"/>
+        	</form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <input form="subdealer" />
+                <input form="month" />
+                <grid  form="preprocessing"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

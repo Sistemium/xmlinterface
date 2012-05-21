@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<view-definition xmlns="http://unact.net/xml/xi" name="wms-defects-sorting" label="Сортировка брака">
+    <view-schema>
+        <form name="sysuser">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+            <field name="id"/>
+            <form name="goods-condition-cache" concept="goods-condition" is-set="true" >
+                <field name="id"/>
+                <field name="name"/>
+            </form>
+            <form name="defect-cause-cache" concept="defect-cause" is-set="true" >
+                <field name="id"/>
+                <field name="name"/>
+                <order-by name="ord" dir="asc"/>
+            </form>
+            <form name="warehouse">
+                <field name="id" />
+                <field name="name" label="Склад"/>
+                
+                <form name="history" concept="warehouse">
+                    <join name="warehouse" field="id"/>
+                    <form name="history-item" concept="wms-picking-box" label="Коробка" is-set="true">
+                        <order-by name="ts" dir="desc"/>
+                        
+                        <field name="id"/>
+                        <field name="xid"/>
+                        <field name="barcode" label="Наклейка"/>
+                        
+                        <where name="ts"><more-than>today()</more-than></where>
+                        
+                        <secure not-role="master">
+                            <join name="sysuser"/>
+                        </secure>
+                        <secure role="master">
+                            <form name="h-sorter" concept="sysuser">
+                                <field name="name" label="Сортировщик"/>
+                            </form>
+                            <field name="isWritten-off" editable="true" autosave="true"/>
+                        </secure>
+                        
+                        <form name="h-consignment-accept" concept="wms-consignment-accept" label="Приемка">
+                            <field name="ts" label="Принято"/>
+                            <where name="isFinished">1</where>
+                            <form name="h-checker" concept="sysuser">
+                                <field name="name" label="Приемщик"/>
+                            </form>
+                        </form>
+                        
+                        <form name="h-box-contents" concept="wms-defect-sorted">
+                            <field name="volume" aggregate="sum" label="Всего шт." totals="sum"/>
+                        </form>
+                        
+                        <form name="h-goods-condition" concept="goods-condition" label="Состояние товара">
+                            <field name="id"/>
+                            <field name="name"/>
+                        </form>
+                        
+                        <form name="h-defect-cause" concept="defect-cause" label="Причина брака" >
+                            <field name="id"/>
+                            <field name="name"/>
+                        </form>
+                    </form>
+                </form>
+                    
+                <form name="wms-picking-box" label="Коробка" >
+                    <parameter name="barcode" editable="true" label="Коробка"/>
+
+                    <field name="id"/>
+                    <field name="xid"/>
+                    <field name="barcode" use-with-insert="true" label="Наклейка"/>
+                    
+                    <join name="sysuser"/>
+                    
+                    <form name="wms-consignment-accept" label="Приемка">
+                        <field name="id"/>
+                        <where name="isFinished">1</where>
+                    </form>
+                    
+                    <form name="box-contents" concept="wms-defect-sorted">
+                        <field name="volume" aggregate="sum" label="Всего шт."/>
+                    </form>
+                    
+                    <form name="goods-condition" label="Состояние товара" choise="goods-condition-cache">
+                        <field name="id"/>
+                        <field name="name"/>
+                    </form>
+                    
+                    <form name="defect-cause" label="Причина брака" choise="defect-cause-cache">
+                        <field name="id"/>
+                        <field name="name"/>
+                    </form>
+                    
+                    <form name="wms-defect-sorted" build-blank="true" new-only="true">
+                        <field name="xid"/>
+                        <field name="volume" editable="true">
+                            <init with="const">1</init>
+                        </field>
+                        <form name="goods" label="Товар" choise-style="table">
+                            <parameter name="barcode" editable="true" label="Товар" optional="true"/>
+                            <join name="warehouse" />
+                            <where name="constrain">remains</where>
+                            <natural-order/>
+                            <field name="id"/>
+                            <field name="code" hidden="true"/>
+                            <field name="name"/>
+                            <field name="lastSeen"/>
+                        </form>
+                    </form>                            
+                    
+                </form>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step name="box-scan" label="Регистрация коробки">
+            <display>
+                <input form="wms-picking-box" field="barcode"/>
+            </display>
+            <validate>
+                <nonempty form="wms-picking-box"/>
+            </validate>
+            <choise>
+                <option label="Посмотреть прошлое">
+                    <command name="wms-defect-sorting">myhistory</command>
+                </option>
+            </choise>
+        </step>
+        <step name="box-params" label="Параметры коробки">
+            <display>
+                <input form="goods-condition"/>
+                <input form="defect-cause"/>
+                <print form="box-contents" field="*"/>
+            </display>
+            <validate>
+                <empty form="wms-consignment-accept"/>
+                <nonempty form="goods-condition"/>
+                <nonempty form="defect-cause"/>
+            </validate>
+        </step>
+        <step name="goods" label="Поиск товара">
+            <display>
+                <print form="wms-picking-box" field="barcode"/>
+                <print form="goods-condition" field="name"/>
+                <print form="defect-cause" field="name"/>
+                <input field="barcode"/>
+                <print form="goods" field="name"/>
+            </display>
+            <validate>
+                <nonempty form="goods"/>
+            </validate>
+        </step>
+        <step label="Ввод количества">
+            <display>
+                <print form="goods-condition"/>
+                <print form="defect-cause"/>
+                <print form="goods" field="*"/>
+                <input field="volume"/>
+            </display>
+            <validate>
+                <nonempty field="volume"/>
+            </validate>
+        </step>
+        <step label="Подтвердите ввод">
+            <display>
+                <print form="goods-condition"/>
+                <print form="defect-cause"/>
+                <print form="goods" field="*"/>
+                <print field="volume"/>
+            </display>
+            <choise>
+                <option label="Еще товар">
+                    <command name="save"/>
+                    <command name="wms-defect-sorted">refresh</command>
+                    <command name="wms-defect-sorting">goods</command>
+                </option>
+                <option label="Закрыть коробку">
+                    <command name="save"/>
+                    <command name="refresh"/>
+                </option>
+            </choise>
+        </step>
+        <step name="myhistory" label="Мои сегодняшние коробки" hidden="true">
+            <secure role="master" label="Cегодняшние коробки"/>
+            <display>
+                <grid form="history-item" />
+            </display>
+            <choise>
+                <option label="Сканировать наклейку">
+                    <command name="wms-defect-sorting">box-scan</command>
+                </option>
+            </choise>
+        </step>
+    </workflow>
+</view-definition>

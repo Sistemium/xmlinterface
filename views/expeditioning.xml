@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="expeditioning" label="Экспедирование">
+    <view-schema>
+        <form name="sysuser">
+            <parameter name="name"> <init with="username"/> </parameter>
+            <parameter name="device-name"> <init with="device-name"/> </parameter>
+            <parameter name="username"> <init with="username"/> </parameter>
+            
+            <form name="cat-agent" label="Пользователь" expect-choise-="true">
+                <field name="id" />
+                <field name="name" />
+                
+                <join name="sysuser" field="username"/>
+                
+                <form name="cat-salesman" label="Агент">
+                    <field name="id" />
+                    <field name="name" label="Экспедитор"/>
+                    
+                    <form name="salesman-workday" label="Рабочий день" autosave="true">
+                        <field name="id" />
+                        <field name="date" label="Рабочий день"/>
+                        <parameter name="date" editable="true" type="date" label="Рабочий день">
+                            <init with="today"/>
+                        </parameter>
+                        <field name="closed" editable="true" autosave="true"/>
+                        <field name="processed" editable="true"/>
+                        
+                        <form name="salesman-workday-done" concept="salesman-workday" label="Выполненные задания">
+                            
+                            <join name="salesman-workday" field="id"/>
+                            
+                            <form name="workday-encashment" label="Инкассации" is-set="true" deletable-="true">
+                                <field name="id"/>
+                                <field name="date" format="smalltime"/>
+                                <field name="summ" totals="sum"/>
+                                <field name="isWhite" />
+                                <form name="cat-buyer">
+                                    <field name="name"/>
+                                    <field name="address"/>
+                                </form>
+                                <join name="salesman-workday" />
+                                <order-by name="date" dir="desc"/>
+                            </form>
+                            <field name="date" />
+                            <field name="totalCash" type="decimal" label="Выручка по ККМ" 
+                             sql-compute="(select sum(summ) from dbo.palm_repayment
+                                            where kkmprinted=1 and saleperiod_id=[salesman-workday-done].saleperiod_id)"
+                            />
+                        </form>
+                        
+                        <form name="expedition" label="Маршрутный лист">
+                            <field name="id" />
+                            <field name="name" />
+                            <field name="started" editable="true" autosave="true"/>
+                            <field name="finished" editable="true"/>
+                            
+                            <join name="cat-agent"/>
+                            <join name="salesman-workday" field="date"/>
+                            
+                            <form name="expedition-destination" label="Пункт назначения"
+                                  autosave="true" expect-choise="true" removable="true" choise-style="table">
+                                <field name="xid" />
+                                <field name="isComplete" format="true-only" label="Г" modifiable="true"/>
+                                <field name="name" label="Адрес"/>
+                                
+                                <form name="cat-buyer" no-preload="true">
+                                    <field name="id"/>
+                                    <form name="cat-partner" no-preload="true">
+                                        <field name="name" />
+                                        <field name="id"/>
+                                    </form>
+                                </form>
+                                
+                                <field name="ordersCnt" />
+                                <field name="encashmentsCnt" format="true-only" />
+                                <field name="totalDebtRemains" type="decimal" sql-compute="null" label="Итого остаток долга"
+                                       xpath-compute="sum(dyn:map(../descendant::xi:data[@name='expedition-encashment']/xi:datum[@name='remdebt'],'dyn:evaluate(@xpath-compute)'))"/>
+                                <field name="totalPointCash" type="decimal" sql-compute="0" label="Итого получено"
+                                       xpath-compute="sum(../descendant::xi:data[@name='expedition-encashment']/xi:datum[@name='summ' and number(.)])"/>
+                                
+                                <order-by name="ord" dir="desc"/>
+                                <order-by name="address" dir="asc"/>
+                                
+                                <form name="expedition-order-task" label-="Передать заказы" is-set="true">
+                                    <field name="id"/>
+                                    <field name="ndoc"/>
+                                    <field name="info"/>
+                                    <field name="mcvol"/>
+                                    <field name="goodsCnt"/>
+                                    
+                                    <join name="expedition"/>
+                                    <join name="cat-buyer" role="cat-buyer"/>
+                                    
+                                </form>
+                                
+                                <form name="expedition-encashment-task" concept="pos-debt" label-="Задолженность" is-set="true">
+                                    <join name="cat-partner" role="cat-partner"/>
+                                    <join name="cat-salesman"/>
+                                    <order-by name="own" dir="desc"/>                                
+                                    <order-by name="date" dir="desc"/>
+                                    <field name="id"/>
+                                    
+                                    <form name="debt-origin" concept="cat-partner" role="debt-origin">
+                                        <field name="name"/>
+                                    </form>
+                                    
+                                    <field name="date"/>
+                                    <field name="info"/>
+                                    <field name="summ" label="Сумма накладной"/>
+                                    <field name="needs" extra-style="color: blue; font-size: x-large;"/>
+                                    
+                                    <form name="encashment-client" concept="cat-buyer">
+                                        <field name="id"/>
+                                        <!--field name="address"/-->
+                                        <form name="expedition-encashment" label="Инкассация в пункте назначения"
+                                              build-blank="true" autosave="true" parent-sql-name="client_id">
+                                            <join name="salesman-workday"/>
+                                            <join name="expedition-encashment-task" role="pos-debt"/>
+                                            <field name="xid" />
+                                            <field name="remdebt" type="decimal" sql-compute="null"
+                                                   xpath-compute="../../../xi:datum[@name='csum'] - format-number(following-sibling::xi:datum,'0.00','null-is-0')"
+                                                   label="Остаток долга"/>
+                                            <field name="summ" editable="true" when-null-then-delete="true" totals="sum"
+                                                   autofill="csum" autofill-form="expedition-encashment-task"/>
+                                        </form>
+                                    </form>
+                                    
+                                    <field name="csum" totals="sum" label="Заддолженность до оплаты"/>
+                                    
+                                </form>
+                            </form>
+                        </form>
+                    </form>
+                </form>
+            </form>
+        </form>
+    </view-schema>
+    
+    <workflow geolocate-="true">
+        
+        <step label="Маршрутные задания" name="todo">
+            <display>
+                
+                <print field="date" form="salesman-workday"/>
+                <input form="expedition-destination"/>
+                <print field="name" form="cat-partner"/>
+                <print field="feed-documents" form="expedition-destination"/>
+                
+                <grid form="expedition-order-task" label="Передать заказы:"/>
+                
+                <print field="encashmentsCnt" form="expedition-destination"/>
+                <print field="totalDebtRemains" form="expedition-destination"/>
+                <print field="totalPointCash" form="expedition-destination"/>
+                
+                <grid form="expedition-encashment-task" label="Задолженность">
+                    <group>
+                        <by form="debt-origin" field="name"/>
+                    </group>
+                </grid>
+                
+            </display>
+            <choise>
+                <option label="К истории маршрута">
+                    <command name="salesman-workday-done">refresh</command>
+                    <command name="expeditioning">committed</command>
+                </option>
+                <option label="К таблице заданий">
+                    <command name="expedition-destination">unchoose</command>
+                </option>
+                <option label="Завершить точку">
+                    <command form="expedition-destination" field="isComplete">1</command>
+                    <command name="expedition-destination">unchoose</command>
+                </option>
+            </choise>
+        </step>
+        
+        <step label="История маршрута" name="committed" hidden="true">
+            <display>
+                
+                <print field="name" form="cat-salesman"/>
+                <input field="date" form="salesman-workday"/>
+                <input field="closed" form="salesman-workday"/>
+                <print field="processed" form="salesman-workday"/>
+                <print field="totalCash" />
+                <grid form="workday-encashment" label="Выручка"/>
+                
+            </display>
+            <choise>
+                <option label="К маршрутым заданиям">
+                    <command name="expeditioning">todo</command>
+                </option>
+            </choise>
+        </step>
+        
+    </workflow>
+    
+</view-definition>

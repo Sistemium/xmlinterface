@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="goods-barcodes" label="Штрих-коды товара">
+    <view-schema>
+        <form name="sysuser">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+            <field name="id" />
+            <form name="goods" label="Товар">
+                <parameter name="barcode" type="string" label="Поиск" editable="true"/>
+                <field name="id" />
+                <field name="code" />
+                <field name="name" label="Товар"/>
+                <form name="goods-barcode" label="Штрих-код товара" extendable="true" deletable="true" is-set="true">
+                    <field name="xid" />
+                    <field name="barcode" label="Штрих-код" editable="true"/>
+                    <form name="package" label="Упаковка" choise="package-cache">
+                        <field name="id"/>
+                        <field name="name" label="Упаковка"/>                    
+                    </form>
+                </form>
+                <form name="package-cache" concept="package" is-set="true">
+                    <field name="id" />
+                    <field name="name" />
+                </form>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <input form="goods" field="barcode" />
+                <print form="goods" field="name" />
+                <print form="goods" field="code" />
+                <grid form="goods-barcode"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

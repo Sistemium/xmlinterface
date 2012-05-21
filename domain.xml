@@ -1,0 +1,2230 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<domain xmlns="http://unact.net/xml/xi" >
+
+    <concept name="op" server="op.unact.ru">    
+        <select owner="sys" sql-name="dummy"/>
+        <select owner="xmlgate" type="procedure" sql-name="agent">
+            <parameter name="name" type="string" sql-name="@name" required="true"/>
+            <parameter name="device-name" type="string" sql-name="@deviceName"/>
+        </select>
+        
+        <property name="id" type="int" key="true"/>
+        
+    </concept>
+
+    <concept name="op-agent" server="op.unact.ru">
+        
+        <select owner="xmlgate" type="procedure" sql-name="agent">
+            <parameter name="name" type="string" sql-name="@name" required="true"/>
+            <parameter name="device-name" type="string" sql-name="@deviceName"/>
+        </select>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="name" />
+        
+    </concept>
+
+    <concept name="cat">
+        <select owner="sys" sql-name="dummy"/>
+    </concept>
+
+    <concept name="pps" storage="mssql" server="pps" db="Preprocessing">
+        <select owner="dbo" sql-name="dummy"/>
+    </concept>
+
+    <concept name="op-payment" server="op.unact.ru">
+        <select owner="op" sql-name="payment"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid" />
+        
+        <property name="clientId" type="string" label="Пользовательский ИД"/>
+        <property name="clientSessionTerminal" type="string" label="Терминальный ИД"/>
+        
+        <property name="summ" type="decimal" label="Сумма к зачислению"/>
+        <property name="summTerminal" type="decimal" label="Сумма полная"/>
+        <property name="terminalID" type="string"/>
+        <property name="account" type="string" label="Счет" />
+        <property name="extra" type="xml" label="Прочие реквизиты" />
+        <property name="final" type="boolean" />
+        
+        <property name="status" type="string" label="Статус"
+                  sql-compute="case when final=0 then 'Проводится' when error=0 then 'Проведено' else string('Ошибка=',error) end"/>
+        
+        <property name="smsNumber" type="string" />
+        <property name="virtualCard" type="string"/>
+        
+        <property name="cts" type="datetime" label="Когда создан" />
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+        <role name="op-legalentity" actor="op-legalentity" sql-name="legalentity" />
+        <role name="op-service" actor="op-service" sql-name="service" />        
+        <role name="op-error" actor="op-error" sql-name="error" />
+        <role name="up-client" actor="up-client" sql-name="client" />
+        <role name="up-file" actor="up-file" sql-name="CSVFile" />
+        
+    </concept>
+
+    <concept name="op-payment-process" server="op.unact.ru">
+        <select owner="op" sql-name="paymentprocess"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid" />
+        
+        <property name="step" type="int" label="Шаг"/>
+        <property name="tryCount" type="int" label="Всего попыток"/>
+        <property name="stepTryCount" type="int" label="Попыток текущего шага"/>
+        <property name="finalizingDate" type="datetime" label="Дата завершения"/>
+        <property name="bookingDate" type="date" label="Дата биллинга"/>
+        
+        <property name="clientId" type="string"/>
+        <property name="summ" type="decimal" label="Сумма"/>
+        <property name="account" type="string" label="Счет" />
+        <property name="extra" type="xml" label="Прочие реквизиты" />
+        <property name="final" type="boolean" />
+        
+        <property name="status" type="string" label="Статус"
+                  sql-compute="case when final=0 then 'Проводится' when error=0 then 'Проведено' else string('Ошибка=',error) end"/>
+        
+        <property name="cts" type="datetime" label="Когда создан" />
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+        <role name="op-service" actor="op-service" sql-name="service" />        
+        <role name="op-error" actor="op-error" sql-name="error" />
+        <role name="op-payment" actor="op-payment" sql-name="payment" />
+        <role name="pc-account" actor="pc-account" sql-name="pcAccount" />
+        
+    </concept>
+
+    <concept name="op-error" server="op.unact.ru">
+        <select owner="op" sql-name="processError"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название" />
+        
+    </concept>
+
+
+    <concept name="up-file-payment" server="op.unact.ru">
+        
+        <select owner="op" sql-name="prepayment" />
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid" />
+        
+        <property name="account" type="string" label="Счет" />
+        <property name="summ" type="decimal" label="Сумма к зачислению" />
+        <property name="extra" type="xml" label="Прочие реквизиты" />
+        
+        <role name="op-error" actor="op-error" sql-name="error" />
+        <role name="up-file" actor="up-file"  sql-name="csvfile"/>
+        
+    </concept>
+
+    <concept name="up-file-type" server="op.unact.ru">
+        <select owner="op" sql-name="CSVFileType"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название" />        
+        
+    </concept>
+
+    <concept name="up-file" server="op.unact.ru">
+        <select owner="op" sql-name="CSVFile"/>
+        <save owner="op" sql-name="CSVFile"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Имя" />
+        <property name="data" type="file" label="Данные платежей" />
+        
+        <property name="processed" type="boolean" label="Проведено"/>
+        
+        <property name="cts" type="datetime" label="Загружен"/>
+        
+        <property name="xid" />
+        
+        <role name="up-file-type" actor="up-file-type" sql-name="type"/>
+        <role name="up-client" actor="up-client" sql-name="client"/>
+        
+    </concept>
+
+    <concept name="up-client" server="op.unact.ru">
+        <select owner="op" sql-name="client"/>
+        
+        <select owner="xmlgate" type="procedure" sql-name="client">
+            <parameter name="op-agent" type="string" sql-name="@agent" required="true"/>
+        </select>
+        
+        <save owner="xmlgate" sql-name="client"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" label="Название" type="string"/>
+        <property name="processingLogin" label="Платежный логин" type="string" sql-name="login"/>
+        <property name="processingPwd" label="Платежный пароль" type="string" sql-compute="null"/>
+        <property name="processingPwdNew" label="Новый платежный пароль" type="string" sql-compute="null"/>
+        
+        <property name="funds" label="Остаток средств" type="decimal"/>
+        <property name="fundsAvailable" label="Доступно с овердрафтом" type="decimal"
+                  sql-compute="(select op.clientFundsAvailable (id))"/>
+        
+        <role name="op-agent" actor="op-agent"/>
+    
+    </concept>
+    
+    <concept name="up-overdraft">
+        <select owner="op" sql-name="overdraft"/>
+        
+        <property name="dateB" type="datetime" sql-name="ddateb" label="Начало действия"/>
+        <property name="dateE" type="datetime" sql-name="ddatee" label="Окончание действия"/>
+        <property name="summ" type="decimal" label="Сумма"/>
+        
+        <role name="up-client" actor="up-client" sql-name="client"/>
+
+    </concept>
+
+    <concept name="up-clientDate">
+        <select owner="xmlgate" type="procedure" sql-name="clientDate">
+            <parameter name="up-client" type="int" sql-name="@client"/>
+        </select>
+        
+        <property name="date" label="Дата" type="date" sql-name="ddate"/>
+        
+        <property name="fundsIncome" label="Поступило средств" type="decimal"/>
+        <property name="paymentsSum" label="Проведено на сумму" type="decimal"/>
+        
+        <role name="up-client" actor="up-client" sql-name="client"/>
+        
+    </concept>
+    
+    <concept name="legalentity-pc" server="op.unact.ru">
+        
+        <select owner="op" sql-name="legalentityPc"/>
+        <save owner="op" sql-name="legalentityPc"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название" />
+        <property name="funds" type="decimal" label="Свободно средств" />
+        <property name="minFunds" type="decimal" label="Порог оповещения" />
+        <property name="processedToday" type="decimal" label="Проведено сегодня" />
+        
+        <property name="active" type="boolean" label="Активно" />
+        
+    </concept>
+    
+    <concept name="gup-reestr" server="op.unact.ru">
+        <select owner="report" sql-name="gupMgstkNalogReestr" type="procedure">
+            <parameter name="date" type="date" sql-name="@dateb"/>
+        </select>            
+    </concept>
+    
+    <concept name="multibank-reestr" server="op.unact.ru">
+        <select owner="report" sql-name="multibankReestr" type="procedure">
+            <parameter name="date" type="date" sql-name="@dateb"/>
+        </select>            
+    </concept>
+
+    <concept name="pc-account" server="op.unact.ru">
+    
+        <select owner="op" sql-name="pcAccount"/>
+        <save owner="op" sql-name="pcAccount"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Имя" />
+        <property name="active" type="boolean" label="Активен" />
+        <property name="handBlock" type="boolean" label="Отключить" />
+        <property name="login" type="string" label="Логин" />
+        <property name="pwd" type="string" label="Пароль" />
+        <property name="terminal" type="string" label="Терминал" />
+        <property name="terms" type="string" label="Прочие условия" />
+        <property name="url" type="string" label="URL" />
+        <property name="certfile" label="Файл сертификата" />
+        <property name="url2" type="string" label="URL2" />
+        <property name="onlineCheck" type="boolean" label="Использовать для проверок" />
+        <property name="email" type="string" label="Почта" />
+
+        <role name="legalentity" actor="op-legalentity"/>
+        <role name="pc" actor="pc"/>
+        
+    </concept>
+
+    <concept name="op-legalentity" server="op.unact.ru">
+    
+        <select owner="op" sql-name="legalentity"/>
+        <save owner="op" sql-name="legalentity"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="code" type="string" label="Код"/>
+        <property name="ratio" type="int" label="Целевой %"/>
+        <property name="todayPercent" type="decimal" label="% Сегодня" 
+            sql-compute="cast(100*(select summ from op.legalentitytotal where ddate=today() and legalentity=[op-legalentity].id) /
+                         (select sum(summ) from op.legalentitytotal where ddate=today()) as decimal(5,2))"
+        />
+        <property name="todayPaymentsSum" type="decimal" label="Платежи сегодня" 
+            sql-compute="(select summ from op.legalentitytotal where ddate=today() and legalentity=[op-legalentity].id)"
+        />
+
+        <property name="xid"/>
+        
+    </concept>
+
+    <concept name="protocol" server="op.unact.ru">
+    
+        <select owner="op"/>
+        <save owner="op"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="code" type="string" label="Код"/>
+
+        <property name="xid"/>
+        
+    </concept>
+
+    <concept name="op-service" server="op.unact.ru">
+    
+        <select owner="op" sql-name="service"/>
+        <save owner="op" sql-name="service"/>
+        
+        <property name="xid" />
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="code" type="string" label="Код"/>
+        
+    </concept>
+
+    <concept name="pc" server="op.unact.ru">
+    
+        <select owner="op"/>
+        <save owner="op"/>
+                    
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="code" type="string" label="Код"/>
+        <property name="avoid" type="boolean" label="Избегать"/>
+        <property name="maxQueue" type="int" label="Потолок очереди"/>
+        <property name="maxTries" type="int" label="Потолок попыток"/>
+        <property name="processCount" type="int" label="Потолок процессора"/>
+        <property name="xid"/>
+        
+        <role name="protocol" actor="protocol"/>
+        
+    </concept>
+    
+    <!--concept name="pc-account-total" server="op.unact.ru">
+    
+        <select owner="op" type="procedure" sql-name="pcaccountTotalToday"/>
+
+        <property name="summ" type="decimal" label="Проведено на сумму"/>
+        <property name="mfd" type="datetime" label="Последний платеж"/>
+        
+        <role name="pc-account" actor="pc-account" sql-name="pcaccount"/>
+        
+    </concept-->
+
+    <concept name="pc-queue-error" server="op.unact.ru">
+    
+        <select owner="op" type="procedure" sql-name="queueerrors"/>
+
+        <property name="account" type="string" label="ПЦ"/>
+        <property name="service" type="string" label="Услуга"/>
+        <property name="error" type="string" label="Ошибка"/>
+        <property name="cnt" type="int" label="Платежей в очереди"/>
+        <property name="trycountAvg" type="decimal" label="Попыток в среднем"/>
+        
+    </concept>
+
+    <concept name="pc-queueinfo" server="op.unact.ru">
+    
+        <select owner="op" type="procedure" sql-name="queueinfo"/>
+
+                    
+        <property name="name" type="string" label="ПЦ"/>
+        <property name="avoid" type="boolean" label="Избегать"/>
+        <property name="nonFinalCount" type="int" label="Шт. в очереди"/>
+        <property name="ppin" type="int" label="Вход шт/мин"/>
+        <property name="ppout" type="int" label="Выход шт/мин"/>
+        <property name="deltain2" type="int" label="Дельта Вход"/>
+        <property name="deltaout2" type="int" label="Дельта Выход"/>
+        
+    </concept>
+
+    <concept name="preprocessing" storage="olap" db="Preprocessing" server="hqsrv27">
+        <select type="mdx" cube="Препроцессинг"/>
+
+        <role name="date" type="date" actor="dates" mdx-name="[Время].[Дата].[Дата]"/>
+        <property name="processed-total" type="decimal" mdx-name="[Measures].[Платежи препроцессинга-Сумма без комиссии]" label="Проведено на сумму"/>
+        <property name="subdealer-payments-in" type="decimal" mdx-name="[Measures].[Платежи субдилера-Приход]" label="Субдилер Приход"/>
+        <property name="subdealer-payments-out" type="decimal" mdx-name="[Measures].[Платежи субдилера-Расход]" label="Субдилер Расход"/>
+        <property name="subdealer-balance" type="decimal" mdx-compute=" - ([Критерий платежа].[Критерий].&amp;[2],[Measures].[Платежи препроцессинга-Сумма без комиссии Итого]) + [Measures].[Платежи субдилера-Сумма Итого]" mdx-name="[Measures].[subdealer-balance]" label="Баланс субдилера"/>
+        <role name="subdealer" actor="subdealer" mdx-name="[Терминал].[Отделение].[Субдилер]"/>
+        <role name="month" actor="subdealer" mdx-name="[Время].[Календарь].[Месяц года]"/>
+        <role name="criteria" actor="criteria" mdx-name="[Критерий платежа].[Критерий]"/>
+    </concept>
+
+    <concept name="fotonova">
+        <select owner="sys" sql-name="dummy"/>
+        <property name="sync" type="string" sql-compute="case fnova.DataExchange() when 0 then 'Отработало удачно' when 1 then 'Произошла ошибка' end" label="Импорт данных"/>
+    </concept>
+
+    <concept name="sysuser">
+    
+        <select owner="xmlgate" sql-name="agent"/>
+        <select owner="xmlgate" type="procedure" sql-name="agent">
+            <parameter name="name" type="string" sql-name="@name"/>
+            <parameter name="device-name" type="string" sql-name="@deviceName"/>
+        </select>
+        
+        <save owner="xmlgate" sql-name="agent_save" type-="procedure">
+            <parameter name="name" type="string" sql-name="@name"/>
+            <parameter name="useradmin" type="string" sql-name="@useradmin"/>
+            <parameter name="xid" type="string" sql-name="@xid" required="true"/>
+        </save>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Имя"/>
+        <property name="device-name" type="string" label="Последнее использованное устройство"/>
+        <property name="ts" type="datetime" label="Активность"/>
+        <property name="xid"/>
+        
+    </concept>
+
+    <concept name="cat-agent">
+    
+        <select owner="dbo" type="procedure" sql-name="agent">
+            <parameter name="username" sql-name="@username" type="string"/>
+        </select>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Имя"/>
+        <property name="username" type="string" label="Логин" />
+        <property name="xid"/>
+        
+    </concept>
+
+    <concept name="salesman-route">
+    
+        <select owner="dbo" sql-name="salesman_route"/>
+        
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" label="Название"/>
+        <property name="ord" type="int" sql-name="id"/>
+        
+        <property name="xid"/>
+        
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman"/>
+        
+    </concept>
+
+    <concept name="salesman-route-point">
+    
+        <select owner="dbo" sql-name="palm_RoutePoint"/>
+        
+        <property name="ord" type="int" label="Очередность" sql-name="hhmm"/>
+        
+        <property name="xid"/>
+        
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman_id"/>
+        <role name="salesman-route" actor="salesman-route" sql-name="routetype_id"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client_id"/>
+        
+    </concept>
+
+    <concept name="cat-salesman">
+        
+        <select owner="dbo" sql-name="palm_salesman"/>
+        
+        <property name="id" type="int" key="true" sql-name="salesman_id"/>
+        <property name="name" type="string" label="Имя"/>
+        <property name="username" type="string" label="Логин" sql-name="loginname"/>
+        <property name="xid"/>
+        <role name="cat-agent" actor="cat-agent" sql-name="agent"/>
+        
+    </concept>
+
+    <concept name="salesman-workday">
+        
+        <select owner="dbo" sql-name="salesman_workday" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@palm_salesman"/>
+            <parameter name="date" type="date" sql-name="@ddate"/>
+            <parameter name="id" type="int" sql-name="@saleperiod"/>
+        </select>
+        
+        <save owner="dbo" sql-name="palm_saleperiod"/>
+        
+        <property name="id" type="int" key="true" sql-name="saleperiod_id"/>
+        <property name="xid"/>
+        
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+        <property name="closed" type="boolean" label="Работа завершена" />
+        <property name="processed" type="boolean" label="День обработан" />
+        
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman_id"/>
+        
+    </concept>
+
+    <concept name="partner-pricelist">
+        
+        <select owner="dbo" sql-name="partner_plist" />
+        
+        <property name="id" type="string"  key="true" sql-name="xid"/>
+        <property name="discount" type="decimal" label="% скидки"/>
+        
+        <role name="pricelist-set" actor="pricelist-set" sql-name="plset"/>
+        <role name="pricelist" actor="pricelist" sql-name="plist"/>
+        <role name="cat-partner" actor="cat-partner" sql-name="partner"/>
+        
+    </concept>
+    
+    <concept name="partner-price">
+        
+        <select owner="sales" type="procedure" sql-name="partner_price" >
+            <parameter name="date" type="date" sql-name="@ddate"/>
+        </select>
+        
+        <property name="xid" type="string"  key="true" />
+        <property name="price" type="decimal" label="Цена"/>
+        <property name="date" type="date" />    
+        
+        <role name="article" actor="article" sql-name="goods"/>
+        <role name="cat-partner" actor="cat-partner" sql-name="partner"/>
+        
+    </concept>
+
+    <concept name="pricelist">
+        
+        <select owner="sales" sql-name="pricelist" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+        </select>
+        
+        <property name="id" type="int"  key="true"/>
+        <property name="name" type="string" label="Название"/>
+        
+        <role name="cat-salesman" actor="cat-salesman"/>
+        <role name="cat-partner" actor="cat-partner"/>
+        
+    </concept>
+
+    <concept name="pricelist-set">
+        
+        <select owner="sales" sql-name="plset" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+        </select>
+        
+        <property name="id" type="int"  key="true"/>
+        <property name="name" type="string" label="Название"/>
+        
+        <role name="cat-salesman" actor="cat-salesman"/>
+        
+    </concept>
+
+    <concept name="sales-price">
+        
+        <select owner="sales" sql-name="psprice" />
+        <select owner="sales" sql-name="price" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+            <parameter name="category" type="int" sql-name="@g_group"/>
+        </select>
+        
+        <property name="price" type="decimal" label="Цена"/>
+        <property name="date" type="date" sql-name="ddate"/>    
+        <property name="id" type="string"  key="true" sql-compute="string(plset,'-',plist,'-',goods)"/>
+        
+        <role name="category" actor="category" />
+        <role name="article" actor="article" sql-name="goods"/>
+        <role name="cat-salesman" actor="cat-salesman"/>
+        <role name="pricelist" actor="pricelist" sql-name="plist"/>
+        <role name="pricelist-set" actor="pricelist-set" sql-name="plset"/>
+        
+    </concept>
+
+    <concept name="wan-stock">
+        <select owner="dbo" type="procedure" sql-name="wan_stock">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+        </select>
+        
+        <property name="id" type="int"  key="true"/>
+        
+        <property name="remains" type="int" label="Остаток"/>
+        
+        <role name="article" actor="article" sql-name="goods"/>
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman"/>
+        
+    </concept>
+
+    <concept name="pre-order">
+        <select owner="dbo" sql-name="pre_order" />
+        <!--select owner="dbo" sql-name="pre_order_blank" type="procedure">
+            <parameter name="xid" sql-name="@xid"/>
+            <parameter name="cat-salesman" type="int" sql-name="@salesman" required="true"/>
+            <parameter name="cat-buyer" type="int" sql-name="@client"/>
+        </select-->
+        <save owner="dbo" sql-name="pre_order"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="processed" type="int" />
+        <property name="xid" />
+        
+        <property name="date" type="date" label="Дата доставки" sql-name="toDate"/>
+        <property name="isWhite" type="boolean" sql-name="print_sf" label="Нужен счет-фактура"/>
+        <property name="incassNeeded" type="boolean" sql-name="cash_flag" label="Требуется инкассация"/>
+        <property name="isBonus" type="boolean" sql-name="bonus_flag" label="Бонусный"/>
+        <property name="totalCost" type="decimal" label="Стоимость"/>
+        <property name="deviceCts" type="datetime" record-label="Время создания" sql-name="device_ts"/>
+        <property name="comment" type="string" label="Комментарий" sql-name="info"/>
+        
+        <property name="processing" type="string" label="Статус"/>
+        
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client"/>
+    </concept>
+    
+    <concept name="pre-order-item">
+        <select owner="dbo" sql-name="pre_order_item"/>
+        <save owner="sales" sql-name="create_pre_order_item" type="procedure">
+            <parameter name="volume" type="int" sql-name="@volume"/>
+            <parameter name="xid" sql-name="@xid"/>
+            <parameter name="cost" type="decimal" sql-name="@cost"/>
+            <parameter name="pre-order" type="int" sql-name="@pre_order"/>
+            <parameter name="article" type="int" sql-name="@goods"/>
+            <parameter name="package" type="int" sql-name="@vmeas"/>
+        </save>
+        
+        <property name="xid" />
+        <property name="volume" type="int" label="Кол-во" />
+        <property name="cost" type="decimal" label="Стоимость" />
+        
+        <role name="package" actor="package" sql-name="vmeas" />
+        
+        <role name="pre-order" actor="pre-order" sql-name="pre_order" type="belongs" />
+        <role name="article" actor="article" sql-name="goods" />
+    </concept>
+
+    <concept name="pre-order-item-available">
+        <select owner="dbo" type="procedure" sql-name="pre_order_available">
+            <parameter name="cat-buyer" type="int" sql-name="@client"/>
+            <parameter name="date" type="date" sql-name="@ddate"/>
+            <parameter name="category" type="int" sql-name="@gg"/>
+            <parameter name="article" type="int" sql-name="@goods"/>
+        </select>
+        
+        <!--property name="rel" type="int" label="Кратность"/>
+        <property name="volume" type="int"/-->
+        <property name="price" type="decimal" label="Цена"/>
+
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client"/>
+        <role name="article" actor="article" sql-name="goods"/>
+        <role name="category" actor="category" />
+        
+    </concept>
+
+    <concept name="client-active-article">
+        <select owner="sales" type="procedure" sql-name="buyer_sorgoods_goods">
+            <parameter name="cat-buyer" type="int" sql-name="@buyer"/>
+            <parameter name="date" type="date" sql-name="@ddate"/>
+            <parameter name="days-back" type="int" sql-name="@daysback"/>
+        </select>
+        
+        <property name="count" type="integer" sql-name="cnt" label="Кол-во"/>
+        <property name="days-since-order" type="integer" sql-name="days_since"/>
+                  
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client"/>
+        <role name="article" actor="article" sql-name="goods"/>
+        
+    </concept>
+
+
+    <concept name="wan-sale">
+        <select owner="dbo" sql-name="wan_sale" type="procedure">
+            <parameter name="state" type="string" sql-name="@state"/>
+            <parameter name="cat-buyer" type="int" sql-name="@client"/>
+            <parameter name="wan-pos" type="int" sql-name="@client"/>
+            <parameter name="pricelist" type="int" sql-name="@pricelist"/>
+            <parameter name="salesman-workday" type="int" sql-name="@saleperiod"/>
+        </select>
+        <save owner="dbo" sql-name="palm_sale"/>
+        
+        <property name="id" type="int" sql-name="sale_id" key="true"/>
+        
+        <property name="ndoc" type="string" label="№"/>
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+        <property name="isCredit" type="boolean" sql-name="oncredit" label="Отсрочка оплаты"/>
+        <property name="isWhite" type="boolean" sql-name="printdocset" label="Нужен счет-фактура"/>
+        <property name="isCash" type="boolean" sql-name="iscash" label="Оплата наличными"/>
+        <property name="isComplete" type="boolean" sql-name="iscomplete" />
+        <property name="totalCost" type="decimal" sql-name="sumtotal" label="Стоимость"/>
+        
+        <role name="salesman-workday" actor="salesman-workday" sql-name="saleperiod_id"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client_id"/>
+        <role name="wan-pos" actor="wan-pos" sql-name="client_id"/>
+        <role name="pricelist" actor="pricelist" sql-name="pricelist_id"/>
+    </concept>
+
+    <concept name="wan-saleitem">
+        <select owner="dbo" sql-name="palm_saleitem"/>
+        <save owner="dbo" sql-name="palm_saleitem"/>
+        
+        <property name="volume" type="int" label="Кол-во"/>
+        <property name="price" type="decimal" label="Цена"/>
+        <property name="cost" type="decimal" label="Стоимость"/>
+        
+        <role name="wan-sale" actor="wan-sale" sql-name="sale_id"/>
+        <role name="article" actor="article" sql-name="goods_id"/>
+    </concept>
+
+    <concept name="wan-pos">
+        <select owner="dbo" sql-name="wan_pos" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+            <parameter name="id" type="int" sql-name="@id"/>
+        </select>
+        <save owner="dbo" sql-name="wan_pos"/>
+        
+        <property name="id" type="int" key="true"/>
+        
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client"/>
+        <role name="pricelist" actor="pricelist" sql-name="pricelist"/>
+        
+    </concept>
+
+    <concept name="wan-pricelist">
+        <select owner="dbo" sql-name="wan_pricelist" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+        </select>
+        
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman"/>
+        <role name="pricelist" actor="pricelist" sql-name="pricelist"/>
+
+    </concept>
+
+    <concept name="cat-buyer">
+        
+        <select owner="sales" sql-name="buyer" />
+        
+        <select owner="dbo" sql-name="buyer" type="procedure">
+            <parameter name="salesman-route" type="int" sql-name="@route"/>
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+        </select>
+        
+        <save owner="dbo" sql-name="buyers"/>
+        
+        <property name="id" type="int" key="true" />
+        <property name="xid"/>
+        
+        <role name="cat-partner" actor="cat-partner" sql-name="partner"/>
+        <role name="salesman-route" actor="salesman-route" />
+        <role name="cat-salesman" actor="cat-salesman" />
+        <role name="sales-warehouse" actor="sales-warehouse" sql-name="site"/>
+        
+        <property name="name" type="string" label="Название" />
+        <property name="address" type="string" label="Адрес" sql-name="loadto"/>
+        <property name="phone" type="string" label="Телефон" />
+        <property name="info" type="string" label="Комментарии" />
+        
+        <property name="bonusCost" sql-compute-="nullif(bonus_available(id,1),0)" type="decimal" label="Товарный бонус"/>
+        <!--property name="bonusCash" sql-compute="nullif(bonus_available(id,2),0)" type="decimal" label="Денежный бонус"/-->
+        <property name="bonusForecast" sql-compute-="nullif(bonus_forecast(id),0)" type="decimal" label="Прогноз бонуса"/>
+        
+    </concept>
+
+    <concept name="cat-partner">
+        
+        <select owner="dbo" sql-name="partners"/>
+        <select owner="sales" sql-name="partner" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+        </select>
+        <save owner="dbo" sql-name="partners"/>
+        
+        <property name="id" type="int" key="true" />
+        
+        <property name="name" type="string" label="Название" />
+        
+        <property name="plong" type="int" label="Отсрочка оплаты"/>
+        <property name="maxdebt" type="decimal" sql-compute="cast(maxdebt*26.5075 as int)" label="Лимит задолженности"/>
+        <property name="maxord" type="decimal" sql-compute="cast(maxord*26.5075 as int)" label="Лимит заказа"/>
+        
+        <property name="orderinfo" type="string" label="Комментарий к отгрузкам"/>
+        <property name="code" type="string" label="Код"/>
+        
+        <property name="info" type="string" label="Прочая информация"/>
+        
+        <property name="xid"/>
+        
+        <role name="cat-salesman" actor="cat-salesman" />
+        
+    </concept>
+
+    <concept name="workday-encashment">
+        
+        <select owner="dbo" sql-name="palm_repayment"/>
+        <save owner="dbo" sql-name="palm_repayment"/>
+        
+        <property name="id" type="int" key="true" sql-name="repayment_id"/>
+        <property name="xid"/>
+        
+        <property name="date" type="datetime" label="Время регистрации" sql-name="ddate"/>
+        <property name="summ" type="decimal" label="Сумма" />
+        <property name="isWhite" type="string" label="Чек" sql-compute="if kkmprinted=1 then 'Чек' endif" />
+        <property name="wsumm" type="decimal" label="С чеком" sql-compute="if kkmprinted=1 then summ endif"/>
+        <property name="bsumm" type="decimal" label="Без чека" sql-compute="if kkmprinted=0 then summ endif"/>
+        
+        <role name="salesman-workday" actor="salesman-workday" sql-name="saleperiod_id"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client_id"/>
+        
+    </concept>
+
+    <concept name="expedition">
+        <select owner="dbo" type="procedure">
+            <parameter name="cat-agent" type="int" sql-name="@agent"/>
+            <parameter name="date" type="date" sql-name="@ddate"/>
+        </select>
+        <save owner="dbo" type="procedure" sql-name="expedition_save">
+            <!--parameter name="xid" sql-name="@xid"/-->
+            <parameter name="id" type="int" sql-name="@id" />
+            <parameter name="started" type="int" sql-name="@started" />
+            <parameter name="finished" type="int" sql-name="@finished" />
+        </save>
+                    
+        <property name="id" type="int" key="true"/>
+        <property name="xid" />
+        
+        <role name="cat-agent" actor="cat-agent" sql-name="agent"/>
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+
+        <property name="name" type="string" label="Доставка" />
+        <property name="started" type="boolean" label="Произведен выезд" />
+        <property name="finished" type="boolean" label="Маршрут завершен" />
+
+    </concept>
+
+    <concept name="expedition-destination">
+        <select owner="dbo" type="procedure" sql-name="expedition_destination_test">
+            <parameter name="expedition" type="int" sql-name="@expedition" />
+        </select>
+        <save owner="dbo" sql-name="expedition_destination"/>
+        
+        <role name="expedition" actor="expedition" sql-name="delivery"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="destination"/>
+
+        <property name="xid" />
+        
+        <property name="id" type="int" key="true"/>
+        <property name="ord" type="string" label="Очередность" />
+        <property name="address" type="string" label="Адрес" />
+        <property name="isComplete" type="boolean" label="Завершена работа" />
+        
+        <!--property name="finished" type="boolean" label="Заказы переданы" sql-compute="if departure is null then 1 else 0 endif"/>
+        <property name="started" type="boolean" label="Посещено" sql-compute="if arrival is null then 1 else 0 endif"/-->
+        
+        <property name="ordersCnt" type="int" label="Кол-во заказов" />
+        <property name="documentsCnt" type="int" label="Кол-во документов" />
+        <property name="encashmentsCnt" type="boolean" label="Инкассация" />
+
+        <property name="name" type="string" label="Название" sql-compute="string(address)"/>
+
+    </concept>
+
+    <concept name="expedition-order-task">
+        <select owner="dbo" type="procedure" sql-name="expedition_order_task">
+            <parameter name="expedition" type="int" sql-name="@expedition" />
+            <parameter name="cat-buyer" type="int" sql-name="@destination" />
+        </select>
+        
+        <property name="id" type="int" key="true"/>
+        
+        <property name="ndoc" type="string" label="Документ№" />
+        <property name="summ" type="decimal" label="Сумма" />
+        <property name="mcvol" type="decimal" label="Коробок" />
+        <property name="goodsCnt" type="decimal" label="Товаров" />
+        <property name="info" type="string" label="Комментарий" />
+
+        <role name="cat-buyer" actor="cat-buyer" />
+        <role name="expedition" actor="expedition" />
+        
+    </concept>
+
+    <concept name="pos-debt">
+        <select owner="dbo" type="procedure" sql-name="pos_debt">
+            <parameter name="cat-partner" type="int" sql-name="@partner" />
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+        </select>
+        
+        <property name="id" type="int" key="true"/>
+        
+        <property name="isWhite" type="boolean" label="Нужен чек" sql-compute="if color=1 then 1 else 0 endif" />
+        <property name="needs" type="string" label="Нужно" sql-compute="if color=1 then 'Чек' endif" />
+        <property name="info" type="string" label="Документ№" />
+        <property name="summ" type="decimal" label="Сумма" />
+        <property name="csum" type="decimal" label="Задолженность" />
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+        <property name="dateUntil" type="date" label="Оплата до" sql-name="date_until"/>
+        <property name="isOwn" type="boolean" sql-name="own"/>
+        <property name="isOverdue" type="boolean" sql-name="overdue" label="Просрочено"/>
+
+        <role name="cat-partner" actor="cat-partner" />
+        <role name="debt-origin" actor="cat-partner" sql-name="partner"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client"/>
+        <role name="cat-salesman" actor="cat-salesman" />
+        
+    </concept>
+
+    <concept name="sales-encashment-request">
+        
+        <select owner="sales" sql-name="encashment_request"/>
+        
+        <save owner="sales" sql-name="encashment_request"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid" />
+        
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+        <property name="comment" type="string" label="Комментарий" sql-name="info"/>
+        <property name="status" type="string" label="Статус" />
+        
+        <property name="failureComment" type="string" label="Причина невыполнения" sql-name="reason"/>
+        
+        
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client"/>
+        <role name="cat-agent" actor="cat-agent" sql-name="agent"/>
+        
+        <!--role name="cat-salesman" actor="cat-salesman" sql-name="palm_salesman"/-->
+    </concept>
+
+    <concept name="sales-encashment">
+        
+        <select owner="sales" sql-name="encashment"/>
+        
+        <save owner="sales" sql-name="encashment"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid" />
+        
+        <property name="summ" type="decimal" label="Получено" />
+        <property name="datetime" type="datetime" label="Дата" sql-name="ddate"/>
+        <property name="isWhite" type="boolean" label="Выдан чек" />
+        
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client"/>
+        <role name="pos-debt" actor="pos-debt" sql-name="debt"/>
+        <role name="cat-salesman" actor="cat-salesman" sql-name="palm_salesman"/>
+        <role name="sales-uncashment" actor="sales-uncashment" sql-name="palm_saleperiod"/>
+        
+    </concept>
+
+    <concept name="sales-uncashment">
+        
+        <select owner="sales" sql-name="uncashment"/>
+        <save owner="sales" sql-name="uncashment"/>
+        
+        <property name="id" type="int" key="true" />
+        <property name="xid" />
+        
+        <property name="datetime" type="datetime" label="Дата" />
+        <property name="totalSumm" type="decimal" label="Выручка всего" />
+        <property name="totalSummWhite" type="decimal" label="Выручка по ККМ" />
+        
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman"/>
+        
+    </concept>
+
+    <concept name="expedition-encashment-task">
+        <select owner="dbo" type="procedure" sql-name="expedition_encashment_task">
+            <parameter name="expedition-destination" type="int" sql-name="@destination" />
+            <parameter name="salesman-workday" type="int" sql-name="@saleperiod" />
+            <parameter name="expedition" type="int" sql-name="@expedition" />
+        </select>
+        
+        <property name="id" type="int" key="true"/>
+        
+        <property name="isWhite" type="string" label="Нужно" sql-compute="if color=1 then 'Чек' endif" />
+        <property name="info" type="string" label="Документ№" />
+        <property name="summ" type="decimal" label="Сумма" />
+        <property name="csum" type="decimal" label="Задолженность" />
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+
+        <property name="name" type="string" sql-compute="string(date(ddate),' ',info,' ',summ,' ',csum)" />
+
+        <role name="expedition" actor="expedition" />
+        <role name="expedition-destination" actor="expedition-destination" />
+        <role name="salesman-workday" actor="salesman-workday" />
+        
+    </concept>
+
+    <concept name="expedition-encashment">
+        <select owner="dbo" sql-name="expedition_encashment"/>
+        <save owner="dbo" sql-name="expedition_encashment"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid" />
+        
+        <property name="summ" type="decimal" label="Оплачено" />
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+
+        <role name="expedition-encashment-task" actor="expedition-encashment-task" sql-name="task"/>
+        <role name="salesman-workday" actor="salesman-workday" sql-name="saleperiod_id"/>
+        <role name="expedition-destination" actor="expedition-destination" sql-name="client_id"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client_id"/>
+        <role name="wan-pos" actor="wan-pos" sql-name="client_id"/>
+        <role name="pos-debt" actor="pos-debt" sql-name="task"/>
+        
+    </concept>
+
+    <!--concept name="expedition-item">
+        <select owner="dbo" type="procedure" sql-name="expedition_item">
+            <parameter name="destination" type="int" sql-name="@destination" />
+        </select>
+        
+        <save owner="dbo" type="procedure" sql-name="expedition_item_save">
+            <parameter name="xid" sql-name="@xid"/>
+            <parameter name="arrive" type="int" sql-name="@started"/>
+            <parameter name="leave" type="int" sql-name="@finished"/>
+        </save>
+        
+        <role name="destination" actor="expedition-destination"/>
+        
+        <property name="xid" />
+        
+        <property name="arrive" type="boolean" label="Прибыл" />
+        <property name="leave" type="boolean" label="Убыл" />
+
+    </concept-->
+
+    <concept name="processing">
+        <select owner="dbo" sql-name="src_system"/>
+        
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string"/>
+        <property name="code" type="string"/>
+
+    </concept>
+
+    <concept name="catterminal">
+        <select owner="dbo" sql-name="catterminal"/>
+        <save owner="dbo" sql-name="catterminal"/>
+        
+        <role name="branch" actor="branch"/>
+        <role name="processing" actor="processing" sql-name="src_system"/>
+        <role name="branch-route" actor="branch-route" sql-name="broute"/>
+
+        <property name="id" type="int" key="true"/>
+        <property name="lifestatus" type="string" sql-compute="case isdeleted when 0 then 'Работает' when 1 then 'Удален' end" />
+        <property name="branch-route.name" type="string"/>
+
+        <property name="name" type="string" label="Название"/>
+        <property name="address" type="string" label="Адрес"/>
+        <property name="code" type="string" label="Код"/>
+        <property name="terminalid" type="int" label="ID"/>
+    </concept>
+
+    <!--concept name="branch-route-terminal">
+        <select owner="dbo" sql-name="branch_routeterm"/>
+        <save owner="dbo" sql-name="branch_routeterm"/>
+        
+        <role name="branch-route" actor="branch-route" sql-name="broute"/>
+        <role name="cat/terminal" actor="cat/terminal" sql-name="terminalid"/>
+        <property name="id" type="int" key="true"/>
+    </concept-->
+
+    <concept name="branch-workday-cashier">
+        <select owner="dbo" sql-name="bday_cashier"/>
+        <save owner="dbo" sql-name="bday_cashier"/>
+        
+        <role name="branch-workday" actor="branch-workday" sql-name="branch_day"/>
+        <role name="cashier" actor="cashier"/>
+
+        <property name="id" type="int" key="true"/>
+    </concept>
+
+
+    <concept name="branch-workday-route">
+        <select owner="dbo" type="procedure" sql-name="bday_route">
+            <parameter name="branch-workday" type="int" sql-name="@bday"/>
+        </select>
+        <save owner="dbo" sql-name="bday_route"/>
+        
+        <role name="branch-workday" actor="branch-workday" sql-name="bday"/>
+        <role name="branch-route" actor="branch-route" sql-name="broute"/>
+        <role name="collector" actor="collector"/>
+
+        <property name="id" type="int" key="true"/>
+    </concept>
+
+    <concept name="branch-route">
+        <select owner="dbo" sql-name="branch_route"/>
+        <save owner="dbo" sql-name="branch_route"/>
+        
+        <role name="branch" actor="branch"/>
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string"/>
+        <property name="description" type="string"/>
+    </concept>
+
+    <concept name="bpa" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="bpatable"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название" />
+    </concept>
+
+    <concept name="cat-bpa">
+        <select owner="dbo" sql-name="bpa"/>
+        <save owner="dbo" sql-name="bpa"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Название" />
+        <property name="distrib-ratio" type="decimal" label="Вес в распределении" sql-name="distrib_ratio"/>
+    </concept>
+
+    <concept name="legalentity" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="legalentity"/>
+        <save owner="dbo" sql-name="legalentity"/>
+
+        <property name="xid"/>
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" label="Название"/>
+        <property name="inn" type="string" label="ИНН" />
+        <property name="active_terminals_cnt" type="int" 
+            sql-compute="(select sum(active_terminals_cnt) from dbo.subdealer_func(default) where legalentity=legalentity.id)" label="Терминалов активно"/>
+    </concept>
+
+    <concept name="subdealer-legalentity" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="subdealer_legalentity"/>
+        <save owner="dbo" sql-name="subdealer_legalentity"/>
+
+        <property name="xid"/>
+        
+        <role name="legalentity" actor="legalentity"/>
+        <role name="subdealer" actor="subdealer" />
+
+    </concept>
+
+    <concept name="bpatotal" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="bpa_paysystem_date"/>
+        <save owner="dbo" sql-name="bpa_paysystem_date"/>
+
+        <property name="xid"/>
+        <property name="id" type="int" key="true" />
+        <property name="date" type="date" sql-name="ddate" />
+
+        <role name="bpa" actor="bpa"/>
+        <role name="paysystem" actor="paysystem"/>
+
+        <property name="summ" type="decimal" label="Сумма" />
+    </concept>
+
+    <concept name="payments-csv" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" type="procedure" sql-name="csv_payments_func">
+            <parameter name="date" type="date" sql-name="@ddate"/>
+            <parameter name="branch" type="int" sql-name="@branch"/>
+            <parameter name="type" type="int" sql-name="@type"/>
+        </select>
+    </concept>
+
+    <concept name="bpa-totals-change" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" type="procedure" sql-name="bpa_totals_change"/>
+        
+        <property name="date" type="date" sql-name="ddate" label="Рабочий день"/>
+        <property name="change-date" type="datetime" sql-name="change_ddate" label="Дата изменения"/>
+
+        <property name="new-total" type="decimal" sql-name="new_bank_total" label="Новый итог"/>
+        <property name="old-total" type="decimal" sql-name="old_bank_total" label="Старый итог"/>
+        
+    </concept>
+
+
+    <concept name="active-terminal" storage="mssql" server="pps" db="preprocessing">
+        <select owner="dbo" sql-name="active_terminal"/>
+        <property name="deleted" type="boolean" sql-name="is_deleted"/>
+    </concept>
+
+    <concept name="subdealer" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" type="procedure" sql-name="subdealer_func">
+            <parameter name="username" type="string" sql-name="@username"/>
+        </select>
+        <save owner="dbo" type="procedure" sql-name="subdealer_set">
+            <parameter name="id" type="int" sql-name="@subdealer"/>
+            <parameter name="legalentity" type="int" sql-name="@legalentity"/>
+        </save>
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string"/>
+        <property name="terminals_cnt" type="int"/>
+        <property name="active_terminals_cnt" type="int"/>
+        <property name="terminals_cash" type="decimal"/>
+
+        <role name="legalentity" actor="legalentity"/>
+        <role name="main_subdealer" actor="main_subdealer"/>
+
+    </concept>
+
+    <concept name="branch_subdealer" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" />
+
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string"/>
+
+        <role name="legalentity" actor="legalentity"/>
+
+    </concept>
+
+    <concept name="main_subdealer" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" />
+
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string"/>
+
+        <role name="branch_subdealer" actor="branch_subdealer"/>
+
+    </concept>
+
+    <concept name="paysystem" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="paysystem"/>
+        <save owner="dbo"/>
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string"/>
+    </concept>
+
+    <concept name="dates" storage="mssql" server="pps" db="ppscat" mdx-name="[Время].[Дата].[Дата].members">
+        <select owner="dbo" sql-name="ddates"/>
+        <save owner="dbo" sql-name="ddates"/>
+        <property name="date" type="date" sql-name="ddate" key="semitrue" label="Дата"/>
+        <property name="closed" type="boolean" label="Закрыта"/>
+        <property name="month" type="date"
+             sql-compute="cast (cast(year(ddate) as varchar)+'/'+cast (month(ddate) as varchar)+'/01' as datetime)" />
+    </concept>
+
+    <concept name="month" storage="mssql" server="pps" db="ppscat" mdx-name="[Время].[Календарь].[Месяц].members">
+        <select owner="dbo" sql-name="yearmonth"/>
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" label="Период"/>
+    </concept>
+
+    <concept name="cashier">
+        <select owner="dbo"/>
+        <save owner="dbo"/>
+        <role name="branch" actor="branch"/>
+        <property name="name" type="string"/>
+        <property name="id" type="int" key="true"/>
+        <property name="code" type="string"/>
+    </concept>
+
+    <concept name="collector">
+        <select owner="dbo"/>
+        <save owner="dbo"/>
+        <role name="branch" actor="branch"/>
+        <property name="name" type="string"/>
+        <property name="id" type="int" key="true"/>
+        <property name="code" type="string"/>
+    </concept>
+
+    <concept name="paysystem-date" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="paysystem_date"/>
+        <save owner="dbo"/>
+        <property name="id" type="int" key="true"/>
+        <role name="paysystem" actor="paysystem"/>
+        <property name="date" sql-name="ddate" type="date"/>
+        <property name="bank-total" type="decimal" sql-name="bank_summ" label="Итог банк"/>
+        <property name="bpa-total" type="decimal" sql-name="bpa_summ" label="Итог БПА"/>
+    </concept>
+
+    <concept name="paysystemetc" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo"/>
+        <save owner="dbo"/>
+        <role name="paysystem" actor="paysystem"/>
+        <property name="id" type="int" key="true"/>
+        <property name="summ" sql-name="bank_total" type="decimal" label="Итог платежной системы"/>
+        <property name="delta" sql-compute="bank_total - payments_total" type="decimal" label="Корректировка БПА"/>
+        <property name="date" sql-name="ddate" type="date"/>
+        <property name="dateb" sql-name="ddateb" type="date"/>
+        <property name="returned_bpa" type="int"/>
+        <role name="delta-bpa" actor="bpa" sql-name="returned_bpa"/>
+        <property name="returned" type="decimal"/>
+        <property name="checked" type="int"/>
+        <property name="month" type="date"
+             sql-compute="cast (cast(year(ddateb) as varchar)+'/'+cast (month(ddateb) as varchar)+'/01' as datetime)" />
+    </concept>
+
+    <concept name="EncashmentAmendment" storage="cat">
+        <select type="procedure" owner="spp">
+            <parameter name="ddate" type="date" sql-name="@ddate"/>
+        </select>
+    </concept>
+
+    <concept name="AccessDate" storage="cat">
+        <select owner="dbo"/>
+        <save owner="dbo"/>
+        <property name="username" key="true"/>
+        <property name="ddate" type="datetime"/>
+    </concept>
+
+    <concept name="TerminalRoutes">
+        <select type="procedure" owner="spp" sql-name="TerminalRoutes">
+            <parameter name="branch" type="int" sql-name="@branch"/>
+            <!--parameter name="date" type="date" sql-name="@ddate"/-->
+        </select>
+        <save type="procedure" owner="spp" sql-name="TerminalRoutesSave">
+            <parameter name="group_name" sql-name="@group_name" type="string"/>
+            <parameter name="terminalID" sql-name="@terminalID" type="int"/>
+        </save>
+        <property name="xid" sql-compute="null"/>
+        <property name="terminalID" type="int"/>
+        <role name="branch" actor="branch"/>
+    </concept>
+
+    <concept name="branch-workday-result">
+        <select type="procedure" owner="spp" sql-name="BranchDayResult4Web">
+            <parameter name="branch-workday" type="int" sql-name="@branch_day"/>
+        </select>
+        <role name="branch-workday" actor="branch-workday"/>
+    </concept>
+
+    <concept name="branch-workday-coupon">
+        <select type="procedure" owner="spp" sql-name="BranchDayCoupons4Web">
+            <parameter name="branch-workday" type="int" sql-name="@branch_day"/>
+        </select>
+        <save type="procedure" owner="spp" sql-name="BranchDayCoupons4Web_save">
+            <parameter name="xid" sql-name="@xid" type="int"/>
+            <parameter name="coupon" sql-name="@coupon" type="int"/>
+            <parameter name="branch-workday" sql-name="@branch_day" type="int"/>
+            <parameter name="cnt" sql-name="@cnt" type="int"/>
+        </save>
+        <role name="branch-workday" actor="branch-workday"/>
+        <property name="xid" key="true"/>
+        <property name="cnt" type="int" />
+        <property name="coupon_name" type="string"/>        
+        <property name="coupon" type="int"/>        
+        <property name="summ" type="decimal" sql-compute="cast(value*cnt as decimal(18,2))"/>
+    </concept>
+
+    <concept name="branch-workday">
+        <select owner="dbo" sql-name="branch_day"/>
+        <save owner="dbo" sql-name="branch_day"/>
+        
+        <role name="branch" actor="branch"/>
+        <role name="cashier-main" actor="cashier" sql-name="head_cashier" label="Главный кассир"/>
+        
+        <property name="xid" />
+        <property name="id" key="true" type="int" />
+        <property name="date" type="date" sql-name="ddate" label="Дата"/>
+        <property name="abs-date" type="date" sql-name="abs_ddate"  label="Дата АБС"/>
+        <property name="closed" type="boolean" label="Закрыт"/>
+        <property name="processed" type="boolean" label="Обработан"/>
+        <property name="ccdistribed" type="boolean" label="Сотрудники закреплены"/>
+    </concept>
+
+    <concept name="encashment">
+        <select type="procedure" owner="spp" sql-name="BranchEncashment4Web">
+            <parameter name="branch" type="int" sql-name="@branch"/>
+            <parameter name="branch-workday" sql-name="@branch_day" type="int"/>
+        </select>
+        <save type="procedure" owner="spp" sql-name="BranchEncashment4Web_save">
+            <parameter name="catterminal" sql-name="@TerminalID" type="int"/>
+            <parameter name="IncassID" sql-name="@IncassID" type="int"/>
+            <parameter name="branch-workday" sql-name="@branch_day" type="int"/>
+            <parameter name="xid" sql-name="@xid"/>
+            <parameter name="cashed-fact" sql-name="@summ" type="decimal"/>
+        </save>
+
+        <role name="branch" actor="branch"/>
+        <role name="catterminal" actor="catterminal" sql-name="pps_terminal"/>
+        <role name="branch-workday" actor="branch-workday"/>
+
+        <property name="xid"/>
+        <property name="IncassID" type="int" sql-name="IncassID"/>
+        <property name="datetime" type="datetime" sql-name="EventDateTime"/>
+        <property name="cashed-system" sql-name="amount" type="decimal" format="0.00"/>
+        <property name="cashed-fact" sql-name="summ" type="decimal" format="0.00"/>
+    </concept>
+
+    <concept name="terminals-state" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" type="procedure" sql-name="TerminalState4Web"/>
+        
+        <property name="terminalid" type="int" sql-name="TerminalID"/>
+        <property name="state" type="string" />
+        <property name="address" type="string" />
+        <property name="name" type="string" />
+        <property name="lastconnecttime" type="string" />
+        <property name="fulladdress" type="string" />
+        <property name="administrativearea" type="string" />
+        <property name="city" type="string" />
+        <property name="street" type="string" />
+        <property name="building" type="string" />
+        <property name="districtadministrativearea" type="string" />
+        <property name="districtcity" type="string" />
+        <property name="latitude" type="decimal" />
+        <property name="longitude" type="decimal" />
+        <property name="legal_name" type="string" />
+        <property name="tsystem" type="string" />
+        <property name="ddatee" type="string" />
+        
+    </concept>
+    
+    <concept name="agent">
+        <select type="procedure" owner="dbo">
+            <parameter- name="tabnum" type="int" sql-name="@tabnum"/>
+        </select>
+        <property name="id" key="true"/>
+        <order-by column="name"/>
+    </concept>
+
+    <concept name="terminal-payment" storage="mssql" server="pps" db="ppscat" >
+        <select type="procedure" owner="dbo" sql-name="terminal_payment">
+            <parameter name="terminal" type="int" sql-name="@terminal"/>
+            <parameter name="searcher" type="string" sql-name="@searcher"/>
+        </select>
+        
+        <role name="terminal" actor="ppsterminal"/>
+        
+        <property name="initializedatetime" type="datetime" label="Время платежа" />
+        <property name="payment-status" type="int" label="Статус" sql-name="statusid"/>
+        <property name="summ" type="decimal" label="Сумма"/>
+        <property name="params" type="string" label="Реквизиты"/>
+
+    </concept>
+    
+    <concept name="ppsterminal" storage="mssql" server="pps" db="ppscat">
+        <select type="procedure" owner="dbo" sql-name="terminal_search">
+            <parameter name="searcher" type="string" sql-name="@searcher"/>
+        </select>
+        
+        <save owner="dbo" sql-name="terminal"/>
+
+        <property name="id" type="int" key="true" label="ИД"/>
+        
+        <property name="name" type="string" label="Название"/>
+        <property name="address" type="string" label="Адрес"/>
+        <property name="isdeleted" type="boolean" initial="0" label="Удален"/>
+        <property name="lastconnect" type="datetime" label="Последний отклик" sql-name="lastconnecttime"/>
+        
+        <substate name="deleted">
+            <when field="isdeleted">
+                <equals number="1"/>
+            </when>
+            <before-entering>
+                <set field="isdeleted" number="1"/>
+            </before-entering>
+        </substate>      
+        
+    </concept>
+
+    <concept name="branch">
+        <select owner="spp" type="procedure" sql-name="BranchByLogin">
+            <parameter name="username" type="string" sql-name="@login"/>
+        </select>
+        <save owner="dbo" sql-name="branch"/>
+        
+        <property name="username" type="string" sql-name="AD_login"/>
+        <property name="name" type="string" label="Имя" />
+        <property name="id" type="int" key="true" />
+        <property name="grantees" type="string" sql-name="ad_login" label="Пользователи" />
+        <property name="office-name" type="string" sql-name="officename" label="Официальное название" />
+        <property name="headcashier-position" type="string" sql-name="headcashierdol" label="Должность главного кассира" />
+    </concept>
+    
+    <concept name="expreturn-position">
+        <select type="procedure"/>
+        <role name="expeditor" actor="agent"/>
+        <role name="sale_order" actor="sale_order"/>
+        <role name="partner" actor="partner"/>
+        <role composite="true" name="goodspackage" actor="goodspackage"/>
+        <property name="id" key="true"/>
+    </concept>
+
+    <concept name="storage-place">
+        <select owner="dbo"/>
+        <property name="id" key="true"/>
+        <property name="name" type="string"/>
+    </concept>
+
+    <concept name="income-place">
+        <select owner="dbo" sql-name="storage-place"/>
+        <property name="id" key="true"/>
+        <property name="name" type="string"/>
+    </concept>
+
+    <concept name="warehouse">
+        <select owner="dbo" />
+        <select owner="dbo" sql-name="warehouse" type="procedure">
+            <parameter name="username" type="string" sql-name="@login" />
+            <parameter name="sysuser" type="int" sql-name="@agent" />
+        </select>
+        <property name="id" key="true"/>
+        <property name="name" type="string"/>
+        <role name="sysuser" actor="sysuser" />
+    </concept>
+
+    <concept name="warehouse-goods">
+        <select type="procedure" owner="dbo" sql-name="warehouse_goods">
+            <parameter name="warehouse" type="int" sql-name="@wh"/>
+            <parameter name="goods" type="int" sql-name="@goods"/>
+        </select>
+        <save type="procedure" owner="dbo" sql-name="warehouse_goods_set">
+            <parameter name="warehouse" type="int" sql-name="@wh"/>
+            <parameter name="goods" type="int" sql-name="@goods"/>
+            <parameter name="address" type="string" sql-name="@address"/>
+        </save>
+        <property name="address" type="string" label="Адрес"/>
+        <property name="remains" type="int" label="Остаток шт."/>
+        <property name="supply" type="int" label="Поставка шт."/>
+        <property name="mc-remains" type="decimal" label="Остаток кор." sql-compute="(select cast(remains/vrel as decimal(18,2)) from dbo.goods(@id=goods))"/>
+        <role name="warehouse" actor="warehouse"/>
+        <role name="goods" actor="goods"/>
+    </concept>
+
+    <!--concept name="sysuser-warehouse" type="association">
+        <select owner="xmlgate" sql-name="agent_warehouse"/>
+        <role name="sysuser" actor="sysuser" sql-name="agent" key="true"/>
+        <role name="warehouse" actor="warehouse" key="true"/>
+    </concept-->
+
+    <concept name="supply" label="Поставка">
+        <select owner="dbo"/>
+        <property name="id" key="true"/>
+        <property name="name" type="string" sql-compute="string(ndoc,' от ',date(ddate))"/>
+        <property name="date" type="date" sql-name="ddate"/>
+        <property name="ndoc" type="string"/>
+        <property name="status1" type="int" sql-name="status"/>
+    </concept>
+
+    <concept name="supgoods" label="Позиция поставки">
+        <select owner="dbo"/>
+        <property name="id" key="true"/>
+        <property name="vol" type="int"/>
+        <role name="supply" actor="supply" sql-name="id"/>
+        <role name="goods" actor="goods"/>
+    </concept>
+
+    <concept name="palette-placement">
+        <select owner="dbo"/>
+        <save owner="dbo"/>
+        <role name="income-position" actor="income-position"/>
+        <role name="storage-place" actor="storage-place"/>
+        <property name="xid"/>
+    </concept>
+
+    <concept name="income-position">
+        <select owner="dbo"/>
+        <save owner="dbo"/>
+        <property name="id" key="true"/>
+        <property name="xid"/>
+        <role name="supply" actor="supply"/>
+        <role name="income-place" actor="income-place"/>
+        <role composite="true" name="goodspackage" actor="goodspackage"/>
+        <property name="volume" type="int"/>
+        <property name="production-date" type="date"/>
+        <property name="palette" type="string"/>
+    </concept>
+
+    <concept name="goodspackage" type="association">
+        <select type="procedure">
+            <parameter name="barcode" sql-name="@searcher"/>
+        </select>
+        <role name="goods" actor="goods" key="true"/>
+        <role name="package" actor="package" key="true"/>
+    </concept>
+
+    <concept name="sales-shipment">
+        <select owner="sales" sql-name="shipment"/>
+            
+        <select owner="sales" type="procedure" sql-name="shipment">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman" required="true"/>
+        </select>
+        
+        <property name="id" key="true" type="int"/>
+        
+        <property name="ndoc" type="string" label="№"/>
+        <property name="date" type="date" label="Дата отгрузки" sql-name="sddate"/>
+        <property name="status" type="string" label="Статус"/>
+        <property name="comment" type="string" label="Примечание" sql-name="info"/>
+        <property name="debtSumm" type="decimal" label="Задолженность"/>
+        <property name="summ" type="decimal" label="Стоимость"/>
+        
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client" />
+        <role name="cat-salesman" actor="cat-salesman" />
+        
+    </concept>
+
+    <concept name="sales-shipment-position">
+        
+        <select owner="sales" sql-name="shipment_position"/>
+        
+        <property name="xid" key="true" />
+        
+        <property name="summ" type="decimal" label="Стоимость" />
+        <property name="vol" type="int" label="Кол-во штук" />
+        <property name="price" type="decimal" label="Цена" />
+        
+        <role name="article" actor="article" sql-name="goods" />
+        <role name="sales-shipment" actor="sales-shipment" sql-name="id" type="contains"/>
+        
+    </concept>
+
+    <concept name="goods">
+        <select owner="wms"/>
+        <select type="procedure" owner="wms">
+            <parameter name="barcode" type="barcode" sql-name="@barcode"/>
+            <parameter name="warehouse" type="int" sql-name="@warehouse"/>
+            <parameter name="constrain" type="string" sql-name="@constrain"/>
+        </select>
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Наименование"/>
+        <property name="code" type="string" label="Артикул"/>
+        <property name="prel" type="int" label="Коробов на палете"/>
+        <property name="lastSeen" type="date" label="Прошлый приход" sql-name="lastSeen"/>
+        <role name="warehouse" actor="warehouse"/>
+    </concept>
+
+    <concept name="picking-cell">
+        <select type="procedure" owner="dbo" sql-name="picking_cell">
+            <parameter name="searcher" type="string" sql-name="@searcher"/>
+        </select>
+        <save- owner="dbo" sql-name="wms_cell"/>
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Адрес" sql-name="address"/>
+        <role name="goods" actor="goods" />
+        <role name="warehouse" actor="warehouse"/>
+    </concept>
+
+    <concept name="wms-place-type">
+        <select owner="wms" sql-name="place_type"/>
+
+        <property name="id" key="true" type="string"/>
+        <property name="name" type="string" label="Адрес" />
+    </concept>
+
+    <concept name="wms-place">
+        <select owner="wms" sql-name="place"/>
+        <save- owner="wms" sql-name="place"/>
+
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Адрес" />
+        <property name="rowname" type="string" label="Ряд" />
+        <property name="colname" type="string" label="Вертикаль" />
+        <property name="level" type="string" label="Этаж" />
+        <property name="ord" type="string" label="Порядок обхода" />
+
+        <property name="ts" type="datetime" label="Обновлено" />
+        <role name="warehouse" actor="warehouse" />
+        <property name="wms-place-type" type="string" sql-name="outer_db"/>
+
+    </concept>
+
+    <concept name="wms-place-goods">
+        <select owner="wms" sql-name="place_goods"/>
+        <save   owner="wms" sql-name="place_goods"/>
+
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Адрес" />
+        <property name="mc-volume" type="int" label="Кол-во коробов" sql-name="mcvol" />
+        <property name="bl-volume" type="int" label="Кол-во коробов" sql-name="blvol" />
+        <property name="pk-volume" type="int" label="Кол-во коробов" sql-name="pkvol" />
+        <property name="mdate" type="date" label="Дата производства" sql-name="mdate" />
+
+        <property name="ts" type="datetime" label="Обновлено" />
+        
+        <role name="goods" actor="goods" />
+        <role name="wms-place" actor="wms-place" sql-name="place" />
+
+    </concept>
+
+    <concept name="wms-cell-cat">
+        <select type="procedure" owner="dbo" sql-name="wms_cell">
+            <parameter name="searcher" type="string" sql-name="@searcher"/>
+            <parameter name="wms-place" type="string" sql-name="@wms_place"/>
+            <parameter name="goods" type="int" sql-name="@goods"/>
+        </select>
+        <save type="procedure" owner="dbo" sql-name="cell_set">
+            <parameter name="id" type="int" sql-name="@cell"/>
+            <parameter name="remains" type="int" sql-name="@remains"/>
+        </save>
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Адрес" sql-name="address"/>
+        <property name="remains" type="int" label="Остаток" sql-name="comment"/>
+        <property name="ts" type="datetime" label="Обновлено" />
+        <property name="pdate" type="date" label="Дата производства" sql-name="productionDate"/>
+
+        <role name="goods" actor="goods" />
+        <role name="wms-place" actor="wms-place" />
+    </concept>
+
+
+    <concept name="wms-log">
+        <select type="procedure" owner="wms" sql-name="log">
+            <parameter name="wms-cell-cat" type="int" sql-name="@cell"/>
+        </select>
+        <property name="ts" type="datetime" label="Дата" />
+        <role name="sysuser" sql-name="agent" actor="sysuser"/>
+        <role name="wms-cell-cat" actor="wms-cell-cat"/>
+    </concept>
+
+    <concept name="wms-cell" storage="mssql" db="southwms" server="hqvsrv41">
+        <select type="procedure" owner="dbo" sql-name="cell_fn">
+            <parameter name="searcher" type="string" sql-name="@searcher"/>
+        </select>
+        <save owner="dbo" sql-name="cells"/>
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Адрес" sql-name="address"/>
+        <property name="remains" type="string" label="Остаток" sql-name="comment"/>
+        <property name="ts" type="datetime" label="Обновлено" />
+        <role name="goods" actor="goods" />
+    </concept>
+
+    <concept name="wms-cell-inv" storage="mssql" db="southwms" server="hqvsrv41">
+        <save owner="dbo" type="procedure" sql-name="cellinv">
+            <parameter name="wms-cell" type="int" sql-name="@cell"/>
+            <parameter name="goods" type="int" sql-name="@goods"/>
+            <parameter name="remains" type="int" sql-name="@volume"/>
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+        </save>
+        <property name="remains" type="int" label="Остаток" sql-name="comment"/>
+        <role name="goods" actor="goods" />
+        <role name="wms-cell" actor="wms-cell" sql-name="cell"/>
+        <role name="sysuser" actor="sysuser" sql-name="agent"/>
+    </concept>
+
+    <concept name="wms-cell-get">
+        <select owner="dbo" type="procedure" sql-name="cell_get">
+            <parameter name="wms-cell-cat" type="int" sql-name="@cell"/>
+            <parameter name="goods" type="int" sql-name="@goods"/>
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+        </select>
+        <save owner="dbo" type="procedure" sql-name="cell_set">
+            <parameter name="xid" type="string" sql-name="@xid"/>
+            <parameter name="wms-cell-cat" type="int" sql-name="@cell"/>
+            <parameter name="taken" type="int" sql-name="@taken"/>
+            <parameter name="goods" type="int" sql-name="@goods"/>
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+        </save>
+        <property name="xid"  key="true"/>
+        <property name="taken" type="int" label="Сколько взяли"/>
+        <role name="wms-cell-cat" actor="wms-cell-cat" sql-name="cell"/>
+        <role name="goods" actor="goods"/>
+        <role name="sysuser" actor="sysuser" sql-name="agent"/>
+    </concept>
+
+    <concept name="wms-cell-placement">
+        <select owner="dbo" type="procedure" sql-name="cell_placement">
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+            <parameter name="goods" type="int" sql-name="@goods"/>
+            <parameter name="volume" type="int" sql-name="@volume"/>
+            <parameter name="wms-cell" type="int" sql-name="@cell"/>
+        </select>
+        <save owner="dbo" type="procedure" sql-name="cell_placement">
+            <!--parameter name="xid" type="string" sql-name="@xid"/-->
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+            <parameter name="goods" type="int" sql-name="@goods"/>
+            <parameter name="volume" type="int" sql-name="@volume"/>
+            <parameter name="pdate" type="date" sql-name="@pdate"/>
+            <parameter name="wms-cell" type="int" sql-name="@cell"/>
+        </save>
+        <property name="xid"  key="true"/>
+        <property name="volume" type="int" label="Кол-во коробов"/>
+        <property name="pdate" type="date" label="Дата производства"/>
+        <role name="wms-cell" actor="wms-cell" sql-name="cell"/>
+        <role name="sysuser" actor="sysuser" sql-name="agent"/>
+        <role name="goods" actor="goods" />
+    </concept>
+    
+    <concept name="wms-goods-recent-date">
+        <select owner="wms" type="procedure" sql-name="goods_recent_date">
+            <!--parameter name="warehouse" type="int" sql-name="@wh"/-->
+            <parameter name="goods" type="int" sql-name="@goods"/>
+        </select>
+        <property name="pdate" type="date" label="Дата изготовления" />
+        <!--role name="warehouse" actor="warehouse" sql-name="wh"/-->
+        <role name="goods" actor="goods" />
+    </concept>
+
+    <concept name="wms-inv">
+        <select owner="wms" type="procedure" sql-name="inv">
+            <parameter name="warehouse" type="int" sql-name="@wh"/>
+        </select>
+        <property name="name" type="string" label="Дата" sql-name="ddate"/>
+        <property name="id" type="int" />
+        <role name="warehouse" actor="warehouse" sql-name="wh"/>
+    </concept>
+
+    <concept name="wms-progress">
+        <select owner="wms" type="procedure" sql-name="progress"/>
+        
+        <property name="rowname" type="string" label="Ряд" />
+        <property name="pick" type="string" label="Пикинг" />
+        <property name="stock2" type="string" label="Сток 2" />
+        <property name="stock3" type="string" label="Сток 3" />
+        <property name="stock4" type="string" label="Сток 4" />
+        <property name="stock5" type="string" label="Сток 5" />
+        <property name="stock6" type="string" label="Сток 6" />
+    </concept>
+
+    <concept name="wms-operation">
+        <select owner="wms" sql-name="operation"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="name" type="string" label="Наименование"/>
+    </concept>
+
+    <concept name="wms-operation-request">
+        <select owner="wms" sql-name="operation_request"/>
+        <save owner="wms" sql-name="operation_request"/>
+        
+        <property name="id" type="int" key="true"/>
+
+        <property name="is-done" type="boolean" sql-name="is_done"/>
+        
+        <role name="wms-operation" actor="wms-operation" sql-name="operation"/>
+        <role name="wms-place" actor="wms-place" sql-name="place" />
+
+    </concept>
+
+    <concept name="wms-operation-commit">
+        <select owner="wms" sql-name="operation_commit"/>
+        <save owner="wms" sql-name="operation_request"/>
+        
+        <property name="id" type="int" />
+
+        <property name="is-done" type="boolean" sql-name="is_done"/>
+        
+        <role name="wms-operation" actor="wms-operation" sql-name="operation"/>
+        <role name="wms-place" actor="wms-place" sql-name="place" />
+
+    </concept>
+
+    <concept name="goods-barcode">
+        <select owner="dbo" sql-name="goods_barcode"/>
+        <save owner="dbo" sql-name="goods_barcode"/>
+        
+        <property name="xid"/>
+        <property name="id" key="true" type="int"/>
+
+        <property name="barcode" type="string"/>
+        
+        <role name="goods" actor="goods" />
+        <role name="package" actor="package" sql-name="measure" />
+    </concept>
+    
+    <concept name="package">
+        <select owner="dbo" sql-name="measures"/>
+        <select type="procedure" owner="dbo">
+            <parameter name="goods" type="int" sql-name="@goods"/>
+        </select>
+        
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string"/>
+        <role name="goods" actor="goods" />
+        
+    </concept>
+    
+    <concept name="partner">
+        <select sql-name="partners"/>
+        <property name="id" key="true" type="int"/>
+    </concept>
+
+
+    <concept name="customer" label="Клиент">
+        <select owner="sales" sql-name="customer"/>
+        <save owner="sales" sql-name="customer"/>
+        
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Имя"/>
+    </concept>
+            
+    <concept name="customer-sysuser">
+        <select owner="sales" sql-name="customer_agent"/>
+        
+        <role name="customer" actor="customer" />
+        <role name="sysuser" actor="sysuser" sql-name="agent"/>
+    </concept>
+
+    <concept name="customer-order" label="Заказ">
+        <select owner="sales" type="procedure" sql-name="customer_order_create">
+            <parameter name="customer" sql-name="@customer"/>
+        </select>
+        
+        <property name="id" key="true" type="int"/>
+        <property name="code" type="string" label="Код"/>
+        <property name="ts" type="datetime" label="Обновлен"/>
+
+        <role name="customer" actor="customer" />
+    </concept>
+
+    <concept name="customer-order-position">
+        <select owner="sales" sql-name="customer_order_position"/>
+        <save owner="sales" sql-name="customer_order_position"/>
+        
+        <property name="id" key="true" type="int"/>
+
+        <property name="rel" type="int"/>
+        <property name="volume" type="int"/>
+
+        <role name="customer-order" actor="customer-order" sql-name="customer_order"/>
+        <role name="article" actor="article" />
+        
+    </concept>
+
+    <concept name="order-position-available">
+        <select owner="sales" sql-name="order_position_available"/>
+        
+        <property name="rel" type="int" label="Кратность"/>
+        <property name="volume" type="int"/>
+        <property name="price" type="decimal" label="Цена"/>
+
+        <role name="article" actor="article" />
+        <role name="category" actor="category" />
+        <role name="package" actor="package" />
+        
+    </concept>
+
+    <concept name="article" label="Товар">
+        <select owner="sales" sql-name="article"/>
+        <select owner="sales" sql-name="article" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman" required="true"/>
+            <parameter name="category" type="int" sql-name="@category"/>
+        </select>
+        
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Наименование"/>
+        <property name="factor" type="int" label="Кратность"/>
+        <property name="rel" type="int" label="Шт. в упаковке"/>
+        <property name="first-name" type="string" sql-compute="left(name, locate(name,' ') - 1)" label="Преднаименование"/>
+        <property name="isRemoved" type="boolean" sql-name="removed"/>
+        <property name="extraLabel" type="string" label="Подсказка"/>
+        <property name="cost" type="decimal" label="Себестоимость"/>
+        
+        <role name="category" actor="category" />
+        <role name="package" actor="package" sql-name="vmeas" />
+        <role name="cat-salesman" actor="cat-salesman" />
+    </concept>
+
+    <concept name="article-package">
+        <select owner="dbo" sql-name="goods_package"/>
+        
+        <property name="rel" type="int"/>
+        <role name="article" actor="article" sql-name="goods"/>
+        <role name="package" actor="package" />
+    </concept>
+
+    <concept name="shop-department" label="Отдел магазина">
+        <select owner="sales" sql-name="shop_department"/>
+        
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="ord" type="int"/>
+    </concept>
+
+    <concept name="category" label="Категория">
+        <select owner="sales" sql-name="category"/>
+        <select owner="sales" sql-name="category" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+        </select>
+        <select owner="sales" sql-name="client_category" type="procedure">
+            <parameter name="cat-buyer" type="int" sql-name="@client"/>
+        </select>
+        
+        <property name="id" key="true" type="int"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="ord" type="int"/>
+        <property name="volOrder" type="int" />
+        
+        <role name="order-package" actor="package" sql-name="package" label="Упаковка для заказа"/>
+        <role name="cat-buyer" actor="cat-buyer" />
+        <role name="shop-department" actor="shop-department" sql-name="sales_shop_department" />
+        <role name="cat-salesman" actor="cat-salesman" />
+   </concept>
+
+    <concept name="sales-territory">
+        <select owner="sales" sql-name="territory"/>
+        <save- owner="sales" sql-name="territory"/>
+        
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" />
+        <property name="factor" type="int" label="Кратность"/>
+    </concept>
+
+    <concept name="salesman-group">
+        <select owner="sales" sql-name="salesman_group"/>
+        <save- owner="sales" sql-name="salesman_group"/>
+        
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" label="Бригада торговых"/>
+        
+        <role name="sales-territory" actor="sales-territory" sql-name="territory"/>
+    </concept>
+
+    <concept name="salesman">
+        <select owner="sales" sql-name="salesman"/>
+        <save   owner="sales" sql-name="salesman"/>
+        
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" label="ФИО"/>
+        <property name="mobilenum" type="string" label="Мобильный номер"/>
+        
+        <role name="territory" actor="sales-territory" />
+        <role name="salesman-group" actor="salesman-group" sql-name="salesman_group" />
+
+    </concept>
+
+    <concept name="sales-offer">
+        <select owner="sales" sql-name="offer"/>
+        
+        <property name="price" type="decimal" label="Цена"/>
+        <property name="date" type="date" sql-name="ddate"/>
+        
+        <role name="article" actor="article" sql-name="goods" />
+        <role name="category" actor="category" sql-name="g_group"/>
+        <role name="cat-partner" actor="cat-partner" sql-name="partner"/>
+        
+    </concept>
+
+    <concept name="sales-warehouse">
+        <select owner="dbo" sql-name="site"/>
+        
+        <property name="id" type="int"/>
+        <property name="name" type="string" label="Название"/>
+        
+    </concept>
+    
+    <concept name="sales-stock">
+        <select owner="cache" sql-name="OrdGoodsInStockMulti"/>
+        
+        <property name="id" type="string" sql-compute="string(stock_id,'-',goods_id)"/>
+        <property name="level" type="int" sql-compute="2 - isVollow" label="Уровень запаса"/>
+        <role name="article" actor="article" sql-name="goods_id"/>
+        <role name="sales-warehouse" actor="sales-warehouse" sql-name="stock_id"/>
+    </concept>
+
+    <concept name="sales-sms">
+        <select owner="sales" sql-name="sms"/>
+        <save   owner="sales" sql-name="sms"/>
+        
+        <property name="id" type="int" key="true" />
+        <property name="sent" type="datetime" label="Отправлено"/>
+        <property name="mobilenum" type="string" label="Мобильный номер"/>
+        <property name="includeSupervisor" type="boolean" label="Оповестить супервайзеров"/>
+        
+        <!--role name="salesman" actor="sales-territory" /-->
+        <role name="salesman-group" actor="salesman-group" sql-name="salesman_group" />
+    </concept>
+
+    <concept name="sales-logger">
+        <select owner="sales" sql-name="logger" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
+            <parameter name="version" type="string" sql-name="@version"/>
+        </select>
+
+        
+        <role name="cat-salesman" actor="cat-salesman" sql-name="palm_salesman"/>
+    </concept>
+
+    <!--concept name="article-category">
+        <select owner="sales" sql-name="article_category"/>
+
+        <role name="category" actor="category" />
+        <role name="article" actor="article" />
+    </concept-->
+   
+    <concept name="goods-condition">
+        <select owner="wms" sql-name="goods_condition"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="name" type="string" label="Качество товара"/>
+        
+    </concept>
+
+    <concept name="defect-cause">
+        <select owner="wms" sql-name="defect_cause"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="name" type="string" label="Причина брака"/>
+        
+    </concept>
+    
+    <concept name="wms-defect-sorted">
+        <select owner="wms" sql-name="defect_sorted"/>
+        <save owner="wms" sql-name="defect_sorted"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="xid"/>
+        
+        <property name="volume" type="int" label="Кол-во"/>
+        
+        <role name="goods" actor="goods"/>
+        <role name="wms-picking-box" actor="wms-picking-box" sql-name="picking_box"/>
+        
+    </concept>
+    
+    <concept name="wms-picking-box">
+        <select owner="wms" sql-name="picking_box"/>
+        <select owner="wms" type="procedure" sql-name="picking_box">
+            <parameter name="barcode" type="string" sql-name="@barcode" required="true"/>
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+            <parameter name="warehouse" type="int" sql-name="@warehouse"/>
+        </select>
+        <save owner="wms" sql-name="picking_box"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="ts" type="datetime" label="Когда обновлено"/>
+        <property name="isWritten-off" type="boolean" sql-name="written_off" label="Резерв"/>
+        
+        <property name="barcode" type="string" label="Штрих-код"/>
+        
+        <role name="defect-cause" actor="defect-cause" sql-name="defect_cause"/>
+        <role name="goods-condition" actor="goods-condition" sql-name="goods_condition"/>
+        <role name="sysuser" actor="sysuser" sql-name="agent"/>
+        <role name="warehouse" actor="warehouse"/>
+        
+    </concept>
+    
+    <concept name="wms-consignment-accept">
+        <select owner="wms" sql-name="consignment_accepted"/>
+        <select owner="wms" type="procedure" sql-name="consignment_accept">
+            <parameter name="wms-picking-box" type="int" sql-name="@picking_box"/>
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+            <parameter name="warehouse" type="int" sql-name="@warehouse" required="true"/>
+        </select>
+        <save owner="wms" sql-name="consignment_accepted"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="xid"/>
+        <property name="ts" type="datetime" label="Когда обновлено"/>
+        <property name="isFinished" type="boolean" label="Приемка завершена"/>
+        
+        <role name="wms-picking-box" actor="wms-picking-box" sql-name="picking_box"/>
+        <role name="sysuser" actor="sysuser" sql-name="agent"/>
+        <role name="warehouse" actor="warehouse"/>
+        
+    </concept>
+
+    <concept name="wms-consignment-expected">
+        <select owner="wms" type="procedure" sql-name="consignment_expected">
+            <parameter name="wms-picking-box" type="int" sql-name="@picking_box"/>
+        </select>
+                    
+        <property name="volume" type="int" label="Кол-во"/>
+        <property name="ts" type="datetime" label="Обновлено"/>
+        
+        <role name="goods" actor="goods"/>
+        <role name="wms-picking-box" actor="wms-picking-box" sql-name="picking_box"/>
+        
+    </concept>
+   
+    <concept name="wms-consignment-accept-goods">
+        <select owner="wms" sql-name="consignment_accepted_goods"/>
+        <save owner="wms" sql-name="consignment_accepted_goods"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="xid"/>
+        
+        <property name="volume" type="int" label="Кол-во"/>
+        
+        <role name="wms-consignment-accept" actor="wms-consignment-accept" sql-name="consignment_accepted"/>
+        <role name="goods" actor="goods"/>
+        
+    </concept>
+    
+    <concept name="bonus-program">
+        
+        <select owner="sales" sql-name="bprog" />
+        
+        <property name="id" type="int" key="true" />
+        
+        <property name="name" type="string" label="Название" />
+        <property name="dateStart" type="date" sql-name="ddateb" label="Дата начала" />
+        <property name="dateEnd" type="date" sql-name="ddatee" label="Дата окончания" />
+        <property name="isActive" type="boolean" label="Активно" />
+        <property name="isFocused" type="boolean" label="Фокусная" />
+        <property name="tag" type="string" label="Название кнопки" sql-name="tagText" />
+        <property name="tagColor" type="string" label="Цвет кнопки" />
+        <property name="isFirstScreen" type="boolean" label="На первый экран" />
+        <property name="isNonHidable" type="boolean" label="Нескрываемая" />
+        <property name="isForNew" type="boolean" label="Для новых" />
+        <property name="description" type="string" label="Описание" sql-name="descr" />
+        <property name="isPopAtStart" type="boolean" label="Показать в новом заказе" />
+        <property name="isCustomerTargeted" type="boolean"  />
+        
+    </concept>
+
+    <concept name="bonus-program-article">
+        
+        <select owner="dbo" sql-name="v_bprog_goods" />
+        
+        <property name="dateStart" type="date" sql-name="ddateb" label="Дата начала" />
+        <property name="dateEnd" type="date" sql-name="ddatee" label="Дата окончания" />
+        
+        <role name="bonus-program" actor="bonus-program" type="contains" sql-name="bprog_id" />
+        <role name="article" actor="article" sql-name="goods" />
+        
+    </concept>
+    
+    <concept name="bonus-program-client">
+        
+        <select owner="sales" sql-name="bprog_customer"/>
+        
+        <role name="bonus-program" actor="bonus-program" sql-name="bp"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="buyer"/>
+        
+    </concept>
+   
+    <concept name="cat-file">
+        
+        <select owner="dbo" sql-name="xmlconfig" />
+        
+        <property name="xid" />
+        
+        <property name="id" key="true" type="int" />
+        
+        <property name="ts" type="datetime" label="Дата обновления" />
+        
+        <property name="code" type="string" label="Код" />
+        <property name="data" type="file" label="XML-данные" />
+        
+    </concept>
+    
+    <concept name="geoposition">
+        
+        <select owner="geo" sql-name="position" />
+        <save owner="geo" sql-name="position" />
+        
+        <property name="xid" />
+        
+        <property name="id" key="true" type="int" />
+        
+        <property name="ts" type="datetime" />
+        
+        <property name="longitude" type="decimal" />
+        <property name="latitude" type="decimal" />
+        <property name="accuracy" type="decimal" />
+        <property name="speed" type="decimal" />
+        <property name="errorCode" type="int" />
+        <property name="deviceCts" type="datetime" sql-name="device_ts" />
+        
+        <role actor="cat-salesman" name="cat-salesman" sql-name="entity" />
+        
+    </concept>
+
+    <concept name="qc-call-task" storage="mssql" server="hqmssqlcluster0" db="jira">
+        
+        <select owner="dbo" sql-name="jira_quality_1" type="procedure">
+            <parameter name="days" type="int" sql-name="@days"/>
+        </select>
+        
+        <property name="id" key="true" type="string" sql-name="Обращение" label="Обращение"/>
+        
+        <property name="cts" type="datetime" sql-name="Создан" label="Создан"/>
+        <property name="title" type="string" label="Информация" sql-name="Информация" />
+        
+    </concept>
+    
+    <concept name="qc-operator" storage="mssql" server="hqmssqlcluster0" db="jira">
+        
+        <select owner="dbo" sql-name="jira_qauth_1" type="procedure">
+            <parameter name="login" type="string" sql-name="@l"/>
+        </select>
+        
+        <property name="id" key="true" type="string" sql-name="Login" />
+        
+        <!--property name="name" type="string" label="Имя" sql-name="" /-->
+        
+    </concept>
+    
+</domain>

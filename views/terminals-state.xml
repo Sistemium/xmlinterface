@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="terminals-state-export" label="Состояние терминалов">
+    <view-schema>
+        <form name="pps">
+            <parameter name="username" type="string"/>
+            <form name="terminals-state" label="Терминалы" is-set="true" pipeline="csv1251">
+            	<field name="terminalid" />
+            	<field name="state" />
+            	<field name="address" />
+            	<field name="name" />
+                <field name="lastconnecttime" />
+                <field name="fulladdress" />
+                <field name="administrativearea" />
+                <field name="city" />
+                <field name="street" />
+                <field name="building" />
+                <field name="districtadministrativearea" />
+                <field name="districtcity" />
+                <field name="latitude" />
+                <field name="longitude" />
+                <field name="legal_name" />
+                <field name="tsystem" />
+				<field name="ddatee" />
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step label="Экспорт данных">
+            <display>
+                <export form="terminals-state" type="csv1251"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

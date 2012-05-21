@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="branchday-abs" label="День АБС">
+    <view-schema>
+        <form name="sysuser">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+            <parameter name="date" type="date" editable="true" label="Рабочий день">
+                <init with="today"/>
+            </parameter>
+            <field name="id"/>
+            <form name="branch-workday" label="Рабочий день отделения" is-set="true">
+                <field name="id" />
+                <field name="xid" />
+                <form name="branch">
+                    <field name="id"/>
+                    <field name="name" label="Отделение"/>
+                </form>
+                <field name="abs-date" editable="true"/>
+                <field name="closed" />
+                <field name="processed" />
+                <join name="sysuser" field="date"/>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <input form="sysuser" field="date"/>
+                <grid form="branch-workday"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="wms-goodss" label="Корректировка стока">
+    <view-schema>
+            <form name="wms-cell-inv" new-only="true">
+                <form name="sysuser">
+                    <parameter name="name">
+                        <init with="username"/>
+                    </parameter>
+                    <field name="id"/>
+                </form>
+                <form name="wms-cell" label="Место хранения">
+                    <parameter name="searcher" editable="true" label="Поиск"/>
+                    <field name="id"/>
+                    <field name="name" comment="Добавить название"/>
+                </form>   
+                <field name="remains" editable="true" label="Кол-во коробов"/>
+                <form name="goods" label="Товар">
+                    <parameter name="barcode" type="string" label="Штрих-код" editable="true"/>
+                    <field name="id" />
+                    <field name="code" />
+                    <field name="prel" />
+                    <field name="name" label="Товар"/>
+                </form>
+                <!--field name="xid"/-->
+            </form>
+    </view-schema>
+    <workflow>
+        <step label="Поиск ячейки">
+            <display>
+                <input form="wms-cell" field="searcher" />
+                <print form="wms-cell" field="name"/>
+            </display>
+            <validate>
+                <nonempty form="wms-cell"/>
+            </validate>
+        </step>
+        <step label="Поиск товара">
+            <display>
+                <print form="wms-cell" field="name"/>
+                <input form="goods" field="barcode"/>
+                <print form="goods" field="name"/>
+            </display>
+            <validate>
+                <nonempty form="goods"/>
+            </validate>
+        </step>
+        <step label="Введите кол-во">
+            <display>
+                <print form="wms-cell" field="name"/>
+                <print form="goods" field="name"/>
+                <print form="goods" field="code"/>
+                <print form="goods" field="prel"/>
+                <input form="wms-cell-inv" field="remains"/>
+            </display>
+            <validate>
+                <nonempty form="wms-cell-inv" field="remains"/>
+            </validate>
+        </step>
+        <step label="Проверьте данные">
+            <display>
+                <print form="wms-cell" field="name"/>
+                <print form="goods" field="name"/>
+                <print form="wms-cell-inv" field="remains"/>
+            </display>
+            <choise>
+                <option label="Сохранить и продолжить">
+                    <command name="save"/>
+                    <command name="refresh"/>
+                </option>
+            </choise>
+        </step>
+    </workflow>
+</view-definition>

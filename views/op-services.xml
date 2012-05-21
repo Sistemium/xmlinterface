@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="op-services" label="Услуги процессинга">
+    
+    <view-schema> <form name="op-agent"> 
+        
+        <parameter name="name">
+            <init with="username"/>
+        </parameter>
+        
+        <parameter name="xid" modifiable="true" optional="true" property="none">
+            <init with="userinput"/>
+        </parameter>
+        
+        <field name="id"/>
+        
+        <form name="op-service" label="Услуга" what-label="Услугу" set-label="Услуги" page-size="15">
+            
+            <field name="id"/>
+            <field name="name"/>
+            
+            <join name="op-agent" field="xid" />
+            
+        </form>
+        
+        <form name="service-details" concept="op-service">
+            
+            <field name="id"/>
+            
+            <add-labeled-fields/>
+            
+            <parameter name="details-xid" modifiable="true" property="xid"/>
+            
+            <form name="op-payment" is-set="true" label="Платежи процессинга" page-size="10">
+                
+                <field name="id"/>
+                <field name="ts"/>
+                <field name="cts" hidden="true"/>
+                <field name="status"/>
+                <field name="summ" />
+                <field name="account"/>
+                <field name="extra"/>
+                
+                <form name="op-payment-error" concept="op-error">
+                    <field name="id"/>
+                    <field name="name" label="Ошибка"/>
+                    <where name="id">
+                        <not>0</not>
+                    </where>
+                </form>
+                
+            </form>
+            
+        </form>
+        
+    </form> </view-schema>
+    
+    <workflow name="master">
+        
+        <step name="home" >
+            <display>
+                <print form="op-service" field="searcher"/>
+                <print form="op-service" field="*"/>
+            </display>
+            <choise>
+                <option label="Платежи процессинга">
+                    <command name="details-xid" xpath-compute="ancestor::xi:view/xi:view-data/*/xi:datum[@name='xid']"/>
+                    <command name="op-services">display-payments</command>
+                </option>
+            </choise>
+        </step>
+        
+        <step name="display-payments" hidden="true">
+            <display>
+                <print form="op-service" field="*"/>
+                <grid form="op-payment" hide-empty="true"/>
+            </display>
+        </step>
+        
+    </workflow>
+    
+</view-definition>

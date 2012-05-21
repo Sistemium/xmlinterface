@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="terminals" label="Удаление терминалов">
+
+    <view-schema>
+        <form name="ppsterminal" label="Терминал" expect-choise="true">
+        	<parameter name="searcher" type="string" label="Строка поиска" editable="true"/>
+        	<field name="id"/>
+        	<field name="name" label="Название"/>
+        	<field name="address" />
+        	<field name="isdeleted" editable="true" label="Его удаляем?"/>
+        	<field name="lastconnect" />
+
+        	<form name="terminal-payment" label="Платежи в терминале" is-set="true">
+        	   <all-labeled-fields/>
+        	</form>
+        </form> 
+    </view-schema>
+    
+    <workflow>
+        <step label="Поиск терминала">
+            <display>
+                <input field="searcher" noforward-="true"/>
+                <print field="id"/>
+                <print field="name"/>
+                <print field="address"/>
+                <print field="lastconnect"/>
+                <input field="isdeleted"/>
+                <grid form="terminal-payment" label="Платежи в терминале"/>
+            </display>
+            <choise->
+                <option label="Убрать из процессинга">
+                    <command field="isdeleted" value="1"/>
+                </option>
+            </choise->
+            <validate>
+                <empty form="terminal-payment" field="summ"/>
+                <nonempty form="ppsterminal"/>
+                <equals field="isdeleted" type="boolean">1</equals>
+            </validate>
+        </step>
+        <step label="Подтвердите удаление">
+            <display>
+                <print field="name"/>
+                <print field="address"/>
+           </display>
+            <choise>
+                <option label="Удалить">
+                    <command name="save"/>
+                    <command name="close"/>
+                </option>
+            </choise>
+        </step>
+    </workflow>
+
+</view-definition>

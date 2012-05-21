@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration xmlns="http://unact.net/xml/xi" name="xmlgate">
+
+    <context-extension>
+       <session name="session">
+         <menu>
+          <option name="login" label="Войти в систему"/>
+         </menu>
+         <data>
+          <datum name="login" label="Имя" editable="true" />
+          <datum name="password" label="Пароль" editable="true"/>
+         </data>
+       </session>
+    </context-extension>
+    
+    <!-- Вообще говоря, меню это функция модели классов, а не список простых ссылок -->
+    
+    <context-extension>
+        <views>
+            <menu label="Выберите программу:">
+                <option href="views/test.xml">
+                    <access role="it"/>
+                    <access role="beta"/>
+                </option>
+                <!--option href="views/income.xml">
+                    <access role="storage"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/palette.xml">
+                    <access role="storage"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/placement.xml">
+                    <access role="storage"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/goods.xml">
+                    <access role="storage"/>
+                    <access role="beta"/>
+                </option-->
+                <option href="views/encashment.xml">
+                    <access role="osmp"/>
+                    <access role="cashier"/>
+                </option>
+                <option href="views/encashment-by-zones.xml">
+                    <access role="osmp"/>
+                    <access role="cashier"/>
+                </option>
+                <option href="views/terminals-state.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                </option>
+                <option href="views/payment-reestr.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                </option>
+                <option href="views/gup-reestr.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                </option>
+                <option href="views/multibank-reestr-export.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                </option>
+                <option href="views/branchday.xml">
+                    <access role="osmp"/>
+                    <access role="cashier"/>
+                </option>
+                <option href="views/branchday-abs.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                </option>
+                <option href="views/encashment-planning.xml">
+                    <access role="osmp"/>
+                    <access role="logistic"/>
+                </option>
+                <option href="views/terminals.xml">
+                    <access role="call-center"/>
+                </option>
+                <option href="views/encashment-amendment.xml">
+                    <access role="main"/>
+                </option>
+                <option href="views/paysystem-etc.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/active-terminals.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                    <access role="disabled"/>
+                </option>
+                <option href="views/cashiers.xml">
+                    <access role="osmp"/>
+                    <access role="cashier"/>
+                </option>
+                <option href="views/collectors.xml">
+                    <access role="osmp"/>
+                    <access role="cashier"/>
+                </option>
+                <option href="views/branch-routes.xml">
+                    <access role="osmp"/>
+                    <access role="cashier"/>
+                </option>
+                <option href="views/cat-terminals.xml">
+                    <access role="osmp"/>
+                    <access role="cashier"/>
+                </option>
+                <option href="views/subdealers.xml">
+                    <access role="findir"/>
+                </option>
+                <option href="views/branches.xml">
+                    <access role="osmp"/>
+                    <access role="cashier"/>
+                </option>
+                <option href="views/legalentities.xml">
+                    <access role="findir"/>
+                </option>
+                <!--option href="views/subdealer-legals.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                    <access role="beta"/>
+                </option-->
+                <option href="views/totals-changes.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                </option>
+                <option href="views/fotonovasync.xml">
+                    <access role="fotonova"/>
+                    <access role="sync"/>
+                </option>
+                <option href="views/banktotals.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                </option>
+                <option href="views/bpas.xml">
+                    <access role="osmp"/>
+                    <access role="main"/>
+                </option>
+                <option href="views/customer-order-create.xml">
+                    <access role="salesman"/>
+                </option>
+                <option href="views/customers.xml">
+                    <access role="salesman"/>
+                </option>
+                <option href="views/salesmen.xml">
+                    <access role="sales"/>
+                </option>
+                <option href="views/sysusers.xml">
+                    <access role="admin"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/sales-sms.xml">
+                    <access role="sales"/>
+                </option>
+                <option href="views/subdealer-balance.xml">
+                    <access role="subdealer"/>
+                </option>
+                <option href="views/warehouse-goodss.xml">
+                    <access role="storage"/>
+                </option>
+                <option href="views/wms-goodss.xml">
+                    <access role="storage"/>
+                </option>
+                <option href="views/wms-ammends.xml">
+                    <access role="storage"/>
+                </option>
+                <option href="views/wms-defects-sorting.xml">
+                    <access role="storage"/>
+                    <access role="defector"/>
+                </option>
+                <option href="views/wms-defects-checking.xml">
+                    <access role="storage"/>
+                    <access role="checker"/>
+                </option>
+                <option href="views/wms-goods-take.xml">
+                    <access role="storage"/>
+                </option>
+                <option href="views/wms-placement.xml">
+                    <access role="storage"/>
+                </option>
+                <option href="views/wms-cell-erasement.xml">
+                    <access role="storage"/>
+                    <access role="fotonova"/>
+                </option>
+                <!--option href="views/wms-operations.xml">
+                    <access role="storage"/>
+                </option-->
+                <option href="views/wms-addressing.xml">
+                    <access role="storage"/>
+                </option>
+                <option href="views/wms-inventory.xml">
+                    <access role="storage"/>
+                    <access role="inventory"/>
+                </option>
+                <option href="views/wms-inventory-top.xml">
+                    <access role="storage"/>
+                    <access role="inventory"/>
+                </option>
+                <option href="views/goods-barcode.xml">
+                    <access role="storage"/>
+                </option>
+                <option href="views/wms-progress-view.xml">
+                    <access role="storage"/>
+                    <access role="master"/>
+                    <access role="inventory"/>
+                </option>
+                <option href="views/expeditioning.xml">
+                    <access role="expeditor"/>
+                </option>
+                <option iframe="https://renew.unact.ru/placeunload" label="Сервис Renew">
+                    <access role="expeditor"/>
+                </option>
+                <option href="views/wan-selling.xml">
+                    <access role="wan-seller"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/sales-ordering.xml">
+                    <access role="pre-orderer"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/pcs.xml">
+                    <access role="op"/>
+                    <access role="dictionaree"/>
+                </option>
+                <option href="views/pc-accounts.xml">
+                    <access role="op"/>
+                    <access role="dictionaree"/>
+                </option>
+                <option href="views/pc-queueinfos.xml">
+                    <access role="op"/>
+                </option>
+                <!--option href="views/op-finances.xml">
+                    <access role="op"/>
+                    <access role="finances"/>
+                </option-->
+                <option href="views/op-legalentities.xml">
+                    <access role="op"/>
+                    <access role="dictionaree"/>
+                </option>
+                <!--option href="views/up-clients.xml">
+                    <access role="up"/>
+                    <access role="client"/>
+                </option-->
+                <option href="views/up-cabinet.xml">
+                    <access role="up"/>
+                    <access role="client"/>
+                </option>
+                <option href="views/op-payments.xml">
+                    <access role="up"/>
+                    <access role="client"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/op-services.xml">
+                    <access role="up"/>
+                    <access role="beta"/>
+                </option>
+                <option href="views/qc-call-tasks.xml">
+                    <access role="qc"/>
+                    <access role="operator"/>
+                </option>
+            </menu>
+        </views>
+    </context-extension>
+    
+    <pipeline name="main">
+        <execute name="stage1" href="id.xsl">
+            <include href="userinput.xsl"/>
+        </execute>
+        <execute name="stage2" href="id.xsl">
+            <include href="views.xsl"/>
+            <include href="xpath-compute.xsl"/>
+            <include href="synthesize.xsl"/>
+        </execute>
+        <execute name="stage3" href="id.xsl">
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="stage4" href="id.xsl">
+            <include href="extend.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        <!--execute name="stage5" href="id.xsl">
+            <include href="xmlq.xsl"/>
+        </execute-->
+        <execute name="stage6" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data.xsl"/>
+        </execute>
+        <execute name="stage7" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data-after.xsl"/>
+            <include href="xpath-compute.xsl"/>
+        </execute>
+        <execute name="stage8" href="id.xsl">
+            <include href="workflow.xsl"/>
+            <include href="synthesize.xsl"/>
+        </execute>
+        <execute name="stage-last" href="stage-last.xsl" commit="true"/>
+        <execute name="html" href="html.xsl" output="html"/>
+    </pipeline>
+
+    <pipeline name="views">
+        <execute name="stage1" href="id.xsl">
+            <include href="userinput.xsl"/>
+        </execute>
+        <execute name="stage2" href="id.xsl">
+            <include href="views.xsl"/>
+        </execute>
+        <execute name="stage3" href="id.xsl">
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="stage4" href="id.xsl">
+            <include href="extend.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        <!--execute name="stage5" href="id.xsl">
+            <include href="xmlq.xsl"/>
+        </execute-->
+        <execute name="stage6" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data.xsl"/>
+        </execute>
+
+
+        <execute name="stage61" href="id.xsl">
+            <include href="extend-build.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        <!--execute name="stage62" href="id.xsl">
+            <include href="xmlq.xsl"/>
+        </execute-->
+        <execute name="stage63" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data.xsl"/>
+        </execute>
+
+
+        <execute name="stage7" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data-after.xsl"/>
+        </execute>
+        <execute name="stage8" href="id.xsl">
+            <include href="workflow.xsl"/>
+        </execute>
+        <execute name="stage-last" href="stage-last.xsl" commit="true"/>
+        <execute name="html" href="html.xsl" output="html"/>
+    </pipeline>
+
+
+    <pipeline name="geomonitor">
+        <execute name="geomonitor" href="geomonitor.xsl" output="xml"/>
+    </pipeline>
+
+    <pipeline name="xijax">
+        <execute name="stage1" href="id.xsl">
+            <include href="userinput.xsl"/>
+        </execute>
+        <execute name="stage2" href="id.xsl">
+            <include href="views.xsl"/>
+            <include href="xpath-compute.xsl"/>
+        </execute>
+        <execute name="stage3" href="id.xsl">
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="stage4" href="id.xsl">
+            <include href="extend.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="stage5" href="id.xsl">
+            <include href="xmlq.xsl"/>
+        </execute>
+        <execute name="stage6" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data.xsl"/>
+        </execute>
+        <execute name="stage7" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data-after.xsl"/>
+            <include href="xpath-compute.xsl"/>
+       </execute>
+        <execute name="stage8" href="id.xsl">
+            <include href="workflow.xsl"/>
+        </execute>
+        <execute name="stage-last" href="stage-last.xsl" commit="true"/>
+        <execute name="stage-xijax" href="stage-xijax.xsl" output="xml"/>
+    </pipeline>
+
+
+    <pipeline name="csv1251">
+        <execute name="extend" href="id.xsl">
+            <include href="extend.xsl"/>
+        </execute>
+        <!--execute name="xmlq" href="id.xsl">
+            <include href="xmlq.xsl"/>
+        </execute-->
+        <execute  name="csv-out" href="csv.xsl" output="x-csv" header="Content-disposition: attachment;filename=system-export.csv"/>
+    </pipeline>
+    
+
+    <pipeline name="rawdata">
+        <execute name="build-request" href="rawdata.xsl"/>
+        <execute name="xmlq" href="id.xsl" output="xml">
+            <include href="xmlq.xsl"/>
+            <include href="rawdata.xsl"/>
+        </execute>
+    </pipeline>
+
+    <pipeline name="download">
+        <execute name="build-request" href="download.xsl"/>
+        <execute name="xmlq" href="id.xsl" output-="xml" >
+            <include href="xmlq.xsl"/>
+        </execute>
+        <execute name="output" href="csv.xsl" output="base64decode" header="Content-disposition: attachment;filename=system-export.txt"/>
+    </pipeline>
+
+    <pipeline name="clientData">
+        <execute name="1" href="clientdata.xsl">
+            <include href="extend-build.xsl"/>
+        </execute>
+        <execute name="2" href="clientdata.xsl">
+            <include href="xmlq.xsl"/>
+        </execute>
+        <execute name="3" href="clientdata.xsl">
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="4" href="clientdata.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data-after.xsl"/>
+        </execute>
+        <execute name="5" href="clientdata.xsl" output="xml">
+            <include href="clientdata-html.xsl"/>
+        </execute>
+    </pipeline>
+
+    <pipeline name="json">
+        <execute name="stage1" href="id.xsl">
+            <include href="userinput.xsl"/>
+        </execute>
+        <execute name="stage2" href="id.xsl">
+            <include href="views.xsl"/>
+            <include href="xpath-compute.xsl"/>
+        </execute>
+        <execute name="stage3" href="id.xsl">
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="stage4" href="id.xsl">
+            <include href="extend.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="stage6" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data.xsl"/>
+        </execute>
+        <execute name="stage7" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data-after.xsl"/>
+            <include href="xpath-compute.xsl"/>
+        </execute>
+        <execute name="stage8" href="id.xsl">
+            <include href="workflow.xsl"/>
+        </execute>
+        <execute name="stage-last" href="stage-last.xsl" commit="true" />
+        <execute name="out" href="json.xsl" output="plain; charset=utf-8" />
+    </pipeline>
+    
+    <pipeline name="meta">
+        <execute name="out" href="stage-last.xsl" output="xml"/>
+    </pipeline>
+
+    <pipeline name="mirror">
+        <execute name="id" href="id.xsl" />
+    </pipeline>
+
+</configuration>

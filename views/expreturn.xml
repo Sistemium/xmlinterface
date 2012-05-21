@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="expreturn" label="Возврат">
+  <view-schema>
+   <form name="agent" label="Экспедитор">
+     <parameter name="tabnum" type="string" label="Код" editable="true"/>
+     <field name="name" type="string" label="Имя"/>
+     <field name="id" type="int"/>
+     <form name="expreturn-position" is-set="true">
+        <field name="id" type="int"/>
+        <form name="goodspackage" label="Товар">
+        	<parameter name="barcode" type="string" label="Штрих-код" editable="true"/>
+        	<form name="goods" label="Товар">
+            	<field name="name" type="string" label="Наименование"/>
+            	<field name="id" type="int"/>
+            </form>
+        	<form name="package" label="Упаковка">
+            	<field name="name" label="Название"/>
+            	<field name="id" type="int"/>
+            </form>
+        	<field name="rel" type="int" label="Кратность"/>
+        </form>
+    	<field name="volume" type="number" label="Количество" editable="true"/>
+    	<field name="goods-condition" type="choise" label="Качество" editable="true">
+    	  <option name="good" label="Нормальное"/>
+    	  <option name="trash" label="Брак"/>
+    	  <option name="shop" label="Магазин"/>
+    	</field>
+        <xor>
+          <form name="sale_order">
+            <parameter name="ndoc" type="string" editable="true"/>
+            <field name="id" type="number"/>
+          </form>
+          <form name="partner">
+            <parameter name="code" type="string" editable="true"/>
+            <field name="id" type="number"/>
+          </form>
+        </xor>
+      </form>
+   </form> 
+  </view-schema>
+</view-definition>

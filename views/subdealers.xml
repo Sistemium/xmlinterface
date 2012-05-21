@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="subdealers" label="Субдилеры">
+    <view-schema>
+        <form name="dates">
+            <parameter name="date" type="date" modified="init">
+                <init with ="today"/>
+            </parameter>
+            <form name="branch_subdealer" is-set="true">
+                <field name="id" />
+                <field name="name" label="Город"/>
+                <form name="main_subdealer" is-set="true">
+                    <field name="id" />
+                    <field name="name" label="Главный суб"/>
+                    <form name="subdealer" is-set="true">
+                        <field name="id"/>
+                    	<field name="name" label="Название" />
+                    	<field- name="terminals_cnt" label="Терминалов по договору"  editable="true" totals="sum"/>
+                    	<field name="active_terminals_cnt" label="Терминалов активно" totals="sum"/>
+                    	<field- name="terminals_cash" label="Наличность в терминалах" totals="sum"/>
+                    	<where name="active_terminals_cnt"><more-than>0</more-than></where>
+                        <form name="legalentity" choise="legalentity-cache" label="Юрлицо">
+                            <field name="id" />
+                            <field name="name"/>
+                        </form>
+                    </form>
+                </form>
+            </form>
+            <form name="legalentity-cache" concept="legalentity" is-set="true">
+                <field name="id" />
+                <field name="name" />
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <grid form="subdealer">
+                    <column form="main_subdealer" field="name"/>
+                    <group>
+                        <by form="branch_subdealer" field="name"/>
+                    </group>
+                </grid>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

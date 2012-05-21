@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration xmlns="http://unact.net/xml/xi" name="datasync" gzip="true">
+    
+    <context-extension>
+        <views>
+            <menu>
+                <option href="views/iorders.xml"/>
+                <option href="views/iexp.xml"/>
+            </menu>
+        </views>
+    </context-extension>
+    
+    <pipeline name="main">
+        <execute name="1" href="id.xsl">
+            <include href="userinput.xsl"/>
+        </execute>
+        <execute name="2" href="id.xsl">
+            <include href="views.xsl"/>
+        </execute>
+        <execute name="3" href="id.xsl">
+            <include href="data-build.xsl"/>
+        </execute>
+        
+        <execute name="4" href="id.xsl">
+            <include href="extend.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="5" href="id.xsl">
+            <include href="data.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        
+        <execute name="6" href="id.xsl">
+            <include href="data-after.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="7" href="id.xsl">
+            <include href="workflow.xsl"/>
+        </execute>
+        <execute name="last" href="stage-last.xsl" commit="true" />
+        <execute name="out" href="datasync/datasync.xsl" output="xml"/>
+    </pipeline>
+
+    <pipeline name="download">
+        <execute name="1" href="id.xsl">
+            <include href="userinput.xsl"/>
+        </execute>
+        <execute name="2" href="id.xsl" commit="true">
+            <include href="data-build.xsl"/>
+        </execute>
+        
+        <execute name="3" href="id.xsl">
+            <include href="extend.xsl"/>
+            <include href="data-build.xsl"/>
+        </execute>
+        <execute name="4" href="id.xsl">
+            <include href="data-build.xsl"/>
+            <include href="data.xsl"/>
+        </execute>
+        
+        <execute name="out" href="datasync/datasync.xsl" output="xml"/>
+    </pipeline>
+    
+    <pipeline name="upload">
+        <execute name="recognize" href="datasync/upload.xsl"/>
+        
+        <execute name="build-xmlq" href="id.xsl">
+            <include href="datasync/upload.xsl"/>
+            <include href="extend-build.xsl"/>
+        </execute>
+        
+        <execute name="exec-xmlq" href="id.xsl">
+            <include href="xmlq.xsl"/>
+        </execute>
+        
+        <execute name="set-modified" href="id.xsl">
+            <include href="datasync/upload.xsl"/>
+        </execute>
+        
+        <execute name="build-persist" href="id.xsl">
+            <include href="datasync/upload.xsl"/>
+            <include href="extend-build.xsl"/>
+        </execute>
+        
+        <execute name="exec-persist" href="id.xsl">
+            <include href="xmlq.xsl"/>
+        </execute>
+        
+        <execute name="build-response" href="id.xsl">
+            <include href="datasync/upload.xsl"/>
+            <include href="extend-build.xsl"/>
+        </execute>
+        
+        <execute name="exec-response" href="id.xsl">
+            <include href="xmlq.xsl"/>
+        </execute>
+        
+        <execute name="out" href="id.xsl" output="xml">
+            <include href="datasync/upload.xsl"/>
+        </execute>
+        
+    </pipeline>
+
+    <pipeline name="metadata" path="datasync">
+        <execute name="prepare" href="datasync/metadata-pre.xsl" />
+        <execute name="build" href="datasync/metadata.xsl" />
+        <execute name="clean" href="datasync/metadata-out.xsl" output="xml" />
+    </pipeline>
+
+    <pipeline name="mirror">
+        <execute name="id" href="id.xsl" />
+    </pipeline>
+
+
+</configuration>

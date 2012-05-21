@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="wms-inventory" label="Инвентаризация пикинга">
+    <view-schema>
+        <form name="wms-place" label="Место хранения" expect-choise="true">
+            <parameter name="rowname" type="string" editable="true"/>
+            <where name="wms-place-type" type="string"><not>mozilla</not></where>
+            <field name="id"/>
+            <field name="name"/>
+            <form name="wms-place-goods" is-set="true" extendable="true" deletable="true" build-blank="true" label="Товар в ячейке" autosave="true">
+                <field name="xid"/>
+                <form name="goods" label="Товар" required="true">
+                    <parameter name="barcode" type="string" label="Штрих-код" editable="new-only" optional="true"/>
+                    <field name="id" />
+                    <field name="code" />
+                    <field name="prel" />
+                    <field name="name" label="Товар"/>
+                </form>
+                <field name="mc-volume" editable="true" label="Кол-во коробов" autosave="true"/>
+                <field name="bl-volume" editable="true" label="Кол-во блоков" autosave="true"/>
+                <field name="pk-volume" editable="true" label="Кол-во штук" autosave="true"/>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step label="Начало работы">
+            <display>
+                <input form="wms-place" field="rowname"/>
+                <input form="wms-place"/>
+            </display>
+            <validate>
+                <nonempty form="wms-place"/>
+            </validate>
+        </step>
+        <step label="Укажите товар" name="restart">
+            <display>
+                <print form="wms-place" field="name"/>
+                <for-each form="wms-place-goods">
+                    <input form="goods" field="barcode"/>
+                    <print form="goods" field="name"/>
+                    <print form="goods" field="code"/>
+                    <print form="wms-place-goods" field="mc-volume"/>
+                    <print form="wms-place-goods" field="bl-volume"/>
+                    <print form="wms-place-goods" field="pk-volume"/>
+                </for-each>
+            </display>
+            <validate>
+                <nonempty form="goods"/>
+            </validate>
+            <choise>
+                <option label="Следующая ячейка">
+                    <command name="wms-place">next</command>
+                </option>
+            </choise>
+        </step>
+        <step label="Укажите количество">
+            <display>
+                <print form="wms-place" field="name"/>
+                <for-each form="wms-place-goods" no-deletes="true">
+                    <print form="goods" field="name"/>
+                    <print form="goods" field="code"/>
+                    <input form="wms-place-goods" field="mc-volume"/>
+                    <input form="wms-place-goods" field="bl-volume"/>
+                    <input form="wms-place-goods" field="pk-volume"/>
+                </for-each>
+            </display>
+            <validate>
+                <nonempty form="wms-place-goods" field="mc-volume"/>
+            </validate>
+        </step>
+        <step label="Проверьте данные">
+            <display>
+                <print form="wms-place" field="name"/>
+                <for-each form="wms-place-goods">
+                    <print form="goods" field="name"/>
+                    <print form="goods" field="code"/>
+                    <print form="wms-place-goods" field="mc-volume"/>
+                    <print form="wms-place-goods" field="bl-volume"/>
+                    <print form="wms-place-goods" field="pk-volume"/>
+                </for-each>
+            </display>
+            <choise>
+                <option label="Продолжить">
+                    <command name="wms-place">next</command>
+                    <command name="wms-inventory">restart</command>
+                </option>
+                <option label="Еще товар">
+                    <command name="wms-inventory">restart</command>
+                    <command name="wms-place-goods">extend</command>
+                </option>
+            </choise>
+        </step>
+    </workflow>
+</view-definition>

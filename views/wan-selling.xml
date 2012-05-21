@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="wan-selling" label="Мобильные продажи">
+    <view-schema>
+        <form name="sysuser">
+            <parameter name="name"><init with="username"/></parameter>
+            <parameter name="device-name"><init with="device-name"/></parameter>
+            <parameter name="username"><init with="username"/></parameter>
+            <parameter name="date" editable="true" type="date" label="Рабочий день"><init with="today"/></parameter>
+            <form name="cat-agent" label="Пользователь" expect-choise-="true">
+                <join name="sysuser" field="username"/>
+                <field name="id" />
+                <field name="name" />
+                <form name="cat-salesman" label="Агент">
+                    <field name="id" />
+                    <field name="name" label="Продавец"/>
+                    <form name="wan-pricelist" is-set="true">
+                        <form name="pricelist-cache" concept="pricelist" role="pricelist">
+                            <field name="id"/>
+                            <field name="name"/>
+                        </form>
+                    </form>
+                    <form name="salesman-workday" label="Рабочий день" autosave="true">
+                        <field name="id" />
+                        <field name="date" label="Рабочий день"/>
+                        <join name="sysuser" field="date"/>
+                        <field name="closed" editable="true" autosave="true"/>
+                        <field name="processed" editable="true"/>
+                        <form name="salesman-workday-done" concept="salesman-workday" label="Выполненные задания">
+                            <join name="salesman-workday" field="id"/>
+                            <form name="wan-sale" label="Продажи" is-set="true" deletable-="true">
+                                <field name="id"/>
+                                <field name="date" format="smalltime"/>
+                                <field name="ndoc" format="smalltime"/>
+                                <field name="isCredit" />
+                                <field name="isWhite" />
+                                <field name="isComplete" hidden="true" editable="true"/>
+                                <form name="cat-buyer">
+                                    <field name="id"/>
+                                    <field name="name"/>
+                                    <field name="address"/>
+                                </form>
+                                <where name="state">done</where> 
+                                <order-by name="date" dir="desc"/>
+                                <order-by name="ndoc" dir="desc"/>
+                            </form>
+                            <form name="workday-encashment" label="Инкассации" is-set="true" deletable-="true">
+                                <field name="id"/>
+                                <field name="date" format="smalltime"/>
+                                <field name="summ" totals="sum"/>
+                                <field name="isWhite" />
+                                <form name="cat-buyer">
+                                    <field name="name"/>
+                                    <field name="address"/>
+                                </form>
+                                <order-by name="date" dir="desc"/>
+                            </form>
+                            <field name="date" />
+                            <field name="totalCash" type="decimal" label="Выручка по ККМ" 
+                             sql-compute="(select sum(summ) from dbo.palm_repayment
+                                            where kkmprinted=1 and saleperiod_id=[salesman-workday-done].saleperiod_id)"
+                            />
+                        </form>
+                        <form name="pos-selector" concept="wan-pos" label="Точка продаж" expect-choise="forced" choise-style="table">
+                            <join name="cat-salesman" />
+                            <field name="id"/>
+                            <form name="pos-buyer" concept="cat-buyer" role="cat-buyer" label="Покупатель" no-preload="true">
+                                <field name="id" />
+                                <field name="name" label="Покупатель"/>
+                                <field name="address" label="Адрес"/>
+                                <form name="encashment-partner" concept="cat-partner" >
+                                    <field name="name"/>
+                                    <field name="id"/>
+                                </form>
+                            </form>
+                            <form name="wan-pos">
+                                <join name="pos-selector" field="id"/>
+                                <field name="id"/>
+                                <form name="pricelist" label="Прайс-лист" role="pricelist" choise="pricelist-cache">
+                                    <field name="id"/>
+                                    <field name="name"/>
+                                    <form name="wan-sale-draft" concept="wan-sale" label-="Новая продажа" autosave="true" parent-sql-name="pricelist_id">
+                                        <field name="xid"/>
+                                        <field name="id"/>
+                                        <field name="isCredit" editable="true" use-with-insert="true" />
+                                        <field name="isWhite" editable="true" use-with-insert="true" />
+                                        <field name="isCash" editable="true" use-with-insert="true" />
+                                        <field name="totalCost" label="Итоговая стоимость"
+                                               modifiable="true"
+                                               xpath-compute="sum(dyn:map(../descendant::xi:data[@name='wan-saleitem-draft'][xi:datum[@name='volume'] &gt; 0]/xi:datum[@name='cost'],'dyn:evaluate(@xpath-compute)'))"/>
+                                        <where name="state">draft</where>
+                                        <field name="isComplete" editable="true"/>
+                                        <join name="wan-pos"/>
+                                        <join name="salesman-workday"/>
+                                        <form name="category" label="Категория" is-set="true">
+                                            <field name="id"/>
+                                            <field name="name"/>
+                                            <form name="stock-goods" concept="article" constrain-parent="true" is-set="true">
+                                                <field name="id"/>
+                                                <field name="name"/>
+                                                <field name="rel" type="int" sql-compute="1" />
+                                                <form name="wan-stock" constrain-parent="true">
+                                                    <join name="cat-salesman"/>
+                                                    <field name="remains"/>
+                                                    <field name="price"
+                                                           type="decimal"
+                                                           sql-compute="(select round(dbo.getPrice([pricelist].id, today(), goods, 0),2))"
+                                                    />
+                                                    <form concept="wan-saleitem" name="wan-saleitem-draft" build-blank="true" autosave="true">
+                                                        <join name="wan-sale-draft"/>
+                                                        <join name="stock-goods" role="article"/>
+                                                        <field name="xid"/>
+                                                        <field name="cost" modifiable="true"
+                                                               xpath-compute="following-sibling::xi:datum[@name='volume'] * parent::xi:data/parent::xi:data/xi:datum[@name='price']"/>
+                                                        <field name="price" modifiable="true"
+                                                               xpath-compute="parent::xi:data/parent::xi:data/xi:datum[@name='price']"/>
+                                                        <field name="volume" editable="true" when-null-then-delete="true" >
+                                                            <spin form="stock-goods" field="rel"/>
+                                                        </field>
+                                                    </form>
+                                                </form>                                
+                                            </form>
+                                        </form>
+                                    </form>
+                                </form>
+                            </form>
+                            <form name="encashment-task" concept="pos-debt" is-set="true">
+                                <field name="date"/>
+                                <field name="info"/>
+                                <field name="summ"/>
+                                <field name="id"/>
+                                <join name="encashment-partner"/>
+                                <form name="pos-encashment" concept="expedition-encashment"
+                                        autosave="true" build-blank="true" parent-sql-name="task" label="Задолженность">
+                                    <field name="xid"/>
+                                    <join name="salesman-workday"/>
+                                    <join name="pos-selector" role="wan-pos"/>
+                                    <field name="summ" editable="true" when-null-then-delete="true"
+                                           totals="sum" autofill="csum" autofill-form="encashment-task"/>
+                                </form>
+                                <field name="csum"/>
+                            </form>
+                        </form>
+                    </form>
+                </form>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step label="Итоги дня" name="start">
+            <display>
+                <input field="date" form="salesman-workday"/>
+                <print field="name" form="cat-salesman"/>
+                <input field="closed" form="salesman-workday"/>
+                <print field="processed" form="salesman-workday"/>
+                <print field="totalCash" />
+                <grid form="wan-sale" label="Продажи">
+                    <option label="E">
+                        <command form="wan-sale" field="isComplete">0</command>
+                        <command form="wan-sale">save</command>
+                        <command name="wan-selling">newsale</command>
+                        <command name="pos-selector"
+                                 xpath-compute="xi:data[@name='cat-buyer']/xi:datum[@name='id']"/>
+                    </option>
+                </grid>
+                <grid form="workday-encashment" label="Выручка"/>
+            </display>
+            <choise>
+                <option label="Новая продажа ...">
+                    <command name="wan-selling">newsale</command>
+                </option>
+                <option label="Оплата ...">
+                    <command name="wan-selling">payments</command>
+                </option>
+            </choise>
+        </step>
+        <step label="Новая продажа" name="newsale" hidden="true">
+            <display>
+                <region>
+                    <input form="pos-selector"/>
+                    <print form="pos-buyer" field="address"/>
+                    <input form="pricelist"/>
+                </region>
+                <region>
+                    <input form="wan-sale-draft" field="*"/>
+                    <print form="wan-sale-draft" field="totalCost"/>
+                </region>
+                <grid form="stock-goods">
+                    <group>
+                        <by form="category" field="name"/>
+                    </group>
+                </grid>
+            </display>
+            <choise>
+                <option label="К итогам дня">
+                    <command name="wan-selling">start</command>
+                    <command name="salesman-workday-done">refresh</command>
+                </option>
+                <option label="Завершить продажу">
+                    <command name="wan-selling">payments</command>
+                    <command form="wan-sale-draft" field="isComplete">1</command>
+                </option>
+            </choise>
+        </step>
+        <step label="Оплата" name="payments" hidden="true">
+            <display>
+                <input form="pos-selector"/>
+                <print form="pos-buyer" field="address"/>
+                <grid form="encashment-task" label="Текущая задолженность"/>
+            </display>
+            <choise>
+                <option label="К итогам дня">
+                    <command name="wan-selling">start</command>
+                    <command name="salesman-workday-done">refresh</command>
+                </option>
+            </choise>
+        </step>
+    </workflow>
+</view-definition>

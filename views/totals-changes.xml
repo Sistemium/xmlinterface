@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="totals-changes" label="Изменения итогов БПА">
+    <view-schema>
+        <form name="dates">
+            <parameter name="date" type="date" modified="init">
+                <init with ="today"/>
+            </parameter>
+            <form name="bpa-totals-change" is-set="true">
+            	<all-labeled-fields/>
+                <order-by name="change-date" dir="desc"/>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <grid form="bpa-totals-change"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

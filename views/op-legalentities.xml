@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="op-legalentities" label="Юрлица ОП">
+    <view-schema>
+        <form name="op">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+            <form name="op-legalentity" label="Юрлицо" is-set="true" extendable="true" deletable="true">
+                <field name="xid" key="true"/>
+            	<field name="name" editable="true"/>
+            	<field name="code" editable="true" />
+            	<field name="ratio" editable="true" />
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <grid form="op-legalentity"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

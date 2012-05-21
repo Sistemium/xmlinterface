@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="customers" label="Клиенты">
+    <view-schema>
+        <form name="sysuser">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+            <form name="customer" is-set="true" extendable="true" deletable="true">
+                <field name="xid" key="true"/>
+            	<field name="name" label="Имя" editable="true"/>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <grid form="customer"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

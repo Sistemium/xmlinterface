@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="collectors" label="Инкассаторы">
+    <view-schema>
+        <form name="branch" label="Отделение">
+            <parameter name="username" type="string" label="Логин оператора"/>
+            <field name="name" label="Отделение"/>
+            <field name="id" />
+            <form name="collector" label="Инкассатор" is-set="true" extendable="true" deletable="true">
+                <field name="xid" key="true"/>
+            	<field name="name" label="ФИО"  editable="true"/>
+            	<field name="code" label="Код" editable="true" />
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <input form="branch" />
+                <grid form="collector"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

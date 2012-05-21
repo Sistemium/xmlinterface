@@ -1,0 +1,174 @@
+<?xml version="1.0" ?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="op-payments" label="Платежи процессинга">
+    
+    <view-schema> <form name="op-agent"> 
+        
+        <parameter name="name">
+            <init with="username"/>
+        </parameter>
+        
+        <field name="id"/>
+        
+        <form name="up-client" expect-choise="true" label="Клиент" choise-style="table">
+            
+            <field name="id"/>
+            <field name="name" label="Клиент"/>
+            
+            
+            <form name="payment-set" concept="op" >
+                
+                <parameter name="acc" use-like="true" type="string" label="Строка поиска" editable="true" optional="true"/>
+                
+                <parameter name="cmp" type="boolean" label="Завершенные" editable="true" optional="true"/>
+                <parameter name="err" type="boolean" label="С ошибкой" editable="true" optional="true"/>
+                
+                <form name="op-payment" is-set="true" label="Платеж" page-size="15">
+                    
+                    <field name="id"/>
+                    <field name="ts"/>
+                    <field name="cts" hidden="true"/>
+                    <field name="status"/>
+                    <field name="summ" />
+                    <field name="account"/>
+                    <field name="extra"/>
+                    
+                    <form name="op-service">
+                        <field name="id"/>
+                        <field name="name" label="Услуга">
+                            <navigate to="op-services">
+                                <pass name="xid" field="xid" form="op-service"/>
+                            </navigate>
+                        </field>
+                        <field name="xid"/>
+                    </form>
+                    
+                    <form name="op-payment-error" concept="op-error">
+                        <field name="id"/>
+                        <field name="name" label="Ошибка"/>
+                        <where name="id">
+                            <not>0</not>
+                        </where>
+                    </form>
+                    
+                    <join name="payment-set" field="acc" property="account">
+                        <join name="payment-set" field="acc" property="id"/>
+                    </join>
+                    
+                    <join name="payment-set" field="cmp" property="final"/>
+                    <join name="payment-set" field="err" property="op-error"/>
+                    <join name="up-client"/>
+                    
+                    <order-by name="ts" dir="desc"/>
+                    
+                </form>
+                
+            </form>
+            
+            <form name="payment-detail" concept="op-payment" >
+                
+                <parameter name="pmt-detail-id" type="int" modifiable="true" property="id"/>
+                
+                <field name="id"/>
+                
+                <all-labeled-fields sort-by="type"/>
+                
+                <form name="pmt-detail-service" concept="op-service">
+                    <field name="name" label="Услуга"/>
+                </form>
+                
+                <form name="pmt-detail-error" concept="op-error">
+                    <field name="name" label="Ошибка"/>
+                    <where name="id">
+                        <not>0</not>
+                    </where>
+                </form>
+                
+                <form name="op-payment-process" is-set="true" page-size="10">
+                    
+                    <field name="cts" />
+                    <field name="finalizingDate" />
+                    <field name="ts" />
+                    
+                    <field name="step" />
+                    <field name="tryCount" />
+                    <!--field name="stepTryCount" /-->
+                    <field name="status" />
+                    
+                    <form name="pc-account">
+                        <field name="name" label="ПЦ"/>
+                    </form>
+                    
+                    <form name="op-error">
+                        <field name="name" label="Результат"/>
+                    </form>
+                    
+                    <field name="bookingDate" />
+                    
+                    <order-by name="ts" dir="desc"/>
+                    
+                </form>
+                
+            </form>
+            
+        </form>
+        
+    </form> </view-schema>
+    
+    <workflow name="master">
+        
+        <step name="home" label="Поиск платежей" >
+            <display>
+                <input form="up-client" />
+                <input form="payment-set" field="acc"/>
+                <input form="payment-set" field="cmp"/>
+                <input form="payment-set" field="err"/>
+                <grid form="op-payment" hide-empty="true">
+                    <option name="process" label="...">
+                        <command name="op-payments">pmt-detail</command>
+                        <command name="pmt-detail-id" xpath-compute="xi:datum[@name='id']" />
+                    </option>
+                    <!--column label="Прочее">
+                        <tabs>
+                            <print form="op-payment" field="ts"/>
+                            <print form="op-payment" field="cts"/>
+                        </tabs>
+                    </column-->
+                </grid>
+            </display>
+        </step>
+        
+        <step name="pmt-detail" label="Детали платежа" hidden="true">
+            <display>
+                
+                <print form="up-client" field="name"/>
+                <print form="payment-detail" field="status" />
+                <print form="payment-detail" field="clientId" />
+                <print form="pmt-detail-error" field="name" />
+                
+                <region class="tabs">
+                    <region label="Основное">
+                        <print form="pmt-detail-service" field="name"/>
+                        <print form="payment-detail" field="summ" />
+                        <print form="payment-detail" field="summTerminal" />
+                        <print form="payment-detail" field="cts" />
+                        <print form="payment-detail" field="ts" />
+                        <print form="payment-detail" field="clientSessionTerminal" />
+                    </region>
+                    <region label="Реквизиты">
+                        <print form="payment-detail" field="account" />
+                        <print form="payment-detail" field="extra" />
+                    </region>
+                    <grid form="op-payment-process" label="Попытки проведения" hide-empty="true"/>
+                </region>
+            </display>
+            <choise>
+                <option label="К списку платежей">
+                    <command name="op-payments">home</command>
+                </option>
+            </choise>
+        </step>
+        
+    </workflow>
+    
+</view-definition>

@@ -1,0 +1,256 @@
+<?xml version="1.0" ?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="up-cabinet" label="Кабинет клиента">
+	
+    <view-schema> <form name="op-agent"> 
+		
+		<parameter name="name">
+			<init with="username"/>
+		</parameter>
+		
+		<field name="id"/>
+		
+		<form name="up-client" expect-choise="forced" label="Клиент" choise-style="table">
+			
+			<field name="id"/>
+			<field name="name" label="Клиент"/>
+			<field name="funds"/>
+			<field name="fundsAvailable"/>
+			
+			<form name="file-aggregate" concept="up-file" no-preload="true" >
+				<field name="id" aggregate="count" label="Кол-во файлов"/>
+				<field name="unprocessed" type="int" aggregate="sum" sql-compute="1 - processed" label="Кол-во необработаных"/>
+				<field name="cts" aggregate="max" label="Последний файл" format="smalltime" />
+			</form>
+			
+			<form name="client-finances" concept="op">
+				<form name="up-clientDate" is-set="true" label="Сводка взаиморассчетов">
+					<field name="date"/>
+					<field name="fundsIncome" totals="sum"/>
+					<field name="paymentsSum" totals="sum"/>
+					<order-by name="date" dir="desc"/>
+					<join name="up-client"/>
+				</form>
+			</form>
+			
+			<form name="fileset" concept="op">
+				<form name="up-file" is-set="true" deletable="true" label="Платежный файл" >
+					<field name="xid"/>
+					<field name="id"/>
+					<field name="processed" editable="true" autosave="true" true-only="true" true-only-label="Провести" />
+					<field name="cts"/>
+					<field name="name"/>
+					<form name="up-file-type" role="up-file-type" label="Тип файла" >
+						<field name="id"/>
+						<field name="name" label="Тип файла"/>
+					</form>
+					<!--mark name="drilling-to-payments" /-->
+					<field name="data" pipeline="download"/>
+					<order-by name="cts" dir="desc"/>
+					<join name="up-client"/>
+				</form>
+			</form>
+			
+			<form name="file-upload-type" concept="up-file-type" expect-choise="true" label="Тип файла">
+				<field name="id"/>
+				<field name="name"/>
+				<form name="file-upload" concept="up-file" new-only="true"
+					  autosave="true" build-blank="true" parent-sql-name="type">
+					<join name="up-client"/>
+					<field name="xid" />
+					<field name="name" editable="file-name"/>
+					<field name="data" editable="file" autosave="true"/>
+				</form>
+			</form>
+			
+			<form name="file-details" concept="up-file">
+				
+				<parameter name="xid" modifiable="true" type="string"/>
+				
+				<field name="cts"/>
+				<field name="name"/>
+				
+				<form name="file-details-type" concept="up-file-type" role="up-file-type" label="Тип файла" >
+					<field name="id"/>
+					<field name="name" label="Тип файла"/>
+				</form>
+				
+				<form name="op-payment" is-set="true" label="Платеж">
+					
+					<field name="id"/>
+					<field name="status"/>
+					<field name="summ" totals="sum" />
+					<field name="account"/>
+					<field name="extra"/>
+					
+					<order-by name="status" dir="asc"/>
+					
+				</form>
+				
+				<form name="up-file-payment" is-set="true" label="Платеж">
+					
+					
+					<form name="op-error" no-preload="true">
+						<field name="id"/>
+						<field name="name" label="Cтатус" />
+					</form>
+					
+					<field name="summ" totals="sum" />
+					<field name="account"/>
+					<field name="extra"/>
+					
+				</form>
+				
+			</form>
+			
+		</form>
+		
+    </form> </view-schema>
+	
+	<workflow>
+		
+		<reusables>
+			
+			<option name="go-to-files" label="К списку файлов">
+				<command name="fileset">refresh</command>
+				<command name="up-cabinet">list</command>
+			</option>
+			
+			<command name="set-file" xpath-compute="xi:datum[@name='xid']" synthesize-attributes="true">
+				<synthesize attribute="name"
+						xpath-compute="ancestor::xi:view/xi:view-data//xi:data[@name='file-details']/xi:datum[@name='xid' and @type='parameter']/@id"/>
+			</command>
+			
+			<option name="to-file-payments" label="Платежи по файлу">
+				<command name="file-details">refresh</command>
+				<command name="up-cabinet">file-payments</command>
+			</option>
+			
+			<option name="to-file-op-payments" label="Процессинг по файлу">
+				<command name="file-details">refresh</command>
+				<command name="up-cabinet">file-op-payments</command>
+			</option>
+			
+			<option name="upload-a-file" label="Загрузить новый файл">
+				<command name="file-upload">refresh</command>
+				<command name="up-cabinet">new</command>
+			</option>
+			
+		</reusables>
+		
+        <!--step name="entry" label="Вход в кабинет">
+            <display>
+				
+                <input form="up-client"/>
+				
+				<text>Здесь можно приветсвие разместить</text>
+				
+				<print form="up-client" field="*"/>
+				
+			</display>
+		</step-->
+		
+        <step name="list" label="Платежные файлы">
+            <display>
+				
+                <input form="up-client"/>
+				<print form="up-client" field="funds"/>
+				<print form="up-client" field="fundsAvailable"/>
+				
+                <grid form="up-file">
+					<option label="Платежи" reuse="to-file-payments">
+						<command reuse="set-file"/>
+					</option>
+					<option label="Процессинг" reuse="to-file-op-payments">
+						<command reuse="set-file"/>
+					</option>
+				</grid>
+				
+            </display>
+            <choise>
+                <option label="Таблица клиентов">
+                    <command name="up-client">unchoose</command>
+                </option>
+                <option reuse="upload-a-file"/>
+			</choise>
+        </step>
+		
+        <step name="finances" label="Финансы">
+            <display>
+				
+                <input form="up-client"/>
+				<print form="up-client" field="funds"/>
+				<print form="up-client" field="fundsAvailable"/>
+                <grid form="up-clientDate" label="Обороты за последний месяц"/>
+				
+			</display>
+		</step>
+		
+        <step name="new" label="Загрузить файл" hidden="true">
+			<display>
+				
+				<input form="up-client"/>
+				<input form="file-upload-type"/>
+				<input form="file-upload" field="data"/>
+				
+			</display>
+            <choise>
+                <option reuse="go-to-files"/>
+			</choise>
+			<validate>
+				<nonempty field="data" form="file-upload"/>
+			</validate>
+		</step>
+		
+        <step name="uploaded" label="Загружен файл">
+			<display>
+				
+				<print form="up-client" field="name" />
+				<print form="file-upload-type" field="name"/>
+				<print form="file-upload" field="name"/>
+				
+			</display>
+            <choise>
+                <option reuse="go-to-files"/>
+                <option label="Еще файл?" reuse="upload-a-file"/>
+			</choise>
+		</step>
+
+        <step name="file-payments" label="Платежи файла" hidden="true">
+			<display>
+				<print form="up-client" field="name"/>
+				<region>
+					<print form="file-details-type" field="name"/>
+					<print form="file-details" field="*"/>
+				</region>
+				<grid form="up-file-payment"/>
+			</display>
+            <choise>
+                <option reuse="go-to-files"/>
+				<option reuse="to-file-op-payments"/>
+			</choise>
+		</step>
+		
+        <step name="file-op-payments" label="Процессинг по файлу" hidden="true">
+			<display>
+				<print form="up-client" field="name"/>
+				<region>
+					<print form="file-details-type" field="name"/>
+					<print form="file-details" field="*"/>
+				</region>
+				<grid form="op-payment">
+					<group>
+						<by form="op-payment" field="status"/>
+					</group>
+				</grid>
+			</display>
+            <choise>
+                <option reuse="go-to-files"/>
+				<option reuse="to-file-payments"/>
+			</choise>
+		</step>
+		
+    </workflow>
+	
+</view-definition>
+

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="wms-cell-erasement" label="Обнуление стока">
+    <view-schema>
+        <form name="wms-place" label="Место хранения">
+            <parameter name="name" type="string" editable="true"/>
+            <where name="wms-place-type" type="string">mozilla</where>
+            <field name="id"/>
+            <field name="name"/>
+            <form name="wms-cell-cat" is-set="true" label="Товар в ячейке" autosave-="true">
+                <field name="id" />
+                <form name="goods" label="Товар" required="true">
+                    <field name="id" />
+                    <field name="code" />
+                    <field name="name" />
+                </form>
+                <field name="remains" label="Остаток" editable="true"/>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step label="Начало работы">
+            <display>
+                <input form="wms-place" field="name"/>
+            </display>
+            <validate>
+                <nonempty form="wms-place"/>
+            </validate>
+        </step>
+        <step label="Подтвердите удаление" >
+            <display>
+                <print form="wms-place" field="name"/>
+                <grid form="goods">
+                    <column form="wms-cell-cat" field="remains" display-only="true"/>
+                </grid>
+            </display>
+            <validate>
+                <nonempty form="goods"/>
+            </validate>
+            <choise>
+                <option label="Обнулить">
+                    <command name="remains">0</command>
+                    <command name="save"/>
+                    <command name="refresh"/>
+                </option>
+            </choise>
+        </step>
+    </workflow>
+</view-definition>

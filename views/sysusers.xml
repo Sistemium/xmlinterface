@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="useradmin" label="Пользователи">
+    <view-schema>
+        <form name="useradmin" concept="sysuser">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+ 
+            <field name="id" />
+            <field name="name" label="Администратор"/>
+
+            <form name="sysuser" label="Пользователи" is-set="true" extendable="true" deletable="true">
+                <!--field name="id" /-->
+                <field name="name" editable="true"/>
+                <field name="ts" />                
+                <field name="xid" />                
+            </form>
+            
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <print form="useradmin" field="name"/>
+                <grid form="sysuser"/>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

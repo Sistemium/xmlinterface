@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="pc-accounts" label="Персоны ПЦ">
+    <view-schema>
+        <form name="op">
+            <parameter name="name">
+                <init with="username"/>
+            </parameter>
+            <form name="pc" label="Процессинговый центр" expect-choise="true">
+                <field name="id"/>
+                <field name="name"/>
+                <form name="pc-account" label="Персона ПЦ" is-set="true" extendable="true" deletable="true">
+                    <field name="xid" />
+                    <field name="name" editable="true" />
+                    <field name="active"  />
+                    <field name="handBlock" editable="true" />
+                    <field name="login" editable="true" />
+                    <field name="pwd" editable="true" />
+                    <field name="terminal" editable="true" />
+                    <field name="terms" editable="true" />
+                    <form name="op-legalentity" role="legalentity" label="Юрлицо" choise="legalentity-cache">
+                        <field name="id"/>
+                        <field name="name"/>
+                    </form>
+                    <field name="url" editable="true" />
+                    <field name="certfile" editable="true" />
+                    <field name="url2" editable="true" />
+                    <field name="onlineCheck" editable="true" />
+                    <field name="email" editable="true" />
+                </form>
+            </form>
+            <form name="legalentity-cache" concept="op-legalentity" label="Юрлица" is-set="true">
+                <field name="id"/>
+                <field name="name"/>
+            </form>
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <input form="pc"/>
+                <grid form="pc-account"/>
+                <!--for-each form="pc-account">
+                    <input field="active" />
+                    <input field="login" />
+                    <input field="pwd" />
+                    <input field="terminal" />
+                    <input field="terms" />
+                    <input form="op-legalentity"/>
+                    <input field="url" />
+                    <input field="certfile" />
+                    <input field="url2" />
+                    <input field="onlineCheck" />
+                    <input field="email" />
+                </for-each-->
+            </display>
+        </step>
+    </workflow>
+</view-definition>

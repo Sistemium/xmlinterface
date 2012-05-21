@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="warehouse-goodss" label="Товары на складе">
+    <view-schema>
+        <form name="warehouse" label="Склад">
+            <parameter name="username">
+                <init with="username"/>
+            </parameter>
+
+            <field name="id" />
+            <field name="name" label="Склад"/>
+
+            <parameter name="barcode" type="string" label="Штрих-код" editable="true"/>
+            <form name="goods" label="Товар" >
+                <natural-order/>
+                <field name="id" />
+                <field name="code" />
+                <field name="name" label="Товар"/>
+                <form name="warehouse-goods" label="Пикинг">
+                    <field name="address" label="Адрес пикинга"/>
+                    <field name="remains" label="Всего остаток шт."/>
+                    <field name="mc-remains" label="Всего остаток кор."/>
+                    <join name="warehouse" />
+                </form>
+                <form name="wms-cell-cat" is-set="true">
+                    <field name="name" label="Адрес"/>
+                    <field name="remains" label="Ост."/>
+                    <field name="pdate" format="smalltime" label="Д. произв."/>
+                    <field name="ts" format="smalltime" hidden="true"/>
+                    <order-by name="pdate" dir="asc"/>
+                    <order-by name="ts" dir="desc"/>
+                    <secure role="master">
+                        <form name="wms-log">
+                            <form name="lastAgent" concept="sysuser">
+                                <field name="name" label="Кто?"/>
+                            </form>
+                        </form>
+                    </secure>
+                </form>
+                <join name="warehouse" field="barcode"/>
+            </form>
+
+        </form>
+    </view-schema>
+    <workflow>
+        <step>
+            <display>
+                <input form="warehouse" field="barcode" />
+                <for-each form="goods">
+                    <print form="goods" field="name"/>
+                    <print form="goods" field="code"/>
+                    <print form="warehouse-goods" field="address"/>
+                    <print form="warehouse-goods" field="mc-remains"/>
+                    <grid form="wms-cell-cat" label="Сток"/>
+                </for-each>
+            </display>
+        </step>
+    </workflow>
+</view-definition>

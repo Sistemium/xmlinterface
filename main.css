@@ -1,0 +1,89 @@
+body {margin:1px; font-size: 16px; background:black; color:white; }
+body.desktop- #canvas {width:700px; margin:10px auto; border: solid 1px gray; text-align:left;}
+body.desktop- {text-align:center;}
+
+#session-wrapper.not-authenticated .button input, input.button { font-size: 11px; font-weight: normal;  padding:4px 2px;
+          color:blue; background-color: black; border:solid 1px #555555; color:#AAAAAA;
+        }
+/* надо повторение значений сделать и переход дальше */
+
+h3, h4 {margin:0.2em; text-align:center; }
+form {margin:0px;padding:0px;}
+h4 {font-weight:normal; }
+
+input {background: black; color: yellow; border: solid 1px white;}
+input.button {width: auto; overflow: visible;}
+input.radio {border:none;}
+
+@media handheld {
+    .choose .option {clear:both;height:2em;padding:3px 0px;}
+    .choose .option * {display:block; float:left; }
+    .choose .option label {border:solid 1px #00EE00;}
+    .choose .option input {margin: 3px 4px;clear:both;}
+    #views-menu .option,   .choise .option {display: block; margin:0.75em auto; width:90%;}
+    #views-menu .option .button, .choise .option .button {display:block; margin: 0px auto;  width:90%;}
+}
+
+#session-wrapper.not-authenticated #session {margin-top:2em; color: #00EE00;}
+#session-wrapper.not-authenticated {width:270px; margin: 0px auto;}
+
+#session-wrapper.not-authenticated .button {text-align:center;margin-top:40px;}
+#session-wrapper.not-authenticated .button input {width:50%; }
+#session-wrapper.not-authenticated .field {margin-top:10px;}
+#session-wrapper.not-authenticated #session label {float:left;display:block; width:35%; text-align:right; margin:4px 4px auto; font-size: 20px;}
+#session-wrapper.not-authenticated #session .field input {width:50%;font-size: 20px;}
+
+#session-wrapper.authenticated {height: 22px; padding-top-:2px;position:relative;}
+#session-wrapper.authenticated .field {float:left;margin:3px auto;width:40%;}
+#session-wrapper.authenticated .link {float:right;text-align:right;margin:0px auto;width:40%;}
+#session-wrapper, .view .menu {background-color: black;font-size:smaller; }
+#session-wrapper .button {padding:0px;}
+
+a {color: white;text-decoration:none;background-color:blue;text-align:center;}
+a {padding: 3px;}    
+a:hover, a:active {color: red;}
+
+.menu {margin:0px auto; padding:0px;}
+.menu .option { margin:0px 2px; display:inline;}
+
+#views-menu {text-align:center;}
+#views-menu.chosen {display: none}
+
+.choise{text-align:center;}
+#session-wrapper.not-authenticated .button input, 
+    #views-menu .button, .choise .option .button {font-size:15px; border-color: #00EE00; color: #00EE00;}
+
+.dialogue- {margin-top:0.5em;}
+
+.view {position:relative;}
+.view .label {clear:both;}
+.view .title {text-align:center; padding:3px; }
+
+.view .menu {padding:0px;text-align:center;  }
+.mobile .view .menu #refresh-option, .mobile .view .menu #save-option {display:none;}
+
+.step.title span, .message span {margin-right:0.3em}
+.step.title span {color: #00EE00;}
+
+.datum span {color: white; font-weight-:bold;}
+.view .title,.datum.print label, .datum.exists label, .datum.not-exists label{ color:#444444; font-size:10px;}
+.datum.input {font-weight:bold;padding-top:5px; color:#00EE00; font-size: 20px;}
+
+.message {text-align:center;}
+div.exception {border: solid 1px red; color:white; padding:4px;margin:10px; clear:both;}
+.view .exception, span.exception {font-weight: bold; color:red !important;}
+.dialogue .exception {font-weight: normal; color:white; }
+
+.mobile .exception.secondary {display:none;}
+.success {color:  #00EE00;}
+    
+.grid {text-align:center;}
+
+table {margin:0px auto;}
+td {text-align:left;}
+
+td span.decimal, span.decimal input {text-align:right;}
+td span {display:block;}
+
+
+/*.view .data, .view .datum {margin-left:0.5em;}*/
