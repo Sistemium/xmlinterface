@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 
 <xsl:transform version="1.0"
- xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
- xmlns="http://unact.net/xml/xi"
- xmlns:xi="http://unact.net/xml/xi">
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://unact.net/xml/xi"
+    xmlns:xi="http://unact.net/xml/xi">
   
     <!--
     

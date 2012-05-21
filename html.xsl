@@ -68,7 +68,7 @@
             </xsl:for-each>
             <!--link rel="stylesheet" type="text/css" href="tables.css"/-->
 
-            <script type="text/javascript" src="xi-common.js"></script>
+            <script type="text/javascript" src="js/xi-common.js"></script>
             <xsl:if test="descendant::xi:dialogue//xi:input[key('id',@ref)/@name='barcode']">
                 <meta http-equiv="scanner" content="enabled"/>
                 <!--meta http-equiv="scanner" content="autoenter"/-->
@@ -97,7 +97,7 @@
                     <META HTTP-Equiv="invokenotification" content="3,350,3,500"/>
                     <META HTTP-Equiv="invokenotification" content="2,350,2,500"/>
                 </xsl:if>
-                <script type="text/javascript" src="xi-mobile.js"></script>
+                <script type="text/javascript" src="js/xi-mobile.js"></script>
                 <xsl:if test="not(/*/xi:session[@authenticated])">
                     <META HTTP-Equiv="WritePersistentRegSetting" Content="hkcu\\Software\Symbol\SymbolPB\Styles=dword:0000"/>
                     <META HTTP-Equiv="WritePersistentRegSetting" Content="hkcu\\Software\Symbol\SymbolPB\No Scrollbars=dword:0000"/>
@@ -129,12 +129,12 @@
                 <script type="text/javascript">var map=false;</script>
             </xsl:if>
             <xsl:if test="not(/*/xi:userinput/@spb-agent)">
-                <script type="text/javascript" src="xi.js"></script>
-                <script type="text/javascript" src="AjaxRequest.js"></script>
+                <script type="text/javascript" src="js/xi.js"></script>
+                <script type="text/javascript" src="js/AjaxRequest.js"></script>
                 <script type="text/javascript" src="jquery/js/jquery.js"></script>
                 <script type="text/javascript" src="jquery/js/jquery-ui.js"></script>
                 <xsl:if test="/*/xi:views/xi:view[not(@hidden)]/xi:dialogue/descendant::*[@clientData]">
-                    <script type="text/javascript" src="clientData.js"></script>
+                    <script type="text/javascript" src="js/clientData.js"></script>
                 </xsl:if>
                 <script type="text/javascript" src="jquery/js/jquery.ui.datepicker-ru.js"></script>
                 <script type="text/javascript">$(document).ready(domready);</script>
