@@ -63,11 +63,10 @@
                     </xsl:choose>
                 </xsl:variable>
                 <xsl:if test="string-length($css-file)&gt;0">
-                    <link rel="stylesheet" type="text/css" href="{$css-file}.css"/>
+                    <link rel="stylesheet" type="text/css" href="css/{$css-file}.css"/>
                 </xsl:if>
             </xsl:for-each>
-            <!--link rel="stylesheet" type="text/css" href="tables.css"/-->
-
+            
             <script type="text/javascript" src="js/xi-common.js"></script>
             <xsl:if test="descendant::xi:dialogue//xi:input[key('id',@ref)/@name='barcode']">
                 <meta http-equiv="scanner" content="enabled"/>
