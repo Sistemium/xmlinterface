@@ -52,7 +52,7 @@
         <property name="status" type="string" label="Статус"
                   sql-compute="case when final=0 then 'Проводится' when error=0 then 'Проведено' else string('Ошибка=',error) end"/>
         
-        <property name="smsNumber" type="string" />
+        <property name="smsNumber" type="string" label="Номер обратной связи"/>
         <property name="virtualCard" type="string"/>
         
         <property name="cts" type="datetime" label="Когда создан" />

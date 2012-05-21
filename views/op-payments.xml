@@ -154,6 +154,7 @@
                         <print form="payment-detail" field="cts" />
                         <print form="payment-detail" field="ts" />
                         <print form="payment-detail" field="clientSessionTerminal" />
+                        <print form="payment-detail" field="smsNumber" />
                     </region>
                     <region label="Реквизиты">
                         <print form="payment-detail" field="account" />
