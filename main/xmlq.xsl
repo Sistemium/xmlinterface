@@ -671,7 +671,7 @@
                         </xsl:when>
                         
                         <xsl:when test="$value/@type='boolean' and not($property/@type='boolean')">
-                            <xsl:if test="text()='1'">
+                            <xsl:if test="$value/text()='1'">
                                 <xsl:text>&gt;</xsl:text>
                             </xsl:if>
                             <xsl:text>=</xsl:text>
@@ -681,7 +681,7 @@
                             <xsl:text> like </xsl:text>
                         </xsl:when>
                         
-                        <xsl:when test="not($use/*) and ($value[not(text()) or text()=''])">
+                        <xsl:when test="not($use/*) and $value[not(text()) or text()='']">
                             <xsl:text> is </xsl:text>
                         </xsl:when>
                         
