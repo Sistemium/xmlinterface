@@ -288,10 +288,17 @@
         <save owner="op" sql-name="service"/>
         
         <property name="xid" />
+        <property name="ts" type="datetime" label=""/>
         <property name="id" type="int" key="true"/>
         <property name="name" type="string" label="Название"/>
         <property name="code" type="string" label="Код"/>
         
+        <property name="terms" type="string" label="terms" />
+        <property name="etc" type="xml" label="Прочие параметры" />
+        <property name="inUse" type="boolean" label="inUse" />
+        <property name="successfulPayment" type="boolean" label="successfulPayment" />
+        <property name="disabled" type="boolean" label="disabled" />
+        <property name="restrictedFee" type="boolean" label="restrictedFee" />
     </concept>
 
     <concept name="pc" server="op.unact.ru">

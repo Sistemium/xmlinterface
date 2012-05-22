@@ -977,18 +977,7 @@
                 <xsl:text>Да</xsl:text>
             </xsl:when>
             <xsl:when test="@type='xml'">
-                <xsl:for-each select="$value/*">
-                    <div>
-                        <xsl:if test="@name">
-                            <span class="xmlname">
-                                <xsl:value-of select="concat(@name,':')"/>
-                            </span>
-                        </xsl:if>
-                        <span>
-                            <xsl:value-of select="."/>
-                        </span>
-                    </div>
-                </xsl:for-each>
+                <xsl:apply-templates select="$value" mode="xml-print"/>
             </xsl:when>
             <xsl:when test="@type='boolean' and @format='true-only'"/>
             <xsl:when test="@type='boolean' and not (@format='true-only')">
@@ -998,6 +987,60 @@
                 <xsl:value-of select="$value"/>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+
+
+    <xsl:template match="*[(@name and text()) or text() or not(@*)]" mode="xml-print">
+        <div>
+            <xsl:if test="@name">
+                <span class="xmlname">
+                    <xsl:value-of select="concat(@name,':')"/>
+                </span>
+            </xsl:if>
+            <span>
+                <xsl:value-of select="text()"/>
+            </span>
+            <xsl:apply-templates select="*" mode="xml-print"/>
+        </div>
+    </xsl:template>
+    
+    <xsl:template match="xi:datum" mode="xml-print" priority="1000">
+        <xsl:apply-templates select="*" mode="xml-print"/>
+    </xsl:template>
+
+
+    <xsl:template match="xi:datum[*[count(@*) &gt; 1]]" mode="xml-print">
+        <xsl:param name="this" select="."/>
+        <div class="tabs">
+            <ul>
+                <xsl:for-each select="*">
+                    <li>
+                        <a href="#{$this/@id}-{local-name()}-{count(preceding-sibling::*)}">
+                            <xsl:value-of select="local-name()"/>
+                        </a>
+                    </li>
+                </xsl:for-each>
+            </ul>
+            <xsl:apply-templates select="*" mode="xml-print"/>
+        </div>
+    </xsl:template>
+    
+    
+    <xsl:template match="*[not(@name) or count(@*) &gt; 1]" mode="xml-print">
+        <div id="{ancestor::xi:datum[1]/@id}-{local-name()}-{count(preceding-sibling::*)}">
+            <!--h4><xsl:value-of select="concat(local-name(),':')"/></h4-->
+            <xsl:for-each select="@*">
+                <div>
+                    <span class="xmlname">
+                        <xsl:value-of select="concat(local-name(),':')"/>
+                    </span>
+                    <span>
+                        <xsl:value-of select="."/>
+                    </span>
+                </div>
+            </xsl:for-each>
+            <xsl:apply-templates select="*" mode="xml-print"/>
+        </div>
     </xsl:template>
 
 

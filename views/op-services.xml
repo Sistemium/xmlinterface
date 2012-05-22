@@ -16,8 +16,15 @@
         
         <form name="op-service" label="Услуга" what-label="Услугу" set-label="Услуги" page-size="15">
             
-            <field name="id"/>
-            <field name="name"/>
+            <field name="id" />
+            <field name="name" />
+            <field name="code" />
+            <field name="terms" />
+            <field name="etc" />
+            <field name="inUse" />
+            <field name="successfulPayment" />
+            <field name="disabled" />
+            <field name="restrictedFee" />
             
             <join name="op-agent" field="xid" />
             
@@ -27,7 +34,14 @@
             
             <field name="id"/>
             
-            <add-labeled-fields/>
+            <field name="name" />
+            <field name="code" />
+            <field name="terms" />
+            <field name="etc" />
+            <field name="inUse" />
+            <field name="successfulPayment" />
+            <field name="disabled" />
+            <field name="restrictedFee" />
             
             <parameter name="details-xid" modifiable="true" property="xid"/>
             
@@ -48,6 +62,8 @@
                         <not>0</not>
                     </where>
                 </form>
+                
+                <order-by name="ts" dir="desc"/>
                 
             </form>
             
@@ -72,8 +88,13 @@
         
         <step name="display-payments" hidden="true">
             <display>
-                <print form="op-service" field="*"/>
-                <grid form="op-payment" hide-empty="true"/>
+                <print form="service-details" field="name"/>
+                <region class="tabs">
+                    <grid form="op-payment" hide-empty="true" label="Последние платежи"/>
+                    <region label="Детали услуги">
+                        <print form="service-details" field="*"/>
+                    </region>
+                </region>
             </display>
         </step>
         
