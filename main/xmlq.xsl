@@ -463,8 +463,9 @@
     </xsl:template>
 
     <xsl:template match="xi:data-request" mode="from">
-        <xsl:variable name="this" select ="."/>
-        <xsl:variable name="concept" select="$model/xi:concept[@name=$this/@concept]"/>
+        
+        <xsl:param name="this" select ="."/>
+        <xsl:param name="concept" select="$model/xi:concept[@name=$this/@concept]"/>
         
         <xsl:variable name="parameters"
                       select="xi:parameter
@@ -558,25 +559,38 @@
         
         <xsl:variable name="where">
             
-            <xsl:value-of select="substring($join,1,string-length($join) - 4)"/>
+            <xsl:value-of select="substring($join, 1, string-length($join)-4 )"/>
             
             <xsl:variable name="where-for-parms">
                 
-                <xsl:apply-templates select="$parameters" mode="build-where">
-                    <xsl:with-param name="select" select="$select"/>
-                    <xsl:with-param name="request" select="$this"/>
-                </xsl:apply-templates>
+                <xsl:for-each select="xi:parameter | xi:use">
+                    
+                    <xsl:variable name="where-part">
+                        <xsl:apply-templates select="." mode="build-where">
+                            <xsl:with-param name="select" select="$select"/>
+                            <xsl:with-param name="request" select="$this"/>
+                        </xsl:apply-templates>
+                    </xsl:variable>
+                    
+                    <xsl:if test="normalize-space($where-part)!=''">
+                        <xsl:text> and </xsl:text>
+                    </xsl:if>
+                    
+                    <xsl:value-of select="$where-part"/>
+                    
+                </xsl:for-each>
                 
             </xsl:variable>
             
-            <xsl:if test="not(normalize-space($where-for-parms)='') and not(normalize-space($join)='')">
-                <xsl:text> and </xsl:text>
+            <xsl:if test="not(normalize-space($where-for-parms)='') and normalize-space($join)=''">
+                <xsl:text> 1 = 1 </xsl:text>
             </xsl:if>
             
             <xsl:value-of select="$where-for-parms"/>
             
         </xsl:variable>
         
+        <!-- suspected to bug -->
         <xsl:if test="normalize-space($where)!='' or xi:data-request[@constrain-parent]">
             
             <xsl:text>&#xD;</xsl:text>
@@ -607,33 +621,33 @@
 
     <xsl:template match="*" mode="build-where">
         
-        <xsl:param name="select"/>
-        <xsl:param name="request"/>
-        
-        <xsl:variable name="this-pre-use"
-            select="$request/xi:use[@parameter=current()/@name and @concept=current()/../@name]"
+        <xsl:param name="request" select="parent::xi:data-request" />        
+        <xsl:param name="select" />
+        <xsl:param name="use" select="." />
+        <xsl:param name="value"
+            select="
+                $use/self::xi:parameter
+                |$request[$use/self::xi:use]/ancestor::*/xi:parameter
+                 [$use/@parameter=@name and $use/@concept=../@name]
+            "
         />
         
-        <xsl:variable name="this-use" select="current()[not($this-pre-use)]|$this-pre-use"/>
-        
-        <xsl:variable name="between" select="$this-use/xi:between"/>
-        
-        <xsl:if test="not($select/xi:parameter[@name=$this-use/@property]) or $between">
+        <xsl:if test="not( $select/xi:parameter[@name=$use/@property] )">
             
             <xsl:variable name="property"
-                select="$select/parent::xi:concept/*[@name=$this-use/@property]"
+                select="$select/parent::xi:concept/*[@name=$use/@property]"
             />
             
-            <xsl:if test="$property or $between or *">
+            <xsl:if test="$value and ($property)">
                 
-                <xsl:if test="not($between)">
+                <xsl:if test="not($use/xi:between)">
                     
-                    <xsl:if test="$this-use/xi:use">
-                        <xsl:text> ( </xsl:text>
+                    <xsl:if test="$use/parent::xi:use">
+                        <xsl:text> or </xsl:text>
                     </xsl:if>
                     
-                    <xsl:if test="$this-use/parent::xi:use">
-                        <xsl:text> or </xsl:text>
+                    <xsl:if test="$use/xi:use">
+                        <xsl:text> ( </xsl:text>
                     </xsl:if>
                     
                     <xsl:apply-templates select="$request/@name" mode="doublequoted"/>
@@ -642,30 +656,30 @@
                     
                     <xsl:choose>
                         
-                        <xsl:when test="xi:not">
+                        <xsl:when test="$use/xi:not">
                             <xsl:text> &lt;&gt; </xsl:text>
                         </xsl:when>
                         
-                        <xsl:when test="@type='boolean' and not($property/@type='boolean')">
+                        <xsl:when test="$value/@type='boolean' and not($property/@type='boolean')">
                             <xsl:if test="text()='1'">
                                 <xsl:text>&gt;</xsl:text>
                             </xsl:if>
                             <xsl:text>=</xsl:text>
                         </xsl:when>
                         
-                        <xsl:when test="@use-like">
+                        <xsl:when test="($use|$value)[@use-like]">
                             <xsl:text> like </xsl:text>
                         </xsl:when>
                         
-                        <xsl:when test="not(*) and (not(text()) or text()='')">
+                        <xsl:when test="not($use/*) and ($value[not(text()) or text()=''])">
                             <xsl:text> is </xsl:text>
                         </xsl:when>
                         
-                        <xsl:when test="*">
+                        <xsl:when test="$use/*">
                             <xsl:text> </xsl:text>
                         </xsl:when>
                         
-                        <xsl:when test="text()">
+                        <xsl:when test="$value/text()">
                             <xsl:text>=</xsl:text>
                         </xsl:when>
                         
@@ -673,25 +687,22 @@
                     
                 </xsl:if>
                 
-                <xsl:apply-templates select="." mode="value"/>
+                <xsl:apply-templates select="$value" mode="value"/>
                 
-                <xsl:if test="$between">
+                <xsl:for-each select="$use/xi:between">
                     <xsl:text> between </xsl:text>
-                    <xsl:apply-templates select="$between/xi:start" mode="sql-name"/>
+                    <xsl:apply-templates select="xi:start" mode="sql-name"/>
                     <xsl:text> and </xsl:text>
-                    <xsl:apply-templates select="$between/xi:end" mode="sql-name"/>
-                </xsl:if>
+                    <xsl:apply-templates select="xi:end" mode="sql-name"/>
+                </xsl:for-each>
                 
-                <xsl:if test="$this-use/xi:use">
-                    <xsl:apply-templates select="$this-use/xi:use" mode="build-where">
-                        <xsl:with-param name="select" select="$select"/>
-                        <xsl:with-param name="request" select="$request"/>
-                    </xsl:apply-templates>
+                <xsl:apply-templates select="$use/xi:use" mode="build-where">
+                    <xsl:with-param name="request" select="$request"/>
+                    <xsl:with-param name="select" select="$select"/>
+                </xsl:apply-templates>
+                
+                <xsl:if test="$use[not(xi:use) and parent::xi:use]">
                     <xsl:text> ) </xsl:text>
-                </xsl:if>
-                
-                <xsl:if test="position()!=last()">
-                    <xsl:text> and </xsl:text>
                 </xsl:if>
                 
             </xsl:if>
