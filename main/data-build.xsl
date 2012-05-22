@@ -291,14 +291,13 @@
                         
                         <xsl:otherwise>
                             
-                            <xsl:apply-templates select="
-                            
+                            <xsl:apply-templates
+                                select="
                                     self::*[not($type or @choise)][@build-blank or @new-only or @extendable]/*
                                     |
                                     xi:parameter
                                     |
                                     self::*[not(@choise)]/xi:form[xi:parameter or @new-only]
-                                    
                                 " mode="build-data"
                             />
                             
@@ -344,14 +343,14 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:preload[not(key('id',@ref)/xi:parameter[not(xi:init) and not(@optional-)])]" mode="build-data">
+    <xsl:template match="xi:preload[key('id',@ref)[not(xi:parameter) or xi:parameter[xi:init]]]" mode="build-data">
         <xsl:param name="data" select="."/>
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:apply-templates select="key('id',@ref)/xi:natural-key" mode="build-data">
                 <xsl:with-param name="data" select="$data"/>
             </xsl:apply-templates>
-            <xsl:apply-templates select="key('id',@ref)/xi:parameter[xi:init]" mode="build-data"/>
+            <xsl:apply-templates select="key('id',@ref)/xi:parameter" mode="build-data"/>
         </xsl:copy>
     </xsl:template>
 

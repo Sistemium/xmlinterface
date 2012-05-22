@@ -13,7 +13,7 @@
             <xsl:copy-of select="/*/@*"/>
             <xsl:for-each select="xi:command[@name='datum']">
                 
-                <xsl:variable name="model" select="document('domain.xml')/xi:domain"/>
+                <xsl:variable name="model" select="document('../domain.xml')/xi:domain"/>
                 <xsl:variable name="datum" select="key('id',text())"/>
                 <xsl:variable name="form" select="key('id',$datum/../@ref)"/>
                 <xsl:variable name="concept" select="$model/xi:concept[@name=$form/@concept]"/>

@@ -591,20 +591,12 @@
         </xsl:variable>
         
         <!-- suspected to bug -->
-        <xsl:if test="normalize-space($where)!='' or xi:data-request[@constrain-parent]">
+        <xsl:if test="normalize-space($where)!=''">
             
             <xsl:text>&#xD;</xsl:text>
             <xsl:value-of select="str:padding(count(ancestor::xi:data-request),'&#x9;')"/>
             
             <xsl:text> where </xsl:text>
-            
-            <xsl:for-each select="xi:data-request[@constrain-parent]">
-               <xsl:value-of select="concat('[',@name,'].data is not null')"/>
-               <xsl:if test="position() &lt; last() or normalize-space($where)!=''">
-                  <xsl:text> and </xsl:text>
-               </xsl:if>
-            </xsl:for-each>
-            
             <xsl:value-of select="$where"/>
             
         </xsl:if>
@@ -614,6 +606,23 @@
             <xsl:text>) as </xsl:text>
             <xsl:apply-templates select="@name" mode="doublequoted"/>
             <xsl:apply-templates select="xi:data-request" mode="select-list"/>
+        </xsl:if>
+        
+        <xsl:if test="xi:data-request[@constrain-parent]">
+            <xsl:if test="@page-size or normalize-space($where)=''">
+                <xsl:text> where </xsl:text>
+            </xsl:if>
+            
+            <xsl:if test="not (@page-size) and normalize-space($where)!=''">
+                <xsl:text> and </xsl:text>
+            </xsl:if>
+            
+            <xsl:for-each select="xi:data-request[@constrain-parent]">
+               <xsl:value-of select="concat('[',@name,'].data is not null')"/>
+               <xsl:if test="position() &lt; last()">
+                  <xsl:text> and </xsl:text>
+               </xsl:if>
+            </xsl:for-each>
         </xsl:if>
         
     </xsl:template>
@@ -627,8 +636,9 @@
         <xsl:param name="value"
             select="
                 $use/self::xi:parameter
-                |$request[$use/self::xi:use]/ancestor::*/xi:parameter
-                 [$use/@parameter=@name and $use/@concept=../@name]
+                |($request[$use/self::xi:use]/ancestor-or-self::*
+                 |$request[$use/self::xi:use]/ancestor-or-self::*/xi:etc/xi:data)
+                 [@name=$use/@concept]/xi:parameter[@name=$use/@parameter]
             "
         />
         

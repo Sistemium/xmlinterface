@@ -302,46 +302,42 @@
     </pipeline>
 
     <pipeline name="views">
-        <execute name="stage1" href="id.xsl">
+        <execute name="userinput" href="id.xsl">
             <include href="main/userinput.xsl"/>
         </execute>
-        <execute name="stage2" href="id.xsl">
+        <execute name="views" href="id.xsl">
             <include href="main/views.xsl"/>
         </execute>
-        <execute name="stage3" href="id.xsl">
+        <execute name="build1" href="id.xsl">
             <include href="main/data-build.xsl"/>
         </execute>
-        <execute name="stage4" href="id.xsl">
+        <execute name="extend1" href="id.xsl">
             <include href="main/extend.xsl"/>
             <include href="main/data-build.xsl"/>
         </execute>
         <!--execute name="stage5" href="id.xsl">
             <include href="main/xmlq.xsl"/>
         </execute-->
-        <execute name="stage6" href="id.xsl">
+        <execute name="build2" href="id.xsl">
             <include href="main/data-build.xsl"/>
             <include href="main/data.xsl"/>
         </execute>
-
-
-        <execute name="stage61" href="id.xsl">
+        <execute name="extend2" href="id.xsl">
             <include href="main/extend-build.xsl"/>
             <include href="main/data-build.xsl"/>
         </execute>
         <!--execute name="stage62" href="id.xsl">
             <include href="main/xmlq.xsl"/>
         </execute-->
-        <execute name="stage63" href="id.xsl">
+        <execute name="data" href="id.xsl">
             <include href="main/data-build.xsl"/>
             <include href="main/data.xsl"/>
         </execute>
-
-
-        <execute name="stage7" href="id.xsl">
+        <execute name="postdata" href="id.xsl">
             <include href="main/data-build.xsl"/>
             <include href="main/data-after.xsl"/>
         </execute>
-        <execute name="stage8" href="id.xsl">
+        <execute name="dialogue" href="id.xsl">
             <include href="main/workflow.xsl"/>
         </execute>
         <execute name="stage-last" href="id.xsl" commit="true">
@@ -412,11 +408,11 @@
     </pipeline>
 
     <pipeline name="download">
-        <execute name="build-request" href="download.xsl"/>
+        <execute name="build-request" href="main/download.xsl"/>
         <execute name="xmlq" href="id.xsl" output-="xml" >
             <include href="main/xmlq.xsl"/>
         </execute>
-        <execute name="output" href="csv.xsl" output="base64decode" header="Content-disposition: attachment;filename=system-export.txt"/>
+        <execute name="output" href="main/csv.xsl" output="base64decode" header="Content-disposition: attachment;filename=system-export.txt"/>
     </pipeline>
 
     <pipeline name="clientData">
