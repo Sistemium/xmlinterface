@@ -130,15 +130,16 @@ function xmlRequest($request) {
                             "pwd"=>(string)$private->password,
                             "db"=>$db, "server"=>$server))
                     )
-           ) {
-                //file_put_contents('data/response.txt', $http->response);
+           ) try {
                 $doc->loadXML($http->response);
-                //$doc->save('data/response.xml');
+        } catch (Exception $loadError) {
+            throw new ErrorException($http->response); 
+        } else {
+            throw new ErrorException('http error: '.$http->get_error());
         }
-        else $doc->loadXML('<exception xmlns="http://unact.net/xml/xi"><![CDATA['.$http->get_error().']]></exception>');
-    } catch (Exception $e){
-     $doc->loadxml("<exception xmlns='http://unact.net/xml/xi'>{$e->getMessage()}</exception>");
-    };
+    } catch (Exception $e) {
+        $doc->loadXML('<exception xmlns="http://unact.net/xml/xi"><![CDATA['.$e->getMessage().']]></exception>');
+    }
     
     $doc->documentElement->setAttribute('ts',dateAdd('+ 0 days'));
 
