@@ -36,10 +36,10 @@
     <concept name="op-payment" server="op.unact.ru">
         <select owner="op" sql-name="payment"/>
         
-        <property name="id" type="int" key="true"/>
+        <property name="id" type="int" key="true" label="ОП-ИД"/>
         <property name="xid" />
         
-        <property name="clientId" type="string" label="Пользовательский ИД"/>
+        <property name="clientId" type="string" label="Клиентский ИД"/>
         <property name="clientSessionTerminal" type="string" label="Терминальный ИД"/>
         
         <property name="summ" type="decimal" label="Сумма к зачислению"/>
