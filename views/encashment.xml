@@ -6,15 +6,17 @@
             <field name="name" />
             <field name="id" />
             <form name="branch-workday" label="Рабочий день отделения">
+                <parameter name="id-search" type="int" editable="true" label="ИД терминала" optional="true" />
                 <parameter name="date" type="date" editable="true" label="Рабочий день">
                     <init with="today"/>
                 </parameter>
                 <field name="date"/>
                 <field name="id" />
-                <form name="encashment" label="Произведенная инкассация" is-set="true">
+                <form name="encashment" label="Произведенная инкассация" is-set="true" page-size="15">
+					<join name="branch-workday" field="id-search" property="terminal-id"/>
                     <field name="xid" key="true"/>
                 	<field name="IncassID" key="true"/>
-                    <form name="catterminal" key="true">
+                    <form name="catterminal" key="true" constrain-parent-="true">
                         <form name="processing" >
                             <field name="name" label="Процессинг"/>
                         </form>
@@ -26,6 +28,7 @@
                 	<field name="datetime" label="Время инкассации" format='smalltime'/>
                 	<field name="cashed-system" label="Сумма из терминала" totals="sum"/>
                 	<field name="cashed-fact" label="Сумма реальная" editable="true" autofill="cashed-system" totals="sum"/>
+					<order-by name="terminalid"/>
                 </form>
             </form>
         </form>
@@ -35,6 +38,7 @@
             <display>
                 <input form="branch"/>
                 <input form="branch-workday" field="date"/>
+				<input form="branch-workday" field="id-search"/>
                 <grid form="encashment">
                     <group>
                         <by form="processing" field="name"/>

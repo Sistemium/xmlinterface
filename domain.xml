@@ -1329,6 +1329,7 @@
         <role name="catterminal" actor="catterminal" sql-name="pps_terminal"/>
         <role name="branch-workday" actor="branch-workday"/>
 
+        <property name="terminal-id" type="int" sql-name="terminalid"/>
         <property name="xid"/>
         <property name="IncassID" type="int" sql-name="IncassID"/>
         <property name="datetime" type="datetime" sql-name="EventDateTime"/>
