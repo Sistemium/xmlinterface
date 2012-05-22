@@ -343,7 +343,47 @@ function authenticate($login, $password, &$extraData) {
     }
     
     function getCounter() {
-        return isset($_SESSION['id-counter'])?$_SESSION['id-counter']:0;
+        return (isset($_SESSION) && isset($_SESSION['id-counter']))?$_SESSION['id-counter']:0;
     }
 
+    function pipeline( $name, $xmldata ) {
+        
+        $doc = new DOMDocument();
+        $doc -> appendChild ($doc -> importNode ($xmldata[0], true));
+        
+        return $doc;
+        
+    }
+    
+    function directoryList( $name, $path = '.' ) {
+        
+        $path = $path.'/'.$name;
+        
+        if ( $handle = opendir( $path ) ) {
+            
+            $doc = new DOMDocument();
+            $doc -> appendChild ($root = $doc -> createElementNS ('http://unact.net/xml/xi','directory'));
+            $root -> setAttribute('name', $name);
+            
+            while (false !== ($file = readdir($handle))) {
+                
+                $filePath = $path.'/'.$file;
+                
+                if (substr($file, 0, 1) != '.' ) {
+                    if (is_file($filePath))
+                       $root->appendChild( $doc->createElement('file', $file) );
+                    elseif ( is_dir($filePath) ) {
+                        if ($subdir = directoryList ($file, $path))
+                            $root -> appendChild ($doc -> importNode ($subdir -> documentElement, true));
+                    }
+                }
+                
+            }
+            closedir($handle);
+            
+            return $doc;
+        }
+     
+        return false;
+    }
 ?>
