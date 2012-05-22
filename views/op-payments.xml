@@ -18,7 +18,8 @@
             
             <form name="payment-set" concept="op" >
                 
-                <parameter name="acc" use-like="true" type="string" label="Строка поиска" editable="true" optional="true"/>
+                <parameter name="acc" use-like="true" type="string" label="Реквизиты" editable="true" optional="true"/>
+                <parameter name="id-search" type="int" label="ИД" editable="true" optional="true"/>
                 
                 <parameter name="cmp" type="boolean" label="Завершенные" editable="true" optional="true"/>
                 <parameter name="err" type="boolean" label="С ошибкой" editable="true" optional="true"/>
@@ -51,9 +52,9 @@
                         </where>
                     </form>
                     
-                    <join name="payment-set" field="acc" property="account">
-                        <join name="payment-set" field="acc" property="id"/>
-                    </join>
+                    <join name="payment-set" field="id-search" property="id"/>
+                    
+                    <join name="payment-set" field="acc" property="account"/>
                     
                     <join name="payment-set" field="cmp" property="final"/>
                     <join name="payment-set" field="err" property="op-error"/>
@@ -120,6 +121,7 @@
         <step name="home" label="Поиск платежей" >
             <display>
                 <input form="up-client" />
+                <input form="payment-set" field="id-search"/>
                 <input form="payment-set" field="acc"/>
                 <input form="payment-set" field="cmp"/>
                 <input form="payment-set" field="err"/>

@@ -198,11 +198,11 @@ function itemChanged (element) {
         $(element).attr('name',$(element).attr('id'));
         $(element).addClass('xiSent');
         
+        $(element).parents('.view').mask('Загрузка');
+        
         xijax(href);
         
     }
-    
-    $(element).parents('.view').mask('Загрузка');
     
 }
 
