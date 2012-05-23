@@ -17,7 +17,7 @@
             
             <form name="payment-set" concept="op" >
                 
-                <parameter name="acc" use-like="true" type="string" label="Реквизиты" editable="true" optional="true"/>
+                <parameter name="acc" type="string" label="Реквизиты" editable="true" optional="true"/>
                 <parameter name="id-search" type="int" label="ИД" editable="true" optional="true"/>
                 
                 <parameter name="cmp" type="boolean" label="Завершенные" editable="true" optional="true"/>
@@ -53,7 +53,7 @@
                     
                     <join name="payment-set" field="id-search" property="id"/>
                     
-                    <join name="payment-set" field="acc" property="account"/>
+                    <join name="payment-set" field="acc" property="accounts"/>
                     
                     <join name="payment-set" field="cmp" property="final"/>
                     <join name="payment-set" field="err" property="op-error"/>

@@ -590,7 +590,6 @@
             
         </xsl:variable>
         
-        <!-- suspected to bug -->
         <xsl:if test="normalize-space($where)!=''">
             
             <xsl:text>&#xD;</xsl:text>
@@ -650,7 +649,7 @@
             
             <xsl:if test="$value and ($property)">
                 
-                <xsl:if test="not($use/xi:between)">
+                <xsl:if test="not($use/xi:between or $property/self::xi:index)">
                     
                     <xsl:if test="$use/parent::xi:use">
                         <xsl:text> or </xsl:text>
@@ -697,7 +696,17 @@
                     
                 </xsl:if>
                 
+                <xsl:for-each select="$property/self::xi:index">
+                    <xsl:text>contains(</xsl:text>
+                    <xsl:value-of select="@sql-name"/>
+                    <xsl:text>, </xsl:text>
+                </xsl:for-each>
+                    
                 <xsl:apply-templates select="$value" mode="value"/>
+                
+                <xsl:for-each select="$property/self::xi:index">
+                    <xsl:text>)</xsl:text>
+                </xsl:for-each>
                 
                 <xsl:for-each select="$use/xi:between">
                     <xsl:text> between </xsl:text>
