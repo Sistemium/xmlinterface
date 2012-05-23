@@ -38,7 +38,7 @@
             <include href="main/workflow.xsl"/>
         </execute>
         <execute name="last" href="id.xsl" commit="true" >
-            <include href="stage-last.xsl"/>
+            <include href="main/stage-last.xsl"/>
         </execute>
         <execute name="out" href="datasync/datasync.xsl" output="xml"/>
     </pipeline>

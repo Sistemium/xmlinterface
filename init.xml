@@ -267,31 +267,31 @@
         <execute name="stage1" href="id.xsl">
             <include href="main/userinput.xsl"/>
         </execute>
-        <execute name="stage2" href="id.xsl">
+        <execute name="views" href="id.xsl">
             <include href="main/views.xsl"/>
             <include href="main/xpath-compute.xsl"/>
             <include href="main/synthesize.xsl"/>
         </execute>
-        <execute name="stage3" href="id.xsl">
+        <execute name="build1" href="id.xsl">
             <include href="main/data-build.xsl"/>
         </execute>
-        <execute name="stage4" href="id.xsl">
+        <execute name="extend" href="id.xsl">
             <include href="main/extend.xsl"/>
             <include href="main/data-build.xsl"/>
         </execute>
         <!--execute name="stage5" href="id.xsl">
             <include href="main/xmlq.xsl"/>
         </execute-->
-        <execute name="stage6" href="id.xsl">
+        <execute name="build2" href="id.xsl">
             <include href="main/data-build.xsl"/>
             <include href="main/data.xsl"/>
         </execute>
-        <execute name="stage7" href="id.xsl">
+        <execute name="postprocess" href="id.xsl">
             <include href="main/data-build.xsl"/>
             <include href="main/data-after.xsl"/>
             <include href="main/xpath-compute.xsl"/>
         </execute>
-        <execute name="stage8" href="id.xsl">
+        <execute name="dialogue" href="id.xsl">
             <include href="main/workflow.xsl"/>
             <include href="main/synthesize.xsl"/>
         </execute>

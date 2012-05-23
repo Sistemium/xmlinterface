@@ -1,14 +1,30 @@
 <?php
 include('functions.php');
 
-if (isset($_SERVER['REQUEST_METHOD'])) execute ();
-else execute ('init', 'cache', true);
+error_reporting ( E_ALL );
+set_error_handler( 'exceptions_error_handler' );
+    
+try { if (isset( $_SERVER['REQUEST_METHOD'] )){
+    
+    ob_start('ob_gzhandler');
+    execute ();
 
+} else die (
+    
+    'Not implemented'
+    
+);} catch ( Exception $e ){
+    
+    header('Content-Type: text/html');
+    header('Location:');
+    
+    print '<h1>Error</h1>';
+    print '<pre>'.$e.'</pre>';
+    
+}
 
 function execute ($config = 'init', $pipelineName = 'main', $disableOutput = false) {
     
-    ob_start("ob_gzhandler");
-
     $uri = $_SERVER["REQUEST_URI"];
     $qrs = $_SERVER["QUERY_STRING"];
     $requestMethod=isset($_SERVER['REQUEST_METHOD'])?$_SERVER['REQUEST_METHOD']:'CLI';
@@ -195,8 +211,6 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
 
     $Context=$uncommitted;
 
-    if ($tracing) $Context -> save('data/dump.'.$initName.'.'.$pipelineName.'.context.xml');
-    
 //    var_dump ($_REQUEST);
 //    echo $uncommitted->saveXML();
 //    die($uncommitted->saveXML());
@@ -204,10 +218,20 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     $xsl_task='';
     $pipeline='';
 
-    if (!isset($_SESSION['id-counter'])) $_SESSION['id-counter']=0;
+    if (!isset($_SESSION['id-counter']))
+        $_SESSION['id-counter']=0;
     
+    if ($tracing) { foreach (array('stats', 'dump') as $name)
+        if (!is_dir( $dir = 'data/'.$name.'/'.$initName.'/'.$pipelineName ))
+            mkdir($dir, 0777, true)
+        ;    
+        $Context -> save(
+            'data/dump/'.$initName.'/'.$pipelineName.'/context.xml'
+        );
+    }
 
     try { foreach ($config->pipeline as $pipeline) if ($pipeline['name'] == $pipelineName) {
+        
         foreach ($pipeline->execute as $xsl_task){
             $xsl->load($xsl_task['href']);
             $stagename=$xsl_task['name'];
@@ -219,7 +243,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             }
             
             $xslt->importStylesheet($xsl);
-            if ($tracing) $xslt->setProfiling('data/stats.'.$initName.'.'.$pipelineName.'.'.$stagename.'.txt');
+            if ($tracing) $xslt->setProfiling('data/stats/'.$initName.'/'.$pipelineName.'/'.$stagename.'.txt');
             
             $uncommitted->documentElement->setAttribute('stage',$stagename);
             
@@ -232,7 +256,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     $output->preserveWhiteSpace = false;
                     $output->formatOutput = false;
                     $output->loadXML($xslt->transformToDoc($uncommitted)->saveXML());
-                    if ($tracing) $output->save('data/dump.'.$initName.'.'.$pipelineName.'.'.$stagename.'.xml');
+                    if ($tracing) $output->save('data/dump/'.$initName.'/'.$pipelineName.'/'.$stagename.'.xml');
                     $result=$output->saveXML();
                 } else {
                     if (isset($_GET['file-name'])) {
@@ -267,9 +291,8 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                 $command=$uncommitted->documentElement->getAttribute('pipeline');            
                 $command=($command=='' && $stagename==$quitstage)?'quit':$command;
                 
-                if ($tracing){
-                    $uncommitted->save('data/dump.'.$initName.'.'.$pipelineName.'.'.$stagename.($repeatCount?"($repeatCount)":'').'.xml');
-                }
+                if ($tracing)
+                    $uncommitted->save('data/dump/'.$initName.'/'.$pipelineName.'/'.$stagename.($repeatCount?"($repeatCount)":'').'.xml');
                 
                 switch ($command) {
                     case 'quit':
