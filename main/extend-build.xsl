@@ -100,7 +100,7 @@
 			<xsl:if test="not(@type='delete')">
 				
 				<xsl:apply-templates select="self::xi:data[not(@role)][@is-new or @ts or @modified]
-				                            /parent::xi:data[key('id',@ref)/@concept=$model/xi:concept[@name=$concept]/*/@actor]"
+				                            /ancestor::xi:data[1][key('id',@ref)/@concept=$model/xi:concept[@name=$concept]/*/@actor]"
 									 mode="build-set">
 					<xsl:with-param name="sql-name" select="key('id',@ref)/@parent-sql-name"/>
 				</xsl:apply-templates>

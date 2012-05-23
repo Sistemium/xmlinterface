@@ -74,10 +74,10 @@
         
         <xsl:apply-templates select="key('id',@ref)" mode="build-data">
             <xsl:with-param name="data" select="key('id',xi:chosen/@ref)"/>
-            <xsl:with-param name="oldid" select="@id"/>
+            <xsl:with-param name="choose-for" select="@id"/>
         </xsl:apply-templates>
         
-        <xsl:comment>choosing for=<xsl:value-of select="@id"/></xsl:comment>
+        <!--xsl:comment>choosing for=<xsl:value-of select="@id"/></xsl:comment-->
         
     </xsl:template>
 
@@ -146,6 +146,12 @@
                 
             </xsl:for-each>
             
+            <xsl:if test="not($data-set) and $metadata/@extendable">
+                <xsl:apply-templates select="$metadata" mode="build-data">
+                    <xsl:with-param name="set-thrshld" select="1"/>
+                </xsl:apply-templates>
+            </xsl:if>
+            
         </set-of>
         
     </xsl:template>
@@ -156,12 +162,12 @@
         
         <xsl:param name="data" select="xi:null" />
         <xsl:param name="type" />
-        <xsl:param name="oldid" />
+        <xsl:param name="choose-for" />
         <xsl:param name="set-thrshld" select="1 - count(@is-set)"/>
         
         <xsl:variable name="metadata" select="."/>
         
-        <xsl:variable name="data-set" select="$data[@name=$metadata/@name][self::xi:data]"/>
+        <xsl:variable name="data-set" select="$data[@name=$metadata/@name or $choose-for][self::xi:data]"/>
         
         <xsl:variable name="choosing"
                 select="$data-set and (
@@ -176,12 +182,10 @@
         
         <xsl:choose>
             
-            <xsl:when test="count($data-set) > $set-thrshld and $metadata/@is-set">
-                <!-- $data-set/ancestor::xi:result-set/xi:response/xi:data[@ref=$metadata/@id] -->
+            <xsl:when test="(count($data-set) > $set-thrshld and $metadata[@is-set]) or $metadata[@is-set and @extendable and $set-thrshld=0]">
                 <xsl:call-template name="build-set-of">
                     <xsl:with-param name="data" select="$data-set"/>
-                </xsl:call-template>
-                
+                </xsl:call-template>                
             </xsl:when>
             
             <xsl:when test="$data[@name=$metadata/@name]/self::xi:preload">
@@ -214,8 +218,8 @@
                         </xsl:attribute>
                         
                         <xsl:if test="$metadata/@choise">
-                            <xsl:if test="$oldid">
-                                <xsl:attribute name="id"><xsl:value-of select="$oldid"/></xsl:attribute>
+                            <xsl:if test="$choose-for">
+                                <xsl:attribute name="id"><xsl:value-of select="$choose-for"/></xsl:attribute>
                             </xsl:if>
                             <xsl:attribute name="modified">chosen</xsl:attribute>
                         </xsl:if>
@@ -285,7 +289,7 @@
                                 
                             </xsl:for-each>
                             
-                            <xsl:apply-templates select="$data/parent::xi:set-of[$choosing]"/>
+                            <xsl:apply-templates select="$data/parent::xi:set-of[$choosing and not($metadata/@choise)]"/>
                             
                         </xsl:when>
                         
@@ -299,7 +303,7 @@
                                     self::*[not(@choise)]/xi:form[xi:parameter or @new-only]
                                 " mode="build-data"
                             />
-                            <xsl:comment>data-build-otherwise:<xsl:copy-of select="count($data)"/></xsl:comment>                            
+                            <!--xsl:comment>data-build-otherwise:<xsl:copy-of select="count($data)"/></xsl:comment-->
                         </xsl:otherwise>
                         
                     </xsl:choose>
