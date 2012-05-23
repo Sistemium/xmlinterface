@@ -15,7 +15,9 @@
    
    "/>
    
-   <xsl:template match="*[xi:set-of/@close-siblings]/xi:set-of[not(@close-siblings)]/*" priority="1001"/>
+    <xsl:template match="*[xi:set-of/@close-siblings]/xi:set-of[not(@close-siblings)]/*[@name=parent::*/*[@close-siblings]/@name]" priority="1001">
+        <xsl:comment>removed by close-siblings</xsl:comment>
+    </xsl:template>
    
    
    <xsl:template match="xi:view//*[not(@ref)][@form and @field]" mode="extend">
