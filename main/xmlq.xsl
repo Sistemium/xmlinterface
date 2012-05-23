@@ -46,7 +46,7 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:result-set//*/@* | xi:result-set//*[not(*)]">
+    <xsl:template match="xi:result-set//*/@* | xi:result-set//*[not(* or parent::xi:result-set)]">
         <datum name="{local-name()}">
             <xsl:value-of select="."/>
         </datum>
@@ -77,7 +77,7 @@
         <xsl:apply-templates select="*"/>
     </xsl:template>
 
-    <xsl:template match="xi:result-set//*[* or @*]">
+    <xsl:template match="xi:result-set//*[* or @* or parent::xi:result-set]">
         <data name="{local-name()}">
             <xsl:apply-templates select="@*|node()"/>
         </data>

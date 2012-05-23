@@ -15,7 +15,6 @@
             <field name="id"/>
             <field name="name" label="Клиент"/>
             
-            
             <form name="payment-set" concept="op" >
                 
                 <parameter name="acc" use-like="true" type="string" label="Реквизиты" editable="true" optional="true"/>
@@ -121,10 +120,10 @@
         <step name="home" label="Поиск платежей" >
             <display>
                 <input form="up-client" />
-                <input form="payment-set" field="id-search"/>
-                <input form="payment-set" field="acc"/>
-                <input form="payment-set" field="cmp"/>
-                <input form="payment-set" field="err"/>
+                <input field="id-search"/>
+                <input field="acc"/>
+                <input field="cmp"/>
+                <input field="err"/>
                 <grid form="op-payment" hide-empty="true">
                     <option name="process" label="...">
                         <command name="op-payments">pmt-detail</command>

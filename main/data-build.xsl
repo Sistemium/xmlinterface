@@ -257,16 +257,16 @@
                             
                         </xsl:when>
                         
-                        <xsl:when test="$data-set and (count($data/*)!=0 or not(xi:field))">
+                        <xsl:when test="$data-set and (count($data/*)!=0 or not($metadata/xi:field))">
                             
                             <xsl:apply-templates select="$data/parent::xi:result-set[not($type)]" mode="build-data"/>
                             <xsl:apply-templates select="$data/parent::set-of[not($type)]/../xi:datum[@type='parameter']" />
                             
                             <xsl:for-each select="*[not(self::xi:copy) and
                                                     not(self::xi:parameter
-                                                            and ($type or $data/parent::xi:result-set
-                                                                or
-                                                                $data/parent::xi:set-of[@is-choise]
+                                                            and ($type
+                                                                 or $data/parent::xi:result-set
+                                                                 or $data/parent::xi:set-of[@is-choise]
                                                                 )
                                                     )]"
                             >
@@ -290,7 +290,6 @@
                         </xsl:when>
                         
                         <xsl:otherwise>
-                            
                             <xsl:apply-templates
                                 select="
                                     self::*[not($type or @choise)][@build-blank or @new-only or @extendable]/*
@@ -300,7 +299,7 @@
                                     self::*[not(@choise)]/xi:form[xi:parameter or @new-only]
                                 " mode="build-data"
                             />
-                            
+                            <xsl:comment>data-build-otherwise:<xsl:copy-of select="count($data)"/></xsl:comment>                            
                         </xsl:otherwise>
                         
                     </xsl:choose>
