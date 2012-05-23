@@ -1009,7 +1009,7 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:datum[*[count(@*) &gt; 1]]" mode="xml-print">
+    <xsl:template match="xi:datum[*[count(@*) &gt; 1]]" mode="xml-print" priority="1000">
         <xsl:param name="this" select="."/>
         <div class="tabs">
             <ul>
