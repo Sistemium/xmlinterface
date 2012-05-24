@@ -39,12 +39,16 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="xi:view[xi:menu[xi:option[@chosen][@name='refresh']]]/xi:view-data
-                        //xi:data[key('id',@ref)[@new-only or xi:parameter[@editable and not(@optional)]]
-                                    and not(ancestor::xi:data/xi:response[@ts]/xi:exception|descendant::xi:exception)
-                                 ]
-                        |xi:view-data//*[@refresh-this and key('id',@ref)/@new-only and not(descendant::xi:exception)]"
-                  priority="1000">
+    <xsl:template
+        match="xi:view [xi:menu[xi:option[@chosen][@name='refresh']]]/
+                xi:view-data
+                //xi:data[key('id',@ref)[@new-only or xi:parameter[@editable and not(@optional)]]
+                            and not(ancestor::xi:data/xi:response[@ts]/xi:exception|descendant::xi:exception)
+                ]
+                |xi:view-data//*
+                 [@refresh-this and key('id',@ref)/@new-only and not(descendant::xi:exception)]
+        " priority="1000"
+    >
       
         <xsl:apply-templates select="key('id',@ref)" mode="build-data">
             <xsl:with-param name="olddata" select="."/>

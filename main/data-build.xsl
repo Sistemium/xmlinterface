@@ -50,7 +50,9 @@
                         "
     />
     
-    <xsl:template match="xi:data[@remove-this]"/>
+    <xsl:template match="
+        xi:data[@remove-this]
+    "/>
 
     <xsl:template match="xi:data[@delete-this]/@undelete-this">
         <xsl:attribute name="deletable">true</xsl:attribute>
@@ -266,18 +268,23 @@
                             <xsl:apply-templates select="$data/parent::xi:result-set[not($type)]" mode="build-data"/>
                             <xsl:apply-templates select="$data/parent::set-of[not($type)]/../xi:datum[@type='parameter']" />
                             
-                            <xsl:for-each select="*[not(self::xi:copy) and
-                                                    not(self::xi:parameter
-                                                            and ($type
-                                                                 or $data/parent::xi:result-set
-                                                                 or $data/parent::xi:set-of[@is-choise]
-                                                                )
-                                                    )]"
+                            <xsl:for-each select="*
+                                [not(self::xi:copy) and
+                                 not(self::xi:parameter
+                                     and ($type
+                                         or $data/parent::xi:result-set
+                                         or $data/parent::xi:set-of[@is-choise]
+                                    )
+                                )]"
                             >
                                 <xsl:apply-templates select="." mode="build-data">
                                     <xsl:with-param name="data"
                                                     select="
-                                                        $data/*
+                                                        $data/*[not(self::xi:set-of)]
+                                                            [@ref=current()/@id or (not(@ref=current()/@id) and @name=current()/@name)]
+                                                            [not(@type='parameter' or xi:set-of[@is-choise])]
+                                                        |
+                                                        $data/xi:set-of/*
                                                             [@ref=current()/@id or (not(@ref=current()/@id) and @name=current()/@name)]
                                                             [not(@type='parameter' or xi:set-of[@is-choise])]
                                                         |
