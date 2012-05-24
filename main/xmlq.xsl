@@ -771,10 +771,16 @@
                 <xsl:text>)</xsl:text>
             </xsl:if>
             
+            <xsl:text> as </xsl:text>
+            <xsl:apply-templates select="$request/@name" mode="doublequoted"/>
+            
+            <xsl:for-each select="$this[current()[not(@type='procedure')]]/*[@name=$request/xi:order-by[1][@use-sql-index]/@name]/@sql-index">
+                <xsl:text>force index(</xsl:text>
+                <xsl:value-of select="."/>
+                <xsl:text>)</xsl:text>
+            </xsl:for-each>
+            
         </xsl:for-each>
-        
-        <xsl:text> as </xsl:text>
-        <xsl:apply-templates select="$request/@name" mode="doublequoted"/>
         
     </xsl:template>
 

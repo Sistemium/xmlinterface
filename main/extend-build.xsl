@@ -346,7 +346,7 @@
     </xsl:template>
 
     <xsl:template match="xi:order-by" mode="build-subrequest">
-	<xsl:copy-of select="."/>
+		<xsl:copy-of select="."/>
     </xsl:template>
 
 <!--  join @name @field-value 

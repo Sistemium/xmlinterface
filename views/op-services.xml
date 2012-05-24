@@ -63,7 +63,7 @@
                     </where>
                 </form>
                 
-                <order-by name="ts" dir="desc"/>
+                <order-by name="ts" dir="desc" use-sql-index="true"/>
                 
             </form>
             
