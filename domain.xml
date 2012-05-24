@@ -56,7 +56,7 @@
         <property name="virtualCard" type="string"/>
         
         <property name="cts" type="datetime" label="Когда создан" />
-        <property name="ts" type="datetime" label="Последнее изменение"/>
+        <property name="ts" type="datetime" label="Последнее изменение" sql-index="xk_payment_ts"/>
         
         <role name="op-legalentity" actor="op-legalentity" sql-name="legalentity" />
         <role name="op-service" actor="op-service" sql-name="service" />        
@@ -65,7 +65,6 @@
         <role name="up-file" actor="up-file" sql-name="CSVFile" />
         
         <index name="accounts" sql-name="account, extra" label="Слова в реквизитах"/>
-        
     </concept>
 
     <concept name="op-payment-process" server="op.unact.ru">
