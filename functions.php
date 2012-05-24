@@ -12,8 +12,6 @@ function exceptions_error_handler($errno, $errstr, $errfile, $errline, $errconte
 };
 
 
-set_error_handler('exceptions_error_handler'); 
-
 function dateAdd ($shift = 0, $start = 'now') {
     return date('Y/m/d G:i:s',strtotime($shift,strtotime($start)));
 }
@@ -386,4 +384,15 @@ function authenticate($login, $password, &$extraData) {
      
         return false;
     }
+    
+    function rmdirfiles($dir) {
+        foreach(glob($dir . '/*') as $file) {
+            if(is_dir($file))
+                rrmdir($file);
+            else
+                unlink($file);
+        }
+    }
+
+    
 ?>
