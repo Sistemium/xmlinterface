@@ -77,11 +77,11 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="xi:data[not(xi:datum[@type='field'])]/xi:set-of[@is-choise][/*/xi:userinput/*[text()='next']/@name=../@name]"/>
+    <xsl:template match="xi:set-of[@is-choise][parent::xi:data[not(xi:datum[@type='field']) and @name = /*/xi:userinput/*[text()='next']/@name]]" priority="1000"/>
 
     <xsl:template match="xi:set-of[@is-choise]">
         <choise>
-            <xsl:copy-of select="@*"/>
+            <xsl:copy-of select="@id"/>
             <xsl:attribute name="options-count">
                 <xsl:value-of select="count(xi:data)"/>
             </xsl:attribute>
@@ -100,7 +100,7 @@
     </xsl:template>
 
     <xsl:template match="xi:data|xi:set-of">
-        <xsl:apply-templates select="xi:data|xi:set-of"/>
+        <xsl:apply-templates select="xi:data"/>
     </xsl:template>
 
     <xsl:template match="xi:data[@remove-this|@is-new]" priority="1000"/>

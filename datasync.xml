@@ -55,7 +55,7 @@
             <include href="main/extend.xsl"/>
             <include href="main/data-build.xsl"/>
         </execute>
-        <execute name="4" href="id.xsl">
+        <execute name="last" href="id.xsl">
             <include href="main/data-build.xsl"/>
             <include href="main/data.xsl"/>
         </execute>
