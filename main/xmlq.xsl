@@ -287,10 +287,10 @@
         <xsl:if test="parent::xi:data-request">
             <xsl:choose>
                <xsl:when test="@constrain-parent">
-                  <xsl:text> outer</xsl:text>
+                  <xsl:text> cross</xsl:text>
                </xsl:when>
                <xsl:otherwise>
-                  <xsl:text> outer</xsl:text>
+                  <xsl:text> cross</xsl:text>
                </xsl:otherwise>
             </xsl:choose>
             <xsl:text> apply </xsl:text>
@@ -499,7 +499,7 @@
             <xsl:text> ) as </xsl:text>
             <xsl:apply-templates select="@name" mode="doublequoted"/>
             <xsl:text>&#xD;</xsl:text>
-            <xsl:text> outer apply </xsl:text>
+            <xsl:text> cross apply </xsl:text>
         </xsl:for-each>
         
         <xsl:if test="@page-size">
