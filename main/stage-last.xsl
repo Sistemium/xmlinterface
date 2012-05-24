@@ -19,7 +19,7 @@
   
     <!--xsl:import href="stage-last-import.xsl"/-->
     <xsl:output method="xml" indent="no" encoding="utf-8"/> 
-    
+    <xsl:template match="xi:views[not(*)]"/>
     <xsl:template match="xi:view/@justopen"/>
     <xsl:template match="xi:view[@justopen][not(xi:view-schema[descendant::xi:field[@editable or @name='xid'] or descendant::xi:form[@choise or @deletable or @extendable]])]/xi:menu/xi:option[@name='save']"/>
     

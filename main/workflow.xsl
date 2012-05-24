@@ -13,6 +13,8 @@
             Отобразить поля ввода и статику
      -->
 
+    <xsl:template match="xi:menu[not(*)]"/>
+    
     <xsl:template match="xi:datum[@editable='file']/text()|xi:datum[@editable='file']/@modified"/>
     <xsl:template match="xi:datum[@editable='file-name']/@modified"/>
     <xsl:template match="xi:data[xi:datum[@editable='file']]/@persist-this"/>

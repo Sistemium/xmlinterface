@@ -18,7 +18,13 @@
         <xsl:copy-of select=".|document(.)/*/@*"/>
     </xsl:template>
 
-    <xsl:template match="xi:context-extension//xi:option/node()|xi:context-extension//text()|xi:context-extension//comment()"/>
+    <xsl:template match="
+        xi:access
+        |
+        xi:context-extension//text()
+        |
+        xi:context-extension//comment()"
+    />
 
     <xsl:template match="xi:context-extension//*[xi:access]">
         <xsl:if test="not(xi:access[not($session/xi:role/@name = @role)])">
