@@ -235,9 +235,9 @@
                 <!--xsl:apply-templates select="self::xi:data[not(@role)]/parent::xi:data" mode="parameter"/-->
     	        <etc>
         	        <xsl:apply-templates
-                        select="ancestor::xi:data[not(ancestor::xi:choise)]
+                        select="ancestor::xi:data[not(ancestor::xi:set-of[@is-choise])]
 						       |preceding-sibling::xi:data/descendant-or-self::xi:data
-							    [@name=$form//xi:join/@name][not(ancestor::xi:choise)]
+							    [@name=$form//xi:join/@name][not(ancestor::xi:set-of[@is-choise])]
 						       " mode="parameter"/>
     	        </etc>
             </xsl:if>

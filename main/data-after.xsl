@@ -97,21 +97,12 @@
          
    "/>
 
-   <xsl:template
-      match="
-         
-         xi:option[not(@id)]
-         |
-         xi:choise[not(@id)]
-         |
-         xi:set-of[not(@id)]
-         
-      " mode="extend"
-   >
-      
-      <xsl:apply-templates select="." mode="build-id"/>
-      
-   </xsl:template>
+    <xsl:template
+        match="xi:option[not(@id)] | xi:choise[not(@id)] | xi:set-of[not(@id)]"
+        mode="extend"
+    >
+        <xsl:apply-templates select="." mode="build-id"/>
+    </xsl:template>
 
    <xsl:template match="xi:data[@id][xi:set-of[@is-choise] and not(@choise)]" mode="extend" name="build-choise-ref">
        <xsl:apply-templates select="xi:set-of[@is-choise]" mode="build-id">

@@ -78,7 +78,7 @@
 
 			<xsl:apply-templates select="$xmlq-nodes"/>
 			<xsl:apply-templates select="xi:data|xi:datum|xi:extender|xi:chosen|xi:set-of[not(@is-choise)]"/>
-			<xsl:copy-of select="xi:choise[@is-choise]"/>
+			<xsl:copy-of select="xi:set-of[@is-choise]"/>
 		</xsl:copy>
     </xsl:template>
 

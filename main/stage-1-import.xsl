@@ -65,7 +65,11 @@
     </xsl:template>
     
     <xsl:template match="xi:menu/xi:option">
-        <xsl:if test="$userinput[@name=current()/ancestor::xi:view/xi:workflow/xi:step/xi:choise/xi:option[xi:command/@name=current()/@name]/@id or ((@name=current()/../../@name or @name=local-name(current()/../..)) and text()=current()/@name)]">
+        <xsl:if test="$userinput[@name = current()/ancestor::xi:view/xi:workflow/xi:step/xi:choise/xi:option
+                                        [xi:command/@name=current()/@name]/@id
+                                    or ((@name=current()/../../@name or @name=local-name(current()/../..)) and text()=current()/@name)
+                                ]"
+        >
             <xsl:attribute name="chosen">true</xsl:attribute>
         </xsl:if>
     </xsl:template>
