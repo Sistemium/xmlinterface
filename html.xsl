@@ -1527,27 +1527,33 @@
     <xsl:template match="xi:session-control[/*/xi:session[@authenticated]]">
        <form id="session-wrapper" name="session-form" method="post" action="?">
            <xsl:attribute name="class">authenticated</xsl:attribute>
-            <xsl:for-each select="/*[not(xi:userinput/@spb-agent)]/xi:views[xi:view]/xi:menu[xi:option[@name][2]]">
+           
+            <xsl:for-each select="/*[not(xi:userinput/@spb-agent)]/xi:views[xi:view][count(xi:menu[@label]/xi:option)&gt;1]">
                 <div class="select">
                     <select name="views" onchange="viewChange(this)">
-                        <option selected="selected"><xsl:value-of select="@label"/></option>
-                        <xsl:for-each select="xi:option[@name]">
-                            <option>
-                                <xsl:attribute name="value">
-                                    <xsl:value-of select="@name"/>
-                                    <xsl:if test="@pipeline">
-                                        <xsl:value-of select="concat('&amp;pipeline=',@pipeline)"/>
-                                    </xsl:if>
-                                </xsl:attribute>
-                                <xsl:if test="ancestor::xi:views/xi:view[@name=current()/@name]">
-                                    <xsl:attribute name="class">open</xsl:attribute>
-                                </xsl:if>
-                                <xsl:value-of select="@label"/>
-                            </option>
+                        <option selected="selected">Выберите программу ...</option>
+                        <xsl:for-each select="xi:menu[@label]">
+                            <optgroup label="{@label}">
+                                <xsl:for-each select="xi:option[@name]">
+                                    <option>
+                                        <xsl:attribute name="value">
+                                            <xsl:value-of select="@name"/>
+                                            <xsl:if test="@pipeline">
+                                                <xsl:value-of select="concat('&amp;pipeline=',@pipeline)"/>
+                                            </xsl:if>
+                                        </xsl:attribute>
+                                        <xsl:if test="ancestor::xi:views/xi:view[@name=current()/@name]">
+                                            <xsl:attribute name="class">open</xsl:attribute>
+                                        </xsl:if>
+                                        <xsl:value-of select="@label"/>
+                                    </option>
+                                </xsl:for-each>
+                            </optgroup>
                         </xsl:for-each>
                     </select>
                 </div>
             </xsl:for-each>
+            
             <div class="field">
                 <label for="session-username"><span>Имя</span><span class="colon">:</span></label>
                 <span id="session-username"><xsl:value-of select="/*/xi:session/@username"/></span>
