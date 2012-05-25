@@ -154,22 +154,8 @@
         <role ref="call-center"/>
     </user>
 
-    <user name="dnaumov">
-        <role ref="storage"/>
-    </user>
-
-
     <user name="sudakov">
         <role ref="osmp-logistic"/>
-    </user>
-
-    <user name="s.materikina">
-        <role ref="osmp"/>
-        <role ref="main"/>
-    </user>
-
-    <user name="lymarev">
-        <role ref="findir"/>
     </user>
 
     <user name="sasha" admin="true" password-="1">
@@ -190,13 +176,6 @@
         <role ref="subdealer"/>
     </user>
 
-    <user name="yuri" >
-        <role ref="beta"/>
-        <role ref="osmp"/>
-        <role ref="main"/>
-        <role ref="cashier"/>
-    </user>
-    
     <user name="spilnik">
         <role ref="subdealer"/>
         <role ref="sales"/>
@@ -265,27 +244,6 @@
         <role ref="master"/>
     </user>
 
-    <user name="ojakunina" >
-        <role ref="fotonova"/>
-        <role ref="sync"/>
-    </user>
-    
-    <user name="ihicenko" >
-        <role ref="fotonova"/>
-        <role ref="sync"/>
-    </user>
-    
-    <user name="ademenchuk" >
-        <role ref="fotonova"/>
-        <role ref="sync"/>
-    </user>
-    
-    <user name="yposadskiy" >
-        <role ref="fotonova"/>
-        <role ref="sync"/>
-        <role ref="storage"/>
-    </user>
-    
     <user name="nairagnihton" password="1">
         <role ref="salesman"/>
     </user>
