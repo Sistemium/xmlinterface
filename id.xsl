@@ -1,9 +1,11 @@
 <?xml version="1.0" ?>
 <xsl:transform version="1.0"
- xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
- xmlns:xi="http://unact.net/xml/xi"
- xmlns:php="http://php.net/xsl"
- exclude-result-prefixes="php"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xi="http://unact.net/xml/xi"
+    xmlns:php="http://php.net/xsl"
+    xmlns:func="http://exslt.org/functions"
+    extension-element-prefixes="func"
+    exclude-result-prefixes="php func"
 >
     <xsl:output method="xml" indent="no" encoding="utf-8"/>  
     
@@ -71,5 +73,13 @@
         
     </xsl:template>
 
+    <func:function name="xi:isnull">
+        <xsl:param name="a" select="xi:null"/>
+        <xsl:param name="b" select="xi:null"/>
+        <xsl:value-of select="$a"/>
+        <xsl:if test="not($a)">
+            <xsl:value-of select="$b"/>
+        </xsl:if>
+    </func:function>
  
 </xsl:transform>
