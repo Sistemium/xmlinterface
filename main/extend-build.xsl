@@ -22,7 +22,10 @@
     <xsl:template name="needrefresh"
 				  match="xi:data[@refresh-this]
 						|xi:set-of[@refresh-this][not(@refresh-this='prev' and @page-start=0)]
-				        |xi:view-data//xi:preload[not(ancestor::xi:set-of[@is-choise] or @pipeline[not(.=/*/@pipeline-name)])]
+				        |xi:view-data//xi:preload
+							[not( ancestor::xi:set-of[@is-choise] )]
+							[not( @pipeline[not(.=/*/@pipeline-name)] )]
+							[not( @preload ) or @refresh-this]
 						">
 		<xsl:copy>
 			
@@ -279,10 +282,11 @@
     <xsl:template match="xi:form[@new-only or xi:parameter[not(@optional) and not(xi:init)]]" mode="build-subrequest"/>
 
     <xsl:template match="xi:form[@expect-choise]/xi:form[not(@no-preload)]
-						|xi:form[@pipeline][not(@pipeline=/*/@pipeline-name)]"
+						|xi:form[@pipeline][not(@pipeline=/*/@pipeline-name)]
+						|xi:form[@preload]"
 				  mode="build-subrequest" >
         <preload id="{php:function('uuidSecure','')}" ref="{@id}">
-            <xsl:copy-of select="@name|@pipeline"/>
+            <xsl:copy-of select="@name|@pipeline|@preload"/>
         </preload>
     </xsl:template>
 	

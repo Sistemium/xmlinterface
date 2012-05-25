@@ -4,6 +4,8 @@
     
     <view-schema> <form name="op-agent"> 
         
+        <field name="id"/>
+        
         <parameter name="name">
             <init with="username"/>
         </parameter>
@@ -12,7 +14,11 @@
             <init with="userinput"/>
         </parameter>
         
-        <field name="id"/>
+        <parameter name="searcher" editable="true"
+                   type="string" use-like="true"
+                   optional="true" property="none"
+                   label="Поиск"
+        />
         
         <form name="op-service" label="Услуга" what-label="Услугу" set-label="Услуги" page-size="15">
             
@@ -27,25 +33,9 @@
             <field name="restrictedFee" />
             
             <join name="op-agent" field="xid" />
+            <join name="op-agent" field="searcher" property="name" />
             
-        </form>
-        
-        <form name="service-details" concept="op-service">
-            
-            <field name="id"/>
-            
-            <field name="name" />
-            <field name="code" />
-            <field name="terms" />
-            <field name="etc" />
-            <field name="inUse" />
-            <field name="successfulPayment" />
-            <field name="disabled" />
-            <field name="restrictedFee" />
-            
-            <parameter name="details-xid" modifiable="true" property="xid"/>
-            
-            <form name="op-payment" is-set="true" label="Платежи процессинга" page-size="10">
+            <form name="op-payment" is-set="true" label="Платежи процессинга" page-size="10" preload="true">
                 
                 <field name="id"/>
                 <field name="ts"/>
@@ -63,7 +53,7 @@
                     </where>
                 </form>
                 
-                <order-by name="ts" dir="desc" use-sql-index="true"/>
+                <order-by name="ts" dir="desc"/>
                 
             </form>
             
@@ -73,29 +63,47 @@
     
     <workflow name="master">
         
-        <step name="home" >
+        <step name="index" >
+            
             <display>
-                <print form="op-service" field="searcher"/>
-                <print form="op-service" field="*"/>
+                <input form="op-agent" field="searcher"/>
+                
+                <region label="Услуга">
+                    <print form="op-service" field="*"/>
+                </region>
             </display>
+            
             <choise>
-                <option label="Платежи процессинга">
-                    <command name="details-xid" xpath-compute="ancestor::xi:view/xi:view-data/*/xi:datum[@name='xid']"/>
+                <option label="Платежи по услуге">
+                    <command name="set-of-op-payment">refresh</command>
                     <command name="op-services">display-payments</command>
                 </option>
             </choise>
+            
         </step>
         
         <step name="display-payments" hidden="true">
+            
             <display>
-                <print form="service-details" field="name"/>
                 <region class="tabs">
-                    <grid form="op-payment" hide-empty="true" label="Последние платежи"/>
+                    <grid form="op-payment" hide-empty="true" label="Последние платежи">
+                        <group>
+                            <by field="name" form="op-service"/>
+                        </group>
+                    </grid>
                     <region label="Детали услуги">
-                        <print form="service-details" field="*"/>
+                        <print form="op-service" field="*"/>
                     </region>
                 </region>
             </display>
+            
+            <choise>
+                <option label="Поиск услуги">
+                    <command name="op-payment">preload</command>
+                    <command name="op-services">index</command>
+                </option>
+            </choise>
+            
         </step>
         
     </workflow>

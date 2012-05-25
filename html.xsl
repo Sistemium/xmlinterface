@@ -431,7 +431,7 @@
             <div class="exception">
                 <span><xsl:value-of select="concat('Уточните [',@what-label,']')"/></span>
             </div>
-            <xsl:for-each select="key('id',@ref)/xi:set-of/*">
+            <xsl:for-each select="key('id',@ref)/xi:set-of/xi:data">
                 <div class="option">
                     <label for="{@id}">
                         <xsl:value-of select="xi:datum[@name='name']"/>
@@ -469,7 +469,7 @@
                 </tr>
             </thead>
             <tbody>
-                <xsl:for-each select="key('id',@ref)/xi:set-of[@is-choise]/*">
+                <xsl:for-each select="key('id',@ref)/xi:set-of[@is-choise]/xi:data">
                     <xsl:variable name="currentOption" select="."/>
                     <tr class="option">
                         <xsl:for-each select="$column">

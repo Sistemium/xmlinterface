@@ -266,7 +266,12 @@
                         <xsl:when test="$data-set and (count($data/*)!=0 or not($metadata/xi:field))">
                             
                             <xsl:apply-templates select="$data/parent::xi:result-set[not($type)]" mode="build-data"/>
-                            <xsl:apply-templates select="$data/parent::set-of[not($type)]/../xi:datum[@type='parameter']" />
+                            <xsl:apply-templates select="
+                                    $data/parent::set-of[not($type)]/../xi:datum
+                                    [@type='parameter']
+                                    [not(key('id',@ref)/xi:init[@with='userinput'])]
+                                "
+                            />
                             
                             <xsl:for-each select="*
                                 [not(self::xi:copy) and
@@ -346,22 +351,33 @@
             parent::xi:response/parent::*/*
             
             [self::xi:datum[@type='parameter'] or self::xi:set-of[@is-choise]]
-            | parent::xi:response/xi:sql-
-            
+            [not(key('id',@ref)/xi:init[@with='userinput'])]
         "/>
         
     </xsl:template>
 
 
     <xsl:template match="xi:preload[key('id',@ref)[not(xi:parameter) or xi:parameter[xi:init]]]" mode="build-data">
+        
         <xsl:param name="data" select="."/>
+        
         <xsl:copy>
-            <xsl:copy-of select="@*"/>
+            
+            <xsl:copy-of select=" @* | key('id',@ref)/@preload "/>
+            
+            <xsl:for-each select="key('id',@ref)[@is-set]">
+                <xsl:attribute name="name">
+                    <xsl:value-of select="concat('set-of-',@name)"/>
+                </xsl:attribute>
+            </xsl:for-each>
             <xsl:apply-templates select="key('id',@ref)/xi:natural-key" mode="build-data">
                 <xsl:with-param name="data" select="$data"/>
             </xsl:apply-templates>
+            
             <xsl:apply-templates select="key('id',@ref)/xi:parameter" mode="build-data"/>
+            
         </xsl:copy>
+        
     </xsl:template>
 
 

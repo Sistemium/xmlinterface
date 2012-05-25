@@ -115,12 +115,13 @@
     <xsl:template match="
         
         xi:view//xi:data
-        
-        [not(ancestor::xi:set-of[@is-choise]) or @removable]
-        
+            [not(ancestor::xi:set-of[@is-choise]) or @removable]
         |
-        
         xi:view//xi:set-of
+            [not(ancestor::xi:set-of[@is-choise]) or @removable]
+        |
+        xi:view//xi:preload[@preload]
+            [not(ancestor::xi:set-of[@is-choise]) or @removable]
         
     ">
         
