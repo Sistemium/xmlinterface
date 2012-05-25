@@ -130,7 +130,7 @@
                     ($userinput
                      |key('id',ancestor::xi:view/xi:dialogue/@current-step)
                       //xi:option[@id=$userinput/@name]/xi:command
-                    )[@name=current()/@name or @name=current()/@id
+                    )[@name=current()[not(self::xi:set-of and preceding-sibling::xi:set-of/@name=@name)]/@name or @name=current()/@id
                       or (@ref=current()/@ref and $userinput[text()=current()/@id]/@name=../@id)
                      ]
         "/>

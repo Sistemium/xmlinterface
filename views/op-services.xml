@@ -20,13 +20,17 @@
                    label="Поиск"
         />
         
-        <form name="op-service" label="Услуга" what-label="Услугу" set-label="Услуги" page-size="15">
+        <form name="op-service"
+              label="Услуга" what-label="Услугу"
+              set-label="Услуги" page-size="15"
+              choise-style="table"
+        >
             
             <field name="id" />
             <field name="name" />
             <field name="code" />
-            <field name="terms" />
-            <field name="etc" />
+            <field name="terms" hidden="true" />
+            <field name="etc" hidden="true"/>
             <field name="inUse" />
             <field name="successfulPayment" />
             <field name="disabled" />
@@ -99,7 +103,6 @@
             
             <choise>
                 <option label="Поиск услуги">
-                    <command name="op-payment">preload</command>
                     <command name="op-services">index</command>
                 </option>
             </choise>

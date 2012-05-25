@@ -18,6 +18,9 @@
     <xsl:template match="xi:view/xi:exception|xi:view[xi:dialogue[xi:events/xi:backward]]/xi:view-data//xi:response[xi:exception]" /-->
   
     <!--xsl:import href="stage-last-import.xsl"/-->
+    
+    <xsl:template match="comment()"/>
+    
     <xsl:output method="xml" indent="no" encoding="utf-8"/> 
     <xsl:template match="xi:views[not(*)]"/>
     <xsl:template match="xi:view/@justopen"/>

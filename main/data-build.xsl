@@ -184,8 +184,8 @@
         
         <xsl:choose>
             
-            <xsl:when test="$data[@name=$metadata/@name]/self::xi:preload">
-                <xsl:apply-templates select="$data[@name=$metadata/@name]" mode="build-data"/>
+            <xsl:when test=" $data[$metadata/@name=@name or @name=concat('set-of-',$metadata/@name)]/ self::xi:preload ">
+                <xsl:apply-templates select="$data[$metadata/@name=@name or @name=concat('set-of-',$metadata/@name)]" mode="build-data"/>
             </xsl:when>
             
             <xsl:when test="(count($data-set) > $set-thrshld and $metadata[@is-set]) or $metadata[@is-set and @extendable and $set-thrshld=0]">
