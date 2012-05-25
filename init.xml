@@ -18,11 +18,16 @@
     <context-extension>
         <views>
             <access role="it"/>
-            <access role="beta"/>
             <menu label="ИТ">
-                <option href="views/test.xml"/>
+                <option href="views/test.xml">
+                    <access role="beta"/>
+                </option>
                 <option href="views/sysusers.xml">
                     <access role="admin"/>
+                </option>
+                <option href="views/qc-call-tasks.xml">
+                    <access role="qc"/>
+                    <access role="operator"/>
                 </option>
             </menu>
         </views>
@@ -97,6 +102,15 @@
                     <access role="up"/>
                     <access role="beta"/>
                 </option>
+                <option href="views/terminals.xml">
+                    <access role="call-center"/>
+                </option>
+                <option href="views/subdealers.xml">
+                    <access role="findir"/>
+                </option>
+                <option href="views/legalentities.xml">
+                    <access role="findir"/>
+                </option>
             </menu>
             
         </views>
@@ -132,24 +146,64 @@
 
     <context-extension>
         <views>
-            <menu label="Выберите программу:">
+            <access role="storage"/>
+            <menu label="Склад">
+                <option href="views/warehouse-goodss.xml"/>
+                <option href="views/wms-goodss.xml"/>
+                <option href="views/wms-ammends.xml"/>
+                <option href="views/wms-defects-sorting.xml">
+                    <access role="defector"/>
+                </option>
+                <option href="views/wms-defects-checking.xml">
+                    <access role="checker"/>
+                </option>
+                <option href="views/wms-goods-take.xml"/>
+                <option href="views/wms-placement.xml"/>
+                <option href="views/wms-cell-erasement.xml">
+                    <access role="fotonova"/>
+                </option>
+                <!--option href="views/wms-operations.xml">
+                    <access role="storage"/>
+                </option-->
+                <option href="views/wms-addressing.xml"/>
+                <option href="views/wms-inventory.xml">
+                    <access role="inventory"/>
+                </option>
+                <option href="views/wms-inventory-top.xml">
+                    <access role="inventory"/>
+                </option>
+                <option href="views/goods-barcode.xml"/>
+                <option href="views/wms-progress-view.xml">
+                    <access role="master"/>
+                    <access role="inventory"/>
+                </option>
+            </menu>
+            
+        </views>
+    </context-extension>
+
+
+    <context-extension>
+        <views>
+            
+            <menu label="Логистика">
                 <option href="views/encashment-planning.xml">
                     <access role="osmp"/>
                     <access role="logistic"/>
                 </option>
-                <option href="views/terminals.xml">
-                    <access role="call-center"/>
-                </option>
-                <option href="views/subdealers.xml">
-                    <access role="findir"/>
-                </option>
-                <option href="views/legalentities.xml">
-                    <access role="findir"/>
-                </option>
-                <option href="views/fotonovasync.xml">
-                    <access role="fotonova"/>
-                    <access role="sync"/>
-                </option>
+                <secure role="expeditor">
+                    <option href="views/expeditioning.xml"/>
+                    <option iframe="https://renew.unact.ru/placeunload" label="Сервис Renew"/>
+                </secure>
+            </menu>
+            
+        </views>
+    </context-extension>
+
+
+    <context-extension>
+        <views>
+            <menu label="Продажи">
                 <option href="views/customer-order-create.xml">
                     <access role="salesman"/>
                 </option>
@@ -162,72 +216,9 @@
                 <option href="views/sales-sms.xml">
                     <access role="sales"/>
                 </option>
-                <option href="views/warehouse-goodss.xml">
-                    <access role="storage"/>
-                </option>
-                <option href="views/wms-goodss.xml">
-                    <access role="storage"/>
-                </option>
-                <option href="views/wms-ammends.xml">
-                    <access role="storage"/>
-                </option>
-                <option href="views/wms-defects-sorting.xml">
-                    <access role="storage"/>
-                    <access role="defector"/>
-                </option>
-                <option href="views/wms-defects-checking.xml">
-                    <access role="storage"/>
-                    <access role="checker"/>
-                </option>
-                <option href="views/wms-goods-take.xml">
-                    <access role="storage"/>
-                </option>
-                <option href="views/wms-placement.xml">
-                    <access role="storage"/>
-                </option>
-                <option href="views/wms-cell-erasement.xml">
-                    <access role="storage"/>
-                    <access role="fotonova"/>
-                </option>
-                <!--option href="views/wms-operations.xml">
-                    <access role="storage"/>
-                </option-->
-                <option href="views/wms-addressing.xml">
-                    <access role="storage"/>
-                </option>
-                <option href="views/wms-inventory.xml">
-                    <access role="storage"/>
-                    <access role="inventory"/>
-                </option>
-                <option href="views/wms-inventory-top.xml">
-                    <access role="storage"/>
-                    <access role="inventory"/>
-                </option>
-                <option href="views/goods-barcode.xml">
-                    <access role="storage"/>
-                </option>
-                <option href="views/wms-progress-view.xml">
-                    <access role="storage"/>
-                    <access role="master"/>
-                    <access role="inventory"/>
-                </option>
-                <option href="views/expeditioning.xml">
-                    <access role="expeditor"/>
-                </option>
-                <option iframe="https://renew.unact.ru/placeunload" label="Сервис Renew">
-                    <access role="expeditor"/>
-                </option>
-                <option href="views/wan-selling.xml">
-                    <access role="wan-seller"/>
-                    <access role="beta"/>
-                </option>
                 <option href="views/sales-ordering.xml">
                     <access role="pre-orderer"/>
                     <access role="beta"/>
-                </option>
-                <option href="views/qc-call-tasks.xml">
-                    <access role="qc"/>
-                    <access role="operator"/>
                 </option>
             </menu>
         </views>
