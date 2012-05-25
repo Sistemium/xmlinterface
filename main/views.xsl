@@ -18,6 +18,21 @@
         <xsl:copy-of select=".|document(.)/*/@*"/>
     </xsl:template>
 
+    <xsl:template match="xi:context-extension[count(xi:views)&gt;1]//xi:views[not(@name)]" mode="extend">
+        <xsl:attribute name="name">
+            <xsl:variable name="role-name">
+                <xsl:for-each select="(xi:access|xi:secure)[@role]">
+                    <xsl:if test="position() >1">-</xsl:if>
+                    <xsl:value-of select="@role"/>
+                </xsl:for-each>
+            </xsl:variable>
+            <xsl:value-of select="$role-name"/>
+            <xsl:if test="$role-name=''">
+                <xsl:value-of select="concat('views-', count(ancestor::xi:context-extension/preceding-sibling::xi:context-extension[xi:views])+1)"/>
+            </xsl:if>
+        </xsl:attribute>
+    </xsl:template>
+    
     <xsl:template match="
         xi:access
         |

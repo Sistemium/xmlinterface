@@ -17,8 +17,8 @@
     
     <context-extension>
         <views>
-            <access role="it"/>
-            <menu label="ИТ">
+            <menu name="it" label="ИТ">
+                <access role="it"/>
                 <option href="views/test.xml">
                     <access role="beta"/>
                 </option>
@@ -30,43 +30,28 @@
                     <access role="operator"/>
                 </option>
             </menu>
-        </views>
-    </context-extension>
-    
-    
-    <context-extension> <views>
-        
-        <access role="osmp"/>
-        <access role="main"/>
-        
-        <menu label="Банк">
-            <option href="views/terminals-state.xml"/>
-            <option href="views/payment-reestr.xml"/>
-            <option href="views/gup-reestr.xml"/>
-            <option href="views/multibank-reestr-export.xml"/>
-            <option href="views/branchday-abs.xml"/>
-            <option href="views/encashment-amendment.xml"/>
-            <option href="views/banktotals.xml"/>
-            <option href="views/totals-changes.xml"/>
-            <option href="views/bpas.xml"/>
-            <option href="views/paysystem-etc.xml">
-                <access role="beta"/>
-            </option>
-            <option href="views/active-terminals.xml">
-                <access role="disabled"/>
-            </option>
-        </menu>
-        
-    </views> </context-extension>
-    
-    
-    <context-extension>
-        <views>
-            
-            <access role="osmp"/>
-            <access role="cashier"/>
-            
+            <menu name="bank" label="Банк">
+                <access role="osmp"/>
+                <access role="main"/>
+                <option href="views/terminals-state.xml"/>
+                <option href="views/payment-reestr.xml"/>
+                <option href="views/gup-reestr.xml"/>
+                <option href="views/multibank-reestr-export.xml"/>
+                <option href="views/branchday-abs.xml"/>
+                <option href="views/encashment-amendment.xml"/>
+                <option href="views/banktotals.xml"/>
+                <option href="views/totals-changes.xml"/>
+                <option href="views/bpas.xml"/>
+                <option href="views/paysystem-etc.xml">
+                    <access role="beta"/>
+                </option>
+                <option href="views/active-terminals.xml">
+                    <access role="disabled"/>
+                </option>
+            </menu>
             <menu label="Касса терминалов">
+                <access role="osmp"/>
+                <access role="cashier"/>
                 <option href="views/encashment.xml"/>
                 <option href="views/encashment-by-zones.xml"/>
                 <option href="views/branchday.xml"/>
@@ -76,15 +61,8 @@
                 <option href="views/cat-terminals.xml"/>
                 <option href="views/branches.xml"/>
             </menu>
-            
-        </views>
-    </context-extension>
-
-
-    <context-extension>
-        <views>
-            <access role="op"/>
             <menu label="Процессинг платежей">
+                <access role="op"/>
                 <option href="views/pcs.xml">
                     <access role="dictionaree"/>
                 </option>
@@ -92,9 +70,6 @@
                     <access role="dictionaree"/>
                 </option>
                 <option href="views/pc-queueinfos.xml"/>
-                <!--option href="views/op-finances.xml">
-                    <access role="finances"/>
-                </option-->
                 <option href="views/op-legalentities.xml">
                     <access role="dictionaree"/>
                 </option>
@@ -112,14 +87,6 @@
                     <access role="findir"/>
                 </option>
             </menu>
-            
-        </views>
-    </context-extension>
-
-
-    <context-extension>
-        <views>
-            
             <menu label="Клиентский Процессинг">
                 <option href="views/subdealer-balance.xml">
                     <access role="subdealer"/>
@@ -139,15 +106,8 @@
                     <access role="beta"/>
                 </option>
             </menu>
-            
-        </views>
-    </context-extension>
-
-
-    <context-extension>
-        <views>
-            <access role="storage"/>
             <menu label="Склад">
+                <access role="storage"/>
                 <option href="views/warehouse-goodss.xml"/>
                 <option href="views/wms-goodss.xml"/>
                 <option href="views/wms-ammends.xml"/>
@@ -162,9 +122,6 @@
                 <option href="views/wms-cell-erasement.xml">
                     <access role="fotonova"/>
                 </option>
-                <!--option href="views/wms-operations.xml">
-                    <access role="storage"/>
-                </option-->
                 <option href="views/wms-addressing.xml"/>
                 <option href="views/wms-inventory.xml">
                     <access role="inventory"/>
@@ -178,14 +135,6 @@
                     <access role="inventory"/>
                 </option>
             </menu>
-            
-        </views>
-    </context-extension>
-
-
-    <context-extension>
-        <views>
-            
             <menu label="Логистика">
                 <option href="views/encashment-planning.xml">
                     <access role="osmp"/>
@@ -196,13 +145,6 @@
                     <option iframe="https://renew.unact.ru/placeunload" label="Сервис Renew"/>
                 </secure>
             </menu>
-            
-        </views>
-    </context-extension>
-
-
-    <context-extension>
-        <views>
             <menu label="Продажи">
                 <option href="views/customer-order-create.xml">
                     <access role="salesman"/>
