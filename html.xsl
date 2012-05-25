@@ -237,12 +237,8 @@
                 </xsl:if>
             </xsl:attribute>
             
-            <div id="canvas">
-                <xsl:if test="$geo">
-                     <div id="geomap" class="unset"/>
-                </xsl:if>
-                <xsl:apply-templates/>
-            </div>
+            <xsl:call-template name="build-canvas"/>
+            
         	<xsl:if test="$livechat and /*/xi:session/@livechat">
                 <script type="text/javascript">
                 <xsl:text>
@@ -257,10 +253,36 @@
                 </xsl:if>
                 </script>
             </xsl:if>
+            
         </body>
     </html>
     </xsl:template>
+    
+    
+    <xsl:template name="build-canvas">
+        <div id="canvas">
+            <!--xsl:if test="count(xi:views) &gt; 1">
+                <xsl:attribute name="class">tabs</xsl:attribute>
+                <ul>
+                    <xsl:for-each select="xi:views">
+                        <li><a href="#{@name}">
+                            <xsl:value-of select="xi:menu/@label"/>
+                        </a></li>
+                    </xsl:for-each>
+                </ul>
+            </xsl:if-->
+            <xsl:if test="$geo">
+                 <div id="geomap" class="unset"/>
+            </xsl:if>
+            <xsl:apply-templates/>
+        </div>        
+    </xsl:template>
 
+    <xsl:template match="xi:views-">
+        <div id="{@name}" class="views">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
  
  
     <xsl:template match="node()|@*" name="rename" mode="rename">
