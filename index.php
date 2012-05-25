@@ -223,16 +223,17 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     
     $dir='init';
     
-    if ($tracing) {foreach (array('stats', 'dump') as $name) {
-        $dir = 'data/'.$name.'/'.$initName.'/'.$pipelineName;
-        if (is_dir($dir)) rmdirfiles ($dir);
-        else mkdir($dir, 0777, true);
-    }}
+    if ($tracing) {
+        foreach (array('stats', 'dump') as $name) {
+            $dir = 'data/'.$name.'/'.$initName.'/'.$pipelineName;
+            if (is_dir($dir)) rmdirfiles ($dir);
+            else mkdir($dir, 0777, true);
+        }
+        $Context -> save(
+            $dir.'/0.context.xml'
+        );  
+    }
 
-    $Context -> save(
-        $dir.'/0.context.xml'
-    );
-  
     try { foreach ($config->pipeline as $pipeline) if ($pipeline['name'] == $pipelineName) {
         
         foreach ($pipeline->execute as $xsl_task){
