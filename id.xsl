@@ -18,6 +18,8 @@
 
     <xsl:key name="id" match="*" use="@id"/>
 
+    <xsl:include href="functions.xsl"/>
+    
     <xsl:template match="*" name="id">
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
@@ -73,13 +75,4 @@
         
     </xsl:template>
 
-    <func:function name="xi:isnull">
-        <xsl:param name="a" select="xi:null"/>
-        <xsl:param name="b" select="xi:null"/>
-        <xsl:value-of select="$a"/>
-        <xsl:if test="not($a)">
-            <xsl:value-of select="$b"/>
-        </xsl:if>
-    </func:function>
- 
 </xsl:transform>

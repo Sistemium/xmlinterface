@@ -255,6 +255,7 @@
     
     <user name="up" >
         <role ref="beta"/>
+        <role ref="op"/>
     </user>
     
 </authorization>

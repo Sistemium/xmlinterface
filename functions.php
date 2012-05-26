@@ -369,7 +369,7 @@ function authenticate($login, $password, &$extraData) {
                 
                 if (substr($file, 0, 1) != '.' ) {
                     if (is_file($filePath))
-                       $root->appendChild( $doc->createElement('file', $file) );
+                       $root->appendChild($doc -> createElementNS ('http://unact.net/xml/xi', 'file', $file) );
                     elseif ( is_dir($filePath) ) {
                         if ($subdir = directoryList ($file, $path))
                             $root -> appendChild ($doc -> importNode ($subdir -> documentElement, true));

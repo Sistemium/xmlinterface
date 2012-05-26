@@ -89,7 +89,6 @@
 				
 				<form name="up-file-payment" is-set="true" label="Платеж">
 					
-					
 					<form name="op-error" no-preload="true">
 						<field name="id"/>
 						<field name="name" label="Cтатус" />
@@ -98,6 +97,8 @@
 					<field name="summ" totals="sum" />
 					<field name="account"/>
 					<field name="extra"/>
+					
+					<order-by name="op-error" dir="desc"/>
 					
 				</form>
 				
@@ -223,7 +224,11 @@
 					<print form="file-details-type" field="name"/>
 					<print form="file-details" field="*"/>
 				</region>
-				<grid form="up-file-payment"/>
+				<grid form="up-file-payment">
+					<group>
+						<by form="op-error" field="name"/>
+					</group>
+				</grid>
 			</display>
             <choise>
                 <option reuse="go-to-files"/>

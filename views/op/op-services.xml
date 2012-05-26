@@ -39,6 +39,9 @@
             <join name="op-agent" field="xid" />
             <join name="op-agent" field="searcher" property="name" />
             
+            <parameter name="cmp" type="boolean" label="Завершенные" editable="true" optional="true"/>
+            <parameter name="err" type="boolean" label="С ошибкой" editable="true" optional="true"/>
+            
             <form name="op-payment" is-set="true" label="Платежи процессинга" page-size="10" preload="true">
                 
                 <field name="id"/>
@@ -90,11 +93,14 @@
             
             <display>
                 <region class="tabs">
-                    <grid form="op-payment" hide-empty="true" label="Последние платежи">
-                        <group>
-                            <by field="name" form="op-service"/>
-                        </group>
-                    </grid>
+                    <region label="Детали услуги">
+                        <input form="op-service" field="err"/>
+                        <grid form="op-payment" hide-empty="true" label="Последние платежи">
+                            <group>
+                                <by field="name" form="op-service"/>
+                            </group>
+                        </grid>
+                    </region>
                     <region label="Детали услуги">
                         <print form="op-service" field="*"/>
                     </region>

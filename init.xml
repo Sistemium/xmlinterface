@@ -61,9 +61,9 @@
                 <option href="views/cat-terminals.xml"/>
                 <option href="views/branches.xml"/>
             </menu>
-            <menu label="Процессинг платежей">
+            <menu label="Процессинг платежей" directory="views/op">
                 <access role="op"/>
-                <option href="views/pcs.xml">
+                <!--option href="views/op/pcs.xml">
                     <access role="dictionaree"/>
                 </option>
                 <option href="views/pc-accounts.xml">
@@ -76,7 +76,7 @@
                 <option href="views/op-services.xml">
                     <access role="up"/>
                     <access role="beta"/>
-                </option>
+                </option-->
                 <option href="views/terminals.xml">
                     <access role="call-center"/>
                 </option>
@@ -95,7 +95,7 @@
                     <access role="up"/>
                     <access role="client"/>
                 </option>
-                <option href="views/op-payments.xml">
+                <!--option href="views/op-payments.xml">
                     <access role="up"/>
                     <access role="client"/>
                     <access role="beta"/>
@@ -104,7 +104,7 @@
                     <access role="up"/>
                     <access role="client"/>
                     <access role="beta"/>
-                </option>
+                </option-->
             </menu>
             <menu label="Склад">
                 <access role="storage"/>

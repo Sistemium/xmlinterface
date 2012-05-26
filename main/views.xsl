@@ -2,7 +2,14 @@
 <xsl:transform version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns="http://unact.net/xml/xi"
- xmlns:xi="http://unact.net/xml/xi">
+ xmlns:xi="http://unact.net/xml/xi"
+    xmlns:e="http://exslt.org/common"
+    xmlns:php="http://php.net/xsl"
+    xmlns:func="http://exslt.org/functions"
+    extension-element-prefixes="func e"
+    exclude-result-prefixes="php func e"
+ >
+    
 
     <xsl:param name="model" select="document('domain.xml')/xi:domain"/>
  
@@ -14,10 +21,36 @@
         </xsl:copy>
     </xsl:template>
  
+    
+    <xsl:template match="xi:directory" mode="import-directory">
+        <xsl:param name="this" select="xi:null"/>
+        
+        <xsl:for-each select="xi:file">
+            <xsl:apply-templates select="$this" mode="import-file">
+                <xsl:with-param name="href" select="concat($this/@directory,'/',.)"/>
+            </xsl:apply-templates>
+        </xsl:for-each>
+        
+    </xsl:template>
+    
+    <xsl:template match="xi:menu" mode="import-file">
+        <xsl:param name="href" select="xi:null"/>
+        <option href="{$href}">
+            <xsl:copy-of select="document(concat('../',$href))/*/@*"/>
+        </option>
+    </xsl:template>
+    
+
+    <xsl:template match="xi:context-extension//*/@directory">
+        <xsl:apply-templates select="php:function('directoryList',string(.))" mode="import-directory">
+            <xsl:with-param name="this" select=".."/>
+        </xsl:apply-templates>
+    </xsl:template>
+
     <xsl:template match="xi:context-extension//*/@href">
         <xsl:copy-of select=".|document(.)/*/@*"/>
     </xsl:template>
-
+    
     <xsl:template match="xi:context-extension[count(xi:views)&gt;1]//xi:views[not(@name)]" mode="extend">
         <xsl:attribute name="name">
             <xsl:variable name="role-name">
