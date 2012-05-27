@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="pc-accounts" label="Персоны ПЦ">
+
+    <access role="it"/>
+    
     <view-schema>
         <form name="op">
             <parameter name="name">

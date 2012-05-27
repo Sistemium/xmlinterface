@@ -2,6 +2,8 @@
 
 <view-definition xmlns="http://unact.net/xml/xi" name="op-services" label="Услуги процессинга">
     
+    <access role="it"/>
+    
     <view-schema> <form name="op-agent"> 
         
         <field name="id"/>

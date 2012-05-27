@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="op-legalentities" label="Юрлица ОП">
+
+    <access role="main"/>
+    
     <view-schema>
         <form name="op">
             <parameter name="name">
@@ -20,4 +23,5 @@
             </display>
         </step>
     </workflow>
+	
 </view-definition>

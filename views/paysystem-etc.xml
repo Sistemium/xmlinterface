@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="etc" label="Итоги платежных систем">
-
-    <view-schema>
+	
+	<access role="it"/>
+    
+	<view-schema>
         <form name="dates">
         	<parameter name="date" type="date" label="Дата" editable="true">
         	   <init with="today"/>
