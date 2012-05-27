@@ -187,7 +187,9 @@
     </user>
     
     <user name="marina">
-        <role ref="sales"/>
+        <role ref="sales">
+            <role ref="director"/>
+        </role>
     </user>
     
     <user name="ulianov">
@@ -248,14 +250,14 @@
         <role ref="salesman"/>
     </user>
 
-    <user name="op" password="plk">
+    <user name="op" >
         <role ref="op"/>
         <role ref="finances"/>
     </user>
     
     <user name="up" >
-        <role ref="beta"/>
         <role ref="op"/>
+        <role ref="it"/>
     </user>
     
 </authorization>

@@ -42,9 +42,7 @@
                 <option href="views/banktotals.xml"/>
                 <option href="views/totals-changes.xml"/>
                 <option href="views/bpas.xml"/>
-                <option href="views/paysystem-etc.xml">
-                    <access role="beta"/>
-                </option>
+                <option href="views/paysystem-etc.xml"/>
                 <option href="views/active-terminals.xml">
                     <access role="disabled"/>
                 </option>
@@ -176,6 +174,7 @@
             <include href="main/synthesize.xsl"/>
         </execute>
         <execute name="build1" href="id.xsl">
+            <include href="main/security.xsl"/>
             <include href="main/data-build.xsl"/>
         </execute>
         <execute name="extend" href="id.xsl">

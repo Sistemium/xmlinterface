@@ -68,14 +68,14 @@
 			</xsl:variable>
 			
 			<xsl:variable name="xmlq-nodes" select="e:node-set($xmlq-text)"/>
-
+			
 			<xsl:variable name="delete-null"
 						  select="xi:datum[(@modified='erase' or (key('id',@ref)/@type='int' and text()='0')) and key('id',@ref)/@when-null-then-delete]"/>
 				
 			<xsl:if test="$xmlq-nodes and $delete-null">
 				<xsl:attribute name="delete-null">true</xsl:attribute>
 			</xsl:if>
-
+			
 			<xsl:apply-templates select="$xmlq-nodes"/>
 			<xsl:apply-templates select="xi:data|xi:datum|xi:extender|xi:chosen|xi:set-of[not(@is-choise)]"/>
 			<xsl:copy-of select="xi:set-of[@is-choise]"/>
