@@ -14,7 +14,7 @@
                 <field name="name"/>
                 <form name="pc-account" label="Персона ПЦ"
                       is-set="true" extendable="true" deletable="true"
-                      toggle-edit-off-="true"
+                      toggle-edit-off="true"
                 >
                     <field name="xid" />
                     <field name="name" editable="true" />
@@ -47,7 +47,7 @@
         <step>
             <display>
                 <input form="pc"/>
-                <grid form="pc-account" hide-empty="true"/>
+                <grid form="pc-account" hide-empty="true" label="Персоны"/>
                 <!--for-each form="pc-account">
                     <input field="active" />
                     <input field="login" />

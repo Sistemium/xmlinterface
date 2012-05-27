@@ -1066,7 +1066,7 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:datum | xi:data[@delete-this]/xi:data[@choise]" mode="render" name="print">
+    <xsl:template match="xi:datum | xi:data[@delete-this or @toggle-edit-off]/xi:data[@choise]" mode="render" name="print">
         
         <xsl:variable name="element">
             <xsl:choose>
@@ -1092,8 +1092,7 @@
             <xsl:apply-templates select="key('id',@ref)" mode="render-value">
                 <xsl:with-param name="value"
                                 select="self::xi:datum
-                                       |self::xi:data/ancestor-or-self::xi:data/xi:data
-                                       [@id=current()/@chosen]/xi:datum[@name='name']"/>
+                                       |self::xi:data/xi:datum[@name='name']"/>
             </xsl:apply-templates>
             
         </xsl:element>
@@ -1102,7 +1101,7 @@
 
 
     <xsl:template match="xi:data[not(@delete-this)]/xi:datum[@editable]
-                        |xi:data[not(@delete-this)]/xi:data[@choise]
+                        |xi:data[not(@delete-this or @toggle-edit-off)]/xi:data[@choise]
                         |xi:view-data/xi:data[@choise]"
                   mode="render" name="input">
         
