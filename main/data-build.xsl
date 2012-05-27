@@ -38,7 +38,9 @@
     >
         
         <xsl:if test="not(following-sibling::xi:response/xi:result-set//*[@name=current()/@name])">
-            <xsl:apply-templates select="key('id',@ref)" mode="build-data"/>
+            <xsl:apply-templates select="key('id',@ref)" mode="build-data">
+                <xsl:with-param name="set-thrshld">1</xsl:with-param>
+            </xsl:apply-templates>
         </xsl:if>
         
     </xsl:template>
@@ -184,7 +186,7 @@
         
         <xsl:choose>
             
-            <xsl:when test=" $data[$metadata/@name=@name or @name=concat('set-of-',$metadata/@name)]/ self::xi:preload ">
+            <xsl:when test="$data[$metadata/@name=@name or @name=concat('set-of-',$metadata/@name)]/ self::xi:preload ">
                 <xsl:apply-templates select="$data[$metadata/@name=@name or @name=concat('set-of-',$metadata/@name)]" mode="build-data"/>
             </xsl:when>
             
@@ -357,7 +359,7 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:preload[key('id',@ref)[not(xi:parameter) or xi:parameter[xi:init]]]" mode="build-data">
+    <xsl:template match="xi:preload[key('id',@ref)[not(xi:parameter) or xi:parameter[xi:init or @optional]]]" mode="build-data">
         
         <xsl:param name="data" select="."/>
         
