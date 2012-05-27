@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="active-terminals" label="Рабочие терминалы">
+
+    <access role="disabled"/>
+
     <view-schema>
         <form name="dates">
             <parameter name="date" type="date" modified="init">
