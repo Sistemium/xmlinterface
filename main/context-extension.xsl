@@ -8,6 +8,10 @@
     xmlns:php="http://php.net/xsl"
 >
 
+    <xsl:template match="xi:context-extension">
+        <xsl:apply-templates select="*"/>
+    </xsl:template>
+    
     <xsl:template match="
         xi:context-extension//text()
         |
@@ -20,8 +24,9 @@
         </xsl:apply-templates>
     </xsl:template>
 
-    <xsl:template match="xi:context-extension//*[@href]">
-        <xsl:apply-templates select="." mode="import-file"/>
+    <xsl:template match="xi:context-extension//*/@href">
+        <xsl:copy/>
+        <xsl:apply-templates select=".." mode="import-file"/>
     </xsl:template>
     
     <xsl:template match="xi:directory" mode="import-directory">
@@ -37,10 +42,15 @@
     </xsl:template>
 
     <xsl:template match="*" mode="import-file">
-        <xsl:apply-templates select="document(@href)"/>
+        <xsl:param name="href" select="@href"/>
+        <xsl:apply-templates select="document($href)/*"/>
     </xsl:template>
     
-    <xsl:template match="xi:menu|xi:option" mode="import-file">
+    <xsl:template match="xi:option" mode="import-file">
+        <xsl:apply-templates select="document(@href)/*" mode="build-option"/>
+    </xsl:template>
+    
+    <xsl:template match="xi:menu" mode="import-file">
         <xsl:param name="href" select="@href"/>
         <option href="{$href}">
             <xsl:apply-templates select="@*|document(concat('../',$href))/*|*" mode="build-option"/>
@@ -48,6 +58,9 @@
     </xsl:template>
  
     <xsl:template match="node()" mode="build-option"/>
+    <xsl:template match="/*" mode="build-option">
+        <xsl:apply-templates select="@*|*" mode="build-option"/>
+    </xsl:template>
     
     <xsl:template match="@*" mode="build-option">
         <xsl:copy/>

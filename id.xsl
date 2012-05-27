@@ -13,12 +13,12 @@
     
     <xsl:param name="userinput" select="/*/xi:userinput/xi:command"/>
     <xsl:param name="model" select="document('domain.xml')/xi:domain"/>
-    <xsl:variable name="thisdoc" select="/"/>
-    <xsl:variable name="session" select="/*/xi:session"/>
+    <xsl:param name="thisdoc" select="/"/>
+    <xsl:param name="session" select="/*/xi:session"/>
 
     <xsl:key name="id" match="*" use="@id"/>
 
-    <xsl:include href="functions.xsl"/>
+    <!--xsl:include href="functions.xsl"/-->
     
     <xsl:template match="*" name="id">
         <xsl:copy>
