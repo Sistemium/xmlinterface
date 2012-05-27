@@ -2,6 +2,7 @@
 <view-definition xmlns="http://unact.net/xml/xi" name="pcs" label="Процессинговыe центры">
 
     <access role="it"/>
+    <access role="dictionaree"/>
     
     <view-schema>
         <form name="op">
