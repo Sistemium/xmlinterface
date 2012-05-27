@@ -1,5 +1,8 @@
 <?xml version="1.0" ?>
 <view-definition xmlns="http://unact.net/xml/xi" name="wms-defects-checking" label="Приемка брака">
+
+    <access role="checker"/>
+    
     <view-schema>
         <form name="sysuser">
             <parameter name="name">

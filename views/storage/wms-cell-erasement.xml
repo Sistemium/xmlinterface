@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="wms-cell-erasement" label="Обнуление стока">
+    
+    <access role="disabled"/>
+    
     <view-schema>
         <form name="wms-place" label="Место хранения">
             <parameter name="name" type="string" editable="true"/>

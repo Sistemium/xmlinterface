@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="wms-pregress-view" label="Прогресс инвентаризации">
+    
+    <access role="inventory"/>
+    <access role="master"/>
+    
     <view-schema>
         <form name="sysuser">
             <parameter name="name">

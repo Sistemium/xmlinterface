@@ -17,6 +17,7 @@
     
     <context-extension>
         <views>
+            
             <menu name="it" label="ИТ">
                 <access role="it"/>
                 <option href="views/test.xml">
@@ -30,38 +31,19 @@
                     <access role="operator"/>
                 </option>
             </menu>
+            
             <menu name="bank" label="Банк" directory="views/bank">
                 <access role="osmp"/>
                 <access role="main"/>
             </menu>
-            <menu label="Касса терминалов">
+            
+            <menu label="Касса терминалов" directory="views/bank-cassa">
                 <access role="osmp"/>
                 <access role="cashier"/>
-                <option href="views/encashment.xml"/>
-                <option href="views/encashment-by-zones.xml"/>
-                <option href="views/branchday.xml"/>
-                <option href="views/cashiers.xml"/>
-                <option href="views/collectors.xml"/>
-                <option href="views/branch-routes.xml"/>
-                <option href="views/cat-terminals.xml"/>
-                <option href="views/branches.xml"/>
             </menu>
+            
             <menu label="Процессинг платежей" directory="views/op">
                 <access role="op"/>
-                <!--option href="views/op/pcs.xml">
-                    <access role="dictionaree"/>
-                </option>
-                <option href="views/pc-accounts.xml">
-                    <access role="dictionaree"/>
-                </option>
-                <option href="views/pc-queueinfos.xml"/>
-                <option href="views/op-legalentities.xml">
-                    <access role="dictionaree"/>
-                </option>
-                <option href="views/op-services.xml">
-                    <access role="up"/>
-                    <access role="beta"/>
-                </option-->
                 <option href="views/terminals.xml">
                     <access role="call-center"/>
                 </option>
@@ -72,6 +54,7 @@
                     <access role="findir"/>
                 </option>
             </menu>
+            
             <menu label="Клиентский Процессинг">
                 <option href="views/subdealer-balance.xml">
                     <access role="subdealer"/>
@@ -80,46 +63,12 @@
                     <access role="up"/>
                     <access role="client"/>
                 </option>
-                <!--option href="views/op-payments.xml">
-                    <access role="up"/>
-                    <access role="client"/>
-                    <access role="beta"/>
-                </option>
-                <option href="views/op-services.xml">
-                    <access role="up"/>
-                    <access role="client"/>
-                    <access role="beta"/>
-                </option-->
             </menu>
-            <menu label="Склад">
+            
+            <menu name="storage" label="Склад" directory="views/storage">
                 <access role="storage"/>
-                <option href="views/warehouse-goodss.xml"/>
-                <option href="views/wms-goodss.xml"/>
-                <option href="views/wms-ammends.xml"/>
-                <option href="views/wms-defects-sorting.xml">
-                    <access role="defector"/>
-                </option>
-                <option href="views/wms-defects-checking.xml">
-                    <access role="checker"/>
-                </option>
-                <option href="views/wms-goods-take.xml"/>
-                <option href="views/wms-placement.xml"/>
-                <option href="views/wms-cell-erasement.xml">
-                    <access role="fotonova"/>
-                </option>
-                <option href="views/wms-addressing.xml"/>
-                <option href="views/wms-inventory.xml">
-                    <access role="inventory"/>
-                </option>
-                <option href="views/wms-inventory-top.xml">
-                    <access role="inventory"/>
-                </option>
-                <option href="views/goods-barcode.xml"/>
-                <option href="views/wms-progress-view.xml">
-                    <access role="master"/>
-                    <access role="inventory"/>
-                </option>
             </menu>
+            
             <menu label="Логистика">
                 <option href="views/encashment-planning.xml">
                     <access role="osmp"/>
@@ -130,6 +79,7 @@
                     <option iframe="https://renew.unact.ru/placeunload" label="Сервис Renew"/>
                 </secure>
             </menu>
+            
             <menu label="Продажи">
                 <option href="views/customer-order-create.xml">
                     <access role="salesman"/>
@@ -148,6 +98,7 @@
                     <access role="beta"/>
                 </option>
             </menu>
+            
         </views>
     </context-extension>
     
