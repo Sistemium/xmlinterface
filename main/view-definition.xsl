@@ -122,6 +122,13 @@
     </xsl:template>
 
 
+    <xsl:template match="xi:view-definition/xi:view-schema//*" mode="build-secure">
+        <xsl:copy>
+            <xsl:call-template name="view-build-default"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    
     <xsl:template match="xi:view-definition/xi:view-schema//*">
         <xsl:copy>
             <xsl:call-template name="view-build-default"/>
