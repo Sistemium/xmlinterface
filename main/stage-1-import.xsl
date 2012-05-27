@@ -8,6 +8,8 @@
  extension-element-prefixes="dyn"
 >
     
+    <xsl:param name="auth" select="document('../auth.xml')/*"/>
+    
     <xsl:template match="/*">
         <xsl:attribute name="pipeline">
             <xsl:value-of select="/*/xi:userinput/xi:command[@name='stage1']"/>
@@ -45,7 +47,6 @@
 
     <xsl:template match="xi:session[@authenticated][not(xi:role)]">
         
-        <xsl:variable name="auth" select="document('../auth.xml')/*"/>
         <xsl:variable name="userRoles" select="$auth/xi:user[@name=current()/@username]/xi:role"/>
         <xsl:variable name="validator" select="$auth/xi:validator[@name=current()/@validator]"/>
         <xsl:variable name="validatorRoles" select="$validator/xi:role|$validator/xi:group[@name=current()/xi:group/@name]/xi:role"/>

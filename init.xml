@@ -2,6 +2,7 @@
 <configuration xmlns="http://unact.net/xml/xi" name="xmlgate">
 
     <context-extension>
+        
         <session name="session">
             <menu>
                 <option name="login" label="Войти в систему"/>
@@ -11,96 +12,16 @@
                 <datum name="password" label="Пароль" editable="true"/>
             </data>
        </session>
+        
     </context-extension>
     
-    <!-- Вообще говоря, меню это функция модели классов, а не список простых ссылок -->
     
     <context-extension>
-        <views>
-            
-            <menu name="it" label="ИТ">
-                <access role="it"/>
-                <option href="views/test.xml">
-                    <access role="beta"/>
-                </option>
-                <option href="views/sysusers.xml">
-                    <access role="admin"/>
-                </option>
-                <option href="views/qc-call-tasks.xml">
-                    <access role="qc"/>
-                    <access role="operator"/>
-                </option>
-            </menu>
-            
-            <menu name="bank" label="Банк" directory="views/bank">
-                <access role="osmp"/>
-                <access role="main"/>
-            </menu>
-            
-            <menu label="Касса терминалов" directory="views/bank-cassa">
-                <access role="osmp"/>
-                <access role="cashier"/>
-            </menu>
-            
-            <menu label="Процессинг платежей" directory="views/op">
-                <access role="op"/>
-                <option href="views/terminals.xml">
-                    <access role="call-center"/>
-                </option>
-                <option href="views/subdealers.xml">
-                    <access role="findir"/>
-                </option>
-                <option href="views/legalentities.xml">
-                    <access role="findir"/>
-                </option>
-            </menu>
-            
-            <menu label="Клиентский Процессинг">
-                <option href="views/subdealer-balance.xml">
-                    <access role="subdealer"/>
-                </option>
-                <option href="views/up-cabinet.xml">
-                    <access role="up"/>
-                    <access role="client"/>
-                </option>
-            </menu>
-            
-            <menu name="storage" label="Склад" directory="views/storage">
-                <access role="storage"/>
-            </menu>
-            
-            <menu label="Логистика">
-                <option href="views/encashment-planning.xml">
-                    <access role="osmp"/>
-                    <access role="logistic"/>
-                </option>
-                <secure role="expeditor">
-                    <option href="views/expeditioning.xml"/>
-                    <option iframe="https://renew.unact.ru/placeunload" label="Сервис Renew"/>
-                </secure>
-            </menu>
-            
-            <menu label="Продажи">
-                <option href="views/customer-order-create.xml">
-                    <access role="salesman"/>
-                </option>
-                <option href="views/customers.xml">
-                    <access role="salesman"/>
-                </option>
-                <option href="views/salesmen.xml">
-                    <access role="sales"/>
-                </option>
-                <option href="views/sales-sms.xml">
-                    <access role="sales"/>
-                </option>
-                <option href="views/sales-ordering.xml">
-                    <access role="pre-orderer"/>
-                    <access role="beta"/>
-                </option>
-            </menu>
-            
-        </views>
+        
+        <views href="menu.xml"/>
+        
     </context-extension>
+
     
     <pipeline name="main">
         <execute name="stage1" href="id.xsl">

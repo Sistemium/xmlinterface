@@ -35,7 +35,10 @@
         </xsl:for-each>
         
     </xsl:template>
-    
+
+    <xsl:template match="*" mode="import-file">
+        <xsl:apply-templates select="document(@href)"/>
+    </xsl:template>
     
     <xsl:template match="xi:menu|xi:option" mode="import-file">
         <xsl:param name="href" select="@href"/>
@@ -49,6 +52,7 @@
     <xsl:template match="@*" mode="build-option">
         <xsl:copy/>
     </xsl:template>
+    
     
     <xsl:template match="xi:context-extension[count(xi:views)&gt;1]//xi:views[not(@name)]" mode="extend">
         
