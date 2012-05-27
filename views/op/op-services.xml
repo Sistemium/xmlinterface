@@ -41,29 +41,36 @@
             <join name="op-agent" field="xid" />
             <join name="op-agent" field="searcher" property="name" />
             
-            <parameter name="cmp" type="boolean" label="Завершенные" editable="true" optional="true"/>
-            <parameter name="err" type="boolean" label="С ошибкой" editable="true" optional="true"/>
-            
-            <form name="op-payment" is-set="true" label="Платежи процессинга" page-size="10" preload="true">
+            <form name="payment-set" concept="op" preload="true">
                 
-                <field name="id"/>
-                <field name="ts"/>
-                <field name="cts" hidden="true"/>
-                <field name="status"/>
-                <field name="summ" />
-                <field name="account"/>
-                <field name="extra"/>
+                <parameter name="cmp" type="boolean" label="Завершенные" editable="true" optional="true"/>
+                <parameter name="err" type="boolean" label="С ошибкой" editable="true" optional="true"/>
                 
-                <form name="op-payment-error" concept="op-error">
+                <form name="op-payment" is-set="true" label="Платежи процессинга" page-size="10">
+                    
                     <field name="id"/>
-                    <field name="name" label="Ошибка"/>
-                    <where name="id">
-                        <not>0</not>
-                    </where>
+                    <field name="ts"/>
+                    <field name="cts" hidden="true"/>
+                    <field name="status"/>
+                    <field name="summ" />
+                    <field name="account"/>
+                    <field name="extra"/>
+                    
+                    <form name="op-payment-error" concept="op-error">
+                        <field name="id"/>
+                        <field name="name" label="Ошибка"/>
+                        <where name="id">
+                            <not>0</not>
+                        </where>
+                    </form>
+                    
+                    <join name="payment-set" field="cmp" property="final"/>
+                    <join name="payment-set" field="err" property="op-error"/>
+                    <join name="op-service"/>
+                    
+                    <order-by name="ts" dir="desc"/>
+                    
                 </form>
-                
-                <order-by name="ts" dir="desc"/>
-                
             </form>
             
         </form>
@@ -84,7 +91,7 @@
             
             <choise>
                 <option label="Платежи по услуге">
-                    <command name="set-of-op-payment">refresh</command>
+                    <command name="payment-set">refresh</command>
                     <command name="op-services">display-payments</command>
                 </option>
             </choise>
@@ -96,7 +103,8 @@
             <display>
                 <region class="tabs">
                     <region label="Детали услуги">
-                        <input form="op-service" field="err"/>
+                        <input field="cmp"/>
+                        <input field="err"/>
                         <grid form="op-payment" hide-empty="true" label="Последние платежи">
                             <group>
                                 <by field="name" form="op-service"/>
