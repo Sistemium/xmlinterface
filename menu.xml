@@ -65,19 +65,19 @@
     </menu>
     
     <menu label="Продажи">
-        <option href="views/customer-order-create.xml">
+        <option href="views/sales/customer-order-create.xml">
             <access role="salesman"/>
         </option>
-        <option href="views/customers.xml">
+        <option href="views/sales/customers.xml">
             <access role="salesman"/>
         </option>
-        <option href="views/salesmen.xml">
+        <option href="views/sales/salesmen.xml">
             <access role="sales"/>
         </option>
-        <option href="views/sales-sms.xml">
+        <option href="views/sales/sales-sms.xml">
             <access role="sales"/>
         </option>
-        <option href="views/sales-ordering.xml">
+        <option href="views/sales/sales-ordering.xml">
             <access role="pre-orderer"/>
             <access role="beta"/>
         </option>
