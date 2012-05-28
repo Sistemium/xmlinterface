@@ -372,6 +372,7 @@
                     <xsl:value-of select="concat('set-of-',@name)"/>
                 </xsl:attribute>
             </xsl:for-each>
+            
             <xsl:apply-templates select="key('id',@ref)/xi:natural-key" mode="build-data">
                 <xsl:with-param name="data" select="$data"/>
             </xsl:apply-templates>

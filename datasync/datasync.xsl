@@ -56,7 +56,13 @@
 
     <xsl:template match="xi:view-schema//*/@id | xi:view-schema//*/@ref"/>
 
-    <xsl:template match="xi:userinput/*[@name='filter'][not(/*/xi:views/xi:view[not(@hidden)]/xi:view-data//xi:data/@name=.)]">
+    <xsl:template
+        match="
+            xi:userinput/*
+            [@name='filter']
+            [not( /*/xi:views/xi:view[not(@hidden)]/xi:view-data//xi:data/@name= . )]
+        "
+    >
         <no-data name="{.}">
             <xsl:for-each select="/*/xi:views/xi:view[not(@hidden)]/xi:view-schema//xi:form[@name=current()/text()]/ancestor::xi:form[not(@is-set)]">
                 <xsl:for-each select="ancestor::xi:view/xi:view-data//xi:data[@ref=current()/@id][@choise and not(@chosen)]">
@@ -77,10 +83,13 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="xi:set-of[@is-choise][parent::xi:data[not(xi:datum[@type='field']) and @name = /*/xi:userinput/*[text()='next']/@name]]" priority="1000"/>
+    <xsl:template match="xi:set-of[@is-choise]
+        [parent::xi:data[not(xi:datum[@type='field']) and @name = /*/xi:userinput/*[text()='next']/@name]]" priority="1000"/>
 
     <xsl:template match="xi:set-of[@is-choise]">
+        
         <choise>
+            
             <xsl:copy-of select="@id"/>
             <xsl:attribute name="options-count">
                 <xsl:value-of select="count(xi:data)"/>
@@ -96,18 +105,20 @@
                     <xsl:value-of select="count(xi:data[@id=current()/../@chosen]/preceding-sibling::xi:data)+1"/>
                 </xsl:attribute>
             </xsl:if>
+            
         </choise>
+        
     </xsl:template>
 
     <xsl:template match="xi:data|xi:set-of">
-        <xsl:apply-templates select="xi:data"/>
+        <xsl:apply-templates select="xi:data|xi:set-of"/>
     </xsl:template>
 
     <xsl:template match="xi:data[@remove-this|@is-new]" priority="1000"/>
     
     <xsl:template match="xi:data[
         not(/*/xi:userinput/*[@name='filter'])
-        or /*/xi:userinput/*[@name='filter']=(
+         or /*/xi:userinput/*[@name='filter']=(
             @name | ancestor::xi:data/@name | descendant::xi:data[not(@is-new)]/@name
         )]"
     >

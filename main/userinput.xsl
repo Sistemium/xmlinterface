@@ -6,8 +6,22 @@
   
     <xsl:import href="stage-1-import.xsl"/>
 
+    <xsl:key name="name" match="xi:data|xi:form|xi:datum|xi:field|xi:parameter" use="@name"/>
+    
     <xsl:template match="xi:message"/>
     <xsl:template match="xi:option/@chosen|xi:events"/>
+    
+    
+    <xsl:template match="xi:userinput/xi:command[@name='filter']">
+        <xsl:call-template name="id" />
+        <xsl:if test="key('name',text())/@is-set">
+            <xsl:copy>
+                <xsl:copy-of select="@*"/>
+                <xsl:text>set-of-</xsl:text>
+                <xsl:copy-of select="text()"/>
+            </xsl:copy>
+        </xsl:if>
+    </xsl:template>
     
     
     <!-- недоделка: предусмотреть отправку сообщений в активное вью -->
@@ -17,5 +31,6 @@
     <xsl:template match="xi:view[not(@hidden)][/*/xi:userinput/xi:command[@name='views']] | xi:view[@hidden]">
         <xsl:copy-of select="."/>
     </xsl:template>
+    
 
 </xsl:transform>

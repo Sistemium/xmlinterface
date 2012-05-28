@@ -17,6 +17,7 @@
        <!--xsl:apply-templates select="document('init.xml')/*/xi:context-extension[xi:session]/*"/-->
     </xsl:template>
     
+    
     <xsl:template match="xi:userinput">
         <xsl:choose>
             <xsl:when test="contains(@user-agent,'Windows CE') or contains(@user-agent,'Android') or @user-agent='Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'">

@@ -78,12 +78,22 @@
 
     <xsl:template match="xi:view-data//xi:preload[not(xi:datum[@type='parameter'])][xi:response[xi:exception[xi:not-found]]]"/>
 
-    <xsl:template match="xi:view-data//xi:preload[xi:response/xi:exception]">
+    <xsl:template match="xi:view-data//xi:preload[xi:response/xi:exception]" name="build-not-found-data">
         <data>
-            <xsl:apply-templates select="@*|*"/>
+            <xsl:apply-templates select="@*"/>
+            <xsl:apply-templates select="key('id',@ref)/@name|*"/>
         </data>
     </xsl:template>
 
+    <xsl:template match="xi:view-data//xi:preload[xi:response/xi:exception][key('id',@ref)/@is-set]">
+        <set-of>
+            <xsl:apply-templates select="@*"/>
+            <xsl:call-template name="build-id"/>
+            <xsl:apply-templates select="key('id',@ref)" mode="build-ref"/>
+            <xsl:call-template name="build-not-found-data"/>
+        </set-of>
+    </xsl:template>
+        
     <xsl:template match="xi:data[@chosen][not(key('id',@chosen))]">
         <xsl:copy>
             <xsl:copy-of select="@name|@ref|@id"/>
