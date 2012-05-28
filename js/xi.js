@@ -27,9 +27,13 @@ function domready () {
         $(this).parent().toggleClass('expanded');
         $(this).parent().toggleClass('collapsed');
     });
-
-    $('.accordeon tr.group').click(function() {
-        $(this).nextUntil('tr.group','tr.data').toggle();
+    
+    $('.accordeon tr.group .cnt').addClass('x-button collapsed');
+    
+    $('.accordeon tr.group .cnt').click(function() {
+        $(this).toggleClass('expanded');
+        $(this).toggleClass('collapsed');
+        $(this).parents('tr.group').first().nextUntil('tr.group','tr.data').toggle();
     });
     
     $('body').delegate('.boolean input, input.radio, a.button','click',

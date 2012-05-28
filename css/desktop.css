@@ -1,3 +1,5 @@
+@import "button.css";
+
 body, input {font-size: 15px; color:#333333; -background-color: #FCFBF5; font-family: verdana;}
 
 .label, .title, th, table, .button {background-color: #BBf0C0; }
@@ -307,7 +309,7 @@ tr.page-control span {
 	display: inline;
 }
 tr.group td span {display:inline;}
-tr.group td {padding-top:1em;}
+tr.group td {padding: 1em 0 0.75em;}
 
 tr.delete-this span,  tr.delete-this span input{
     text-decoration: line-through !important; color: darkgray !important; background-color:inherit;

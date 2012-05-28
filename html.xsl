@@ -635,7 +635,11 @@
             <td colspan="{$colspan}">
                 <span><xsl:value-of select="."/></span>
                 <xsl:if test="$cnt-show">
-                    <span>(<xsl:value-of select="$cnt"/> шт.)</span>
+                    <span class="cnt">
+                        <xsl:text>(</xsl:text>
+                        <xsl:value-of select="$cnt"/>
+                        <xsl:text>шт.)</xsl:text>
+                    </span>
                 </xsl:if>
             </td>
         </tr>
