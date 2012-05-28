@@ -12,6 +12,10 @@
                 </parameter>
                 <field name="date"/>
                 <field name="id" />
+                <form name="encashments-agg" concept="encashment" label="Произведенная инкассация">
+                	<field name="cashed-system" label="Всего сумма в терминалах" aggregate="sum"/>
+                	<field name="cashed-fact" label="Всего зарегистрировано" aggregate="sum"/>
+				</form>
                 <form name="encashment" label="Произведенная инкассация" is-set="true" page-size="15">
 					<join name="branch-workday" field="id-search" property="terminal-id"/>
                     <field name="xid" key="true"/>
@@ -37,13 +41,20 @@
         <step label="Регистрация сумм реальных инкассаций">
             <display>
                 <input form="branch"/>
-                <input form="branch-workday" field="date"/>
-				<input form="branch-workday" field="id-search"/>
-                <grid form="encashment">
-                    <group>
-                        <by form="processing" field="name"/>
-                    </group>
-                </grid>
+				<input form="branch-workday" field="date"/>
+				<region class="tabs">
+					<region label="Данные">
+						<input form="branch-workday" field="id-search"/>
+						<grid form="encashment">
+							<group>
+								<by form="processing" field="name"/>
+							</group>
+						</grid>
+					</region>
+					<region label="Итоги">
+						<print form="encashments-agg" field="*"/>
+					</region>
+				</region>
             </display>
         </step>
     </workflow>
