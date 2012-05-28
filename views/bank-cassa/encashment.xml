@@ -6,16 +6,20 @@
             <field name="name" />
             <field name="id" />
             <form name="branch-workday" label="Рабочий день отделения">
+				
                 <parameter name="id-search" type="int" editable="true" label="ИД терминала" optional="true" />
                 <parameter name="date" type="date" editable="true" label="Рабочий день">
                     <init with="today"/>
                 </parameter>
+				
                 <field name="date"/>
                 <field name="id" />
-                <form name="encashments-agg" concept="encashment" label="Произведенная инкассация">
+				
+                <form name="encashments-agg" concept="encashment" label="Итог инкассациий">
                 	<field name="cashed-system" label="Всего сумма в терминалах" aggregate="sum"/>
                 	<field name="cashed-fact" label="Всего зарегистрировано" aggregate="sum"/>
 				</form>
+				
                 <form name="encashment" label="Произведенная инкассация" is-set="true" page-size="15">
 					<join name="branch-workday" field="id-search" property="terminal-id"/>
                     <field name="xid" key="true"/>
@@ -34,28 +38,34 @@
                 	<field name="cashed-fact" label="Сумма реальная" editable="true" autofill="cashed-system" totals="sum"/>
 					<order-by name="terminalid"/>
                 </form>
+				
             </form>
         </form>
     </view-schema>
     <workflow>
-        <step label="Регистрация сумм реальных инкассаций">
+		
+        <step label="Регистрация инкассаций">
             <display>
                 <input form="branch"/>
 				<input form="branch-workday" field="date"/>
-				<region class="tabs">
-					<region label="Данные">
-						<input form="branch-workday" field="id-search"/>
-						<grid form="encashment">
-							<group>
-								<by form="processing" field="name"/>
-							</group>
-						</grid>
-					</region>
-					<region label="Итоги">
-						<print form="encashments-agg" field="*"/>
-					</region>
+				<region>
+					<input form="branch-workday" field="id-search"/>
+					<grid form="encashment">
+						<group>
+							<by form="processing" field="name"/>
+						</group>
+					</grid>
 				</region>
             </display>
         </step>
+		
+        <step label="Итоги инкассаций">
+            <display>
+                <input form="branch"/>
+				<input form="branch-workday" field="date"/>
+				<print form="encashments-agg" field="*"/>
+            </display>
+        </step>
+		
     </workflow>
 </view-definition>
