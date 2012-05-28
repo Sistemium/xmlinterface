@@ -45,6 +45,7 @@
     </user>
 
     <validator name="pps">
+        <role ref="up"/>
         <role ref="subdealer"/>
     </validator>
 

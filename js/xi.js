@@ -28,6 +28,10 @@ function domready () {
         $(this).parent().toggleClass('collapsed');
     });
 
+    $('.accordeon tr.group').click(function() {
+        $(this).nextUntil('tr.group','tr.data').toggle();
+    });
+    
     $('body').delegate('.boolean input, input.radio, a.button','click',
         function(e) {$(e.target).parents('.view').mask('Загрузка ...');}
     );

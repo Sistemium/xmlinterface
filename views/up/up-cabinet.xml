@@ -2,6 +2,8 @@
 
 <view-definition xmlns="http://unact.net/xml/xi" name="up-cabinet" label="Кабинет клиента">
 	
+	<access role="client"/>
+	
     <view-schema> <form name="op-agent"> 
 		
 		<parameter name="name">
@@ -75,21 +77,26 @@
 					<field name="name" label="Тип файла"/>
 				</form>
 				
-				<form name="op-payment" is-set="true" label="Платеж">
+				<form name="op-payment" is-set="true" label="Процессинг платежей">
 					
 					<field name="id"/>
-					<field name="status"/>
+					
 					<field name="summ" totals="sum" />
 					<field name="account"/>
 					<field name="extra"/>
 					
-					<order-by name="status" dir="asc"/>
+					<form name="op-payment-error" concept="op-error" no-preload="true">
+						<field name="id"/>
+						<field name="name" label="Cтатус" />
+					</form>
+					
+					<order-by name="op-error" dir="desc"/>
 					
 				</form>
 				
-				<form name="up-file-payment" is-set="true" label="Платеж">
+				<form name="up-file-payment" is-set="true" label="Платежи файла">
 					
-					<form name="op-error" no-preload="true">
+					<form name="up-file-payment-error" concept="op-error" no-preload="true">
 						<field name="id"/>
 						<field name="name" label="Cтатус" />
 					</form>
@@ -224,9 +231,9 @@
 					<print form="file-details-type" field="name"/>
 					<print form="file-details" field="*"/>
 				</region>
-				<grid form="up-file-payment">
+				<grid form="up-file-payment" accordeon="true">
 					<group>
-						<by form="op-error" field="name"/>
+						<by form="up-file-payment-error" field="name"/>
 					</group>
 				</grid>
 			</display>
@@ -243,9 +250,9 @@
 					<print form="file-details-type" field="name"/>
 					<print form="file-details" field="*"/>
 				</region>
-				<grid form="op-payment">
+				<grid form="op-payment" accordeon="true">
 					<group>
-						<by form="op-payment" field="status"/>
+						<by form="op-payment-error" field="name"/>
 					</group>
 				</grid>
 			</display>

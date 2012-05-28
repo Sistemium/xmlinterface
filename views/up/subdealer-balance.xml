@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="subdealer-balance" label="Балансовая ведомость">
+	
+	<access role="subdealer"/>
+	
     <view-schema>
         <form name="subdealer" expect-choise="true" label="Субдилер">
             <parameter name="username">
@@ -25,6 +28,7 @@
         	</form>
         </form>
     </view-schema>
+	
     <workflow>
         <step>
             <display>
@@ -34,4 +38,5 @@
             </display>
         </step>
     </workflow>
+	
 </view-definition>
