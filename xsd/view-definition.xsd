@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://unact.net/xml/xi"
+>
+    
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="role" type="xs:string"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="concept" type="xs:string"/>
+    <xs:attribute name="property" type="xs:string"/>
+    <xs:attribute name="role" type="xs:string"/>
+    <xs:attribute name="is-set" type="xs:string"/>
+    <xs:attribute name="expect-choise" type="xs:string"/>
+    <xs:attribute name="restrict-parent" type="xs:string"/>
+    <xs:attribute name="choise" type="xs:string"/>
+    
+    <xs:attribute name="field" type="xs:string"/>
+    <xs:attribute name="form" type="xs:string"/>
+    <xs:attribute name="with" type="xs:string"/>
+    
+    <xs:element name="access">
+        <xs:complexType>
+            <xs:attribute ref="role" />
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="init">
+        <xs:complexType>
+            <xs:attribute ref="with" minOccurs="1" />
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="field">
+        <xs:any minOccurs="0"/>
+        <xs:attribute ref="name"/>
+        <xs:attribute ref="type"/>
+    </xs:complexType>
+    
+    <xs:complexType name="parameter">
+        <xs:sequence>
+            <xs:element ref="init"/>
+        </xs:sequence>
+        <xs:attribute ref="name"/>
+        <xs:attribute ref="type"/>
+    </xs:complexType>
+    
+    <xs:complexType name="join">
+        <xs:attribute ref="name"/>
+        <xs:attribute ref="field"/>
+        <xs:attribute ref="property"/>
+    </xs:complexType>
+    
+    <xs:complexType name="form">
+        <xs:all>
+            <xs:element ref="form" minOccurs="0"/>
+            <xs:element ref="field" minOccurs="0"/>
+            <xs:element ref="where" />
+            <xs:element ref="join" />
+            <xs:element ref="parameter" />
+        </xs:all>
+    </xs:complexType>
+    
+    
+    <xs:element name="view-definition"> <xs:complexType>
+        
+        <xs:sequence>
+            
+            <xs:element ref="access"/>
+            
+            <xs:element name="view-schema">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element ref="form" />
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element ref="workflow">
+                <xs:complexType>
+                    <xs:group>
+                        <xs:element ref="reusables" minOccurs="0"/>
+                        <xs:element ref="step" maxOccurs="unbounded"/>
+                    </xs:group>
+                </xs:complexType>
+            </xs:element>
+            
+        </xs:sequence>
+        
+    </xs:complexType> </xs:element>
+    
+    
+</xs:schema>
