@@ -2,7 +2,7 @@
 
 drop table if exists xmlgate.query;
 
-create global temporary table if not exists  xmlgate.query (
+create global temporary table if not exists xmlgate.query (
     id int default autoincrement,
     
     request text,
@@ -14,7 +14,9 @@ create global temporary table if not exists  xmlgate.query (
 
     ts datetime default timestamp,
     cts datetime default current timestamp,
+    xid uniqueidentifier default newid(),
     
+    unique(xid),
     primary key (id)
     
 ) not transactional share by all;
@@ -37,13 +39,17 @@ begin
     declare @ip varchar(15);
     declare @path varchar(32);
     declare @log_id int;
+    declare @xid uniqueidentifier;
+    declare @async varchar(64);
  
     body: begin
         
         set @request=csconvert(@request,'os_charset','utf-8');
         
-        select query_name, if show_sql is not null then 1 endif, sql_raw, username, ip, path
-            into @query_name, @show_sql, @sql, @username, @ip, @path
+        message 'dba.xml_query @request = ', @request;
+        
+        select query_name, if show_sql is not null then 1 endif, sql_raw, username, ip, path, async
+            into @query_name, @show_sql, @sql, @username, @ip, @path, @async
             from openxml(@request, '/*') with (
                 query_name varchar(128) '@name',
                 show_sql text '@show-sql',
@@ -51,7 +57,8 @@ begin
                 expect text '@expect',
                 username varchar(128) '@username',
                 ip varchar(128) '@ip',
-                path varchar(128) '@path'
+                path varchar(128) '@path',
+                async varchar(64) '@async'
             )
         ;
         
@@ -60,23 +67,24 @@ begin
             set @@username=@username;
         end if;
         
+        set @xid = newid();
+        
         insert into xmlgate.query with auto name
             select @sql as request, @username as username, connection_property ('number') as conn,
-                @ip as ip, @path as path
+                @ip as ip, @path as path, @xid as xid
         ;
         set @log_id = @@identity;
         
-        execute immediate with result set off @sql;
-        
-        if nullif(trim(@result),'') is not null then
-            set @result=xmlelement('result-set',@result);
-        elseif @sql like '%into%@result%' or @sql like '%set%@result%'then
-            set @result=xmlelement('exception', xmlelement('not-found'));
+        if isnull(@async,'false') = 'false' then
+            set @result = dba.xml_sqlExecute(@sql);
+            update xmlgate.query set response = isnull(@result,'') where xid = @xid;
         else
-            set @result=xmlelement('rows-affected',@@rowcount);
+            message 'dba.xml_query @async = true';
+            trigger event xmlgateAsyncQuery(query = @xid);
+            set @result = xmlelement('asyncQuery', xmlattributes(@xid as "queryXid"));
         end if;
         
-        update xmlgate.query set response = isnull(@result,'') where id = @log_id;
+        
         
     exception when others then
     
@@ -87,7 +95,7 @@ begin
                      )
         );
         
-        update xmlgate.query set response = @result where id = @log_id;
+        update xmlgate.query set response = @result where xid = @xid;
         
         set @show_sql=1;
         
@@ -176,3 +184,53 @@ alter service xmlqa
 as call util.xml_for_http(dba.auth_request( :request ) )
 ;
 
+
+drop event xmlgateAsyncQuery
+;
+create event dba.xmlgateAsyncQuery
+handler
+begin
+    declare @xid uniqueidentifier;
+    declare @sql text;
+    declare @result xml;
+
+    set @xid = cast(event_parameter('query') as uniqueidentifier);
+    set @sql = (select request from xmlgate.query where xid = @xid);
+ 
+    set @result = dba.xml_sqlExecute(@sql);
+    
+    update xmlgate.query set response = @result where xid = @xid;
+
+end
+;
+
+
+create or replace function dba.xml_sqlExecute(in @sql text)
+returns xml
+begin
+    declare @result xml;
+
+    execute immediate with result set off @sql;
+    
+    if nullif(trim(@result),'') is not null then
+        set @result=xmlelement('result-set',@result);
+    elseif @sql like '%into%@result%' or @sql like '%set%@result%'then
+        set @result=xmlelement('exception', xmlelement('not-found'));
+    else
+        set @result=xmlelement('rows-affected',@@rowcount);
+    end if;
+    
+    return @result;
+    
+    exception when others then
+    
+        set @result=
+          xmlelement('exception',
+                     xmlconcat(xmlelement('ErrorText',errormsg())
+                              ,xmlelement('SQLSTATE',SQLSTATE)
+                     )
+        );
+        
+     return @result;
+
+end;
