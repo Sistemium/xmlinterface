@@ -84,6 +84,15 @@ begin
             set @result = xmlelement('asyncQuery', xmlattributes(@xid as "queryXid"));
         end if;
         
+        -- async responses
+        set @result = xmlconcat(@result,
+                                (select xmlagg(xmlelement('result',
+                                        xmlattributes(q.xid as "of", if q.response is null then  'true' else null endif as "not-ready" ),
+                                        cast(q.response as xml)))
+                                   from xmlgate.query q join (select xid
+                                                                from openxml(@request, '/*/*:getResult')
+                                                                     with(xid uniqueidentifier '@of'))  as t on q.xid = t.xid));
+        
         
         
     exception when others then
