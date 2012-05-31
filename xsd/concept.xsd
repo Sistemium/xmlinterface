@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://unact.net/xml/xi"
+>
+    <xs:annotation>
+        <xs:appinfo>xmlinterface</xs:appinfo>
+        <xs:documentation>
+            the root of
+        </xs:documentation>
+    </xs:annotation>
+    
+    <xs:complexType name="concept">
+        
+        <xs:attribute name="name" type="xs:string"/>
+        
+        <xs:group>
+            
+        </xs:group>
+        
+    </xs:complexType>
+
+</xs:schema>

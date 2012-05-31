@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://unact.net/xml/xi"
+>
+    
+    <xs:attribute name="role" type="xs:string"/>
+    <xs:attribute name="not-role" type="xs:string"/>
+    
+    <xs:complexType name="role-designator">
+        
+        <xs:attribute ref="role" />
+        <xs:attribute ref="not-role" />
+        
+    </xs:complexType>
+    
+    <xs:group name="accessors-list">
+        
+        <xs:sequence>
+            <xs:element ref="access" maxOccurs="unbounded"/>
+        </xs:sequence>
+        
+    </xs:group>
+    
+    <xs:complexType name="securable">
+        
+        <xs:sequence>    
+            <xs:group ref="accessors-list" minOccurs="0"/>
+            <xs:any/>
+        </xs:sequence>
+        
+    </xs:complexType>
+    
+    <xs:element name="access" type="role-designator"/>
+    
+    <xs:element name="secure">
+        <xs:complexType>
+            <xs:complexContent base="role-designator">
+                
+                <xs:sequence>
+                    <xs:any maxOccurs="unbounded"/>
+                </xs:sequence>
+                
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

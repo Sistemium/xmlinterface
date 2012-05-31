@@ -6,18 +6,17 @@
     <xs:annotation>
         <xs:appinfo>xmlinterface-concept</xs:appinfo>
         <xs:documentation>
-            Language used to describe agent interface and interaction
+            used to describe agent interface and interaction
         </xs:documentation>
     </xs:annotation>
-    
-    <xs:attribute name="" type="xs:string"/>
-    
-    <xs:attribute name="field" type="xs:string"/>
 
+    <xs:include schemaLocation="security.xsd"/>
+
+    <xs:attribute name="choise" type="xs:string"/>
 
     <xs:group name="displayables">
-        <xs:element ref="print"/>
-        <xs:element ref="input"/>
+        <xs:element name="print"/>
+        <xs:element name="input"/>
     </xs:group>
 
     <xs:complexType name="region">
@@ -26,17 +25,25 @@
 
     <xs:complexType name="step">
         <xs:sequence>
-            <xs:element ref="display"/>
+            <xs:element ref="display" minOccurs="0"/>
+            <xs:element ref="choise" minOccurs="0"/>
             <xs:element ref="validate"/>
-            <xs:element ref="choise"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="reusables">
+        <xs:restriction base="step">
+            <xs:sequence>
+                <xs:element ref="step" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:restriction>
+    </xs:complexType>
+
+    <xs:complexType name="dialogue">
         <xs:restriction base="step"/>
         <xs:sequence>
             <xs:element ref="step" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-
+    
 </xs:schema>

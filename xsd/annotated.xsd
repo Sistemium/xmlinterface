@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://unact.net/xml/xi"
+>
+    <xs:annotation>
+        <xs:appinfo>xmlinterface</xs:appinfo>
+        <xs:documentation>
+            annotated xsd template
+        </xs:documentation>
+    </xs:annotation>
+
+</xs:schema>
