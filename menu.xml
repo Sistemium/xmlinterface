@@ -5,6 +5,7 @@
 
     <menu name="common" label="Общее" directory="views/common">
         <access role="user"/>
+        <access role="beta"/>
     </menu>
     
     

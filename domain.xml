@@ -2,6 +2,10 @@
 
 <domain xmlns="http://unact.net/xml/xi" >
     
+    
+    <!-- sysuser dbserver-console payroll-person
+        - покзательные понятия, пусть они всегда вверху будут
+    -->
 
     <concept name="payroll-person">
         
@@ -60,6 +64,9 @@
         
     </concept>
     
+    <!-- sysuser dbserver-console payroll-person
+        - покзательные понятия, пусть они всегда вверху будут
+    -->
 
     <concept name="op" server="op.unact.ru">    
         <select owner="sys" sql-name="dummy"/>
