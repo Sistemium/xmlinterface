@@ -57,9 +57,15 @@
                 <!-- вложенность означает пересечение множеств
                     , т.е добавляет требования -->
                 
-                <form name="user-is-admin" concept="sysuser">
+                <form name="user-is-it" concept="sysuser">
                     
                     <join name="sysuser" field="id"/>
+                    
+                    <!-- иногда встречается глюк
+                        когда некоторые комбинации форм не работают
+                        если в них нет ни одного поля -->
+                        
+                    <field name="id"/>
                     
                     <form name="dbserver-console-log" concept="dbserver-console"
                         label="Консоль сервера БД"
@@ -161,6 +167,9 @@
                         <text>Этот этап @hidden и not(choise)</text>
                         <text>,поэтому из него нельзя выйти обратно конпками</text>
                         <text>,но можно написать в адресе ?personal-view=welcome-page</text>
+                        <text>или нажать "Обновить"</text>
+                        <text>- по нажатию этой кнопки</text>
+                        <text>программа переходит в ближайший снизу вверх step[not(@hidden)]</text>
                     </region>
                 </region>
             </display>
