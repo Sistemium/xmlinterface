@@ -222,13 +222,22 @@ tr.group.collapsed.featured td {
 	padding-bottom: 0px;
 }
 
-.region.collapsable.collapsed > .print, .desktop .region.collapsable.collapsed > .grid {
+.region.collapsable.collapsed > .print, .desktop .region.collapsable.collapsed > .grid,
+.desktop .region.collapsable.collapsed > .text {
 	display:none;
 }
 
 .region.collapsable.collapsed .label{
 	background-color: #F9F5F0; color: darkgray;
 	font-size: small; font-weight: normal; margin:auto;
+}
+
+.region.collapsable.collapsed .expanded-label {
+	display: none;
+}
+
+.region.collapsable.expanded .collapsed-label {
+	display: none;
 }
 
 .region.collapsable.expanded {

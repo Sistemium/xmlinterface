@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="personal-view" label="Уголок пользователя">
+    
+    <view-schema>
+        
+        <form name="sysuser" hidden="true">
+            
+            <parameter name="name" label="Уважаемый"> <init with="username"/> </parameter>
+            <parameter name="device-name"> <init with="device-name"/> </parameter>
+            <parameter name="username"> <init with="username"/> </parameter>
+            <parameter name="date" type="date"> <init with="today"/> </parameter>
+            
+            <form name="cat-agent" label="Агент" what-label="Агента">
+                
+                <join name="sysuser" field="username"/>
+                
+                <field name="id" />
+                <field name="name" />
+                
+                <form name="cat-salesman">
+                    
+                    <field name="id" />
+                    <field name="name" />
+                    
+                </form>
+                
+            </form>
+            
+            <form name="personal-info" concept="payroll-person">
+                <all-labeled-fields/>
+            </form>
+            
+        </form>
+        
+    </view-schema>
+    
+    <workflow>
+        
+        <step name="welcome-page" label="Добро пожаловать">
+            
+            <display>
+                <print field="name" form="sysuser"/>
+                <text>Это ваш личный кабинет</text>
+            </display>
+            
+            <choise>
+                <option name="show-data" label="Посмотреть персоальные данные">
+                    <command name="personal-view">personal-page</command>
+                </option>
+            </choise>
+            
+        </step>
+        
+        <step name="personal-page" hidden="true">
+            
+            <display>
+                <print field="name" form="sysuser"/>
+                <region class="tabs">
+                    <region name="data" label="Данные">
+                        <print form="personal-info" field="*"/>
+                    </region>
+                    <region name="help" label="Помощь">
+                        <text>Если здесь ничего не показвается, значит нужно проапдейтить поле xmlgate.agent.person:</text>
+                        <region collapsable="true" label="Посмотреть SQL ..." expanded-label="SQL">
+                            <text>
+                                update xmlgate.agent set person=(
+                                    select person_id from employee join person where tabnum='?'
+                                ) where name='?'
+                            </text>
+                            <text>Вместо ?? вставить номер пропуска и логин</text>
+                        </region>
+                    </region>
+                </region>
+            </display>
+            
+            <choise>
+                <option name="show-data" label="На главную страницу">
+                    <command name="personal-view">welcome-page</command>
+                </option>
+            </choise>
+            
+        </step>
+        
+        
+    </workflow>
+    
+</view-definition>

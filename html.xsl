@@ -318,7 +318,8 @@
  
 
     <xsl:template match="@*|*" mode="build-text">
-        <div class="{local-name()}">
+        <xsl:param name="class" select="local-name()"/>
+        <div class="{$class}">
             <span>
                 <xsl:value-of select="."/>
             </span>
@@ -1377,7 +1378,21 @@
             
             <xsl:copy-of select="@id"/>
             
-            <xsl:apply-templates select="@label" mode="build-text"/>
+            <xsl:choose>
+                <xsl:when test="@collapsable">
+                    <div class="label">
+                        <xsl:apply-templates select="@label" mode="build-text">
+                            <xsl:with-param name="class">collapsed-label</xsl:with-param>
+                        </xsl:apply-templates>
+                        <xsl:apply-templates select="@expanded-label|@label[not(../@expanded-label)]" mode="build-text">
+                            <xsl:with-param name="class">expanded-label</xsl:with-param>
+                        </xsl:apply-templates>
+                    </div>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="@label" mode="build-text"/>
+                </xsl:otherwise>
+            </xsl:choose>
             
             <xsl:if test="self::*[@class='tabs']">
                 <xsl:call-template name="build-tabs"/>

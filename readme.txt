@@ -30,3 +30,5 @@ git pull origin master
 mkdir data
 
 chmod data a+w
+
+Дальше нужно читать вики

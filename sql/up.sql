@@ -13,6 +13,14 @@ create table if not exists xmlgate.agent (
 );
 
 
+if exists (select * from systable where table_name='person' and creator=user_id('dbo')) then
+    alter table xmlgate.agent add
+    foreign key (person) references dbo.person
+        on delete set null
+    ;
+end if;
+
+
 create or replace procedure xmlgate.agent (
     @name varchar(128) default null,
     @deviceName varchar(128) default null

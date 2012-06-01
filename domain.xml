@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <domain xmlns="http://unact.net/xml/xi" >
+    
+
+    <concept name="payroll-person">
+        
+        <select owner="dbo" sql-name="person"/>
+        
+        <select owner="person" type="procedure" sql-name="by_department">
+            <parameter name="payroll-department" type="int" sql-name="@id" required="true"/>
+        </select>
+        
+        <property name="id" type="int" key="true" sql-name="person_id"/>
+        
+        <property name="name" type="string" label="ФИО" sql-name="shortened"/>
+        <property name="first-name" type="string" label="Имя" sql-name="fname"/>
+        <property name="last-name" type="string" label="Фамилия" sql-name="lname"/>
+        <property name="birth-date" type="date" label="Дата рождения" sql-name="birth_date"/>
+        
+    </concept>
+
+
+    <concept name="sysuser">
+        
+        <select owner="xmlgate" sql-name="agent"/>
+        
+        <select owner="xmlgate" type="procedure" sql-name="agent">
+            <parameter name="name" type="string" sql-name="@name"/>
+            <parameter name="device-name" type="string" sql-name="@deviceName"/>
+        </select>
+        
+        <save owner="xmlgate" sql-name="agent" />
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Имя"/>
+        <property name="device-name" type="string" label="Последнее использованное устройство"/>
+        <property name="ts" type="datetime" label="Активность"/>
+        <property name="xid"/>
+        
+        <role name="payroll-person" actor="payroll-person" sql-name="person"/>
+        
+    </concept>
+    
 
     <concept name="op" server="op.unact.ru">    
         <select owner="sys" sql-name="dummy"/>
@@ -374,28 +415,6 @@
     <concept name="fotonova">
         <select owner="sys" sql-name="dummy"/>
         <property name="sync" type="string" sql-compute="case fnova.DataExchange() when 0 then 'Отработало удачно' when 1 then 'Произошла ошибка' end" label="Импорт данных"/>
-    </concept>
-
-    <concept name="sysuser">
-    
-        <select owner="xmlgate" sql-name="agent"/>
-        <select owner="xmlgate" type="procedure" sql-name="agent">
-            <parameter name="name" type="string" sql-name="@name"/>
-            <parameter name="device-name" type="string" sql-name="@deviceName"/>
-        </select>
-        
-        <save owner="xmlgate" sql-name="agent_save" type-="procedure">
-            <parameter name="name" type="string" sql-name="@name"/>
-            <parameter name="useradmin" type="string" sql-name="@useradmin"/>
-            <parameter name="xid" type="string" sql-name="@xid" required="true"/>
-        </save>
-        
-        <property name="id" type="int" key="true"/>
-        <property name="name" type="string" label="Имя"/>
-        <property name="device-name" type="string" label="Последнее использованное устройство"/>
-        <property name="ts" type="datetime" label="Активность"/>
-        <property name="xid"/>
-        
     </concept>
 
     <concept name="cat-agent">

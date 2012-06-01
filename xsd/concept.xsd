@@ -9,14 +9,24 @@
         </xs:documentation>
     </xs:annotation>
     
-    <xs:complexType name="concept">
+    <!--  Note also that both attribute declarations and attribute group
+        references must appear at the end of complex type definitions. -->
+    
+    <xs:complexType name="Concept">
+        
+        <xs:all>
+            <xs:group ref="Connection-properties"/>
+            <xs:group ref="Data-properties"/>
+        </xs:all>
         
         <xs:attribute name="name" type="xs:string"/>
         
-        <xs:group>
-            
-        </xs:group>
-        
     </xs:complexType>
+    
+    <xs:element name="concept" type="concept"/>
+    
+    <xs:group id="Connection-properties">
+        <xs:se
+    </xs:group>
 
 </xs:schema>
