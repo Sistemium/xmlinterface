@@ -16,6 +16,9 @@
             и аналогичный концепт делать в каждой бд
             так как если не стазу, то потом как правило бывает надобится 
             извлекать зависищие от логина пользователя данные-->
+            
+        <!-- form/@name должно быть уникально в контесте view-schema -->
+        <!-- (field|parameter)/@name должно быть уникально в контексте form -->
         
         <parameter name="name" label="Уважаемый"> <init with="username"/> </parameter>
         <parameter name="device-name"> <init with="device-name"/> </parameter>
@@ -75,9 +78,9 @@
                         <!-- @is-set - значит одижается множество строк -->
                         
                         <!-- @page-size - постраничный вывод
-                            пока не работает с MSSQL -->
+                            , пока не работает с MSSQL -->
                         
-                        <!-- @preloаd - препятсвует автоматике запроса данных
+                        <!-- @preloаd - препятствует автоматике запроса данных
                             , они загрузятся только если в контексте будет
                             /*/userinput/command[@name=current()/self::xi:form/@name
                                 or @name=concat('set-of-',current()/self::xi:form/@name)
@@ -88,6 +91,7 @@
                             
                             для форм-множеств нужно делать немного не так:
                             ?set-of-@name_формы=refresh
+                            
                             смотри как это делается по кнопке
                             в /*/workflow/step[1]/option[@name='show-logs'] -->
                         
