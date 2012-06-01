@@ -3,6 +3,11 @@
     
     <view-schema>
         
+        <!--
+            внутри view-schema должна быть ровно одна form
+            и она не может быть @is-set
+        -->
+        
         <form name="sysuser" hidden="true">
             
             <parameter name="name" label="Уважаемый"> <init with="username"/> </parameter>
@@ -28,7 +33,18 @@
             
             <form name="personal-info" concept="payroll-person">
                 <all-labeled-fields/>
+                <!-- join для связи с родителем по объявленной в concept role не пишется -->
             </form>
+            
+            <secure role="it">
+                <form name="recent-logs-from-asa-server" concept="dbserver-console"
+                    is-set="true" preload="true" label="Консоль сервера БД"
+                    page-size="20"
+                >
+                    <all-labeled-fields/>
+                    <order-by name="id" dir="desc"/>
+                </form>
+            </secure>
             
         </form>
         
@@ -44,8 +60,12 @@
             </display>
             
             <choise>
-                <option name="show-data" label="Посмотреть персоальные данные">
+                <option name="show-personal" label="Персональные данные">
                     <command name="personal-view">personal-page</command>
+                </option>
+                <option name="show-logs" label="Серверные логи">
+                    <command name="personal-view">logs-page</command>
+                    <command name="set-of-recent-logs-from-asa-server">refresh</command>
                 </option>
             </choise>
             
@@ -81,6 +101,26 @@
             
         </step>
         
+        <secure role="it">
+            <step name="logs-page" hidden="true">
+                
+                <display>
+                    <region class="tabs">
+                        <grid form="recent-logs-from-asa-server" label="Сервер БД">
+                            <group>
+                                <by form="recent-logs-from-asa-server" field="msg_database"/>
+                            </group>
+                        </grid>
+                        <region label="?">
+                            <text>Этот этап @hidden и not(choise)</text>
+                            <text>,поэтому из него нельзя выйти обратно конпками</text>
+                            <text>,но можно написать в адресе ?personal-view=welcome-page</text>
+                        </region>
+                    </region>
+                </display>
+                
+            </step>
+        </secure>
         
     </workflow>
     
