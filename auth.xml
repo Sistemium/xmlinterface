@@ -64,6 +64,7 @@
         </group>
         <group name="IT">
             <role ref="it"/>
+            <role ref="beta"/>
         </group>
         <group name="Кассир">
             <role ref="cashier"/>
