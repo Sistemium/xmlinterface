@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="up-amending" label="Корректировка платежей">
+	
+	<access role="client"/>
+	
+    <view-schema> <form name="op-agent"> 
+		
+		<parameter name="name">
+			<init with="username"/>
+		</parameter>
+		
+		<field name="id"/>
+		
+		<form name="up-client" expect-choise="forced" label="Клиент" choise-style="table">
+			
+			<field name="id"/>
+			<field name="name" label="Клиент"/>
+            
+            <form name="payment-search" concept="up-client">
+                
+                <join name="up-client" field="id" />
+                
+                <parameter name="accounts" label="Реквизиты" editable="true" optional="true"/>
+                
+                <form name="up-file-payment" is-set="true" page-size="10"
+                    label="Клиентские платежи">
+                    
+                    <!--form name="up-file" constrain-parent="true">
+                        <join name="payment-search" />
+                    </form-->
+                    
+                    <form name="up-file-payment-error" concept="op-error" no-preload="true">
+                        <field name="id"/>
+                        <field name="name" label="Cтатус" />
+                        <where name="id"><not>0</not></where>
+                    </form>
+                    
+                    <field name="id"/>
+                    
+                    <field name="ts" format="smalltime"/>                    
+                    <field name="summ"/>
+                    <field name="account"/>
+                    <field name="extra"/>
+                    
+                    <order-by name="ts" dir="desc"/>
+                    
+                    <join name="payment-search" field="accounts" />
+                    
+                </form>
+                
+                <form name="payment-to-ammend" concept="up-file-payment">
+                    <parameter name="payment-to-ammend-id" property="id" modifiable="true"/>
+                    <add-labeled-fields/>
+                    
+                    <field name="phone-number" editable="true" label="Номер телефона"
+                           sql-compute="null"
+                    />
+                    <field name="fio" editable="true" label="ФИО"
+                           sql-compute="null"
+                    />
+                    <field name="correct-account" type="text" editable="true" label="Правильные реквизиты"
+                           sql-compute="string(account, ',', extra)"
+                    />
+                    
+                    <form name="amendment-terminal" preload="true">
+                        <join name="payment-to-ammend" field="ts" property="date"/>
+                        <join name="payment-to-ammend" field="summ" property="summ"/>
+                    </form>
+                    
+                </form>
+                
+            </form>
+            
+		</form>
+		
+    </form> </view-schema>
+	
+	<workflow>
+		
+        <step name="file-payments" label="Поиск платежа">
+			<display>
+				<input form="up-client" />
+                <input form="payment-search" field="accounts"/>
+				<grid form="up-file-payment" hide-empty="true" label="Выберите платеж">
+					<option label="Выбрать">
+						<command name="payment-to-ammend-id" xpath-compute="xi:datum[@name='id']" />
+                        <command name="up-ammending">ammendment-details</command>
+					</option>
+				</grid>
+			</display>
+		</step>
+		
+        <step name="ammendment-details" label="Корректировка платежа" hidden="true">
+			<display>
+                <print form="up-client" field="name"/>
+                <region>
+                    <print form="payment-to-ammend" field="account"/>
+                    <print form="payment-to-ammend" field="extra"/>
+                </region>
+                <input form="payment-to-ammend" field="phone-number"/>
+                <input form="payment-to-ammend" field="fio"/>
+                <input form="payment-to-ammend" field="correct-account"/>
+            </display>
+        </step>
+        
+    </workflow>
+	
+</view-definition>
+

@@ -184,8 +184,14 @@
         <property name="summ" type="decimal" label="Сумма к зачислению" />
         <property name="extra" type="xml" label="Прочие реквизиты" />
         
+        <property name="cts" type="datetime" label="Когда создан" />
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
         <role name="op-error" actor="op-error" sql-name="error" />
         <role name="up-file" actor="up-file"  sql-name="csvfile"/>
+        <role name="up-client" actor="up-client" sql-name="client"/>
+        
+        <index name="accounts" sql-name="account, extra" label="Слова в реквизитах"/>
         
     </concept>
 
