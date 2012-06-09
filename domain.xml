@@ -172,10 +172,24 @@
         
     </concept>
 
+    <concept name="up-file-payment-claim-terminal" storage="mssql" server="pps" db="ppscat">
+        
+        <select owner="dbo" sql-name="csvMultibankTerminalForAmendmentClaim" type="procedure">
+            <parameter name="date" sql-name="@date" type="string"/>
+            <parameter name="summ" sql-name="@summ" type="decimal"/>
+        </select>
+        
+        <property name="id" type="int" />
+        
+    </concept>
 
     <concept name="up-file-payment" server="op.unact.ru">
         
         <select owner="op" sql-name="prepayment" />
+        
+        <!--save owner="op" sql-name="prepayment_ammend" type="procedure">
+            <parameter name="ammendment-reason" type="int" required="true" sql-name="@reason"/>
+        </save-->
         
         <property name="id" type="int" key="true"/>
         <property name="xid" />
@@ -194,6 +208,7 @@
         <index name="accounts" sql-name="account, extra" label="Слова в реквизитах"/>
         
     </concept>
+
 
     <concept name="up-file-type" server="op.unact.ru">
         <select owner="op" sql-name="CSVFileType"/>

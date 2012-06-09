@@ -21,6 +21,8 @@
                 
                 <join name="up-client" field="id" />
                 
+                <field name="id"/>
+                
                 <parameter name="accounts" label="Реквизиты" editable="true" optional="true"/>
                 
                 <form name="up-file-payment" is-set="true" page-size="10"
@@ -53,6 +55,9 @@
                     <parameter name="payment-to-ammend-id" property="id" modifiable="true"/>
                     <add-labeled-fields/>
                     
+                    <field name="payment-date" type="string"
+                           sql-compute="date(ts)+1"
+                    />
                     <field name="phone-number" editable="true" label="Номер телефона"
                            sql-compute="null"
                     />
@@ -63,10 +68,13 @@
                            sql-compute="string(account, ',', extra)"
                     />
                     
-                    <form name="amendment-terminal" preload="true">
-                        <join name="payment-to-ammend" field="ts" property="date"/>
-                        <join name="payment-to-ammend" field="summ" property="summ"/>
-                    </form>
+                </form>
+                
+                <form name="amendment-terminal" concept="up-file-payment-claim-terminal">
+                    <parameter name="payment-date" modifiable="true" property="date"/>
+                    <parameter name="payment-summ" modifiable="true" property="summ"/>
+                    
+                    <field name="id" sql-name="terminalid" label="ИД терминала"/>
                     
                 </form>
                 
@@ -85,13 +93,15 @@
 				<grid form="up-file-payment" hide-empty="true" label="Выберите платеж">
 					<option label="Выбрать">
 						<command name="payment-to-ammend-id" xpath-compute="xi:datum[@name='id']" />
-                        <command name="up-ammending">ammendment-details</command>
+						<command name="payment-date" xpath-compute="xi:string-to-date(xi:datum[@name='ts'])" />
+						<command name="payment-summ" xpath-compute="xi:datum[@name='summ']" />
+                        <command name="up-ammending">amendment-details</command>
 					</option>
 				</grid>
 			</display>
 		</step>
 		
-        <step name="ammendment-details" label="Корректировка платежа" hidden="true">
+        <step name="amendment-details" label="Корректировка платежа" hidden="true">
 			<display>
                 <print form="up-client" field="name"/>
                 <region>
