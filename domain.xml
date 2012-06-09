@@ -99,6 +99,14 @@
         <select owner="dbo" sql-name="dummy"/>
     </concept>
 
+    <concept name="bank-terminal" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="bankAccount"/>
+        
+        <property name="id" type="int" key="true" sql-name="account"/>
+        <property name="address" type="string" label="Адрес" sql-name="fulladdress"/>
+        
+    </concept>
+    
     <concept name="op-payment" server="op.unact.ru">
         <select owner="op" sql-name="payment"/>
         
@@ -110,6 +118,7 @@
         
         <property name="summ" type="decimal" label="Сумма к зачислению"/>
         <property name="summTerminal" type="decimal" label="Сумма полная"/>
+        <property name="terminal-fee" type="decimal" label="Комиссия терминала" sql-compute="summTerminal - summ"/>
         <property name="terminalID" type="string"/>
         <property name="account" type="string" label="Счет" />
         <property name="extra" type="xml" label="Прочие реквизиты" />
@@ -129,6 +138,7 @@
         <role name="op-error" actor="op-error" sql-name="error" />
         <role name="up-client" actor="up-client" sql-name="client" />
         <role name="up-file" actor="up-file" sql-name="CSVFile" />
+        <role name="up-file-payment" actor="up-file-payment" sql-name="prepayment" />
         
         <index name="accounts" sql-name="account, extra" label="Слова в реквизитах"/>
     </concept>
@@ -179,7 +189,9 @@
             <parameter name="summ" sql-name="@summ" type="decimal"/>
         </select>
         
-        <property name="id" type="int" />
+        <property name="id" type="int" sql-name="terminalid" />
+        
+        <role name="bank-terminal" actor="bank-terminal" sql-name="terminalid" />
         
     </concept>
 

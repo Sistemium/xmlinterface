@@ -56,17 +56,27 @@
                     <add-labeled-fields/>
                     
                     <field name="payment-date" type="string"
-                           sql-compute="date(ts)+1"
+                       sql-compute="date(ts)+1"
                     />
                     <field name="phone-number" editable="true" label="Номер телефона"
-                           sql-compute="null"
+                       sql-compute="null"
                     />
                     <field name="fio" editable="true" label="ФИО"
-                           sql-compute="null"
+                       sql-compute="null"
                     />
                     <field name="correct-account" type="text" editable="true" label="Правильные реквизиты"
-                           sql-compute="string(account, ',', extra)"
+                       sql-compute="string(account, ',', extra)"
                     />
+                    
+                    <form name="payment-reciept" concept="op-payment" is-set="true">
+                        <field name="summ"/>
+                        <field name="summTerminal"/>
+                        <field name="terminal-fee"/>
+                        <field name="printed-number" type="string"
+                            label="Номер чека"
+                            sql-compute="string(replace(replace(replace(replace(convert(varchar(23),ts,121),'-',''),':',''),' ',''),'.',''),'203150')"
+                        />
+                    </form>
                     
                 </form>
                 
@@ -74,7 +84,11 @@
                     <parameter name="payment-date" modifiable="true" property="date"/>
                     <parameter name="payment-summ" modifiable="true" property="summ"/>
                     
-                    <field name="id" sql-name="terminalid" label="ИД терминала"/>
+                    <field name="id" label="ИД терминала"/>
+                    
+                    <form name="amendment-terminal-details" concept="bank-terminal">
+                        <field name="address"/>
+                    </form>
                     
                 </form>
                 
@@ -104,13 +118,49 @@
         <step name="amendment-details" label="Корректировка платежа" hidden="true">
 			<display>
                 <print form="up-client" field="name"/>
-                <region>
-                    <print form="payment-to-ammend" field="account"/>
-                    <print form="payment-to-ammend" field="extra"/>
+                <region class="tabs">
+                    <region label="Корректировочная информация">
+                        <input form="payment-to-ammend" field="phone-number"/>
+                        <input form="payment-to-ammend" field="fio"/>
+                        <input form="payment-to-ammend" field="correct-account"/>
+                    </region>
+                    <region label="Исходная информация">
+                        <print form="payment-to-ammend" field="account"/>
+                        <print form="payment-to-ammend" field="extra"/>
+                        <print form="amendment-terminal" field="id"/>
+                        <print form="amendment-terminal-details" field="address"/>
+                    </region>
                 </region>
-                <input form="payment-to-ammend" field="phone-number"/>
-                <input form="payment-to-ammend" field="fio"/>
-                <input form="payment-to-ammend" field="correct-account"/>
+            </display>
+            <validate>
+                <nonempty form="payment-to-ammend" field="phone-number"/>
+                <nonempty form="payment-to-ammend" field="fio"/>
+                <nonempty form="payment-to-ammend" field="correct-account"/>
+            </validate>
+            <choise>
+                <option label="Продолжить">
+                    <command name="up-amending">amendment-reciepts</command>
+                </option>
+            </choise>
+        </step>
+        
+        <step name="amendment-reciepts" label="Чеки платежа">
+			<display>
+                <print form="up-client" field="name"/>
+                <region class="tabs">
+                    <grid form="payment-reciept" label="Чеки"/>
+                    <region label="Корректировочная информация">
+                        <print form="payment-to-ammend" field="phone-number"/>
+                        <print form="payment-to-ammend" field="fio"/>
+                        <print form="payment-to-ammend" field="correct-account"/>
+                    </region>
+                    <region label="Исходная информация">
+                        <print form="payment-to-ammend" field="account"/>
+                        <print form="payment-to-ammend" field="extra"/>
+                        <print form="amendment-terminal" field="id"/>
+                        <print form="amendment-terminal-details" field="address"/>
+                    </region>
+                </region>
             </display>
         </step>
         
