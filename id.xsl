@@ -18,7 +18,7 @@
 
     <xsl:key name="id" match="*" use="@id"/>
 
-    <!--xsl:include href="functions.xsl"/-->
+    <xsl:include href="functions.xsl"/>
     
     <xsl:template match="*" name="id">
         <xsl:copy>

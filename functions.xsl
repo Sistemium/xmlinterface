@@ -12,10 +12,25 @@
     <func:function name="xi:isnull">
         <xsl:param name="a" select="xi:null"/>
         <xsl:param name="b" select="xi:null"/>
-        <xsl:value-of select="$a"/>
         <xsl:if test="not($a)">
-            <xsl:value-of select="$b"/>
+            <func:result  select="$b"/>
         </xsl:if>
+        <func:result select="$a"/>
     </func:function>
     
+    <func:function name="xi:string-to-date">
+        <xsl:param name="datum" select="."/>
+        <xsl:variable name="numbers" select="translate($datum,'./-','')"/>
+        <func:result select="concat(substring($numbers,5,4),substring($numbers,3,2),substring($numbers,1,2))"/>
+    </func:function>
+    
+    <func:function name="xi:max">
+        <xsl:param name="a"/>
+        <xsl:param name="b" select="0"/>
+        <xsl:if test="$a > $b">
+            <func:result select="$a"/>
+        </xsl:if>
+        <func:result select="$b"/>
+    </func:function>
+
 </xsl:transform>
