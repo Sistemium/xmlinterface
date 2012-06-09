@@ -402,11 +402,13 @@
     <xsl:template match="xi:field" mode="join-on">
         <xsl:param name="join-itself"/>
         <join type="field">
-            <on concept="{../@concept}" property="{@name}" name="{../@name}" />
+            <on concept="{../@concept}" property="{@name}" name="{../@name}"/>
             <xsl:apply-templates select="$join-itself/*"/>
             <on concept="{$join-itself/parent::xi:form/@concept}"
 				property="{$join-itself/*/@name|self::*[not($join-itself/*[@name])]/@name}"
-				name="{$join-itself/parent::xi:form/@name}"/>
+				name="{$join-itself/parent::xi:form/@name}">
+				<xsl:apply-templates select="$join-itself/@property"/>
+			</on>
         </join>
     </xsl:template> 
 
