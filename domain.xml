@@ -182,6 +182,17 @@
         
     </concept>
 
+    
+    <concept name="up-file-payment-claim" server="op.unact.ru">
+        <select owner="op" sql-name="prepayment"/>
+        
+        <field name="id" type="int" key="true"/>
+        
+        <role name="up-file-payment" actor="up-file-payment" sql-name="id" />
+        
+    </concept>
+    
+    
     <concept name="up-file-payment-claim-terminal" storage="mssql" server="pps" db="ppscat">
         
         <select owner="dbo" sql-name="csvMultibankTerminalForAmendmentClaim" type="procedure">
