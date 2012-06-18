@@ -2,8 +2,8 @@
 
 <view-definition xmlns="http://unact.net/xml/xi" name="up-amending" label="Корректировка платежей">
 	
-	<access role="client"/>
-	
+	<access role="beta"/>
+    
     <view-schema> <form name="op-agent"> 
 		
 		<parameter name="name">
@@ -51,22 +51,27 @@
                     
                 </form>
                 
-                <form name="payment-to-ammend" concept="up-file-payment">
+                <form name="payment-to-ammend" concept="up-file-payment" what-label="Платеж">
                     <parameter name="payment-to-ammend-id" property="id" modifiable="true"/>
                     <add-labeled-fields/>
                     
+                    <field name="id"/>
+                    
                     <field name="payment-date" type="string"
-                       sql-compute="date(ts)+1"
+                       sql-compute="date(cts)+1"
                     />
-                    <field name="phone-number" editable="true" label="Номер телефона"
-                       sql-compute="null"
-                    />
-                    <field name="fio" editable="true" label="ФИО"
-                       sql-compute="null"
-                    />
-                    <field name="correct-account" type="text" editable="true" label="Правильные реквизиты"
-                       sql-compute="string(account, ',', extra)"
-                    />
+                    
+                    <form name="claim" concept="up-file-payment-claim" build-blank="true">
+                        <field name="phone-number" editable="true" label="Номер телефона"
+                           sql-compute="null"
+                        />
+                        <field name="fio" editable="true" label="ФИО"
+                           sql-compute="null"
+                        />
+                        <field name="correct-account" type="text" editable="true" label="Правильные реквизиты"
+                           sql-compute="string(account, ',', extra)"
+                        />
+                    </form>
                     
                     <form name="payment-reciept" concept="op-payment" is-set="true">
                         <field name="summ"/>
@@ -74,7 +79,7 @@
                         <field name="terminal-fee"/>
                         <field name="printed-number" type="string"
                             label="Номер чека"
-                            sql-compute="string(replace(replace(replace(replace(convert(varchar(23),ts,121),'-',''),':',''),' ',''),'.',''),'203150')"
+                            sql-compute="string(replace(replace(replace(replace(convert(varchar(23),cts,121),'-',''),':',''),' ',''),'.',''),'203150')"
                         />
                     </form>
                     
@@ -100,7 +105,7 @@
 	
 	<workflow>
 		
-        <step name="file-payments" label="Поиск платежа">
+        <step name="payment-search" label="Поиск платежа">
 			<display>
 				<input form="up-client" />
                 <input form="payment-search" field="accounts"/>
@@ -113,16 +118,19 @@
 					</option>
 				</grid>
 			</display>
+            <validate>
+                <nonempty form="payment-to-ammend"/>
+            </validate>
 		</step>
 		
-        <step name="amendment-details" label="Корректировка платежа" hidden="true">
+        <step name="amendment-details" label="Корректировка платежа">
 			<display>
                 <print form="up-client" field="name"/>
                 <region class="tabs">
                     <region label="Корректировочная информация">
-                        <input form="payment-to-ammend" field="phone-number"/>
-                        <input form="payment-to-ammend" field="fio"/>
-                        <input form="payment-to-ammend" field="correct-account"/>
+                        <input form="claim" field="phone-number"/>
+                        <input form="claim" field="fio"/>
+                        <input form="claim" field="correct-account"/>
                     </region>
                     <region label="Исходная информация">
                         <print form="payment-to-ammend" field="account"/>
@@ -133,15 +141,10 @@
                 </region>
             </display>
             <validate>
-                <nonempty form="payment-to-ammend" field="phone-number"/>
-                <nonempty form="payment-to-ammend" field="fio"/>
-                <nonempty form="payment-to-ammend" field="correct-account"/>
+                <nonempty form="claim" field="phone-number"/>
+                <nonempty form="claim" field="fio"/>
+                <nonempty form="claim" field="correct-account"/>
             </validate>
-            <choise>
-                <option label="Продолжить">
-                    <command name="up-amending">amendment-reciepts</command>
-                </option>
-            </choise>
         </step>
         
         <step name="amendment-reciepts" label="Чеки платежа">
@@ -150,9 +153,9 @@
                 <region class="tabs">
                     <grid form="payment-reciept" label="Чеки"/>
                     <region label="Корректировочная информация">
-                        <print form="payment-to-ammend" field="phone-number"/>
-                        <print form="payment-to-ammend" field="fio"/>
-                        <print form="payment-to-ammend" field="correct-account"/>
+                        <print form="claim" field="phone-number"/>
+                        <print form="claim" field="fio"/>
+                        <print form="claim" field="correct-account"/>
                     </region>
                     <region label="Исходная информация">
                         <print form="payment-to-ammend" field="account"/>
@@ -162,6 +165,13 @@
                     </region>
                 </region>
             </display>
+            <choise>
+                <option label="Завершить оформление">
+                    <command name="save"/>
+                    <command name="refresh"/>
+                    <!--command name="up-amending">payment-search</command-->
+                </option>
+            </choise>
         </step>
         
     </workflow>

@@ -442,9 +442,16 @@
     </xsl:template>
 
     <xsl:template match="xi:step/xi:validate/xi:nonempty" mode="validate">
-        <xsl:variable name="ref" select="key('id',self::*[not(@field)]/@ref)/xi:field[@key][1]/@id|self::*[@field]/@ref"/>
-        <xsl:variable name="checkdatum" select="ancestor::xi:view/xi:view-data/descendant::*[@ref=$ref][not(ancestor::xi:set-of[@is-choise])]"/>
-        <xsl:variable name="not-found" select="ancestor::xi:view/xi:view-data/descendant::*[@ref=current()/@ref][not(ancestor::xi:set-of[@is-choise])]/xi:response/xi:exception/xi:not-found"/>
+        <xsl:variable name="ref"
+            select="key('id',self::*[not(@field)]/@ref)/xi:field[@key][1]/@id|self::*[@field]/@ref"
+        />
+        <xsl:variable name="checkdatum"
+            select="ancestor::xi:view/xi:view-data/descendant::*[@ref=$ref][not(ancestor::xi:set-of[@is-choise])]"
+        />
+        <xsl:variable name="not-found"
+            select="ancestor::xi:view/xi:view-data/descendant::*[@ref=current()/@ref]
+                    [not(ancestor::xi:set-of[@is-choise])]/xi:response/xi:exception/xi:not-found"
+        />
         <xsl:if test="$not-found or not(count($checkdatum)=count(ancestor::xi:view/xi:view-data/descendant::*[@ref=current()/@ref][not(ancestor::xi:set-of[@is-choise])])) or $checkdatum[not(text() and string-length(normalize-space(text())) &gt; 0)]">
             <exception>
                 <message>

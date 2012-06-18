@@ -38,12 +38,6 @@
     <user name="test" password="test">
     </user>
 
-    <user name="ibuko" password="123">
-        <role ref="qc"/>
-        <role ref="it"/>
-        <role ref="operator"/>
-    </user>
-
     <validator name="pps">
         <role ref="up"/>
         <role ref="subdealer"/>
