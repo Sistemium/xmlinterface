@@ -50,6 +50,10 @@
         <access role="storage"/>
     </menu>
     
+    <menu name="sales" label="Продажи" directory="views/sales">
+        <access role="sales"/>
+    </menu>
+    
     <menu label="Логистика">
         <option href="views/transport/encashment-planning.xml">
             <access role="osmp"/>
@@ -61,20 +65,14 @@
         </secure>
     </menu>
     
-    <menu label="Продажи">
-        <option href="views/sales/customer-order-create.xml">
+    <menu label="Клиентский сервис">
+        <option href="views/etc/customer-order-create.xml">
             <access role="salesman"/>
         </option>
-        <option href="views/sales/customers.xml">
+        <option href="views/etc/customers.xml">
             <access role="salesman"/>
         </option>
-        <option href="views/sales/salesmen.xml">
-            <access role="sales"/>
-        </option>
-        <option href="views/sales/sales-sms.xml">
-            <access role="sales"/>
-        </option>
-        <option href="views/sales/sales-ordering.xml">
+        <option href="views/etc/sales-ordering.xml">
             <access role="pre-orderer"/>
             <access role="beta"/>
         </option>
