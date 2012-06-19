@@ -68,8 +68,11 @@
         </execute>
         <execute name="views" href="id.xsl">
             <include href="main/views.xsl"/>
+            <include href="main/xpath-compute.xsl"/>
+            <include href="main/synthesize.xsl"/>
         </execute>
         <execute name="build1" href="id.xsl">
+            <include href="main/security.xsl"/>
             <include href="main/data-build.xsl"/>
         </execute>
         <execute name="extend1" href="id.xsl">
@@ -99,6 +102,7 @@
             <include href="main/data-after.xsl"/>
         </execute>
         <execute name="dialogue" href="id.xsl">
+            <include href="main/synthesize.xsl"/>
             <include href="main/workflow.xsl"/>
         </execute>
         <execute name="stage-last" href="id.xsl" commit="true">
@@ -119,6 +123,7 @@
         <execute name="stage2" href="id.xsl">
             <include href="main/views.xsl"/>
             <include href="main/xpath-compute.xsl"/>
+            <include href="main/synthesize.xsl"/>
         </execute>
         <execute name="stage3" href="id.xsl">
             <include href="main/data-build.xsl"/>
@@ -140,6 +145,7 @@
             <include href="main/xpath-compute.xsl"/>
        </execute>
         <execute name="stage8" href="id.xsl">
+            <include href="main/synthesize.xsl"/>
             <include href="main/workflow.xsl"/>
         </execute>
         <execute name="stage-last" href="id.xsl" commit="true">

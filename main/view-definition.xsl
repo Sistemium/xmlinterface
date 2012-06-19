@@ -10,6 +10,7 @@
     <xsl:param name="model" />
  
     <xsl:template match="xi:view-definition" mode="build-secure" priority="1000">
+        
         <view justopen="true">
             <xsl:apply-templates select="@name|@label"/>
             <menu>
@@ -32,6 +33,17 @@
             </menu>
             <xsl:apply-templates/>
         </view>
+        
+    </xsl:template>
+
+    <xsl:template match="xi:view-schema//*[not(@what-label)]/@label" mode="extend">
+        <xsl:attribute name="what-label">
+            <xsl:value-of select="."/>
+        </xsl:attribute>
+    </xsl:template>
+
+    <xsl:template match="xi:view-definition[@version]//xi:grid[not(@hide-empty or @show-empty)]" mode="extend">
+        <xsl:attribute name="hide-empty">default</xsl:attribute>
     </xsl:template>
 
     <xsl:template match="xi:view-definition//xi:step" mode="extend">
@@ -41,41 +53,6 @@
         </xsl:apply-templates>
         <xsl:call-template name="build-role-attrs"/>
     </xsl:template>
-
-    <xsl:template match="xi:view-definition//*[not(@what-label)]/@label" mode="extend">
-        <xsl:attribute name="what-label">
-            <xsl:value-of select="."/>
-        </xsl:attribute>
-    </xsl:template>
-
-    <xsl:template match="xi:view-definition//*[@form and not(@field)]" mode="extend">
-        <xsl:apply-templates select="ancestor::xi:view-definition/xi:view-schema//xi:form[@name=current()/@form]" mode="build-id">
-            <xsl:with-param name="name">ref</xsl:with-param>
-        </xsl:apply-templates>
-    </xsl:template>
-
-    <xsl:template match="xi:view-definition//*[not(@form) and @field]" mode="extend">
-        <xsl:apply-templates select="ancestor::xi:view-definition/xi:view-schema//xi:form/*[self::xi:field or self::xi:parameter][@name=current()/@field]" mode="build-id">
-            <xsl:with-param name="name">ref</xsl:with-param>
-        </xsl:apply-templates>
-    </xsl:template>
-
-    <xsl:template match="xi:view-definition//*[not(@ref)][@form and @field]" mode="extend">
-        <xsl:apply-templates select="ancestor::*/xi:view-schema//xi:form[@name=current()/@form]/*
-                                    [self::xi:field or self::xi:parameter][@name=current()/@field]
-                                    [not(current()/self::xi:input or current()/self::xi:print)
-                                     or (current()/self::xi:input and @editable)
-                                     or (current()/self::xi:print and last())
-                                    ]" mode="build-id">
-            <xsl:with-param name="name">ref</xsl:with-param>
-        </xsl:apply-templates>
-    </xsl:template>
-
-    <!--xsl:template match="xi:view-definition/xi:view-schema//xi:form/@choise">
-        <xsl:apply-templates select="ancestor::xi:form/xi:form[@name=current()]" mode="build-id">
-            <xsl:with-param name="name">choise-ref</xsl:with-param>
-        </xsl:apply-templates>
-    </xsl:template-->
 
 
     <xsl:template match="xi:all-labeled-fields|xi:add-labeled-fields" priority="1000">
@@ -128,7 +105,6 @@
         </xsl:copy>
     </xsl:template>
     
-    
     <xsl:template match="xi:view-definition/xi:view-schema//*">
         <xsl:copy>
             <xsl:call-template name="view-build-default"/>
@@ -170,10 +146,12 @@
             </xsl:call-template>
         </xsl:for-each>
         
+        <xsl:apply-templates select="xi:sql-compute" mode="as-attribute"/>
+        
         <xsl:apply-templates select="@*|self::xi:field[@editable]/parent::xi:form/@autosave"/>
         
         <xsl:apply-templates select=".|@*" mode="extend"/>
-
+        
         <xsl:if test="self::xi:form[@name='sysuser'][xi:parameter and not(xi:parameter[@name='device-name'])]">
             <parameter name="device-name">
                 <init with="device-name"/>

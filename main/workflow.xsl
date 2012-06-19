@@ -22,10 +22,6 @@
     <xsl:template match="xi:view[xi:dialogue/xi:events[xi:close and not(xi:save and ancestor::xi:view/xi:view-data//xi:exception)]]"/>
     <xsl:template match="xi:view/xi:exception|xi:view[xi:dialogue[xi:events/xi:backward]]/xi:view-data//xi:response[xi:exception]" />
     
-    <xsl:template match="xi:workflow//*[not(@id)]" mode="extend">
-        <xsl:call-template name="build-id"/>
-    </xsl:template>
-
     <!--xsl:template match="xi:dialogue" mode="extend-replace">
         <xsl:apply-templates select="." mode="build-dialogue"/>
     </xsl:template-->
@@ -116,7 +112,11 @@
 
     <xsl:template match="xi:step" mode="build-menu">
         <menu>
-            <xsl:apply-templates select="(preceding-sibling::xi:step|following-sibling::xi:step)[not(xi:validate or preceding-sibling::xi:step/@hidden)]" mode="build-option"/>
+            <xsl:apply-templates
+                select="(preceding-sibling::xi:step|following-sibling::xi:step)
+                        [not(xi:validate or preceding-sibling::xi:step/@hidden)]"
+                mode="build-option"
+            />
         </menu>
     </xsl:template>
 
@@ -204,6 +204,7 @@
         
         <xsl:param name="top" select="ancestor::xi:view/xi:view-data/xi:data/@id"/>
         <xsl:param name="grid" select="."/>
+        <xsl:param name="form" select="key('id',@ref)"/>
         
         <xsl:variable name="rows"
                       select="key('id',$top)//xi:data
@@ -213,27 +214,25 @@
         />
         
         <xsl:choose>
-            <xsl:when test="$rows or key('id',@ref)[@extendable or @pipeline='clientData']">
+            
+            <xsl:when test="$rows or $form[@extendable or @pipeline='clientData']">
                 <xsl:copy>
+                    
                     <xsl:copy-of select="@*"/>
                     <xsl:attribute name="top"><xsl:value-of select="$top"/></xsl:attribute>
                     
-                    <xsl:for-each select="ancestor::xi:view/xi:view-schema//xi:form[@name=current()/@form]">
+                    <xsl:for-each select="$form">
                         
                         <xsl:copy-of select="@deletable"/>
                         <xsl:attribute name="ref"><xsl:value-of select="@id"/></xsl:attribute>
                         
                         <columns>
                             
-                            <xsl:for-each select="$grid/xi:column">
-                                <xsl:apply-templates select="key('id',@ref)|self::*[not(@ref)]" mode="build-column">
+                            <xsl:for-each select="$grid/xi:columns/*">
+                                <xsl:apply-templates select="key('id',@ref) | self::*[not(@ref)]" mode="build-column">
                                     <xsl:with-param name="grid" select="$grid"/>
                                 </xsl:apply-templates>
                             </xsl:for-each>
-                            
-                            <xsl:apply-templates select="*[not(@id=$grid/xi:column/@ref)]" mode="build-column">
-                                <xsl:with-param name="grid" select="$grid"/>
-                            </xsl:apply-templates>
                             
                         </columns>
                         
@@ -250,19 +249,26 @@
                            <option label="{@label}" ref="{@id}"/>
                         </xsl:for-each>
                     </rows>
+                    
                     <xsl:for-each select="key('id',$top)//xi:extender[@ref=current()/@ref][not(ancestor::xi:set-of[@is-choise])]">
                         <option label="+" ref="{@id}"/>
                     </xsl:for-each>
-                    <xsl:apply-templates select="key('id',$top)//xi:set-of[@ref=current()/@ref]"
-                                         mode="build-dialogue" />
+                    
+                    <xsl:apply-templates
+                        select="key('id',$top)//xi:set-of[@ref=current()/@ref]"
+                        mode="build-dialogue"
+                    />
+                    
                 </xsl:copy>
             </xsl:when>
+            
             <xsl:when test="key('id',@ref)/@label">
                 <text>
                    <xsl:apply-templates select="key('id',@ref)" mode="label"/>
                    <xsl:text> отcутствует</xsl:text>
                 </text>
             </xsl:when>
+            
         </xsl:choose>
     </xsl:template>
 
@@ -282,23 +288,9 @@
 <?BEGIN mode="build-column" ?>
     
     
-    <xsl:template match="*[@hidden]" mode="build-column"/>
-    
-    
-    <xsl:template match="node()" mode="build-column">
-        
-        <xsl:param name="grid" select="."/>
-        
-        <xsl:apply-templates select="*[not(@id=$grid/xi:column/@ref)]" mode="build-column">
-            <xsl:with-param name="grid" select="$grid"/>
-        </xsl:apply-templates>
-        
-    </xsl:template>
-    
+    <xsl:template match="*[@hidden]" mode="build-column"/>    
 
-    <xsl:template match="*[@label and not (@hidden or @new-only)]
-                          [self::xi:field or self::xi:parameter or @choise]"
-                  mode="build-column">
+    <xsl:template match="*" mode="build-column">
         
         <xsl:param name="grid" select="."/>
         

@@ -9,6 +9,8 @@
  exclude-result-prefixes="php"
  >
 
+    <xsl:include href="default-attributes.xsl"/>
+    
     <!--  Вообще нет данных в представлении (конструктор окна)   -->
     <xsl:template match="xi:view-data[not(xi:data)]">
         <xsl:copy>
