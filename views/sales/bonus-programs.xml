@@ -13,6 +13,7 @@
 			
 			<field name="tag" />
 			<field name="tagColor" />
+			<field name="isActive"/>
 			<field name="isFirstScreen" format="true-only"/>
 			<field name="isNonHidable" format="true-only"/>
 			<field name="isPopAtStart" format="true-only"/>
@@ -31,7 +32,8 @@
 				</sql-compute>
 			</field> 
 			
-			<order-by name="time-status" dir="asc"/>
+			<order-by name="time-status" dir="desc"/>
+			<order-by name="name" dir="asc"/>
 			
 			<where name="dateEnd">
 				<more-than>today() - 30</more-than>
@@ -48,11 +50,14 @@
 					<columns>
 						<column field="name" form="bonus-program"/>
 						<column field="description"/>
+						<column field="isActive"/>
 						<column field="tag"/>
 						<column field="tagColor"/>
 						<column label="Управление">
 							<print field="isFirstScreen"/>
 							<print field="isPopAtStart"/>
+							<print field="isNonHidable"/>
+							<print field="isCustomerTargeted"/>
 						</column>
 					</columns>
 					<group>

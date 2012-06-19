@@ -2228,7 +2228,7 @@
         <property name="name" type="string" label="Название" />
         <property name="dateStart" type="date" sql-name="ddateb" label="Дата начала" />
         <property name="dateEnd" type="date" sql-name="ddatee" label="Дата окончания" />
-        <property name="isActive" type="boolean" label="Активно" />
+        <property name="isActive" type="boolean" label="Работает" />
         <property name="isFocused" type="boolean" label="Фокусная" />
         <property name="tag" type="string" label="Название кнопки" sql-name="tagText" />
         <property name="tagColor" type="string" label="Цвет кнопки" />
@@ -2237,7 +2237,7 @@
         <property name="isForNew" type="boolean" label="Для новых" />
         <property name="description" type="string" label="Описание" sql-name="descr" />
         <property name="isPopAtStart" type="boolean" label="Показать в новом заказе" />
-        <property name="isCustomerTargeted" type="boolean"  />
+        <property name="isCustomerTargeted" type="boolean" label="Отслеживается по-клиентно"/>
         
     </concept>
 
