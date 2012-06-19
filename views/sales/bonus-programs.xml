@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="bonus-programs" label="Бонусные программы" version="1.1">
+	
+    <view-schema><form name="sysuser">
+		
+		<parameter name="name"><init with="username"/></parameter>
+		
+		<form name="bonus-program" is-set="true">
+			<field name="id"/>
+			<field name="name"/>
+			
+			<field name="description" />
+			
+			<field name="tag" />
+			<field name="tagColor" />
+			<field name="isFirstScreen" format="true-only"/>
+			<field name="isNonHidable" format="true-only"/>
+			<field name="isPopAtStart" format="true-only"/>
+			<field name="isCustomerTargeted" format="true-only"/>
+			
+			<field name="time-status" label="Время действия">
+				<sql-compute>
+					case
+						when today() between ddateb and ddatee then
+							'Текущие'
+						when ddateb > today() then
+							'Будущие'
+						when today() > ddatee then
+							'Прошлые'
+					end
+				</sql-compute>
+			</field> 
+			
+			<order-by name="time-status" dir="asc"/>
+			
+			<where name="dateEnd">
+				<more-than>today() - 30</more-than>
+			</where>
+			
+		</form>
+		
+    </form></view-schema>
+	
+    <workflow>
+        <step>
+            <display>
+                <grid form="bonus-program" accordeon="true">
+					<columns>
+						<column field="name" form="bonus-program"/>
+						<column field="description"/>
+						<column field="tag"/>
+						<column field="tagColor"/>
+						<column label="Управление">
+							<print field="isFirstScreen"/>
+							<print field="isPopAtStart"/>
+						</column>
+					</columns>
+					<group>
+						<by field="time-status"/>
+					</group>
+				</grid>
+            </display>
+        </step>
+    </workflow>
+	
+</view-definition>

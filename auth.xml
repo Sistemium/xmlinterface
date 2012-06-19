@@ -246,6 +246,10 @@
         <role ref="salesman"/>
     </user>
 
+    <user name="saler" password="123" fullname="Тестовый продажник">
+        <role ref="sales"/>
+    </user>
+
     <user name="op" >
         <role ref="op"/>
         <role ref="finances"/>
