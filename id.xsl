@@ -64,10 +64,20 @@
         </xsl:attribute>
     </xsl:template>
  
+    <!--xsl:template match="*[@id]" mode="generate-id" >
+        <xsl:value-of select="@id"/>
+    </xsl:template-->
+    
+    <xsl:template match="@*|node()" mode="generate-id" >
+        <xsl:value-of select="concat('i',translate(generate-id(),'id',''),'c',$counter)"/>
+    </xsl:template>
+    
     <xsl:template match="@*|node()" mode="build-id" name="build-id">
         
         <xsl:param name="name">id</xsl:param>
-        <xsl:param name="id-value" select="concat('i',translate(generate-id(),'id',''),'c',$counter)"/>
+        <xsl:param name="id-value">
+            <xsl:apply-templates mode="generate-id" select="."/>
+        </xsl:param>
         
         <xsl:attribute name="{$name}">
             <xsl:value-of select="$id-value"/>

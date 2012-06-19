@@ -9,6 +9,13 @@
     exclude-result-prefixes="php func e"
 >
     
+    <xsl:template name="as-attribute" mode="as-attribute" match="*">
+        <xsl:param name="node" select="."/>
+        <xsl:attribute name="{local-name($node)}">
+            <xsl:value-of select="$node"/>
+        </xsl:attribute>
+    </xsl:template>
+
     <func:function name="xi:isnull">
         <xsl:param name="a" select="xi:null"/>
         <xsl:param name="b" select="xi:null"/>
