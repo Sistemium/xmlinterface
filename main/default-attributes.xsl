@@ -2,9 +2,9 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
     xmlns:xi="http://unact.net/xml/xi"
     xmlns="http://unact.net/xml/xi"
->
-
-    <xsl:template match="xi:workflow//*[not(@id)]" mode="extend">
+>   
+    
+    <xsl:template match="xi:workflow//*[not(@id)] | xi:field[not(@id)]" mode="extend">
         <xsl:call-template name="build-id"/>
     </xsl:template>
 

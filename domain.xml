@@ -146,6 +146,10 @@
     <concept name="op-payment-process" server="op.unact.ru">
         <select owner="op" sql-name="paymentprocess"/>
         
+        <select owner="op" sql-name="paymentProcessRegister">
+            <parameter name="op-payment-register" required="true"/>
+        </select>
+        
         <property name="id" type="int" key="true"/>
         <property name="xid" />
         
@@ -172,6 +176,8 @@
         <role name="op-payment" actor="op-payment" sql-name="payment" />
         <role name="pc-account" actor="pc-account" sql-name="pcAccount" />
         
+        <role name="op-payment-register" actor="op-payment-register" sql-name="csvRegister" />
+        
     </concept>
 
     <concept name="op-error" server="op.unact.ru">
@@ -179,6 +185,29 @@
         
         <property name="id" type="int" key="true"/>
         <property name="name" type="string" label="Название" />
+        
+    </concept>
+
+
+    <concept name="op-payment-register" server="op.unact.ru">
+        
+        <select owner="op" sql-name="csvRegister"/>
+        
+        <select owner="op" sql-name="csvRegisterNew" type="procedure">
+            <parameter name="pc-account" type="int" sql-name="@pcaccount"/>
+            <parameter name="blank-number" type="int" sql-name="@seed" required="true"/>
+        </select>
+        
+        <save owner="op" sql-name="csvRegister"/>
+        
+        <property name="blank-number" type="int"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+        <property name="cts" type="datetime" label="Когда создан" />
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+        <role name="pc-account" actor="pc-account" sql-name="pcaccount"/>
         
     </concept>
 

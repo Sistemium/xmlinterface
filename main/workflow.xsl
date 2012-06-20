@@ -265,7 +265,7 @@
             <xsl:when test="key('id',@ref)/@label">
                 <text>
                    <xsl:apply-templates select="key('id',@ref)" mode="label"/>
-                   <xsl:text> отcутствует</xsl:text>
+                   <xsl:text> отcутствуют</xsl:text>
                 </text>
             </xsl:when>
             

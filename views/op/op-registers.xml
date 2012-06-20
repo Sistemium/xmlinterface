@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="bonus-programs" label="Файловый процессинг" version="1.1">
+	
+    <view-schema><form name="op-agent"> 
+		
+		<parameter name="name"><init with="username"/></parameter>
+		
+		<form name="pc-account" expect-choise="true" choise-style="table">
+            
+            <field name="id"/>
+            <field name="name"/>
+            
+            <form name="pc-account-register-aggregate" concept="op-payment-register"
+                  no-preload="true" constrain-parent="true"
+            >   <field name="id" aggregate="count" label="Всего реестров"/>
+            </form>
+            
+            <form name="op-payment-register" is-set="true" deletable="true">
+                <field name="id"/>
+                <add-labeled-fields />
+                <order-by name="date" dir="desc"/>
+            </form>
+            
+            <form name="new-register" concept="op-payment-register" preload="true">
+                <parameter name="blank-number">
+                    <init with="const">1</init>
+                </parameter>
+                <field name="id"/>
+                <field name="date"/>
+                <form name="just-registered-payments" is-set="true" concept="op-payment-process">
+                    <field name="id"/>
+                    <form name="just-registered-payment" concept="op-payment" label="Платежи реестра">
+                        <field name="id"/>
+                        <add-labeled-fields />
+                    </form>
+                </form>
+            </form>
+            
+        </form>
+        
+    </form></view-schema>
+    
+    <workflow>
+        
+        <step>
+            <display>
+                <grid form="op-payment-register"/>
+            </display>
+            <choise>
+                <option name="make-new-register" label="Новый реестр">
+                    <command name="op-registers">new-register-view</command>
+                    <command name="new-register">refresh</command>
+                </option>
+            </choise>
+        </step>
+        
+        <step name="new-register-view" hidden="true">
+            <display>
+                <print form="new-register" field="*"/>
+                <grid form="just-registered-payment"/>
+            </display>
+        </step>
+        
+    </workflow>
+    
+</view-definition>

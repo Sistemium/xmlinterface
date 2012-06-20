@@ -65,7 +65,7 @@
                              [not($this/self::xi:add-labeled-fields/../xi:field/@name = @name)]">
             <xsl:sort select="@*[local-name()=$sort-by]" data-type="text"/>
             <field>
-                <xsl:apply-templates select="." mode="build-id"/>
+                <!--xsl:apply-templates select="." mode="build-id"/-->
                 <xsl:apply-templates select="@*"/>
                 <xsl:apply-templates select="$this/../xi:field[@name=current()/@name]/@*"/>
             </field>
