@@ -198,36 +198,21 @@ function mdxRequest($request, $server = 'bi', $db = 'uw') {
     return stringRequest('https://soa.unact.ru/xmlrawdata/Default.aspx?server='.$server.'&database='.$db, trim($request));    
 };
 
-/*
-function authenticateSOA($login, $password) {
+
+function authenticateSOA($login, $password, &$extraData) {
     $address='https://soa.unact.ru/AuthenticationService/Default.aspx';
     $http = new HTTPRetriever();
     
-    try {
-        if($http->post($address,
-                       $http->make_query_string(array("username" => $login,
-                                                      "pwd" => $password))
-                       )
-        ) { return $http->response=='<response>True</response>'; }
-        else print "HTTP request error: #{$http->result_code}: {$http->result_text}";
-    }
-    catch (Exception $e){
-     print "{$e->getMessage()}";
-    };
-
-    return false;
-}
-*/
-
-function authenticateSOA($login, $password, &$extraData) {
-    $address='https://soa.unact.ru/AuthenticationService/Default.aspx?username='.urlencode($login).'&password='.urlencode($password);
-    $http = new HTTPRetriever();
-    
-    try {
-        if($http->get($address)){
+    try { if ( $http->post(
+            $address,
+            $http->make_query_string(array(
+                "username" => urlencode($login),
+                "password" => urlencode($password)
+            )
+        ) ) ) {
             $result = new SimpleXMLElement($http->response);
             $extraData=$result;
-            return (string)$result['validator'];
+            return (string) $result ['validator'];
         }
         else print "HTTP request error: #{$http->result_code}: {$http->result_text}";
     }
