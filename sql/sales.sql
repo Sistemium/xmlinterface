@@ -553,6 +553,17 @@ create or replace view sales.bprog as select
     where p.discount is not null
 ;
 
+
+create or replace procedure sales.bprogBySalesman (
+    @id int
+) begin
+    select * from sales.bprog where exists (
+        select * from dbo.buyer (@salesman = @id)
+            join bpb_link_v bpc on bpc.buyer = buyer.id
+        where bpc.bp = bprog.id
+    )
+end;
+
 create or replace view sales.bprog_customer as select
         v.buyer, v.bp
     from dbo.bpb_link_v v join sales.bprog bp on bp.id = v.bp

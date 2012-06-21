@@ -2252,6 +2252,10 @@
         
         <select owner="sales" sql-name="bprog" />
         
+        <select owner="sales" sql-name="bprogBySalesman" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@id"/>
+        </select>
+        
         <property name="id" type="int" key="true" />
         
         <property name="name" type="string" label="Название" />
@@ -2267,6 +2271,8 @@
         <property name="description" type="string" label="Описание" sql-name="descr" />
         <property name="isPopAtStart" type="boolean" label="Показать в новом заказе" />
         <property name="isCustomerTargeted" type="boolean" label="Отслеживается по-клиентно"/>
+        
+        <role name="cat-salesman" actor="cat-salesman"/>
         
     </concept>
 
