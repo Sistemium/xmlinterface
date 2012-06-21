@@ -17,6 +17,7 @@
             
             <form name="op-payment-register" is-set="true" deletable="true">
                 <field name="id"/>
+                <field name="xid"/>
                 <add-labeled-fields />
                 <order-by name="date" dir="desc"/>
             </form>
@@ -27,12 +28,27 @@
                 </parameter>
                 <field name="id"/>
                 <field name="date"/>
-                <form name="just-registered-payments" is-set="true" concept="op-payment-process">
+                <form name="just-registered-payments" is-set="true" concept="op-payment-process" label="Платежи реестра" page-size="10">
+                    <field name="payment" label="ОП-ИД"/>
+                    <field name="summ"/>
+                    <field name="account"/>
+                    <field name="extra"/>
+                    <field name="ts"/>
+                    <order-by name="ts" dir="desc"/>
+                </form>
+            </form>
+            
+            <form name="op-payment-register-detail" concept="op-payment-register">
+                <parameter name="register-detail-xid" modifiable="true" property="xid"/>
+                <field name="id"/>
+                <form name="register-detail-process" is-set="true" concept="op-payment-process" page-size="10">
                     <field name="id"/>
-                    <form name="just-registered-payment" concept="op-payment" label="Платежи реестра">
-                        <field name="id"/>
-                        <add-labeled-fields />
-                    </form>
+                    <field name="payment" label="ОП-ИД"/>
+                    <field name="summ"/>
+                    <field name="account"/>
+                    <field name="extra"/>
+                    <field name="ts"/>
+                    <order-by name="ts" dir="desc"/>
                 </form>
             </form>
             
@@ -42,9 +58,13 @@
     
     <workflow>
         
-        <step>
+        <step name="register-browse">
             <display>
-                <grid form="op-payment-register"/>
+                <grid form="op-payment-register">
+                    <option label="...">
+                        <command name="register-detail-xid" xpath-compute="xi:datum[@name='xid']"/>
+                    </option>
+                </grid>
             </display>
             <choise>
                 <option name="make-new-register" label="Новый реестр">
@@ -57,7 +77,16 @@
         <step name="new-register-view" hidden="true">
             <display>
                 <print form="new-register" field="*"/>
-                <grid form="just-registered-payment"/>
+                <grid form="just-registered-payment">
+                </grid>
+            </display>
+        </step>
+        
+        <step name="register-detail-view" hidden="true">
+            <display>
+                <print form="new-register" field="*"/>
+                <grid form="just-registered-payment">
+                </grid>
             </display>
         </step>
         

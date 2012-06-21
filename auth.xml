@@ -224,17 +224,17 @@
     </user>
 
 
-    <user name="wanseller" password="123" fullname="Тестовый Венщик">
+    <user name="wanseller" fullname="Тестовый Венщик">
         <role ref="wan-seller"/>
         <role ref="beta"/>
     </user>
 
-    <user name="preorderer" password="123" fullname="Тестовый предзаказник">
+    <user name="preorderer" fullname="Тестовый предзаказник">
         <role ref="pre-orderer"/>
         <role ref="beta"/>
     </user>
 
-    <user name="defector" password="123" fullname="Тестовый сортировщик брака">
+    <user name="defector" fullname="Тестовый сортировщик брака">
         <role ref="defector"/>
         <role ref="beta"/>
         <role ref="storage"/>
@@ -242,11 +242,11 @@
         <role ref="master"/>
     </user>
 
-    <user name="nairagnihton" password="1">
+    <user name="nairagnihton" >
         <role ref="salesman"/>
     </user>
 
-    <user name="saler" password="123" fullname="Тестовый продажник">
+    <user name="saler" fullname="Тестовый продажник">
         <role ref="sales"/>
     </user>
 
