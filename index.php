@@ -3,7 +3,7 @@ include('functions.php');
 
 error_reporting ( E_ALL );
 set_error_handler( 'exceptions_error_handler' );
-    
+
 try { if (isset( $_SERVER['REQUEST_METHOD'] )){
     
     ob_start('ob_gzhandler');
@@ -44,8 +44,8 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     if ( isset($_COOKIE["$appname"]) ) session_start();
     
     if ( isset($_SESSION['context']) ) {
-         $Context=new SimpleXMLElement($_SESSION['context']);
-         $Context['restored']='true';
+        $Context=new SimpleXMLElement($_SESSION['context']);
+        $Context['restored']='true';
     } else {
         $Context = new SimpleXMLElement (
            '<?xml version="1.0" encoding="utf-8"?>'
