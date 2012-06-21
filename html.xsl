@@ -61,7 +61,7 @@
                 <xsl:variable name="css-file">
                     <xsl:choose>
                         <xsl:when test="self::xi:userinput[not(@ipad-agent- or @safari-agent-)]">css/desktop</xsl:when>
-                        <xsl:when test="xi:userinput[not(@spb-agent)]">jquery/css/jquery</xsl:when>
+                        <xsl:when test="xi:userinput[not(@spb-agent)]">../libs/jquery-for-xi/css/jquery</xsl:when>
                         <xsl:when test="local-name()='msie-agent-'">css/ie</xsl:when>
                         <xsl:when test="local-name()='safari-agent-'">css/touch</xsl:when>
                     </xsl:choose>
@@ -134,12 +134,12 @@
             <xsl:if test="not(/*/xi:userinput/@spb-agent)">
                 <script type="text/javascript" src="js/xi.js"></script>
                 <script type="text/javascript" src="js/AjaxRequest.js"></script>
-                <script type="text/javascript" src="jquery/js/jquery.js"></script>
-                <script type="text/javascript" src="jquery/js/jquery-ui.js"></script>
+                <script type="text/javascript" src="../libs/jquery-for-xi/js/jquery.js"></script>
+                <script type="text/javascript" src="../libs/jquery-for-xi/js/jquery-ui.js"></script>
                 <xsl:if test="/*/xi:views/xi:view[not(@hidden)]/xi:dialogue/descendant::*[@clientData]">
                     <script type="text/javascript" src="js/clientData.js"></script>
                 </xsl:if>
-                <script type="text/javascript" src="jquery/js/jquery.ui.datepicker-ru.js"></script>
+                <script type="text/javascript" src="../libs/jquery-for-xi/js/jquery.ui.datepicker-ru.js"></script>
                 <script type="text/javascript">$(document).ready(domready);</script>
                 
                 <link href="../libs/loadmask/jquery.loadmask.css" rel="stylesheet" type="text/css" />
