@@ -200,10 +200,11 @@
         
         <save owner="op" sql-name="csvRegister"/>
         
-        <property name="blank-number" type="int"/>
+        <property name="xid" />
         
         <property name="id" type="int" key="true"/>
         <property name="date" type="date" label="Дата" sql-name="ddate"/>
+        <property name="processed" type="boolean" label="Проведено" />
         <property name="cts" type="datetime" label="Когда создан" />
         <property name="ts" type="datetime" label="Последнее изменение"/>
         

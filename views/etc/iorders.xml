@@ -81,7 +81,9 @@
                             <field name="id"/>
                             <field name="name"/>
                             <field name="extraLabel" />
-                            <field name="first-name" alias="firstName" sql-compute="left(product.name, locate(product.name,' ') - 1)" />
+                            <field name="first-name" alias="firstName" sql-compute="left(product.name, locate(product.name,' ') - 1)" >
+                                <!--secure role="ad-user" sql-compute="'Роллтон'"/-->
+                            </field>
                             <field name="factor" />
                             <field name="rel" />
                             <field name="cost"/>

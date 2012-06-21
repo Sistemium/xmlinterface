@@ -8,14 +8,14 @@
         <xsl:call-template name="build-id"/>
     </xsl:template>
 
-    <xsl:template match="*[not(@ref)][@form and not(@field)]" mode="extend">
+    <xsl:template match="*[@id][not(@ref)][@form and not(@field)]" mode="extend">
         <xsl:attribute name="ref">
             <xsl:value-of select="ancestor::xi:view/xi:view-schema//xi:form[@name=current()/@form]/@id"/>
         </xsl:attribute>
     </xsl:template>
 
 
-    <xsl:template match="*[not(@ref)][not(@form) and @field]" mode="extend">
+    <xsl:template match="*[@id][not(@ref)][not(@form) and @field]" mode="extend">
         <xsl:attribute name="ref">
             <xsl:value-of select="
                 ancestor::xi:view/xi:view-schema//xi:form/*
@@ -26,7 +26,7 @@
     </xsl:template>
 
 
-    <xsl:template match="*[not(@ref)][@form and @field]" mode="extend">
+    <xsl:template match="*[@id][not(@ref)][@form and @field]" mode="extend">
         <xsl:attribute name="ref">
             <xsl:value-of select="
                 ancestor::xi:view/xi:view-schema//xi:form[@name=current()/@form]/*

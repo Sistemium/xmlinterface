@@ -32,6 +32,7 @@
             <role name="checker"/>
             <role name="qc"/>
             <role name="operator"/>
+            <role name="ad-user"/>
         </role>
     </roles>
 
@@ -44,6 +45,7 @@
     </validator>
 
     <validator name="ad">
+        <role ref="ad-user"/>
         <group name="fotonova.system">
             <role ref="fotonova"/>
         </group>
@@ -246,7 +248,7 @@
         <role ref="salesman"/>
     </user>
 
-    <user name="saler" fullname="Тестовый продажник">
+    <user name="saler" fullname="Тестовый продажник" password="123">
         <role ref="sales"/>
     </user>
 

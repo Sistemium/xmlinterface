@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<view-definition xmlns="http://unact.net/xml/xi" name="bonus-programs" label="Файловый процессинг" version="1.1">
+<view-definition xmlns="http://unact.net/xml/xi" name="op-registers" label="Файловый процессинг" version="1.1">
 	
     <view-schema><form name="op-agent"> 
 		
@@ -38,9 +38,13 @@
                 </form>
             </form>
             
-            <form name="op-payment-register-detail" concept="op-payment-register">
+            <form name="register-detail" concept="op-payment-register" parent-sql-name="pcaccount">
                 <parameter name="register-detail-xid" modifiable="true" property="xid"/>
                 <field name="id"/>
+                <field name="date"/>
+                <field name="cts"/>
+                <field name="ts"/>
+                <field name="processed" editable="true"/>
                 <form name="register-detail-process" is-set="true" concept="op-payment-process" page-size="10">
                     <field name="id"/>
                     <field name="payment" label="ОП-ИД"/>
@@ -58,11 +62,19 @@
     
     <workflow>
         
+        <reusables>
+            <option name="to-registers-browse" label="К списку реестров">
+                <command name="op-registers">register-browse</command>
+                <command name="set-of-op-payment-register">refresh</command>
+            </option>
+        </reusables>
+        
         <step name="register-browse">
             <display>
                 <grid form="op-payment-register">
                     <option label="...">
                         <command name="register-detail-xid" xpath-compute="xi:datum[@name='xid']"/>
+                        <command name="op-registers">register-detail-view</command>
                     </option>
                 </grid>
             </display>
@@ -74,20 +86,27 @@
             </choise>
         </step>
         
-        <step name="new-register-view" hidden="true">
+        <step name="new-register-view" hidden="true" label="Новый реестр">
             <display>
                 <print form="new-register" field="*"/>
-                <grid form="just-registered-payment">
-                </grid>
+                <grid form="just-registered-payments"/>
             </display>
+            <choise>
+                <option reuse="to-registers-browse"/>
+            </choise>
         </step>
         
-        <step name="register-detail-view" hidden="true">
+        <step name="register-detail-view" hidden="true" label="Платежи реестра">
             <display>
-                <print form="new-register" field="*"/>
-                <grid form="just-registered-payment">
-                </grid>
+                <print form="register-detail" field="date"/>
+                <print form="register-detail" field="ts"/>
+                <print form="register-detail" field="cts"/>
+                <input form="register-detail" field="processed"/>
+                <grid form="register-detail-process"/>
             </display>
+            <choise>
+                <option reuse="to-registers-browse"/>
+            </choise>
         </step>
         
     </workflow>
