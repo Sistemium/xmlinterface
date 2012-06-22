@@ -295,7 +295,7 @@
         <xsl:param name="grid" select="."/>
         
         <xsl:if test="not(@id=$grid/xi:group/xi:by/@ref)
-                      and (not($grid/@hide-empty) or ancestor::xi:view[1]/xi:view-data//*[@ref=current()/@id][text()|*])">
+                      and (not($grid/@hide-empty) or self::xi:form/@choise or ancestor::xi:view[1]/xi:view-data//*[@ref=current()/@id][text()|*])">
             <column ref="{@id}">
                 <xsl:copy-of select="@extra-style | $grid/xi:column[@ref=current()/@id]/@*"/>
                 <xsl:apply-templates select="*" mode="build-dialogue"/>

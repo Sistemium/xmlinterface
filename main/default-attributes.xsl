@@ -49,7 +49,7 @@
         
         <xsl:element name="columns">
             
-            <xsl:for-each select="key('id',@ref)//*[not (@hidden or @new-only)]">
+            <xsl:for-each select="key('id',@ref)//*[not (@hidden or @new-only or ancestor::xi:form[@choise])]">
                 <xsl:variable name="override" select="$overrides[@ref=current()/@id]"/>                
                 <xsl:if test="(self::xi:field|self::xi:parameter|self::xi:form[@choise]|$override)[@label]">
                     <column ref="{@id}" label="{@label}">

@@ -10,8 +10,13 @@
             <field name="id"/>
             <field name="name"/>
             
+            <form concept="op-csv-error" name="error-cache" is-set="true">
+                <field name="id"/>
+                <field name="name"/>
+            </form>
+            
             <form name="pc-account-register-aggregate" concept="op-payment-register"
-                  no-preload="true" constrain-parent="true"
+                  no-preload="true"
             >   <field name="id" aggregate="count" label="Всего реестров"/>
             </form>
             
@@ -23,6 +28,7 @@
             </form>
             
             <form name="register-detail" concept="op-payment-register" parent-sql-name="pcaccount" preload="true">
+                
                 <parameter name="register-detail-xid" modifiable="true" property="xid" optional="true"/>
                 <parameter name="blank-number" modifiable="true" optional="true"/>
                 
@@ -39,11 +45,19 @@
                 >
                     <field name="id"/>
                     <field name="payment" label="ОП-ИД"/>
+                    
+                    <form name="process-error" concept="op-csv-error" choise="error-cache" label="Ошибка" role="op-csv-error">
+                        <field name="id"/>
+                        <field name="name"/>
+                    </form>
+                    
                     <field name="summ"/>
                     <field name="account"/>
                     <field name="extra"/>
                     <field name="ts"/>
+                    
                     <order-by name="ts" dir="desc"/>
+                    
                 </form>
                 
                 <form name="multibank-reestr" is-set="true" pipeline="csv1251">
