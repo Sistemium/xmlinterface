@@ -203,6 +203,7 @@
         <property name="xid" />
         
         <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Номер" />
         <property name="date" type="date" label="Дата" sql-name="ddate"/>
         <property name="processed" type="boolean" label="Проведено" />
         <property name="cts" type="datetime" label="Когда создан" />
@@ -356,13 +357,15 @@
     <concept name="gup-reestr" server="op.unact.ru">
         <select owner="report" sql-name="gupMgstkNalogReestr" type="procedure">
             <parameter name="date" type="date" sql-name="@dateb"/>
-        </select>            
+        </select>
     </concept>
     
     <concept name="multibank-reestr" server="op.unact.ru">
         <select owner="report" sql-name="multibankReestr" type="procedure">
             <parameter name="date" type="date" sql-name="@dateb"/>
-        </select>            
+            <parameter name="op-payment-register" type="int" sql-name="@csvRegister"/>
+        </select>
+        <role name="op-payment-register" actor="op-payment-register" />
     </concept>
 
     <concept name="pc-account" server="op.unact.ru">

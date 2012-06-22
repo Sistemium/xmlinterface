@@ -5,7 +5,7 @@
 		
 		<parameter name="name"><init with="username"/></parameter>
 		
-		<form name="pc-account" expect-choise="true" choise-style="table">
+		<form name="pc-account" expect-choise="true" choise-style="table" label="Провайдер">
             
             <field name="id"/>
             <field name="name"/>
@@ -15,37 +15,28 @@
             >   <field name="id" aggregate="count" label="Всего реестров"/>
             </form>
             
-            <form name="op-payment-register" is-set="true" deletable="true">
+            <form name="op-payment-register" is-set="true" deletable="true" page-size="10">
                 <field name="id"/>
                 <field name="xid"/>
                 <add-labeled-fields />
                 <order-by name="date" dir="desc"/>
             </form>
             
-            <form name="new-register" concept="op-payment-register" preload="true">
-                <parameter name="blank-number">
-                    <init with="const">1</init>
-                </parameter>
+            <form name="register-detail" concept="op-payment-register" parent-sql-name="pcaccount" preload="true">
+                <parameter name="register-detail-xid" modifiable="true" property="xid" optional="true"/>
+                <parameter name="blank-number" modifiable="true" optional="true"/>
+                
                 <field name="id"/>
                 <field name="date"/>
-                <form name="just-registered-payments" is-set="true" concept="op-payment-process" label="Платежи реестра" page-size="10">
-                    <field name="payment" label="ОП-ИД"/>
-                    <field name="summ"/>
-                    <field name="account"/>
-                    <field name="extra"/>
-                    <field name="ts"/>
-                    <order-by name="ts" dir="desc"/>
-                </form>
-            </form>
-            
-            <form name="register-detail" concept="op-payment-register" parent-sql-name="pcaccount">
-                <parameter name="register-detail-xid" modifiable="true" property="xid"/>
-                <field name="id"/>
-                <field name="date"/>
+                <field name="name"/>
                 <field name="cts"/>
                 <field name="ts"/>
                 <field name="processed" editable="true"/>
-                <form name="register-detail-process" is-set="true" concept="op-payment-process" page-size="10">
+                
+                <form name="register-detail-process" is-set="true"
+                    concept="op-payment-process"
+                    label="Платежи реестра" page-size="10"
+                >
                     <field name="id"/>
                     <field name="payment" label="ОП-ИД"/>
                     <field name="summ"/>
@@ -53,6 +44,29 @@
                     <field name="extra"/>
                     <field name="ts"/>
                     <order-by name="ts" dir="desc"/>
+                </form>
+                
+                <form name="multibank-reestr" is-set="true" pipeline="csv1251">
+                    <field name="receiptNumber" />
+                    <field name="receiptDate"/>
+                    <field name="summ" />
+                    <field name="account" sql-compute="null" />
+                    <field name="Fio" />
+                    <field name="address" />
+                    <field name="ufkAccount" />
+                    <field name="ufkINN" />
+                    <field name="ufkName" />
+                    <field name="ufkBIK" />
+                    <field name="paymentType" />
+                    <field name="ufkKPP" />
+                    <field name="ufkKBK" />
+                    <field name="ufkOKATO" />
+                    <field name="field106" />
+                    <field name="field107" />
+                    <field name="field108" />
+                    <field name="field109" />
+                    <field name="field110" />
+                    <field name="field111" type="decimal" sql-compute="0.00"/>
                 </form>
             </form>
             
@@ -71,37 +85,39 @@
         
         <step name="register-browse">
             <display>
+                <input form="pc-account"/>
                 <grid form="op-payment-register">
                     <option label="...">
                         <command name="register-detail-xid" xpath-compute="xi:datum[@name='xid']"/>
+                        <command name="blank-number"/>
                         <command name="op-registers">register-detail-view</command>
+                        <command name="register-detail">refresh</command>
                     </option>
                 </grid>
             </display>
             <choise>
                 <option name="make-new-register" label="Новый реестр">
-                    <command name="op-registers">new-register-view</command>
-                    <command name="new-register">refresh</command>
+                    <command name="register-detail-xid"/>
+                    <command name="op-registers">register-detail-view</command>
+                    <command name="blank-number">1</command>
+                    <command name="register-detail">refresh</command>
                 </option>
-            </choise>
-        </step>
-        
-        <step name="new-register-view" hidden="true" label="Новый реестр">
-            <display>
-                <print form="new-register" field="*"/>
-                <grid form="just-registered-payments"/>
-            </display>
-            <choise>
-                <option reuse="to-registers-browse"/>
             </choise>
         </step>
         
         <step name="register-detail-view" hidden="true" label="Платежи реестра">
             <display>
+                <print form="pc-account" field="name"/>
                 <print form="register-detail" field="date"/>
                 <print form="register-detail" field="ts"/>
                 <print form="register-detail" field="cts"/>
                 <input form="register-detail" field="processed"/>
+                <export form="multibank-reestr" type="csv1251" synthesize-attributes="true">
+					<synthesize attribute="file-name"
+						 xpath-precompute="ancestor::xi:view/xi:view-data//xi:data[@name='register-detail']/xi:datum[@name='name']"
+						    xpath-compute="concat('FL_',$precompute,'.csv')"
+					/>
+				</export>
                 <grid form="register-detail-process"/>
             </display>
             <choise>

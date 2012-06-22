@@ -51,6 +51,7 @@
             <include href="main/data-build.xsl"/>
             <include href="main/data-after.xsl"/>
             <include href="main/xpath-compute.xsl"/>
+            <include href="main/synthesize.xsl"/>
         </execute>
         <execute name="dialogue" href="id.xsl">
             <include href="main/workflow.xsl"/>
