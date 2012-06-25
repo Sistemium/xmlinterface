@@ -56,6 +56,11 @@
                     <field name="extra"/>
                     <field name="ts"/>
                     
+                    <form name="up-file-payment" concept="up-file-payment">
+                        <field name="id" label="Файловый платеж"/>
+                    </form>
+                    
+                    <order-by name="up-file-payment" dir="desc"/>
                     <order-by name="ts" dir="desc"/>
                     
                 </form>

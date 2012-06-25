@@ -180,6 +180,7 @@
         
         <role name="op-payment-register" actor="op-payment-register" sql-name="csvRegister" />
         <role name="op-csv-error" actor="op-csv-error" sql-name="csvError" />
+        <role name="up-file-payment" actor="up-file-payment" sql-name="prepayment" />
         
     </concept>
 
