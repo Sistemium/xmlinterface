@@ -537,19 +537,28 @@
         <xsl:variable name="join">
             <xsl:for-each select="xi:join">
                 <xsl:if test="not($select[@type='procedure']/xi:parameter/@name=xi:on[@concept=$concept/@name]/@property)">
-                    <xsl:apply-templates select="xi:on[1]" mode="sql-name"/>
+                    <xsl:variable name="set-of-parameters"
+                        select="ancestor::xi:data-request/xi:etc/xi:data[@name=current()/xi:on[1]/@name]/xi:set-of-parameters"
+                    />
+                    <xsl:apply-templates select="xi:on[2]" mode="sql-name"/>
                     <xsl:choose>
+                        <xsl:when test="$set-of-parameters">
+                            <xsl:text> in ( </xsl:text>
+                        </xsl:when>
                         <xsl:when test="xi:less-equal">
-                            <xsl:text> &lt;= </xsl:text>
+                            <xsl:text> &gt;= </xsl:text>
                         </xsl:when>
                         <xsl:when test="xi:more-equal">
-                            <xsl:text> &gt;= </xsl:text>
+                            <xsl:text> &lt;= </xsl:text>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:text> = </xsl:text>
                         </xsl:otherwise>
                     </xsl:choose>
-                    <xsl:apply-templates select="xi:on[2]" mode="sql-name"/>
+                    <xsl:apply-templates select="xi:on[1]" mode="sql-name"/>
+                    <xsl:if test="$set-of-parameters">
+                        <xsl:text> )</xsl:text>
+                    </xsl:if>
                     <xsl:text> and </xsl:text>
                 </xsl:if>
             </xsl:for-each>
@@ -901,8 +910,20 @@
     </xsl:template>
 
     <xsl:template match="xi:join/xi:on" mode="sql-name">
-        <xsl:param name="value" select="ancestor::xi:data-request/xi:etc/xi:parameter[@name=current()[@property='id']/@name]"/>
+        <xsl:param name="value"
+            select="ancestor::xi:data-request/xi:etc/xi:parameter[@name=current()[@property='id']/@name]
+                | ancestor::xi:data-request/xi:etc/xi:data[@name=current()/@name]/xi:set-of-parameters
+            "
+        />
         <xsl:choose>
+            <xsl:when test="$value/self::xi:set-of-parameters">
+                <xsl:for-each select="$value/*">
+                    <xsl:apply-templates select="." mode="value"/>
+                    <xsl:if test="last() > position()">
+                        <xsl:text>, </xsl:text>
+                    </xsl:if>
+                </xsl:for-each>
+            </xsl:when>
             <xsl:when test="$value">
                 <xsl:apply-templates select="$value" mode="value"/>
             </xsl:when>

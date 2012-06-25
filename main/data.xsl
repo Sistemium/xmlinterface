@@ -94,7 +94,7 @@
         </set-of>
     </xsl:template>
         
-    <xsl:template match="xi:data[@chosen][not(key('id',@chosen))]">
+    <xsl:template match="xi:data[@chosen][not(@chosen='ignore' or key('id',@chosen))]">
         <xsl:copy>
             <xsl:copy-of select="@name|@ref|@id"/>
             <exception>

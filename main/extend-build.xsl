@@ -256,7 +256,8 @@
             <xsl:apply-templates select="@name
 										|*[not(key('id',@ref)[self::xi:field[@type='string']])]
 										  [text() and not(text()='')]
-										  [not(preceding-sibling::*/@name=@name)]"
+										  [not(preceding-sibling::*/@name=@name)]
+										|self::*[@chosen='ignore']/xi:set-of[@is-choise]"
 								  mode="parameter"/>
         </data>
         <xsl:apply-templates select="xi:data[key('id',@ref)/@key='true']" mode="parameter"/>
@@ -278,6 +279,13 @@
 		<xsl:apply-templates select="@sql-name | @type | @key | @use-like | @property" mode="parameter"/>
 	</xsl:template>
 
+    <xsl:template match="xi:set-of[@is-choise]" mode="parameter">
+		
+		<set-of-parameters>
+			<xsl:apply-templates select="xi:data/*[key('id',@ref)/@key]" mode="parameter"/>
+		</set-of-parameters>
+		
+	</xsl:template>
 
     <xsl:template match="xi:form[@new-only or xi:parameter[not(@optional) and not(xi:init)]]" mode="build-subrequest"/>
 

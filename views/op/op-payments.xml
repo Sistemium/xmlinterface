@@ -10,7 +10,7 @@
         
         <field name="id"/>
         
-        <form name="up-client" expect-choise="true" label="Клиент" choise-style="table">
+        <form name="up-client" expect-choise="optional" label="Клиент" choise-style="table">
             
             <field name="id"/>
             <field name="name" label="Клиент"/>

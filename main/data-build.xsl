@@ -71,6 +71,23 @@
   
     <!--         Выбор          -->
     
+    <xsl:template match="xi:data/@ignore-this"/>
+    
+    <xsl:template match="xi:data[@ignore-this]">
+        
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            
+            <xsl:attribute name="chosen">ignore</xsl:attribute>
+            
+            <xsl:apply-templates select="key('id',@ref)/xi:form" mode="build-data"/>
+            <xsl:copy-of select="xi:set-of[@is-choise]"/>
+            
+            <!--xsl:comment>choosing for=<xsl:value-of select="@id"/></xsl:comment-->
+        </xsl:copy>
+        
+    </xsl:template>
+    
     <xsl:template match="xi:data
                         [xi:chosen[not(@ref=../@chosen)]]
                         [descendant::xi:response/xi:rows-affected
@@ -170,6 +187,7 @@
         <xsl:param name="type" />
         <xsl:param name="choose-for" />
         <xsl:param name="set-thrshld" select="1 - count(@is-set)"/>
+        <!-- не доделано @expect-choise[.='forced']) -->
         
         <xsl:variable name="metadata" select="."/>
         
@@ -192,7 +210,10 @@
                 <xsl:apply-templates select="$data[$metadata/@name=@name or @name=concat('set-of-',$metadata/@name)]" mode="build-data"/>
             </xsl:when>
             
-            <xsl:when test="(count($data-set) > $set-thrshld and $metadata[@is-set]) or $metadata[@is-set and @extendable and $set-thrshld=0]">
+            <xsl:when test="
+                    (count($data-set) > $set-thrshld and $metadata[@is-set])
+                    or $metadata[@is-set and @extendable and $set-thrshld=0]
+            ">
                 <xsl:call-template name="build-set-of">
                     <xsl:with-param name="data" select="$data-set"/>
                 </xsl:call-template>                

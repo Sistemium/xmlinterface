@@ -145,8 +145,9 @@
             <xsl:if test="(@toggle-edit-off|@toggle-edit-on and $ui[text()='toggle-edit'])
                          or (@toggle-edit-off and $ui[text()='toggle-edit-on'])
                          or (@toggle-edit-on and $ui[text()='toggle-edit-off'])
-                         ">
-               <xsl:attribute name="toggle-edit">true</xsl:attribute>
+                         "
+            >
+                <xsl:attribute name="toggle-edit">true</xsl:attribute>
             </xsl:if>
             <xsl:if test="@chosen and $ui[text()='unchoose' or text()='next']">
                <xsl:attribute name="unchoose-this">true</xsl:attribute>
@@ -162,6 +163,9 @@
             </xsl:if>
             <xsl:if test="$ui[text()='save']">
                <xsl:attribute name="persist-this">true</xsl:attribute>
+            </xsl:if>
+            <xsl:if test="key('id',@ref)/@expect-choise='optional' and $ui[text()='ignore']">
+               <xsl:attribute name="ignore-this">true</xsl:attribute>
             </xsl:if>
             <xsl:if test="@deletable and $ui[text()='delete']">
                <xsl:attribute name="delete-this">true</xsl:attribute>
