@@ -95,13 +95,6 @@
     
     <workflow>
         
-        <reusables>
-            <option name="to-registers-browse" label="К списку реестров">
-                <command name="op-registers">register-browse</command>
-                <command name="set-of-op-payment-register">refresh</command>
-            </option>
-        </reusables>
-        
         <step name="register-browse">
             <display>
                 <input form="pc-account"/>
@@ -137,10 +130,26 @@
 						    xpath-compute="concat('FL_',$precompute,'.csv')"
 					/>
 				</export>
-                <grid form="register-detail-process"/>
+                <grid form="register-detail-process">
+                    <columns>
+                        <column form="register-detail-process" field="payment"/>
+                        <column form="process-error"/>
+                        <column form="register-detail-process" field="summ"/>
+                        <column label="Реквизиты">
+                            <print form="register-detail-process" field="account"/>
+                            <print form="register-detail-process" field="extra"/>
+                        </column>
+                    </columns>
+                    <group>
+                        <by form="up-file-payment" field="id"/>
+                    </group>
+                </grid>
             </display>
             <choise>
-                <option reuse="to-registers-browse"/>
+                <option name="to-registers-browse" label="К списку реестров">
+                    <command name="op-registers">register-browse</command>
+                    <command name="set-of-op-payment-register">refresh</command>
+                </option>
             </choise>
         </step>
         

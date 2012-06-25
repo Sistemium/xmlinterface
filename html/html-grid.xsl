@@ -128,16 +128,16 @@
          </xsl:if>
     </xsl:template>
 
-    <xsl:template match="xi:datum" mode="grid-group">
+    <xsl:template match="xi:datum|xi:field" mode="grid-group">
         <xsl:param name="colspan"/>
         <xsl:param name="cnt"/>
         <xsl:param name="cnt-show"/>
         <tr class="group" name="{@name}">
-            <xsl:if test="../@removable">
+            <xsl:for-each select="parent::xi:data/@removable">
                 <td class="options">
-                    <xsl:apply-templates select="../@removable"/>
+                    <xsl:apply-templates select="."/>
                 </td>
-            </xsl:if>
+            </xsl:for-each>
             <td colspan="{$colspan}">
                 <span><xsl:value-of select="."/></span>
                 <xsl:if test="$cnt-show">
@@ -164,9 +164,8 @@
             <xsl:for-each select="xi:by">
                 <xsl:variable name="current-value" select="$data//xi:datum[@ref=current()/@ref]|$data/ancestor::xi:data/xi:datum[@ref=current()/@ref]"/>
                 <xsl:variable name="prev-value" select="$data-prev//xi:datum[@ref=current()/@ref]|$data-prev/ancestor::xi:data/xi:datum[@ref=current()/@ref]"/>
-                
                 <xsl:if test="not($current-value = $prev-value)">
-                    <xsl:apply-templates select="$current-value" mode="grid-group">
+                    <xsl:apply-templates select="$current-value|key('id',@ref[not($current-value) and $prev-value])" mode="grid-group">
                         <xsl:with-param name="colspan" select="count($columns/xi:column|$columns/parent::xi:grid[@deletable])"/>
                         <xsl:with-param name="cnt" select="count($data/following::xi:data[@ref=$data/@ref and (descendant::xi:datum|ancestor::xi:data/xi:datum)[@ref=current()/@ref][text()=($data//xi:datum|$data/ancestor::xi:data/xi:datum)[@ref=current()/@ref]]])+1"/>
                         <xsl:with-param name="cnt-show" select="$columns/../@accordeon"/>
