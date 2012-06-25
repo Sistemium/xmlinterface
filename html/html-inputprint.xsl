@@ -247,7 +247,7 @@
                                 <xsl:if test="not(@chosen)">
                                     <option value="">(Значение не указано)</option>
                                 </xsl:if>
-                                <xsl:if test="@chosen='ignore'">
+                                <xsl:if test="key('id',@ref)/@expect-choise='optional'">
                                     <option value="ignore">(Все доступные)</option>
                                 </xsl:if>
                                 <xsl:for-each select="self::*[@choise][not(xi:set-of[@is-choise])]/ancestor::xi:view-data//xi:data[@name=current()/@choise][not(ancestor::xi:set-of[@is-choise])]

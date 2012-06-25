@@ -93,7 +93,7 @@
             <xsl:call-template name="build-not-found-data"/>
         </set-of>
     </xsl:template>
-        
+    
     <xsl:template match="xi:data[@chosen][not(@chosen='ignore' or key('id',@chosen))]">
         <xsl:copy>
             <xsl:copy-of select="@name|@ref|@id"/>
@@ -124,16 +124,17 @@
 
     <xsl:template match="xi:datum[@type='parameter' and ancestor::*[xi:response[@ts and xi:result-set]]]/@modified" />
     
-    <xsl:template match="xi:data[xi:response[@ts and not(xi:result-set) and xi:rows-affected]]/xi:datum[@xpath-compute]/@modifiable
-                        |xi:data[xi:response[@ts and not(xi:result-set) and xi:rows-affected]]/xi:datum[@type='field']/@modified
-                        |xi:data[xi:response[@ts and not(xi:result-set) and xi:rows-affected]]/xi:data[@choise]/@modified
-                        ">
+    <xsl:template match="
+        xi:data [xi:response[@ts and not(xi:result-set) and xi:rows-affected]] /xi:datum[@xpath-compute] /@modifiable
+        |xi:data [xi:response[@ts and not(xi:result-set) and xi:rows-affected]] /xi:datum[@type='field'] /@modified
+        |xi:data [xi:response[@ts and not(xi:result-set) and xi:rows-affected]] /xi:data[@choise] /@modified
+    ">
       <xsl:attribute name="original-value">
          <xsl:value-of select="../."/>
       </xsl:attribute>
     </xsl:template>
     
-    <xsl:template match="xi:data/@ts    [ancestor::*[xi:response[not(xi:result-set) and xi:rows-affected]]]"/>
+    <xsl:template match="xi:data/@ts [ancestor::*[xi:response[not(xi:result-set) and xi:rows-affected]]]"/>
 
     <xsl:template match="xi:data[xi:response[@ts][not(xi:result-set) and xi:rows-affected] and @delete-this]" priority="500"/>
 

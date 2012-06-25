@@ -25,6 +25,10 @@
                 
                 <form name="op-payment" is-set="true" label="Платеж" page-size="15">
                     
+                    <form name="payment-client" concept="up-client">
+                        <field name="name" label="Клиент"/>
+                    </form>
+                    
                     <field name="id"/>
                     <field name="ts"/>
                     <field name="cts" hidden="true"/>
@@ -129,6 +133,9 @@
                         <command name="op-payments">pmt-detail</command>
                         <command name="pmt-detail-id" xpath-compute="xi:datum[@name='id']" />
                     </option>
+                    <group>
+                        <by form="payment-client" field="name"/>
+                    </group>
                     <!--column label="Прочее">
                         <tabs>
                             <print form="op-payment" field="ts"/>
