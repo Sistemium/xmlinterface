@@ -5,97 +5,101 @@
 		
 		<parameter name="name"><init with="username"/></parameter>
 		
-		<form name="pc-account" expect-choise="true" choise-style="table" label="Провайдер">
-            
-            <field name="id"/>
-            <field name="name"/>
-            
-            <form concept="op-csv-error" name="error-cache" is-set="true">
+        <form name="protocol"><where name="code">csv</where><form name="pc">
+        
+            <form name="pc-account" choise-style="table" label="Провайдер">
+                
                 <field name="id"/>
                 <field name="name"/>
-            </form>
-            
-            <form name="pc-account-register-aggregate" concept="op-payment-register"
-                  no-preload="true"
-            >   <field name="id" aggregate="count" label="Всего реестров"/>
-            </form>
-            
-            <form name="op-payment-register" is-set="true" deletable="true" page-size="10">
-                <field name="id"/>
-                <field name="xid"/>
-                <add-labeled-fields />
-                <order-by name="date" dir="desc"/>
-            </form>
-            
-            <form name="register-detail" concept="op-payment-register" parent-sql-name="pcaccount" preload="true">
                 
-                <parameter name="register-detail-xid" modifiable="true" property="xid" optional="true"/>
-                <parameter name="blank-number" modifiable="true" optional="true"/>
-                
-                <field name="id"/>
-                <field name="date"/>
-                <field name="name"/>
-                <field name="cts"/>
-                <field name="ts"/>
-                <field name="processed" editable="true"/>
-                
-                <form name="register-detail-process" is-set="true"
-                    concept="op-payment-process"
-                    label="Платежи реестра" page-size="10"
-                >
+                <form concept="op-csv-error" name="error-cache" is-set="true">
                     <field name="id"/>
-                    <field name="payment" label="ОП-ИД"/>
-                    
-                    <form name="process-error" concept="op-csv-error" choise="error-cache" label="Ошибка" role="op-csv-error">
-                        <field name="id"/>
-                        <field name="name"/>
-                    </form>
-                    
-                    <field name="summ"/>
-                    <field name="account"/>
-                    <field name="extra"/>
-                    <field name="ts"/>
-                    
-                    <form name="up-file-payment" concept="up-file-payment">
-                        <field name="id" label="Файловый платеж"/>
-                    </form>
-                    
-                    <order-by name="up-file-payment" dir="desc"/>
-                    <order-by name="ts" dir="desc"/>
-                    
+                    <field name="name"/>
                 </form>
                 
-                <form name="multibank-reestr" is-set="true" pipeline="csv1251">
-                    <field name="receiptNumber" />
-                    <field name="receiptDate"/>
-                    <field name="summ" />
-                    <field name="account" sql-compute="null" />
-                    <field name="Fio" />
-                    <field name="address" />
-                    <field name="ufkAccount" />
-                    <field name="ufkINN" />
-                    <field name="ufkName" />
-                    <field name="ufkBIK" />
-                    <field name="paymentType" />
-                    <field name="ufkKPP" />
-                    <field name="ufkKBK" />
-                    <field name="ufkOKATO" />
-                    <field name="field106" />
-                    <field name="field107" />
-                    <field name="field108" />
-                    <field name="field109" />
-                    <field name="field110" />
-                    <field name="field111" type="decimal" sql-compute="0.00"/>
+                <form name="pc-account-register-aggregate" concept="op-payment-register"
+                      no-preload="true"
+                >   <field name="id" aggregate="count" label="Всего реестров"/>
                 </form>
+                
+                <form name="op-payment-register" is-set="true" deletable="true" page-size="10">
+                    <field name="id"/>
+                    <field name="xid"/>
+                    <add-labeled-fields />
+                    <order-by name="date" dir="desc"/>
+                </form>
+                
+                <form name="register-detail" concept="op-payment-register" parent-sql-name="pcaccount" preload="true">
+                    
+                    <parameter name="register-detail-xid" modifiable="true" property="xid" optional="true"/>
+                    <parameter name="blank-number" modifiable="true" optional="true"/>
+                    
+                    <field name="id"/>
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="cts"/>
+                    <field name="ts"/>
+                    <field name="processed" editable="true"/>
+                    
+                    <form name="register-detail-process" is-set="true"
+                        concept="op-payment-process"
+                        label="Платежи реестра" page-size="10"
+                    >
+                        <field name="id"/>
+                        <field name="payment" label="ОП-ИД"/>
+                        
+                        <form name="process-error" concept="op-csv-error" choise="error-cache" label="Ошибка" role="op-csv-error">
+                            <field name="id"/>
+                            <field name="name"/>
+                        </form>
+                        
+                        <field name="summ"/>
+                        <field name="account"/>
+                        <field name="extra"/>
+                        <field name="ts"/>
+                        
+                        <form name="up-file-payment" concept="up-file-payment">
+                            <field name="id" label="Файловый платеж"/>
+                        </form>
+                        
+                        <order-by name="up-file-payment" dir="desc"/>
+                        <order-by name="ts" dir="desc"/>
+                        
+                    </form>
+                    
+                    <form name="multibank-reestr" is-set="true" pipeline="csv1251">
+                        <field name="receiptNumber" />
+                        <field name="receiptDate"/>
+                        <field name="summ" />
+                        <field name="account" sql-compute="null" />
+                        <field name="Fio" />
+                        <field name="address" />
+                        <field name="ufkAccount" />
+                        <field name="ufkINN" />
+                        <field name="ufkName" />
+                        <field name="ufkBIK" />
+                        <field name="paymentType" />
+                        <field name="ufkKPP" />
+                        <field name="ufkKBK" />
+                        <field name="ufkOKATO" />
+                        <field name="field106" />
+                        <field name="field107" />
+                        <field name="field108" />
+                        <field name="field109" />
+                        <field name="field110" />
+                        <field name="field111" type="decimal" sql-compute="0.00"/>
+                    </form>
+                </form>
+                
             </form>
-            
-        </form>
+        
+        </form></form>
         
     </form></view-schema>
     
     <workflow>
         
-        <step name="register-browse">
+        <step name="register-browse" label="Список реестров">
             <display>
                 <input form="pc-account"/>
                 <grid form="op-payment-register">
