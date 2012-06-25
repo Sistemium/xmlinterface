@@ -137,10 +137,11 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:data[not(@delete-this)]/xi:datum[@editable]
-                        |xi:data[not(@delete-this or @toggle-edit-off)]/xi:data[@choise]
-                        |xi:view-data/xi:data[@choise]"
-                  mode="render" name="input">
+    <xsl:template mode="render" name="input" match="
+        xi:data [not(@delete-this)] /xi:datum [@editable]
+        |xi:data [not(@delete-this or @toggle-edit-off)] /xi:data [@choise]
+        |xi:view-data /xi:data [@choise]
+    ">
         
         <xsl:param name="id" select="@id"/>
         <xsl:param name="command" />
@@ -234,7 +235,9 @@
                         </xsl:if>
                         
                         <xsl:choose>
+                            
                             <xsl:when test="self::xi:data">
+                                
                                 <xsl:attribute name="onchange">
                                     <xsl:choose>
                                         <xsl:when test="/*/xi:userinput/@spb-agent or xi:set-of[@is-choise]">this.form.submit()</xsl:when>
@@ -243,16 +246,22 @@
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:attribute>
+                                
                                 <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
+                                
                                 <xsl:if test="not(@chosen)">
                                     <option value="">(Значение не указано)</option>
                                 </xsl:if>
+                                
                                 <xsl:if test="key('id',@ref)/@expect-choise='optional'">
                                     <option value="ignore">(Все доступные)</option>
                                 </xsl:if>
-                                <xsl:for-each select="self::*[@choise][not(xi:set-of[@is-choise])]/ancestor::xi:view-data//xi:data[@name=current()/@choise][not(ancestor::xi:set-of[@is-choise])]
-                                                     |xi:set-of[@is-choise][@id=current()/@choise]/*
-                                                     ">
+                                
+                                <xsl:for-each select="
+                                    self::node() [@choise] [not(xi:set-of[@is-choise])] /ancestor::xi:view-data
+                                    //xi:data [@name=current()/@choise] [not(ancestor::xi:set-of[@is-choise])]
+                                    |xi:set-of [@is-choise] [@id=current()/@choise]/*
+                                ">
                                     <option value="{@id}">
                                         <xsl:if test="$this/@chosen=@id">
                                             <xsl:attribute name="selected">selected</xsl:attribute>
@@ -260,9 +269,11 @@
                                         <xsl:value-of select="@label|self::*[not(@label)]/xi:datum[@name='name']"/>
                                    </option>
                                 </xsl:for-each>
+                                
                             </xsl:when>
                             
                             <xsl:otherwise>
+                                
                                 <xsl:attribute name="type">
                                     <xsl:choose>
                                         <xsl:when test="key('id',@ref)/@type='file'">file</xsl:when>
@@ -270,6 +281,7 @@
                                         <xsl:otherwise>text</xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:attribute>
+                                
                                 <xsl:attribute name="class">
                                     <xsl:value-of select="normalize-space(concat(local-name(@modified),' ',key('id',@ref)/@type))"/>
                                     <xsl:if test="not(key('id',@ref)/@type='file')">
@@ -279,18 +291,22 @@
                                         <xsl:text> option-forward</xsl:text>
                                     </xsl:if>
                                 </xsl:attribute>
+                                
                                 <xsl:if test="$id=''">
                                     <xsl:attribute name="name">
                                         <xsl:value-of select="local-name()" />
                                     </xsl:attribute>
                                 </xsl:if>
+                                
                                 <xsl:if test="$id='password' or @editable='password'">
                                     <xsl:attribute name="type">password</xsl:attribute>
                                 </xsl:if>
+                                
                                 <xsl:if test="$id='username'">
                                     <xsl:attribute name="autocapitalize">off</xsl:attribute>
                                     <xsl:attribute name="autocorrect">off</xsl:attribute>
                                 </xsl:if>
+                                
                                 <xsl:if test="not(/*/xi:userinput/@spb-agent)">
                                     <xsl:for-each select="($this/descendant::xi:data|$this/ancestor-or-self::xi:data)[@name=key('id',current()/@ref)/@autofill-form]/xi:datum[@name=key('id',current()/@ref)/@autofill]">
                                         <xsl:attribute name="xi:autofill">
@@ -298,6 +314,7 @@
                                         </xsl:attribute>
                                     </xsl:for-each>
                                 </xsl:if>
+                                
                                 <xsl:choose>
                                     <xsl:when test="not(/*/xi:userinput/@spb-agent)">
                                         <xsl:if test="$id='password' or @type='parameter'">
@@ -315,11 +332,13 @@
                                         <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
                                     </xsl:otherwise>
                                 </xsl:choose>
+                                
                                 <xsl:if test="$file-name">
                                     <xsl:attribute name="xi:file-name">
                                         <xsl:value-of select="$file-name"/>
                                     </xsl:attribute>
                                 </xsl:if>
+                                
                                 <xsl:if test="not($element='textarea')">
                                     <xsl:if test="text()">
                                         <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
@@ -344,11 +363,13 @@
                                         </xsl:choose>
                                     </xsl:attribute>
                                 </xsl:if>
+                                
                                 <xsl:if test="$element='textarea'">
                                     <xsl:attribute name="cols">30</xsl:attribute>
                                     <xsl:attribute name="rows">3</xsl:attribute>
                                     <xsl:value-of select="text()"/>
                                 </xsl:if>
+                                
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:element>
