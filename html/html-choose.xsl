@@ -5,10 +5,26 @@
 >
  
     <xsl:template match="xi:dialogue/xi:choose">
+        <xsl:variable name="top" select="key('id',key('id',@ref)/@ref)"/>
         <div class="choose">
             <div class="exception">
                 <span><xsl:value-of select="concat('Уточните [',@what-label,']')"/></span>
             </div>
+            <xsl:if test="$top[@expect-choise='optional']">
+                <div class="option ignore">
+                    <label for="{@id}-ignore">
+                        <xsl:text>Все доступные</xsl:text>
+                    </label>
+                    <input type="radio" class="radio" id="{@id}-ignore" value="ignore" name="{@ref}">
+                        <xsl:attribute name="onclick">
+                            <xsl:text>this.form.submit()</xsl:text>
+                        </xsl:attribute>
+                        <xsl:if test="/*/xi:userinput/@spb-agent">
+                            <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
+                        </xsl:if>
+                    </input>
+                </div>
+            </xsl:if>
             <xsl:for-each select="key('id',@ref)/xi:set-of/xi:data">
                 <div class="option">
                     <label for="{@id}">
@@ -47,6 +63,23 @@
                 </tr>
             </thead>
             <tbody>
+                <xsl:if test="$top[@expect-choise='optional']">
+                    <tr class="option ignore">
+                        <td colspan="{count($column)}">
+                            <xsl:text>Все доступные</xsl:text>
+                        </td>
+                        <td>
+                            <input type="radio" class="radio" id="{@id}-ignore" value="ignore" name="{@ref}">
+                                <xsl:attribute name="onclick">
+                                    <xsl:text>this.form.submit()</xsl:text>
+                                </xsl:attribute>
+                                <xsl:if test="/*/xi:userinput/@spb-agent">
+                                    <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
+                                </xsl:if>
+                            </input>
+                        </td>
+                    </tr>
+                </xsl:if>
                 <xsl:for-each select="key('id',@ref)/xi:set-of[@is-choise]/xi:data">
                     <xsl:variable name="currentOption" select="."/>
                     <tr class="option">

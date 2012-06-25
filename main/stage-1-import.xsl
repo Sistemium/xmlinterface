@@ -164,7 +164,7 @@
             <xsl:if test="$ui[text()='save']">
                <xsl:attribute name="persist-this">true</xsl:attribute>
             </xsl:if>
-            <xsl:if test="key('id',@ref)/@expect-choise='optional' and $ui[text()='ignore']">
+            <xsl:if test="key('id',@ref)/@expect-choise='optional' and $ui[text()='ignore'] and not(@chosen='ignore')">
                <xsl:attribute name="ignore-this">true</xsl:attribute>
             </xsl:if>
             <xsl:if test="@deletable and $ui[text()='delete']">
