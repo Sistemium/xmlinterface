@@ -222,10 +222,11 @@
                             </xsl:for-each>
                         </xsl:when>
                         
-                        <xsl:when test="xi:navigate">
+                        <xsl:when test="xi:navigate[$datum]">
                             <a>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="concat('?views=',xi:navigate/@to)"/>
+                                    <xsl:value-of select="concat('&amp;',xi:navigate/@ref,'=',$datum/@id)"/>
                                     <xsl:for-each select="key('id',xi:navigate/@ref)/xi:pass">
                                         <xsl:value-of select="concat('&amp;', @name, '=', $datum/ancestor::*/xi:datum[@ref=current()/@ref])"/>
                                     </xsl:for-each>

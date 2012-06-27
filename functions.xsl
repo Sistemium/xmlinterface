@@ -5,8 +5,9 @@
     xmlns:e="http://exslt.org/common"
     xmlns:php="http://php.net/xsl"
     xmlns:func="http://exslt.org/functions"
-    extension-element-prefixes="func e"
-    exclude-result-prefixes="php func e"
+    xmlns:dyn="http://exslt.org/dynamic"
+    extension-element-prefixes="func e dyn"
+    exclude-result-prefixes="php func e dyn"
 >
     
     <xsl:template name="as-attribute" mode="as-attribute" match="*">
@@ -40,4 +41,9 @@
         <func:result select="$b"/>
     </func:function>
 
+    <func:function name="xi:xpath">
+        <xsl:param name="xpath" />
+        <func:result select="dyn:evaluate($xpath)"/>
+    </func:function>
+    
 </xsl:transform>

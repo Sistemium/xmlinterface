@@ -24,6 +24,31 @@
     </xsl:template>
     
     
+    <xsl:template match="xi:userinput/xi:command[key('id',@name)/self::xi:navigate]">
+        
+        <xsl:param name="datum" select="key('id',text())"/>
+        
+        <xsl:copy-of select="."/>
+        
+        <xsl:for-each select="key('id',@name)/self::xi:navigate/xi:pull">
+            <command>
+                <xsl:copy-of select="@name"/>
+                <xsl:apply-templates select="$datum/ancestor::*/xi:datum[@ref=current()/@ref]" mode="pull-value">
+                    <xsl:with-param name="xpath" select="@xpath"/>
+                </xsl:apply-templates>
+            </command>
+        </xsl:for-each>
+        
+    </xsl:template>
+    
+    <xsl:template mode="pull-value" match="*">
+        <xsl:param name="xpath" />
+        <xsl:if test="$xpath">
+            <xsl:value-of select="xi:xpath($xpath)"/>
+        </xsl:if>
+        <xsl:apply-templates select="self::*[not($xpath)]/node()" mode="pull-value"/>
+    </xsl:template>
+    
     <!-- недоделка: предусмотреть отправку сообщений в активное вью -->
     
     <xsl:template match="xi:view[not(@hidden)]//*[@editable or (@modifiable and not(@xpath-compute))]/text()"/>
