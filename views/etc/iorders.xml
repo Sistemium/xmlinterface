@@ -131,11 +131,11 @@
                         <field name="id"/>
                         
                         <field name="name" />
+                        <field name="description"/>
                         <field name="dateStart"  hidden="true"/>
-                        <field name="dateEnd" />
+                        <field name="dateEnd"  hidden="true"/>
                         <field name="tag"  hidden="true"/>
                         <field name="tagColor" hidden="true"/>
-                        <field name="description" />
                         <field name="isFocused"  hidden="true"/>
                         <field name="isFirstScreen"  hidden="true"/>
                         <field name="isNonHidable"  hidden="true"/>
