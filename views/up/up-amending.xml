@@ -2,7 +2,7 @@
 
 <view-definition xmlns="http://unact.net/xml/xi" name="up-amending" label="Корректировка платежей">
 	
-	<access role="beta"/>
+	<access- role="beta"/>
     
     <view-schema> <form name="op-agent"> 
 		
@@ -12,33 +12,49 @@
 		
 		<field name="id"/>
 		
-		<form name="up-client" expect-choise="forced" label="Клиент" choise-style="table">
+		<form name="up-client" expect-choise="optional" label="Клиент" choise-style="table">
 			
 			<field name="id"/>
 			<field name="name" label="Клиент"/>
             
-            <form name="payment-search" concept="up-client">
-                
-                <join name="up-client" field="id" />
-                
-                <field name="id"/>
+            <form name="payment-search" concept="op">
                 
                 <parameter name="accounts" label="Реквизиты" editable="true" optional="true"/>
                 
                 <form name="up-file-payment" is-set="true" page-size="10"
                     label="Клиентские платежи">
                     
-                    <!--form name="up-file" constrain-parent="true">
-                        <join name="payment-search" />
-                    </form-->
+                    <join name="up-client" />
                     
                     <form name="up-file-payment-error" concept="op-error" no-preload="true">
                         <field name="id"/>
                         <field name="name" label="Cтатус" />
-                        <where name="id"><not>0</not></where>
+                        <where name="id">
+                            <not>0</not>
+                        </where>
                     </form>
                     
                     <field name="id"/>
+                    
+                    <!--field name="to-claim" type="string" label="Инциденты">
+                        <sql-compute>
+                            if not exists (select * from op.[payment claim] where prepayment=[up-file-payment].id)
+                            then 'Зарегистрировать'
+                            endif
+                        </sql-compute>
+                        <navigate to="bank-payment-claim">
+                            
+                            <pull name="file-payment" field="id" form="up-file-payment"/>
+                            
+                            <pull name="initial-account" field="account" form="up-file-payment"/>
+                            
+                            <pull name="initial-bik" field="extra" form="up-file-payment" xpath="*[@name='bik']"/>
+                            <pull name="initial-firstname" field="extra" form="up-file-payment" xpath="*[@name='firstname']"/>
+                            <pull name="initial-middlename" field="extra" form="up-file-payment" xpath="*[@name='middlename']"/>
+                            <pull name="initial-lastname" field="extra" form="up-file-payment" xpath="*[@name='lastname']"/>
+                            
+                        </navigate>
+                    </field-->
                     
                     <field name="ts" format="smalltime"/>                    
                     <field name="summ"/>
@@ -51,26 +67,53 @@
                     
                 </form>
                 
-                <form name="payment-to-ammend" concept="up-file-payment" what-label="Платеж">
-                    <parameter name="payment-to-ammend-id" property="id" modifiable="true"/>
-                    <add-labeled-fields/>
+                <form name="payment-to-amend" concept="up-file-payment" what-label="Платеж">
+                    
+                    <parameter name="payment-to-amend-id" property="id" modifiable="true"/>
                     
                     <field name="id"/>
+                    <field name="extra"/>
+                    
+                    <field name="account"/>
+                    
+                    <field name="extra-bik" label="БИК">
+                        <sql-compute>null</sql-compute>
+                        <xpath-compute>../*[@name='extra']/*[@name='bik']</xpath-compute>
+                    </field>
+                    <field name="extra-lastName" label="Фамилия">
+                        <sql-compute>null</sql-compute>
+                        <xpath-compute>../*[@name='extra']/*[@name='lastname']</xpath-compute>
+                    </field>
+                    <field name="extra-firstName" label="Имя">
+                        <sql-compute>null</sql-compute>
+                        <xpath-compute>../*[@name='extra']/*[@name='name']</xpath-compute>
+                    </field>
+                    <field name="extra-middleName" label="Отчество">
+                        <sql-compute>null</sql-compute>
+                        <xpath-compute>../*[@name='extra']/*[@name='middlename']</xpath-compute>
+                    </field>
                     
                     <field name="payment-date" type="string"
                        sql-compute="date(cts)+1"
                     />
                     
-                    <form name="claim" concept="up-file-payment-claim" build-blank="true">
-                        <field name="phone-number" editable="true" label="Номер телефона"
-                           sql-compute="null"
-                        />
-                        <field name="fio" editable="true" label="ФИО"
-                           sql-compute="null"
-                        />
-                        <field name="correct-account" type="text" editable="true" label="Правильные реквизиты"
-                           sql-compute="string(account, ',', extra)"
-                        />
+                    <form name="claim" concept="up-file-payment-claim" build-blank="true" parent-sql-name="prepayment">
+                        
+                        <field name="xid"/>
+                        
+                        <field name="account" editable="true" autofill="account" autofill-form="payment-to-amend"/>
+                        <field name="bik" editable="true" autofill="extra-bik" autofill-form="payment-to-amend"/>
+                        <field name="lastName" editable="true" autofill="extra-lastName" autofill-form="payment-to-amend"/>
+                        <field name="firstName" editable="true" autofill="extra-firstName" autofill-form="payment-to-amend"/>
+                        <field name="middleName" editable="true" autofill="extra-middleName" autofill-form="payment-to-amend"/>
+                        
+                        <field name="phoneNumber" editable="true" />
+                        <field name="terminal" modifiable="true">
+                            <xpath-compute>
+                                xi:isnull( current(), ../../../*[@name='amendment-terminal']/*[@name='id'] )
+                            </xpath-compute>
+                        </field>
+                        
                     </form>
                     
                     <form name="payment-reciept" concept="op-payment" is-set="true">
@@ -86,13 +129,14 @@
                 </form>
                 
                 <form name="amendment-terminal" concept="up-file-payment-claim-terminal">
+                    
                     <parameter name="payment-date" modifiable="true" property="date"/>
                     <parameter name="payment-summ" modifiable="true" property="summ"/>
                     
                     <field name="id" label="ИД терминала"/>
                     
                     <form name="amendment-terminal-details" concept="bank-terminal">
-                        <field name="address"/>
+                        <field name="address" label="Адрес терминала"/>
                     </form>
                     
                 </form>
@@ -111,70 +155,73 @@
                 <input form="payment-search" field="accounts"/>
 				<grid form="up-file-payment" hide-empty="true" label="Выберите платеж">
 					<option label="Выбрать">
-						<command name="payment-to-ammend-id" xpath-compute="xi:datum[@name='id']" />
+						<command name="payment-to-amend-id" xpath-compute="xi:datum[@name='id']" />
 						<command name="payment-date" xpath-compute="xi:string-to-date(xi:datum[@name='ts'])" />
 						<command name="payment-summ" xpath-compute="xi:datum[@name='summ']" />
-                        <command name="up-ammending">amendment-details</command>
+                        <command name="up-amending">amendment-details</command>
 					</option>
 				</grid>
 			</display>
             <validate>
-                <nonempty form="payment-to-ammend"/>
+                <nonempty form="payment-to-amend"/>
             </validate>
 		</step>
-		
+        
         <step name="amendment-details" label="Корректировка платежа">
+            
 			<display>
                 <print form="up-client" field="name"/>
-                <region class="tabs">
-                    <region label="Корректировочная информация">
-                        <input form="claim" field="phone-number"/>
-                        <input form="claim" field="fio"/>
-                        <input form="claim" field="correct-account"/>
-                    </region>
-                    <region label="Исходная информация">
-                        <print form="payment-to-ammend" field="account"/>
-                        <print form="payment-to-ammend" field="extra"/>
-                        <print form="amendment-terminal" field="id"/>
-                        <print form="amendment-terminal-details" field="address"/>
-                    </region>
+                <input form="claim" field="phoneNumber"/>
+                <region label="Корректировочная информация">
+                    <input form="claim" field="account"/>
+                    <input form="claim" field="bik"/>
+                    <input form="claim" field="lastName"/>
+                    <input form="claim" field="firstName"/>
+                    <input form="claim" field="middleName"/>
+                </region>
+                <region label="Исходная информация">
+                    <print form="payment-to-amend" field="account"/>
+                    <print form="payment-to-amend" field="extra-bik"/>
+                    <print form="payment-to-amend" field="extra-lastName"/>
+                    <print form="payment-to-amend" field="extra-firstName"/>
+                    <print form="payment-to-amend" field="extra-middleName"/>
                 </region>
             </display>
+            
             <validate>
-                <nonempty form="claim" field="phone-number"/>
-                <nonempty form="claim" field="fio"/>
-                <nonempty form="claim" field="correct-account"/>
+                <nonempty form="claim" field="phoneNumber"/>
+                <nonempty form="claim" field="account"/>
+                <nonempty form="claim" field="bik"/>
+                <nonempty form="claim" field="lastName"/>
+                <nonempty form="claim" field="firstName"/>
+                <nonempty form="claim" field="middleName"/>
             </validate>
+            
         </step>
         
-        <step name="amendment-reciepts" label="Чеки платежа">
+        <step name="amendment-reciepts" label="Регистрация заявления">
+            
 			<display>
                 <print form="up-client" field="name"/>
                 <region class="tabs">
-                    <grid form="payment-reciept" label="Чеки"/>
-                    <region label="Корректировочная информация">
-                        <print form="claim" field="phone-number"/>
-                        <print form="claim" field="fio"/>
-                        <print form="claim" field="correct-account"/>
-                    </region>
-                    <region label="Исходная информация">
-                        <print form="payment-to-ammend" field="account"/>
-                        <print form="payment-to-ammend" field="extra"/>
+                    <region label="Скорректированная информация">
+                        <print form="claim" field="*"/>
                         <print form="amendment-terminal" field="id"/>
                         <print form="amendment-terminal-details" field="address"/>
                     </region>
+                    <grid form="payment-reciept" label="Чеки"/>
                 </region>
             </display>
+            
             <choise>
                 <option label="Завершить оформление">
                     <command name="save"/>
                     <command name="refresh"/>
-                    <!--command name="up-amending">payment-search</command-->
                 </option>
             </choise>
+            
         </step>
         
     </workflow>
 	
 </view-definition>
-

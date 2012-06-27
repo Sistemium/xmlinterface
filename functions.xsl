@@ -20,10 +20,14 @@
     <func:function name="xi:isnull">
         <xsl:param name="a" select="xi:null"/>
         <xsl:param name="b" select="xi:null"/>
-        <xsl:if test="not($a)">
-            <func:result  select="$b"/>
-        </xsl:if>
-        <func:result select="$a"/>
+        <xsl:choose>
+            <xsl:when test="not($a) or string-length($a)=0">
+                <func:result select="$b"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <func:result select="$a"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </func:function>
     
     <func:function name="xi:string-to-date">

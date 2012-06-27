@@ -144,7 +144,7 @@
             </xsl:call-template>
         </xsl:for-each>
         
-        <xsl:apply-templates select="xi:sql-compute" mode="as-attribute"/>
+        <xsl:apply-templates select="xi:sql-compute|xi:xpath-compute" mode="as-attribute"/>
         
         <xsl:apply-templates select="@*|self::xi:field[@editable]/parent::xi:form/@autosave"/>
         

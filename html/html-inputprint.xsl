@@ -70,8 +70,15 @@
             </xsl:if>
             
             <xsl:choose>
-                <xsl:when test="self::xi:input[not(@noforward)
-                 and not(following-sibling::xi:input or parent::xi:region/following-sibling::xi:region/xi:input or ($datum[not(@type='parameter')] and following-sibling::xi:grid))]">
+                <xsl:when test="
+                    self::xi:input [not(@noforward)
+                        and not(following-sibling::xi:input
+                            or following-sibling::xi:region/xi:input
+                            or parent::xi:region/following-sibling::xi:region/xi:input
+                            or ($datum[not(@type='parameter')] and following-sibling::xi:grid)
+                        )
+                    ]
+                ">
                     <xsl:apply-templates select="$datum" mode="render">
                         <xsl:with-param name="command">forward</xsl:with-param>
                     </xsl:apply-templates>

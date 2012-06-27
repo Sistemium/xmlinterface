@@ -230,6 +230,7 @@
     
     <concept name="up-file-payment-claim" server="op.unact.ru">
         <select owner="op" sql-name="payment claim"/>
+        <save owner="payment claim" sql-name="data"/>
         
         <field name="id" type="int" key="true"/>
         

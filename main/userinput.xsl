@@ -28,16 +28,17 @@
         
         <xsl:param name="datum" select="key('id',text())"/>
         
-        <xsl:copy-of select="."/>
-        
-        <xsl:for-each select="key('id',@name)/self::xi:navigate/xi:pull">
-            <command>
-                <xsl:copy-of select="@name"/>
-                <xsl:apply-templates select="$datum/ancestor::*/xi:datum[@ref=current()/@ref]" mode="pull-value">
-                    <xsl:with-param name="xpath" select="@xpath"/>
-                </xsl:apply-templates>
-            </command>
-        </xsl:for-each>
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:for-each select="key('id',@name)/self::xi:navigate/xi:pull">
+                <xsl:copy>
+                    <xsl:copy-of select="@name"/>
+                    <xsl:apply-templates select="$datum/ancestor::*/xi:datum[@ref=current()/@ref]" mode="pull-value">
+                        <xsl:with-param name="xpath" select="@xpath"/>
+                    </xsl:apply-templates>
+                </xsl:copy>
+            </xsl:for-each>
+        </xsl:copy>
         
     </xsl:template>
     

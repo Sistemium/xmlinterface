@@ -986,7 +986,7 @@
     </xsl:template>
     
     <xsl:template match="@*" mode="prefix">
-        <xsl:value-of select="."/>
+        <xsl:apply-templates select="." mode="doublequoted"/>
         <xsl:text>.</xsl:text>
     </xsl:template>
  
