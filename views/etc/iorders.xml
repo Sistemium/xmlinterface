@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.92" expect-megabytes="15" >
+    <view-schema version="1.931" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -131,16 +131,16 @@
                         <field name="id"/>
                         
                         <field name="name" />
-                        <field name="dateStart" />
+                        <field name="dateStart"  hidden="true"/>
                         <field name="dateEnd" />
-                        <field name="tag" />
-                        <field name="tagColor" />
+                        <field name="tag"  hidden="true"/>
+                        <field name="tagColor" hidden="true"/>
                         <field name="description" />
-                        <field name="isFocused" />
-                        <field name="isFirstScreen" />
-                        <field name="isNonHidable" />
-                        <field name="isPopAtStart" />
-                        <field name="isCustomerTargeted" />
+                        <field name="isFocused"  hidden="true"/>
+                        <field name="isFirstScreen"  hidden="true"/>
+                        <field name="isNonHidable"  hidden="true"/>
+                        <field name="isPopAtStart"  hidden="true"/>
+                        <field name="isCustomerTargeted"  hidden="true"/>
                         
                         <where name="isActive">1</where>
                         
