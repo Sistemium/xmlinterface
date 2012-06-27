@@ -404,8 +404,8 @@
     </xsl:template>
     
 
-    <xsl:template match="*[@label]" mode="label">
-        <xsl:apply-templates select="@label" mode="quoted"/>
+    <xsl:template match="*[@label|@what-label]" mode="label">
+        <xsl:apply-templates select="@what-label | @label[not(../@what-label)]" mode="quoted"/>
         <xsl:if test="xi:parameter">
             <xsl:for-each select="xi:parameter[@editable]">
                 <xsl:if test="position()=1">
@@ -450,7 +450,12 @@
                     <result>invalid</result>
                     <for-human>
                         <xsl:text>Необходимо указать </xsl:text>
-                        <xsl:apply-templates select="ancestor::xi:view/xi:view-schema/descendant::xi:form[@name=current()/@form or not(current()/@form)]/descendant-or-self::*[(not(self::xi:form) and @id=current()/@ref) or (not(current()/@field) and self::xi:form and @name=current()/@form)]" mode="label"/>
+                        <xsl:apply-templates mode="label" select="
+                            ancestor::xi:view/xi:view-schema/descendant::xi:form
+                                [@name=current()/@form or not(current()/@form)]
+                                /descendant-or-self::*
+                                [(not(self::xi:form) and @id=current()/@ref) or (not(current()/@field) and self::xi:form and @name=current()/@form)]
+                        "/>
                     </for-human>
                 </message>
             </exception>

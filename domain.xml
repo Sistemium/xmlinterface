@@ -229,11 +229,21 @@
 
     
     <concept name="up-file-payment-claim" server="op.unact.ru">
-        <select owner="op" sql-name="prepayment"/>
+        <select owner="op" sql-name="payment claim"/>
         
         <field name="id" type="int" key="true"/>
         
-        <role name="up-file-payment" actor="up-file-payment" sql-name="id" />
+        <property name="phoneNumber" type="string" label="Телефонный номер" />
+        
+        <property name="account" type="string" label="Счет" />
+        <property name="bik" type="string" label="БИК" />
+        
+        <property name="firstName" type="string" label="Имя" />
+        <property name="lastName" type="string" label="Фамилия" />
+        <property name="middleName" type="string" label="Отчество" />
+        
+        <role name="up-file-payment" actor="up-file-payment" sql-name="prepayment" />
+        <role name="bank-terminal" actor="bank-terminal" sql-name="terminal" />
         
     </concept>
     

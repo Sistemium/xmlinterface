@@ -18,6 +18,7 @@
             <include href="main/views.xsl"/>
         </execute>
         <execute name="3" href="id.xsl">
+            <include href="main/security.xsl"/>
             <include href="main/data-build.xsl"/>
         </execute>
         

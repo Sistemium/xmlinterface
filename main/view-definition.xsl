@@ -75,8 +75,6 @@
     
     <xsl:template match="xi:view-definition/xi:view-schema//*[xi:all-labeled-fields]/xi:field" priority="1000"/>
 
-    <xsl:template match="xi:view-definition/xi:view-schema//xi:field[@hidden]/@label"/>
-
     <xsl:template match="xi:view-definition/xi:view-schema//*[not(@autofill-form)]/@autofill">
         <xsl:copy/>
         <xsl:attribute name="autofill-form">

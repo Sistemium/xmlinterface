@@ -77,6 +77,10 @@
                 
                 <all-labeled-fields sort-by="type"/>
                 
+                <form name="payment-detail-client" concept="up-client">
+                    <field name="name" label="Клиент"/>
+                </form>
+                
                 <form name="pmt-detail-service" concept="op-service">
                     <field name="name" label="Услуга"/>
                 </form>
@@ -149,7 +153,7 @@
         <step name="pmt-detail" label="Детали платежа" hidden="true">
             <display>
                 
-                <print form="up-client" field="name"/>
+                <print form="payment-detail-client" field="name"/>
                 <print form="payment-detail" field="status" />
                 <print form="payment-detail" field="clientId" />
                 <print form="pmt-detail-error" field="name" />

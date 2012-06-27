@@ -331,15 +331,11 @@
                         </xsl:when>
                         
                         <xsl:otherwise>
-                            <xsl:apply-templates
-                                select="
-                                    self::*[not($type or @choise)][@build-blank or @new-only or @extendable]/*
-                                    |
-                                    xi:parameter
-                                    |
-                                    self::*[not(@choise)]/xi:form[xi:parameter or @new-only]
-                                " mode="build-data"
-                            />
+                            <xsl:apply-templates mode="build-data" select="
+                                self::* [not($type or @choise)] [@build-blank or @new-only or @extendable] /*
+                                |xi:parameter
+                                |self::* [not(@choise)] /xi:form [xi:parameter or @new-only]
+                            "/>
                             <!--xsl:comment>data-build-otherwise:<xsl:copy-of select="count($data)"/></xsl:comment-->
                         </xsl:otherwise>
                         
@@ -479,9 +475,22 @@
         <xsl:value-of select="/*/xi:session/@username"/>
     </xsl:template>
 
-    <xsl:template match="xi:init[@with='field']" mode="build-data-init">
-        <xsl:value-of select="ancestor::xi:view/xi:view-data//xi:datum[@ref=current()/@ref]"/>
+    <!--xsl:template match="xi:init[@with='field']" mode="build-data-init">
+        <xsl:apply-templates select="." mode="init-with-field"/>
     </xsl:template>
+    
+    <xsl:template match="*[@ref]" mode="init-with-field">
+        <xsl:value-of select="
+            ancestor::xi:view/xi:view-data//xi:datum[@ref=current()/@ref]
+        "/>
+    </xsl:template>
+    
+    <xsl:template match="*" mode="init-with-field">
+        <xsl:value-of select="
+            ancestor::* [@name=current()/@form]
+                /* [@name=current()/@field]
+        "/>
+    </xsl:template-->
 
     <xsl:template match="xi:init[@with='view-schema-version']" mode="build-data-init">
         <xsl:value-of select="concat(ancestor::xi:view/@name, '_', ancestor::xi:view-schema/@version)"/>

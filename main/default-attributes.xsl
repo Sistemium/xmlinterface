@@ -3,7 +3,8 @@
     xmlns:xi="http://unact.net/xml/xi"
     xmlns="http://unact.net/xml/xi"
 >   
-    
+    <xsl:template match="xi:view-schema//xi:field[@hidden]/@label"/>
+
     <xsl:template match="xi:workflow//*[not(@id)] | xi:field[not(@id)]" mode="extend">
         <xsl:call-template name="build-id"/>
     </xsl:template>
