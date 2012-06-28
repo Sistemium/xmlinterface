@@ -17,54 +17,58 @@
 			<field name="id"/>
 			<field name="name" label="Клиент"/>
             
-            <form name="payment-search" concept="op">
-                
-                <parameter name="accounts" label="Реквизиты" editable="true" optional="true"/>
-                
-                <form name="up-file-payment" is-set="true" page-size="10"
-                    label="Клиентские платежи">
+            <form name="up-file-type">
+                <field name="id"/>
+                <where name="code">bank</where>
+                <form name="payment-search" concept="op">
                     
-                    <join name="up-client" />
+                    <parameter name="accounts" label="Реквизиты" editable="true" optional="true"/>
                     
-                    <form name="up-file-payment-error" concept="op-error" no-preload="true">
+                    <form name="up-file-payment" is-set="true" page-size="10"
+                        label="Клиентские платежи">
+                        
+                        <join name="up-client" />
+                        
+                        <form name="up-file-payment-error" concept="op-error" no-preload="true">
+                            <field name="id"/>
+                            <field name="name" label="Cтатус" />
+                            <where name="id">
+                                <not>0</not>
+                            </where>
+                        </form>
+                        
                         <field name="id"/>
-                        <field name="name" label="Cтатус" />
-                        <where name="id">
-                            <not>0</not>
-                        </where>
+                        
+                        <!--field name="to-claim" type="string" label="Инциденты">
+                            <sql-compute>
+                                if not exists (select * from op.[payment claim] where prepayment=[up-file-payment].id)
+                                then 'Зарегистрировать'
+                                endif
+                            </sql-compute>
+                            <navigate to="bank-payment-claim">
+                                
+                                <pull name="file-payment" field="id" form="up-file-payment"/>
+                                
+                                <pull name="initial-account" field="account" form="up-file-payment"/>
+                                
+                                <pull name="initial-bik" field="extra" form="up-file-payment" xpath="*[@name='bik']"/>
+                                <pull name="initial-firstname" field="extra" form="up-file-payment" xpath="*[@name='firstname']"/>
+                                <pull name="initial-middlename" field="extra" form="up-file-payment" xpath="*[@name='middlename']"/>
+                                <pull name="initial-lastname" field="extra" form="up-file-payment" xpath="*[@name='lastname']"/>
+                                
+                            </navigate>
+                        </field-->
+                        
+                        <field name="ts" format="smalltime"/>                    
+                        <field name="summ"/>
+                        <field name="account"/>
+                        <field name="extra"/>
+                        
+                        <order-by name="ts" dir="desc"/>
+                        
+                        <join name="payment-search" field="accounts" />
+                        
                     </form>
-                    
-                    <field name="id"/>
-                    
-                    <!--field name="to-claim" type="string" label="Инциденты">
-                        <sql-compute>
-                            if not exists (select * from op.[payment claim] where prepayment=[up-file-payment].id)
-                            then 'Зарегистрировать'
-                            endif
-                        </sql-compute>
-                        <navigate to="bank-payment-claim">
-                            
-                            <pull name="file-payment" field="id" form="up-file-payment"/>
-                            
-                            <pull name="initial-account" field="account" form="up-file-payment"/>
-                            
-                            <pull name="initial-bik" field="extra" form="up-file-payment" xpath="*[@name='bik']"/>
-                            <pull name="initial-firstname" field="extra" form="up-file-payment" xpath="*[@name='firstname']"/>
-                            <pull name="initial-middlename" field="extra" form="up-file-payment" xpath="*[@name='middlename']"/>
-                            <pull name="initial-lastname" field="extra" form="up-file-payment" xpath="*[@name='lastname']"/>
-                            
-                        </navigate>
-                    </field-->
-                    
-                    <field name="ts" format="smalltime"/>                    
-                    <field name="summ"/>
-                    <field name="account"/>
-                    <field name="extra"/>
-                    
-                    <order-by name="ts" dir="desc"/>
-                    
-                    <join name="payment-search" field="accounts" />
-                    
                 </form>
                 
                 <form name="payment-to-amend" concept="up-file-payment" what-label="Платеж">
@@ -79,6 +83,10 @@
                     <field name="extra-bik" label="БИК">
                         <sql-compute>null</sql-compute>
                         <xpath-compute>../*[@name='extra']/*[@name='bik']</xpath-compute>
+                    </field>
+                    <field name="extra-contract" label="Карта/договор">
+                        <sql-compute>null</sql-compute>
+                        <xpath-compute>../*[@name='extra']/*[@name='contract']</xpath-compute>
                     </field>
                     <field name="extra-lastName" label="Фамилия">
                         <sql-compute>null</sql-compute>
@@ -101,16 +109,17 @@
                         
                         <field name="xid"/>
                         
+                        <field name="phoneNumber" editable="true" />
                         <field name="account" editable="true" autofill="account" autofill-form="payment-to-amend"/>
+                        <field name="contract" editable="true" autofill="extra-contract" autofill-form="payment-to-amend"/>
                         <field name="bik" editable="true" autofill="extra-bik" autofill-form="payment-to-amend"/>
                         <field name="lastName" editable="true" autofill="extra-lastName" autofill-form="payment-to-amend"/>
                         <field name="firstName" editable="true" autofill="extra-firstName" autofill-form="payment-to-amend"/>
                         <field name="middleName" editable="true" autofill="extra-middleName" autofill-form="payment-to-amend"/>
                         
-                        <field name="phoneNumber" editable="true" />
                         <field name="terminal" modifiable="true">
                             <xpath-compute>
-                                xi:isnull( current(), ../../../*[@name='amendment-terminal']/*[@name='id'] )
+                                xi:isnull( current(), ancestor::xi:view-data[1]//*[@name='amendment-terminal']/*[@name='id'] )
                             </xpath-compute>
                         </field>
                         
@@ -174,6 +183,9 @@
                 <input form="claim" field="phoneNumber"/>
                 <region label="Корректировочная информация">
                     <input form="claim" field="account"/>
+                    <when form="payment-to-amend" field="extra-contract">
+                        <input form="claim" field="contract"/>
+                    </when>
                     <input form="claim" field="bik"/>
                     <input form="claim" field="lastName"/>
                     <input form="claim" field="firstName"/>
@@ -181,6 +193,7 @@
                 </region>
                 <region label="Исходная информация">
                     <print form="payment-to-amend" field="account"/>
+                    <print form="payment-to-amend" field="extra-contract"/>
                     <print form="payment-to-amend" field="extra-bik"/>
                     <print form="payment-to-amend" field="extra-lastName"/>
                     <print form="payment-to-amend" field="extra-firstName"/>
@@ -191,6 +204,9 @@
             <validate>
                 <nonempty form="claim" field="phoneNumber"/>
                 <nonempty form="claim" field="account"/>
+                <when form="payment-to-amend" field="extra-contract">
+                    <nonempty form="claim" field="contract"/>
+                </when>
                 <nonempty form="claim" field="bik"/>
                 <nonempty form="claim" field="lastName"/>
                 <nonempty form="claim" field="firstName"/>

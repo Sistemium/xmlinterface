@@ -335,13 +335,24 @@
         
     </xsl:template>
 
+    <xsl:template match="xi:when[@ref]" mode="validate">
+        <xsl:if test="ancestor::xi:view/xi:view-data//xi:datum[@ref=current()/@ref]/text()">
+            <xsl:apply-templates select="*" mode="validate"/>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="xi:display//xi:when[@ref]" mode="build-dialogue">
+        <xsl:if test="ancestor::xi:view/xi:view-data//xi:datum[@ref=current()/@ref]/text()">
+            <xsl:apply-templates select="*" mode="build-dialogue"/>
+        </xsl:if>
+    </xsl:template>
 
     <xsl:template match="xi:display//* | xi:navigate" mode="build-dialogue">
         
         <xsl:param name="top" select="ancestor::xi:view/xi:view-data/xi:data/@id"/>
         <xsl:param name="ref" select="key('id',$top)/descendant-or-self::*[not(ancestor::xi:set-of[@is-choise])][@ref=current()/@ref]/@id"/>
         
-        <xsl:variable name="xz" select="$ref/parent::xi:data[not(@choise)]/xi:datum[@name='name']"/>
+        <xsl:variable name="form-not-a-choise" select="$ref/parent::xi:data[not(@choise)]/xi:datum[@name='name']"/>
         
         <xsl:variable name="should-show" select="(string-length($ref)!=0 or key('id',@ref)/@type='xml')
                                 and (not(self::xi:input) or key('id',$ref)[@choise or self::xi:datum]) 
@@ -352,7 +363,7 @@
         
         <xsl:variable name="elem">
             <xsl:choose>
-                <xsl:when test="self::xi:input[$xz]">
+                <xsl:when test="self::xi:input[$form-not-a-choise]">
                     <xsl:text>print</xsl:text>
                 </xsl:when>
                 <xsl:when test="$should-show or key('id',$ref)/ancestor::xi:workflow or self::xi:navigate">
@@ -379,7 +390,7 @@
                 <xsl:value-of select="concat('show-',@id)"/>
             </xsl:attribute>
             
-            <xsl:if test="self::xi:input[$xz]">
+            <xsl:if test="self::xi:input[$form-not-a-choise]">
                 <xsl:attribute name="ref">
                     <xsl:value-of select="$xz/@id"/>
                 </xsl:attribute>
@@ -433,7 +444,7 @@
         <xsl:apply-templates select="xi:validate/*" mode="validate"/>
     </xsl:template>
 
-    <xsl:template match="xi:step/xi:validate/xi:nonempty" mode="validate">
+    <xsl:template match="xi:step/xi:validate//xi:nonempty" mode="validate">
         <xsl:variable name="ref"
             select="key('id',self::*[not(@field)]/@ref)/xi:field[@key][1]/@id|self::*[@field]/@ref"
         />
@@ -462,7 +473,7 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="xi:step/xi:validate/xi:empty" mode="validate">
+    <xsl:template match="xi:step/xi:validate//xi:empty" mode="validate">
         <xsl:if test="ancestor::xi:view/xi:view-data/descendant::xi:data[not(ancestor::xi:set-of[@is-choise])][(@name=current()/@form or not(current()/@form))][descendant::xi:datum[not(ancestor::xi:set-of[@is-choise])][@ref=current()/@ref or (not(current()/@field) and key('id',@ref)/@key)][text() and string-length(normalize-space(text())) &gt; 0]]">
             <exception>
                 <message>
@@ -480,7 +491,7 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="xi:step/xi:validate/xi:equals" mode="validate">
+    <xsl:template match="xi:step/xi:validate//xi:equals" mode="validate">
         <xsl:variable name="data-object"
                   select="ancestor::xi:view/xi:view-data/descendant::xi:data[not(ancestor::xi:set-of[@is-choise])][(@name=current()/@form or not(current()/@form))]/descendant::xi:datum[not(ancestor::xi:set-of[@is-choise])][@name=current()/@field or (not(current()/@field) and key('id',@ref)/@key)]"/>
         

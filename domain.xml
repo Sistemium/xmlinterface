@@ -229,14 +229,15 @@
 
     
     <concept name="up-file-payment-claim" server="op.unact.ru">
-        <select owner="op" sql-name="payment claim"/>
-        <save owner="payment claim" sql-name="data"/>
+        <select owner="op" sql-name="paymentClaim"/>
+        <save owner="op" sql-name="paymentClaim"/>
         
         <field name="id" type="int" key="true"/>
         
         <property name="phoneNumber" type="string" label="Телефонный номер" />
         
         <property name="account" type="string" label="Счет" />
+        <property name="contract" type="string" label="Карта/договор" />
         <property name="bik" type="string" label="БИК" />
         
         <property name="firstName" type="string" label="Имя" />
@@ -293,7 +294,8 @@
         <select owner="op" sql-name="CSVFileType"/>
         
         <property name="id" type="int" key="true"/>
-        <property name="name" type="string" label="Название" />        
+        <property name="name" type="string" label="Название" />
+        <property name="code" type="string" label="Код" />
         
     </concept>
 
