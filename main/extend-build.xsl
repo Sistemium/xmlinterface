@@ -365,14 +365,41 @@
       check if it's valued yet before retrieve
 -->
 
-    <xsl:template match="xi:join[not(@field)]" mode="build-subrequest">
+    <xsl:template match="xi:join[@by][xi:beta]" mode="build-subrequest">
+		
+		<xsl:param name="this" select="."/>
+		<xsl:variable name="concept" select="$model/xi:concept[@name=current()/../@concept]"/>
+		<xsl:variable name="by-concept" select="$model/xi:concept[@name=current()/@by]"/>
+		<xsl:variable name="join-concept" select="ancestor::xi:view-schema//xi:form[@name=current()/@name]/@concept"/>
+		
+		<xsl:for-each select="
+			$concept/xi:role [@actor=$by-concept/@name and (@name=current()/@by-role or not (current()/@by-role))]
+			|$by-concept/xi:role [@actor=$concept/@name and (@name=current()/@by-role or not (current()/@by-role))]
+		">
+			<join type="by">
+				<on name="{$this/@id}" property="id">
+					<xsl:attribute name="concept">
+						<xsl:choose>
+							<xsl:when test="current()/@actor = $by/concept/@name">
+								
+							</xsl:when>
+						</xsl:choose>
+					</xsl:attribute>
+				</on>
+			</join>
+		</xsl:for-each>
+		
+    </xsl:template>
+
+    <xsl:template match="xi:join[not(@field|@by)]" mode="build-subrequest">
 		
 		<xsl:variable name="concept" select="$model/xi:concept[@name=current()/../@concept]"/>
 		<xsl:variable name="join-concept" select="ancestor::xi:view-schema//xi:form[@name=current()/@name]/@concept"/>
 		
-		<xsl:apply-templates select="$concept/xi:role[@actor=$join-concept and (@name=current()/@role or not (current()/@role))]
-						|$model/xi:concept[@name=$join-concept]/xi:role[@actor=$concept/@name  and (@name=current()/@role or not (current()/@role))]
-						" mode="join-on">
+		<xsl:apply-templates mode="join-on" select="
+			$concept/xi:role [@actor=$join-concept and (@name=current()/@role or not (current()/@role))]
+			|$model/xi:concept [@name=$join-concept]/xi:role[@actor=$concept/@name and (@name=current()/@role or not (current()/@role))]
+		">
 			<xsl:with-param name="form" select=".."/>
 			<xsl:with-param name="joined" select="$join-concept/.."/>            
 			<xsl:with-param name="join-itself" select="."/>
