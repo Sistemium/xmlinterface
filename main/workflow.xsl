@@ -392,7 +392,7 @@
             
             <xsl:if test="self::xi:input[$form-not-a-choise]">
                 <xsl:attribute name="ref">
-                    <xsl:value-of select="$xz/@id"/>
+                    <xsl:value-of select="$form-not-a-choise/@id"/>
                 </xsl:attribute>
                 <xsl:attribute name="field">name</xsl:attribute>
             </xsl:if>

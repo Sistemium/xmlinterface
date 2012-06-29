@@ -122,19 +122,17 @@ function xmlRequest($request) {
             $source_http = $private->mssqlServer;
         
         if($http->post($source_http,
-                    $http->make_query_string(array(
-                            "request"=>$request[0]->ownerDocument->saveXML(),
-                            "login"=>(string)$private->username,
-                            "pwd"=>(string)$private->password,
-                            "db"=>$db, "server"=>$server))
-                    )
-           ) try {
+            $http->make_query_string(array(
+                    "request"=>$request[0]->ownerDocument->saveXML(),
+                    "login"=>(string)$private->username,
+                    "pwd"=>(string)$private->password,
+                    "db"=>$db, "server"=>$server))
+            )) try {
                 $doc->loadXML($http->response);
-        } catch (Exception $loadError) {
-            throw new ErrorException($http->response); 
-        } else {
-            throw new ErrorException('http error: '.$http->get_error());
-        }
+            } catch (Exception $loadError) {
+                throw new ErrorException($http->response); 
+        } else throw new ErrorException('http error: '.$http->get_error());
+        
     } catch (Exception $e) {
         $doc->loadXML('<exception xmlns="http://unact.net/xml/xi"><![CDATA['.$e->getMessage().']]></exception>');
     }
