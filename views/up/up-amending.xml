@@ -3,6 +3,7 @@
 <view-definition xmlns="http://unact.net/xml/xi" name="up-amending" label="Корректировка платежей">
 	
 	<access- role="beta"/>
+	<access role="beta"/>
     
     <view-schema> <form name="op-agent"> 
 		
