@@ -678,6 +678,23 @@
                             <xsl:text> &lt;&gt; </xsl:text>
                         </xsl:when>
                         
+                        <xsl:when test="$value/@type='boolean' and $property[self::xi:role]">
+                            
+                            <xsl:choose>
+                                <xsl:when test="$value/text()='1'">
+                                    <xsl:text>&gt; 0 </xsl:text>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:text> is null </xsl:text>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            
+                            <xsl:text> and </xsl:text>
+                            <xsl:apply-templates select="$value" mode="value"/>
+                            <xsl:text>=</xsl:text>
+                            
+                        </xsl:when>
+                        
                         <xsl:when test="$value/@type='boolean' and not($property/@type='boolean')">
                             <xsl:if test="$value/text()='1'">
                                 <xsl:text>&gt;</xsl:text>
