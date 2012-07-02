@@ -3,35 +3,43 @@
     
     <view-schema><form name="branch" label="Отделение" expect-choise="true">
 	    
-            <parameter name="username" type="string" label="Логин оператора"/>
-            
+        <parameter name="username" type="string" label="Логин оператора"/>
+        
 	    <field name="id" />
-            <field name="name" />
-            
-	    <form name="catterminal" is-set="true">
-                <field name="xid"/>
-            	<field name="id"/>
-            	<field name="lifestatus"/>
-                <form name="processing" >
-                    <field name="name" label="Процессинг"/>
-                    <field name="id"/>
-                </form>
-            	<field name="terminalid" label="ИД"/>
-            	<field name="name" label="Название"/>
-            	<field name="address" label="Адрес"/>
-            	<field name="branch-route.name" label="Зона" editable="true"/>
-            	<order-by name="isdeleted"/>
-            	<order-by name="name"/>
-		<where name="branch-route.name"/>
-		<form concept="branch-route" choise="route-cache" label="Зона" role="branch-route" parent-sql-name="catterminal">
-		    <field name="id"/>
-		    <field name="name"/>
-		</form>
-            </form>
+        <field name="name" />
+        
+	    <form name="terminal-set" concept="cat">
+            <parameter name="empty-route" type="boolean" label="Зона указана" optional="true" editable="true"/>
+            <parameter name="searcher" label="Поиск" optional="true" editable="true"/>
+			<form name="catterminal" is-set="true" page-size="20">
+				
+				<field name="xid"/>
+				<field name="id"/>
+				<field name="lifestatus"/>
+				<form name="processing" >
+					<field name="name" label="Процессинг"/>
+					<field name="id"/>
+				</form>
+				<field name="terminalid" label="ИД"/>
+				<field name="name" label="Название"/>
+				<field name="address" label="Адрес"/>
+				<form name="branch-route" choise="route-cache" label="Зона">
+					<field name="id"/>
+					<field name="name"/>				
+				</form>
+				
+				<order-by name="isdeleted"/>
+				<order-by name="name"/>
+				<join name="branch"/>
+				<join name="terminal-set" field="empty-route" property="branch-route"/>
+				<join name="terminal-set" field="searcher" property="searcher"/>
+				
+			</form>
+	    </form>
 	    
 	    <form name="route-cache" concept="branch-route" is-set="true">
-		<field name="id"/>
-		<field name="name"/>
+			<field name="id"/>
+			<field name="name"/>
 	    </form>
 	    
     </form></view-schema>
@@ -40,6 +48,8 @@
         <step>
             <display>
                 <input form="branch" />
+				<input field="empty-route" />
+				<input field="searcher" />
                 <grid form="catterminal">
                     <group>
                         <by field="lifestatus"/>

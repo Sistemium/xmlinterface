@@ -1171,6 +1171,9 @@
         <property name="address" type="string" label="Адрес"/>
         <property name="code" type="string" label="Код"/>
         <property name="terminalid" type="int" label="ID"/>
+        
+        <index name="searcher" sql-name="terminalid, name, address" />
+        
     </concept>
 
     <!--concept name="branch-route-terminal">
