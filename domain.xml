@@ -2133,10 +2133,17 @@
     </concept>
 
     <concept name="sales-warehouse">
+        
         <select owner="dbo" sql-name="site"/>
+        
+        <select owner="sales" sql-name="warehouseBySalesman" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@id"/>
+        </select>
         
         <property name="id" type="int"/>
         <property name="name" type="string" label="Название"/>
+        
+        <role name="cat-salesman" actor="cat-salesman"/>
         
     </concept>
     
@@ -2302,6 +2309,9 @@
         <property name="description" type="string" label="Описание" sql-name="descr" />
         <property name="isPopAtStart" type="boolean" label="Показать в новом заказе" />
         <property name="isCustomerTargeted" type="boolean" label="Отслеживается по-клиентно"/>
+
+        <property name="goal" type="string" label="Выполни" />
+        <property name="gain" type="string" label="Получи" />
         
         <role name="cat-salesman" actor="cat-salesman"/>
         

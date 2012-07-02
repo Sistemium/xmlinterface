@@ -28,7 +28,7 @@
                         label="Клиентские платежи">
                         
                         <join name="up-client" />
-                        <join name="up-file-type" by="up-file" />
+                        <!--join name="up-file-type" by="up-file" /-->
                         
                         <form name="up-file-payment-error" concept="op-error" no-preload="true">
                             <field name="id"/>

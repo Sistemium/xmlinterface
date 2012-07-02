@@ -231,7 +231,8 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         }
         $Context -> save(
             $dir.'/0.context.xml'
-        );  
+        );
+        ini_set('xsl.security_prefs',0);
     }
 
     try { foreach ($config->pipeline as $pipeline) if ($pipeline['name'] == $pipelineName) {

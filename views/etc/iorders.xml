@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.931" expect-megabytes="15" >
+    <view-schema version="1.932" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -131,7 +131,8 @@
                         <field name="id"/>
                         
                         <field name="name" />
-                        <field name="description"/>
+                        <field name="goal"/>
+                        <field name="gain"/>
                         <field name="dateStart"  hidden="true"/>
                         <field name="dateEnd"  hidden="true"/>
                         <field name="tag"  hidden="true"/>

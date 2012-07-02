@@ -547,9 +547,14 @@ create or replace view sales.bprog as select
         if isFocused = 1 or modifiers like '%[^]%' then 1 endif isNonHidable,
         if modifiers like '%[?]%' then 1 endif isForNew,
         if modifiers like '%[ct]%' then 1 endif isCustomerTargeted,
-        if modifiers like '%[!]%' then 1 endif isPopAtStart
-        
-    from bprog p
+        if modifiers like '%[!]%' then 1 endif isPopAtStart,
+        d.goal, d.gain
+    from bprog p, lateral (
+        select goal, gain
+          from openstring(value p.descr) with (
+            goal varchar(1024), gain varchar(1024)
+          ) option (delimited by '|') as normalized_terms
+    ) as d
     where p.discount is not null
 ;
 
@@ -635,3 +640,13 @@ create or replace procedure sales.logger (
     ;
 
 end;
+
+create or replace procedure sales.warehouseBySalesman (
+    @id int
+) begin
+    select * from dbo.site where exists (
+        select * from dbo.buyer (@salesman = @id)
+        where buyer.site = site.id
+    )
+end;
+
