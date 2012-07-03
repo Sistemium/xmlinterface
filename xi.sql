@@ -9,7 +9,7 @@ create global temporary table if not exists xmlgate.query (
     response text,
     username varchar (32),
     conn varchar (32),
-    ip varchar (15),
+    ip varchar (25),
     path varchar (32),
 
     ts datetime default timestamp,
@@ -36,7 +36,7 @@ begin
     declare @delimiter varchar(10);
     declare @show_sql int;
     declare @username varchar(128);
-    declare @ip varchar(15);
+    declare @ip varchar(32);
     declare @path varchar(32);
     declare @log_id int;
     declare @xid uniqueidentifier;
