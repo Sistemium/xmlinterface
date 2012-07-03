@@ -140,3 +140,13 @@ begin
 
 end;
 
+
+create or replace xmlgate.prepaymentByFileType (
+    @id int
+) begin
+
+    select op.prepayment.*
+      from op.prepayment
+     where exists (select * from op.csvfile where type=@id and id = prepayment.csvfile)
+
+end;

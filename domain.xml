@@ -244,6 +244,9 @@
         <property name="lastName" type="string" label="Фамилия" />
         <property name="middleName" type="string" label="Отчество" />
         
+        <property name="cts" type="datetime" label="Когда создан" />
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
         <role name="up-file-payment" actor="up-file-payment" sql-name="prepayment" />
         <role name="bank-terminal" actor="bank-terminal" sql-name="terminal" />
         
@@ -266,6 +269,9 @@
     <concept name="up-file-payment" server="op.unact.ru">
         
         <select owner="op" sql-name="prepayment" />
+        <select owner="xmlgate" sql-name="prepaymentByFileType" type="procedure">
+            <parameter name="up-file-type" type="int" sql-name="@id"/>
+        </select>
         
         <!--save owner="op" sql-name="prepayment_ammend" type="procedure">
             <parameter name="ammendment-reason" type="int" required="true" sql-name="@reason"/>
@@ -284,6 +290,7 @@
         <role name="op-error" actor="op-error" sql-name="error" />
         <role name="up-file" actor="up-file"  sql-name="csvfile"/>
         <role name="up-client" actor="up-client" sql-name="client"/>
+        <role name="up-file-type" actor="up-file-type"/>
         
         <index name="accounts" sql-name="account, extra" label="Слова в реквизитах"/>
         
