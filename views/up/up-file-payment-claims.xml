@@ -21,18 +21,6 @@
         <form name="claim-details" concept="up-file-payment-claim">
             <parameter name="claim-to-detail" modifiable="true" property="id"/>
             <add-labeled-fields/>
-            <field name="account-number" label="Номер счета" sql-compute="null">
-                <xpath-compute>
-                    xi:list(
-                        ../xi:datum[@name='phoneNumber']
-                        |../xi:datum[@name='account']
-                        |../xi:datum[@name='contract'][text()]
-                        |../xi:datum[@name='lastName']
-                        |../xi:datum[@name='firstName']
-                        |../xi:datum[@name='middleName']
-                    )
-                </xpath-compute>
-            </field>
             <form name="up-file-payment">
                 <form name="payment-receipt" concept="op-payment" is-set="true">
                     <field name="summ" label="Зачислено"/>
@@ -40,9 +28,23 @@
                     <field name="terminal-fee" label="Комиссия"/>
                     <field name="receipt-number"/>
                     <field name="receipt-date"/>
+                    <field name="account"/>
+                    <field name="extra"/>
                     <form name="op-service">
                         <field name="name" label="Поставщик"/>
                     </form>
+                    <field name="account-number" sql-compute="null">
+                        <xpath-compute>
+                            xi:list(
+                                ancestor::*[@name='claim-details']/xi:datum[@name='phoneNumber']
+                                |../xi:datum[@name='account']
+                                |../xi:datum[@name='extra']/*[@name='contract'][text()]
+                                |../xi:datum[@name='extra']/*[@name='lastname']
+                                |../xi:datum[@name='extra']/*[@name='name']
+                                |../xi:datum[@name='extra']/*[@name='middlename']
+                            )
+                        </xpath-compute>
+                    </field>
                 </form>
             </form>
         </form>
@@ -104,7 +106,7 @@
                             <print field="summTerminal"/>
                             <print field="summ"/>
                             <print field="terminal-fee"/>
-                            <print field="account-number" form="claim-details"/>
+                            <print field="account-number" label="Номер счета"/>
                             <print field="receipt-number" label="Код операции"/>
                             <text class="delimiter"/>
                             <text>Сохраняйте чек до зачисления денег на</text>

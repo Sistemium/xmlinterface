@@ -75,10 +75,6 @@
                         <xpath-compute>../*[@name='extra']/*[@name='middlename']</xpath-compute>
                     </field>
                     
-                    <field name="payment-date" type="string"
-                       sql-compute="date(cts)+1"
-                    />
-                    
                     <form name="claim" concept="up-file-payment-claim"
 						  build-blank="true" parent-sql-name="prepayment"
 						  label="Заявка на перепроведение">
