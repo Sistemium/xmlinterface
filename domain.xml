@@ -123,6 +123,8 @@
         <property name="account" type="string" label="Счет" />
         <property name="extra" type="xml" label="Прочие реквизиты" />
         <property name="final" type="boolean" />
+        <property name="receipt-number" type="string" label="Квитанция" sql-compute="left(clientSessionTerminal,20)"/>
+        <property name="receipt-date" type="string" label="Дата чека" sql-compute="op.receiptDateTime(clientSessionTerminal)"/>
         
         <property name="status" type="string" label="Статус"
                   sql-compute="case when final=0 then 'Проводится' when error=0 then 'Проведено' else string('Ошибка=',error) end"/>
@@ -244,11 +246,13 @@
         <property name="lastName" type="string" label="Фамилия" />
         <property name="middleName" type="string" label="Отчество" />
         
+        <property name="terminal" type="string" label="Номер терминала" />
+        <property name="terminal-address" type="string" label="Адрес терминала" sql-name="terminal_address"/>
+        
         <property name="cts" type="datetime" label="Когда создан" />
         <property name="ts" type="datetime" label="Последнее изменение"/>
         
         <role name="up-file-payment" actor="up-file-payment" sql-name="prepayment" />
-        <role name="bank-terminal" actor="bank-terminal" sql-name="terminal" />
         
     </concept>
     

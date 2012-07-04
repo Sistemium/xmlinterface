@@ -33,26 +33,6 @@
                         
                         <field name="id"/>
                         
-                        <!--field name="to-claim" type="string" label="Инциденты">
-                            <sql-compute>
-                                if not exists (select * from op.[payment claim] where prepayment=[up-file-payment].id)
-                                then 'Зарегистрировать'
-                                endif
-                            </sql-compute>
-                            <navigate to="bank-payment-claim">
-                                
-                                <pull name="file-payment" field="id" form="up-file-payment"/>
-                                
-                                <pull name="initial-account" field="account" form="up-file-payment"/>
-                                
-                                <pull name="initial-bik" field="extra" form="up-file-payment" xpath="*[@name='bik']"/>
-                                <pull name="initial-firstname" field="extra" form="up-file-payment" xpath="*[@name='firstname']"/>
-                                <pull name="initial-middlename" field="extra" form="up-file-payment" xpath="*[@name='middlename']"/>
-                                <pull name="initial-lastname" field="extra" form="up-file-payment" xpath="*[@name='lastname']"/>
-                                
-                            </navigate>
-                        </field-->
-                        
                         <field name="ts" format="smalltime"/>                    
                         <field name="summ"/>
                         <field name="account"/>
@@ -117,6 +97,12 @@
                             </xpath-compute>
                         </field>
                         
+                        <field name="terminal-address" modifiable="true">
+                            <xpath-compute>
+                                xi:isnull( current(), ancestor::xi:view-data[1]//*[@name='amendment-terminal-details']/*[@name='address'] )
+                            </xpath-compute>
+                        </field>
+						
                     </form>
                     
                     <form name="payment-reciept" concept="op-payment" is-set="true">
@@ -216,8 +202,6 @@
 				<region class="tabs">
 					<region label="Скорректированная информация">
 						<print form="claim" field="*"/>
-						<print form="amendment-terminal" field="id"/>
-						<print form="amendment-terminal-details" field="address"/>
 					</region>
 					<grid form="payment-reciept" label="Чеки"/>
 				</region>
