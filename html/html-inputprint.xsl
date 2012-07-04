@@ -15,6 +15,17 @@
             )"
         />
         
+        <xsl:apply-templates select="self::xi:input | self::xi:print[$datum/text()]" mode="render">
+            <xsl:with-param name="datum" select="$datum"/>
+        </xsl:apply-templates>
+        
+    </xsl:template>
+    
+    
+    <xsl:template match="xi:input|xi:print" mode="render">
+        
+        <xsl:param name="datum" select="xi:null"/>
+        
         <div>
             
             <xsl:attribute name="class">
@@ -48,7 +59,12 @@
                 <xsl:otherwise>
                     <label for="{@ref}">
                         <span><xsl:apply-templates select="self::*[@label] | $datum[not(current()/@label)][1]" mode="label"/></span>
-                        <span class="colon"><xsl:text>: </xsl:text></span>               
+                        <span class="colon">
+                            <xsl:text>:</xsl:text>
+                            <xsl:if test="ancestor-or-self::*[@colon-space]">
+                                <xsl:text> </xsl:text>
+                            </xsl:if>
+                        </span>               
                     </label>
                 </xsl:otherwise>
                 

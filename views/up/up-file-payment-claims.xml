@@ -90,7 +90,7 @@
                     <region label="Заявка">
                         <print form="claim-details" field="*"/>
                     </region>
-                    <region label="Чеки">
+                    <region label="Чеки" colon-space="true">
                         <for-each form="payment-receipt">
                             <text>Владелец: ОКЕАН БАНК (ЗАО)</text>
                             <text>ИНН 7744002356</text>
@@ -98,7 +98,7 @@
                             <text>проезд, д. 1, стр. 1</text>
                             <text class="delimiter"/>
                             <print field="terminal" form="claim-details"/>
-                            <print field="reciept-number" />
+                            <print field="receipt-number" />
                             <print field="terminal-address" form="claim-details"/>
                             <print field="receipt-date" label="Дата"/>
                             <text class="delimiter"/>

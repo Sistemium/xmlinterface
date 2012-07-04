@@ -170,8 +170,9 @@
 			</display>
 			
 			<validate>
-				<nonempty form="claim" field="phoneNumber"/>
-				<match form="claim" field="phoneNumber" label="Ровно десять цифр">/^[0-9]{10}$/</match>
+				<nonempty field="phoneNumber">
+					<match label="Ровно десять цифр">/^[0-9]{10}$/</match>
+				</nonempty>
 				<nonempty form="claim" field="account"/>
 				<when form="payment-to-amend" field="extra-contract">
 					<nonempty form="claim" field="contract"/>
@@ -197,6 +198,10 @@
 				<option label="Завершить оформление">
 					<command name="save"/>
 					<command name="refresh"/>
+				</option>
+				<option label="Отменить оформление">
+					<command name="up-amending">payment-search</command>
+					<command name="payment-to-amend-id"/>
 				</option>
 			</choise>
 			

@@ -474,6 +474,11 @@
                 </message>
             </exception>
         </xsl:if>
+        
+        <xsl:apply-templates select="*" mode="validate">
+            <xsl:with-param name="datum" select="$checkdatum"/>
+        </xsl:apply-templates>
+        
     </xsl:template>
 
     <xsl:template match="xi:step/xi:validate//xi:empty" mode="validate">
@@ -494,31 +499,27 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="xi:step/xi:validate//xi:match" mode="validate">
+    <xsl:template match="*/xi:match" mode="validate">
         
-        <xsl:variable name="datum" select="
-            ancestor::xi:view/xi:view-data//*
-                [not(ancestor::xi:set-of[@is-choise])]
-                [@ref=current()/@ref]
-        "/>
+        <xsl:param name="datum" />
+        
         <xsl:if test="xi:regexp( . , $datum) = 0">
             <exception>
                 <message>
                     <result>invalid</result>
-                    <xsl:if test="$datum">
-                        <for-human>
-                            <xsl:apply-templates select="key('id',$datum/@ref)" mode="label"/>
-                            <xsl:if test="@field and @form">
-                                <xsl:text> в </xsl:text>
-                                <xsl:apply-templates select="ancestor::xi:view/xi:view-schema/descendant::xi:form[@name=current()/@form]" mode="label"/>
-                            </xsl:if>
-                            <xsl:text> должно быть </xsl:text>
-                            <xsl:apply-templates select="." mode="label"/>
-                        </for-human>
-                    </xsl:if>
+                    <for-human>
+                        <xsl:apply-templates select="key('id',$datum/@ref)" mode="label"/>
+                        <xsl:if test="@field and @form">
+                            <xsl:text> в </xsl:text>
+                            <xsl:apply-templates select="ancestor::xi:view/xi:view-schema/descendant::xi:form[@name=current()/parent::*/@form]" mode="label"/>
+                        </xsl:if>
+                        <xsl:text> должно быть </xsl:text>
+                        <xsl:apply-templates select="." mode="label"/>
+                    </for-human>
                 </message>
             </exception>
         </xsl:if>
+        
     </xsl:template>
 
     <xsl:template match="xi:step/xi:validate//xi:equals" mode="validate">
