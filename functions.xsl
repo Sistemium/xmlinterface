@@ -17,6 +17,12 @@
         </xsl:attribute>
     </xsl:template>
 
+    <func:function name="xi:regexp">
+        <xsl:param name="pattern" select="xi:null"/>
+        <xsl:param name="string" select="xi:null"/>
+        <func:result select="php:function('preg_match', string($pattern), string($string))"/>
+    </func:function>
+
     <func:function name="xi:list">
         <xsl:param name="tokens" select="xi:null"/>
         <xsl:variable name="result">
