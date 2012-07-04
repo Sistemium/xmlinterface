@@ -21,6 +21,18 @@
         <form name="claim-details" concept="up-file-payment-claim">
             <parameter name="claim-to-detail" modifiable="true" property="id"/>
             <add-labeled-fields/>
+            <field name="account-number" label="Номер счета" sql-compute="null">
+                <xpath-compute>
+                    xi:list(
+                        ../xi:datum[@name='phoneNumber']
+                        |../xi:datum[@name='account']
+                        |../xi:datum[@name='contract'][text()]
+                        |../xi:datum[@name='lastName']
+                        |../xi:datum[@name='firstName']
+                        |../xi:datum[@name='middleName']
+                    )
+                </xpath-compute>
+            </field>
             <form name="up-file-payment">
                 <form name="payment-receipt" concept="op-payment" is-set="true">
                     <field name="summ" label="Зачислено"/>
@@ -82,22 +94,24 @@
                             <text>ИНН 7744002356</text>
                             <text>Адрес: г. Москва, Канатчиковский</text>
                             <text>проезд, д. 1, стр. 1</text>
-                            <text class="delimiter"> </text>
+                            <text class="delimiter"/>
                             <print field="terminal" form="claim-details"/>
                             <print field="reciept-number" />
                             <print field="terminal-address" form="claim-details"/>
                             <print field="receipt-date" label="Дата"/>
-                            <text class="delimiter"> </text>
+                            <text class="delimiter"/>
                             <print field="name" form="op-service"/>
                             <print field="summTerminal"/>
                             <print field="summ"/>
                             <print field="terminal-fee"/>
-                            <text>Номер счета: (в разработке)</text>
+                            <print field="account-number" form="claim-details"/>
                             <print field="receipt-number" label="Код операции"/>
-                            <text class="delimiter"> </text>
+                            <text class="delimiter"/>
                             <text>Сохраняйте чек до зачисления денег на</text>
                             <text>Ваш лицевой счет. Спасибо !</text>
                             <text>Информационная поддержка: 8-(495)-725-22-37</text>
+                            <text class="delimiter"/>
+                            <text class="delimiter"/>
                         </for-each>
                     </region>
                 </region>

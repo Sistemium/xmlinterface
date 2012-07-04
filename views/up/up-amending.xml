@@ -104,17 +104,7 @@
                         </field>
 						
                     </form>
-                    
-                    <form name="payment-reciept" concept="op-payment" is-set="true">
-                        <field name="summ"/>
-                        <field name="summTerminal"/>
-                        <field name="terminal-fee"/>
-                        <field name="printed-number" type="string"
-                            label="Номер чека"
-                            sql-compute="string(replace(replace(replace(replace(convert(varchar(23),cts,121),'-',''),':',''),' ',''),'.',''),'203150')"
-                        />
-                    </form>
-                    
+					
                 </form>
                 
                 <form name="amendment-terminal" concept="up-file-payment-claim-terminal">
@@ -199,11 +189,8 @@
 			
 			<display>
 				<print form="up-client" field="name"/>
-				<region class="tabs">
-					<region label="Скорректированная информация">
-						<print form="claim" field="*"/>
-					</region>
-					<grid form="payment-reciept" label="Чеки"/>
+				<region label="Скорректированная информация">
+					<print form="claim" field="*"/>
 				</region>
 			</display>
 			
