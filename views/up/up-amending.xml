@@ -79,7 +79,9 @@
                        sql-compute="date(cts)+1"
                     />
                     
-                    <form name="claim" concept="up-file-payment-claim" build-blank="true" parent-sql-name="prepayment">
+                    <form name="claim" concept="up-file-payment-claim"
+						  build-blank="true" parent-sql-name="prepayment"
+						  label="Заявка на перепроведение">
                         
                         <field name="xid"/>
                         
@@ -173,6 +175,7 @@
 			
 			<validate>
 				<nonempty form="claim" field="phoneNumber"/>
+				<match form="claim" field="phoneNumber" label="Ровно десять цифр">/^[0-9]{10}$/</match>
 				<nonempty form="claim" field="account"/>
 				<when form="payment-to-amend" field="extra-contract">
 					<nonempty form="claim" field="contract"/>
