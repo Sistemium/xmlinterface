@@ -286,7 +286,10 @@ label {padding:0px 0.2em;}
 .grid {text-align:center;}
 table {border-spacing:2px; margin:0px auto;}
 
-/* .region { border-bottom: solid 1px black;} */
+.region.for-each {
+	margin-bottom: 1em;
+	border: dashed 1px gray;
+}
 
 .desktop .region.default {
 	margin:0.25em;
@@ -475,4 +478,12 @@ body.spb, .spb input {font-size: 11px;}
 
 .text.editable textarea {
 	width: 100%;
+}
+
+.test {
+	color: blue !important;
+}
+
+.delimiter {
+	padding: 0.5em;
 }

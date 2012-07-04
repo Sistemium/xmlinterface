@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" version="1.0"
+    name="up-file-payment-claims"
+    label="Заявки на корректировку CSV-платежей"
+>
+    
+    <view-schema><form name="op-agent">
+        
+        <parameter name="name"> <init with="username"/> </parameter>
+        <parameter name="device-name"> <init with="device-name"/> </parameter>
+        <parameter name="date" type="date"> <init with="today"/> </parameter>
+        
+        <field name="id" />
+        
+        <form name="up-file-payment-claim" is-set="true" page-size="20">
+            <field name="id" label="Номер"/>
+            <add-labeled-fields/>
+            <order-by name="ts" dir="desc"/>
+        </form>
+        
+        <form name="claim-details" concept="up-file-payment-claim">
+            <parameter name="claim-to-detail" modifiable="true" property="id"/>
+            <add-labeled-fields/>
+            <form name="up-file-payment">
+                <form name="payment-receipt" concept="op-payment" is-set="true">
+                    <field name="summ" label="Зачислено"/>
+                    <field name="summTerminal" label="Принято"/>
+                    <field name="terminal-fee" label="Комиссия"/>
+                    <field name="receipt-number"/>
+                    <field name="receipt-date"/>
+                    <form name="op-service">
+                        <field name="name" label="Поставщик"/>
+                    </form>
+                </form>
+            </form>
+        </form>
+        
+    </form></view-schema>
+    
+    <workflow>
+        
+        <step name="claim-list">
+            
+            <display>
+                <grid form="up-file-payment-claim">
+					<option label="...">
+						<command name="claim-to-detail" xpath-compute="xi:datum[@name='id']" />
+						<command name="up-file-payment-claims">claim-details</command>
+					</option>
+                    <columns>
+                        <column field="id"/>
+                        <column field="cts"/>
+                        <column field="ts"/>
+                        <column field="phone-number"/>
+                        <column label="Реквизиты">
+                            <print field="account"/>
+                            <print field="contract"/>
+                            <print field="bik"/>
+                            <print field="lastName"/>
+                            <print field="firstName"/>
+                            <print field="middleName"/>
+                        </column>
+                        <column label="Терминал">
+                            <print field="terminal"/>
+                            <print field="terminal-address"/>
+                        </column>
+                    </columns>
+                </grid>
+            </display>
+            
+        </step>
+        
+        <step name="claim-details" hidden="true">
+            <display>
+                <region class="tabs">
+                    <region label="Заявка">
+                        <print form="claim-details" field="*"/>
+                    </region>
+                    <region label="Чеки">
+                        <for-each form="payment-receipt">
+                            <text>Владелец: ОКЕАН БАНК (ЗАО)</text>
+                            <text>ИНН 7744002356</text>
+                            <text>Адрес: г. Москва, Канатчиковский</text>
+                            <text>проезд, д. 1, стр. 1</text>
+                            <text class="delimiter"> </text>
+                            <print field="terminal" form="claim-details"/>
+                            <print field="reciept-number" />
+                            <print field="terminal-address" form="claim-details"/>
+                            <print field="receipt-date" label="Дата"/>
+                            <text class="delimiter"> </text>
+                            <print field="name" form="op-service"/>
+                            <print field="summTerminal"/>
+                            <print field="summ"/>
+                            <print field="terminal-fee"/>
+                            <text>Номер счета: (в разработке)</text>
+                            <print field="receipt-number" label="Код операции"/>
+                            <text class="delimiter"> </text>
+                            <text>Сохраняйте чек до зачисления денег на</text>
+                            <text>Ваш лицевой счет. Спасибо !</text>
+                            <text>Информационная поддержка: 8-(495)-725-22-37</text>
+                        </for-each>
+                    </region>
+                </region>
+            </display>
+            <choise>
+                <option name="to-claim-list" label="К списку заявок">
+                    <command name="up-file-payment-claims">claim-list</command>
+                </option>
+            </choise>
+        </step>
+        
+    </workflow>
+    
+</view-definition>

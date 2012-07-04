@@ -175,7 +175,7 @@
         <xsl:for-each select="ancestor::xi:view/xi:view-data//*[@ref=current()/@ref][not(ancestor::xi:set-of[@is-choise])]">
             <xsl:choose>
                 <xsl:when test="self::xi:data[not(@delete-this)]">
-                    <region>
+                    <region class="for-each">
                         <xsl:apply-templates select="$this/@*|$this/*" mode="build-dialogue">
                             <xsl:with-param name="top" select="@id"/>
                         </xsl:apply-templates>
@@ -350,7 +350,10 @@
     <xsl:template match="xi:display//* | xi:navigate" mode="build-dialogue">
         
         <xsl:param name="top" select="ancestor::xi:view/xi:view-data/xi:data/@id"/>
-        <xsl:param name="ref" select="key('id',$top)/descendant-or-self::*[not(ancestor::xi:set-of[@is-choise])][@ref=current()/@ref]/@id"/>
+        <xsl:param name="ref" select="
+            key('id',$top)/descendant-or-self::*[not(ancestor::xi:set-of[@is-choise])][@ref=current()/@ref]/@id
+            |key('id',$top)/ancestor::xi:data[not(ancestor::xi:set-of[@is-choise])]/*[@ref=current()/@ref]/@id
+        "/>
         
         <xsl:variable name="form-not-a-choise" select="$ref/parent::xi:data[not(@choise)]/xi:datum[@name='name']"/>
         

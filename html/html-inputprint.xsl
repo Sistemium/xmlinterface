@@ -47,7 +47,7 @@
                 
                 <xsl:otherwise>
                     <label for="{@ref}">
-                        <span><xsl:apply-templates select="$datum[1]" mode="label"/></span>
+                        <span><xsl:apply-templates select="self::*[@label] | $datum[not(current()/@label)][1]" mode="label"/></span>
                         <span class="colon"><xsl:text>:</xsl:text></span>               
                     </label>
                 </xsl:otherwise>

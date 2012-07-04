@@ -423,7 +423,7 @@
         <xsl:value-of select="@label"/>
     </xsl:template>
     
-    <xsl:template match="*[not(label) and @ref]" mode="label">
+    <xsl:template match="*[not(@label) and @ref]" mode="label">
         <xsl:apply-templates select="key('id',@ref)" mode="label"/>
     </xsl:template>
 

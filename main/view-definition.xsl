@@ -109,6 +109,17 @@
         </xsl:copy>
     </xsl:template>
 
+    <xsl:template match="xi:view-definition//xi:grid[@form]//*[@field and not(@form)]" mode="extend">
+        <xsl:attribute name="form">
+            <xsl:value-of select="ancestor::xi:grid[@form][1]/@form"/>
+        </xsl:attribute>
+    </xsl:template>
+
+    <xsl:template match="xi:view-definition//xi:for-each[@form]//*[@field and not(@form)]" mode="extend">
+        <xsl:attribute name="form">
+            <xsl:value-of select="ancestor::xi:for-each[@form][1]/@form"/>
+        </xsl:attribute>
+    </xsl:template>
 
     <xsl:template match="xi:view-definition//*/@reuse">
         <xsl:variable name="this" select="."/>
