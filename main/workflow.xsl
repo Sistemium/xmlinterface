@@ -494,6 +494,33 @@
         </xsl:if>
     </xsl:template>
 
+    <xsl:template match="xi:step/xi:validate//xi:match" mode="validate">
+        
+        <xsl:variable name="datum" select="
+            ancestor::xi:view/xi:view-data//*
+                [not(ancestor::xi:set-of[@is-choise])]
+                [@ref=current()/@ref]
+        "/>
+        <xsl:if test="xi:regexp( . , $datum) = 0">
+            <exception>
+                <message>
+                    <result>invalid</result>
+                    <xsl:if test="$datum">
+                        <for-human>
+                            <xsl:apply-templates select="key('id',$datum/@ref)" mode="label"/>
+                            <xsl:if test="@field and @form">
+                                <xsl:text> в </xsl:text>
+                                <xsl:apply-templates select="ancestor::xi:view/xi:view-schema/descendant::xi:form[@name=current()/@form]" mode="label"/>
+                            </xsl:if>
+                            <xsl:text> должно быть </xsl:text>
+                            <xsl:apply-templates select="." mode="label"/>
+                        </for-human>
+                    </xsl:if>
+                </message>
+            </exception>
+        </xsl:if>
+    </xsl:template>
+
     <xsl:template match="xi:step/xi:validate//xi:equals" mode="validate">
         <xsl:variable name="data-object"
                   select="ancestor::xi:view/xi:view-data/descendant::xi:data[not(ancestor::xi:set-of[@is-choise])][(@name=current()/@form or not(current()/@form))]/descendant::xi:datum[not(ancestor::xi:set-of[@is-choise])][@name=current()/@field or (not(current()/@field) and key('id',@ref)/@key)]"/>
