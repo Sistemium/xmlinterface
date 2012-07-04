@@ -571,6 +571,9 @@
         
     </xsl:template>
 
+    <xsl:template match="xi:text[@class='delimiter']">
+        <br/>
+    </xsl:template>
 
     <xsl:template match="xi:text | xi:freeform | xi:summary | xi:view">
         <div>
