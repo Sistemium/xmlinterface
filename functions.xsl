@@ -17,6 +17,19 @@
         </xsl:attribute>
     </xsl:template>
 
+    <func:function name="xi:list">
+        <xsl:param name="tokens" select="xi:null"/>
+        <xsl:variable name="result">
+            <xsl:for-each select="$tokens">
+                <xsl:value-of select="."/>
+                <xsl:if test="last()>position()">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+            </xsl:for-each>
+        </xsl:variable>
+        <func:result select="$result"/>
+    </func:function>
+    
     <func:function name="xi:isnull">
         <xsl:param name="a" select="xi:null"/>
         <xsl:param name="b" select="xi:null"/>
