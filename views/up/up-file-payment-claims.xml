@@ -38,15 +38,15 @@
                     <field name="summTerminalCorrected" type="decimal" sql-compute="null" label="Принято">
                         <xpath-compute>
                             ../xi:datum[@name='summTerminal']
-                            + ancestor::*[@name='claim-details']/xi:datum[@name='extra']//xi:payment
-                                [@id=current()/../xi:datum[@name='id']]/@addComission
+                            + xi:isnull(ancestor::*[@name='claim-details']/xi:datum[@name='extra']//xi:payment
+                                [@id=current()/../xi:datum[@name='id']]/@addComission,0)
                         </xpath-compute>
                     </field>
                     <field name="terminalFeeCorrected" type="decimal" sql-compute="null" label="Комиссия">
                         <xpath-compute>
                             ../xi:datum[@name='summTerminal']
-                            + ancestor::*[@name='claim-details']/xi:datum[@name='extra']//xi:payment
-                                [@id=current()/../xi:datum[@name='id']]/@addComission
+                            + xi:isnull(ancestor::*[@name='claim-details']/xi:datum[@name='extra']//xi:payment
+                                [@id=current()/../xi:datum[@name='id']]/@addComission,0)
                             - ../xi:datum[@name='summ']
                         </xpath-compute>
                     </field>
