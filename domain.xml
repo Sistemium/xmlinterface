@@ -273,8 +273,8 @@
     <concept name="up-file-payment" server="op.unact.ru">
         
         <select owner="op" sql-name="prepayment" />
-        <select owner="xmlgate" sql-name="prepaymentByFileType" type="procedure">
-            <parameter name="up-file-type" type="int" sql-name="@id"/>
+        <select owner="xmlgate" sql-name="prepaymentCsvFile">
+            <parameter name="up-file-type" required="true"/>
         </select>
         
         <!--save owner="op" sql-name="prepayment_ammend" type="procedure">
@@ -294,7 +294,7 @@
         <role name="op-error" actor="op-error" sql-name="error" />
         <role name="up-file" actor="up-file"  sql-name="csvfile"/>
         <role name="up-client" actor="up-client" sql-name="client"/>
-        <role name="up-file-type" actor="up-file-type"/>
+        <role name="up-file-type" actor="up-file-type" sql-name="csvFileType"/>
         
         <index name="accounts" sql-name="account, extra" label="Слова в реквизитах"/>
         
