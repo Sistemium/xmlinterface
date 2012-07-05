@@ -778,22 +778,35 @@
             
             <xsl:if test="@type='procedure'">
                 <xsl:text>(</xsl:text>
+                
                 <xsl:for-each select="xi:parameter[$this/@storage='mssql' or $parmnams=@name]">
+                    
+                    <xsl:variable name="datum" select="
+                        $parmnams[.=current()/@name]/parent::*
+                    "/>
+                
                     <xsl:if test="not($this/@storage='mssql')">
                         <xsl:apply-templates select="." mode="sql-name"/>
                         <xsl:text>=</xsl:text>
                     </xsl:if>
-                    <xsl:apply-templates select="$parmnams[.=current()/@name]/parent::*[self::xi:use or self::xi:parameter]" mode="value"/>
-                    <xsl:apply-templates select="$joins[xi:on[@concept=$this/@name and @property=current()/@name]]
-                                                /xi:on[not(@concept=$this/@name) or not(@name=$request/@name)]"
-                                         mode="sql-name"/>
+                    
+                    <xsl:apply-templates select="$datum[self::xi:use or self::xi:parameter]" mode="value"/>
+                    
+                    <xsl:apply-templates mode="sql-name" select="
+                        $joins[xi:on[@concept=$this/@name and @property=current()/@name]]
+                        /xi:on[not(@concept=$this/@name) or not(@name=$request/@name)]"
+                    />
+                    
                     <xsl:if test="$this/@storage='mssql' and not($parmnams=@name)">
                         <xsl:text> default</xsl:text>
                     </xsl:if>
+                    
                     <xsl:if test="position()!=last()">
-                    <xsl:text>, </xsl:text>
+                        <xsl:text>, </xsl:text>
                     </xsl:if>
+                    
                 </xsl:for-each>
+                
                 <xsl:text>)</xsl:text>
             </xsl:if>
             
@@ -838,8 +851,14 @@
     </xsl:template>
         
     <xsl:template match="xi:use" mode="value" priority="1001">
-        <xsl:apply-templates select="(ancestor::xi:data-request|parent::*/xi:etc/xi:data)[@name=current()/@concept]
-                             /xi:parameter[@name=current()/@parameter]" mode="value"/>
+        <xsl:param name="datum" select="
+            (ancestor::xi:data-request|parent::*/xi:etc/xi:data)[@name=current()/@concept]
+            /xi:parameter[@name=current()/@parameter]
+        "/>
+        <xsl:apply-templates select="$datum" mode="value"/>
+        <xsl:if test="not($datum/text())">
+            <xsl:text>null</xsl:text>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="*" mode="value">
