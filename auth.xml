@@ -182,6 +182,11 @@
         <role ref="cashier"/>
         <role ref="main"/>
         <role ref="findir"/>
+        <role ref="qc"/>
+    </user>
+    
+    <user name="ibuko">
+        <role ref="qc"/>
     </user>
     
     <user name="marina">

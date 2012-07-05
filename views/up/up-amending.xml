@@ -2,8 +2,6 @@
 
 <view-definition xmlns="http://unact.net/xml/xi" name="up-amending" label="Корректировка успешных платежей на карты">
 	
-	<access role="beta"/>
-    
     <view-schema> <form name="op-agent"> 
 		
 		<parameter name="name">

@@ -3,6 +3,7 @@
     name="up-file-payment-claims"
     label="Заявки на корректировку CSV-платежей"
 >
+    <access role="qc"/>
     
     <view-schema><form name="op-agent">
         
