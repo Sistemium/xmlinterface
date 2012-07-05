@@ -22,18 +22,34 @@
         <form name="claim-details" concept="up-file-payment-claim">
             <parameter name="claim-to-detail" modifiable="true" property="id"/>
             <add-labeled-fields/>
+            <field name="extra"/>
             <form name="up-file-payment">
                 <form name="payment-receipt" concept="op-payment" is-set="true">
                     <field name="summ" label="Зачислено"/>
-                    <field name="summTerminal" label="Принято"/>
-                    <field name="terminal-fee" label="Комиссия"/>
+                    <field name="summTerminal"/>
                     <field name="receipt-number"/>
                     <field name="receipt-date"/>
                     <field name="account"/>
                     <field name="extra"/>
+                    <field name="id"/>
                     <form name="op-service">
                         <field name="name" label="Поставщик"/>
                     </form>
+                    <field name="summTerminalCorrected" type="decimal" sql-compute="null" label="Принято">
+                        <xpath-compute>
+                            ../xi:datum[@name='summTerminal']
+                            + ancestor::*[@name='claim-details']/xi:datum[@name='extra']//xi:payment
+                                [@id=current()/../xi:datum[@name='id']]/@addComission
+                        </xpath-compute>
+                    </field>
+                    <field name="terminalFeeCorrected" type="decimal" sql-compute="null" label="Комиссия">
+                        <xpath-compute>
+                            ../xi:datum[@name='summTerminal']
+                            + ancestor::*[@name='claim-details']/xi:datum[@name='extra']//xi:payment
+                                [@id=current()/../xi:datum[@name='id']]/@addComission
+                            - ../xi:datum[@name='summ']
+                        </xpath-compute>
+                    </field>
                     <field name="account-number" sql-compute="null">
                         <xpath-compute>
                             xi:list(
@@ -104,9 +120,9 @@
                             <print field="receipt-date" label="Дата"/>
                             <text class="delimiter"/>
                             <print field="name" form="op-service"/>
-                            <print field="summTerminal"/>
+                            <print field="summTerminalCorrected"/>
                             <print field="summ"/>
-                            <print field="terminal-fee"/>
+                            <print field="terminalFeeCorrected"/>
                             <print field="account-number" label="Номер счета"/>
                             <print field="receipt-number" label="Код операции"/>
                             <text class="delimiter"/>

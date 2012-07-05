@@ -249,6 +249,8 @@
         <property name="terminal" type="string" label="Номер терминала" />
         <property name="terminal-address" type="string" label="Адрес терминала" sql-name="terminal_address"/>
         
+        <property name="extra" type="xml" />
+        
         <property name="cts" type="datetime" label="Когда создан" />
         <property name="ts" type="datetime" label="Последнее изменение"/>
         
