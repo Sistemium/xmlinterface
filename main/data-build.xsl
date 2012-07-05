@@ -71,7 +71,9 @@
   
     <!--         Выбор          -->
     
-    <xsl:template match="xi:data/@ignore-this"/>
+    <xsl:template match="xi:data/@ignore-this">
+        <xsl:attribute name="just-ignored">true</xsl:attribute>
+    </xsl:template>
     
     <xsl:template match="xi:data[@ignore-this]">
         
