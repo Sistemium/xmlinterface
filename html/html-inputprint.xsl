@@ -15,7 +15,7 @@
             )"
         />
         
-        <xsl:apply-templates select="self::xi:input | self::xi:print[$datum/text()]" mode="render">
+        <xsl:apply-templates select="self::xi:input | self::xi:print[$datum/node()]" mode="render">
             <xsl:with-param name="datum" select="$datum"/>
         </xsl:apply-templates>
         
