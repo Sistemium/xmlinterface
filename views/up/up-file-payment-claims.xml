@@ -27,8 +27,8 @@
                 <form name="payment-receipt" concept="op-payment" is-set="true">
                     <field name="summ" label="Зачислено"/>
                     <field name="summTerminal"/>
-                    <field name="receipt-number"/>
-                    <field name="receipt-date"/>
+                    <field name="receipt-number" label="Квитанция"/>
+                    <field name="receipt-date" />
                     <field name="account"/>
                     <field name="extra"/>
                     <field name="id"/>
