@@ -494,26 +494,30 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             
             record.fields.each(function (field,i,d) {
                 
-                var rv = record.get(field.name);
-                
-                switch (field.type.type) {
-                    case 'bool':
-                        rv = rv ? 1: 0;
-                        break;
-                    case 'date':
-                        rv = rv.format('d.m.Y')
-                        break;
-                }
-                
-                var e = uploadXML.createElement ('datum'),
-                    parentName = metadata.columnsStore.getById(store.model.modelName+field.name).get('parent')
+                var rv = record.get(field.name),
+                    metaField = metadata.columnsStore.getById(store.model.modelName+field.name)
                 ;
                 
-                e.setAttribute('alias',field.name);
-                parentName && e.setAttribute('parent',parentName);
-                
-                e.appendChild(uploadXML.createTextNode(rv));
-                dataElement.appendChild(e);
+                if (field.name[0] == field.name[0].toLowerCase()){
+                    switch (field.type.type) {
+                        case 'bool':
+                            rv = rv ? 1: 0;
+                            break;
+                        case 'date':
+                            rv = rv.format('d.m.Y')
+                            break;
+                    }
+                    
+                    var e = uploadXML.createElement ('datum'),
+                        parentName = metaField.get('parent')
+                    ;
+                    
+                    e.setAttribute('alias',field.name);
+                    parentName && e.setAttribute('parent',parentName);
+                    
+                    e.appendChild(uploadXML.createTextNode(rv));
+                    dataElement.appendChild(e);
+                }
             });
             
             xi.request({
