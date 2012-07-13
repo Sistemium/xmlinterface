@@ -194,10 +194,10 @@
         
     </xsl:template>
 
-    <xsl:template match="/*[@stage='out']">
+    <xsl:template match="/*[@stage='out'][xi:upload or self::xi:upload]">
         
         <response>
-            <xsl:for-each select="xi:upload">
+            <xsl:for-each select="xi:upload|self::xi:upload">
                 
                 <xsl:variable name="response" select="xi:preload/xi:response/xi:result-set"/>
                 
