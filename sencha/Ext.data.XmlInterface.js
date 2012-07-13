@@ -24,7 +24,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             openView: { views: this.view },
             metadata: { pipeline: 'metadata', metadata: 'view' },
             download: { pipeline: 'download' },
-            upload: { pipeline: 'upload' }
+            upload: { pipeline: 'rawpost' }
             
         }[c.command];
         
@@ -480,66 +480,50 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         var xi = this, record = store.getAt(0),
             toUploadPid = store.toUploadRecord.get('pid'),
             isNew = store.toUploadRecord.get('wasPhantom'),
-            xid =  store.toUploadRecord.get('id');
+            xid =  store.toUploadRecord.get('id')
+        ;
         
-        if (record) xi.request({
+        if (record) {
+            var uploadXML = document.implementation.createDocument("http://unact.net/xml/xi", "upload", null),
+                dataElement = uploadXML.createElement('data')
+            ;
             
-            command: 'upload',
-            params: { prepare: store.model.modelName, xid: xid },
+            dataElement.setAttribute ('name', store.model.modelName);
+            uploadXML.documentElement.appendChild(dataElement);
             
-            success: function( pr ) {
+            record.fields.each(function (field,i,d) {
                 
-                //console.log (pr.responseXML);
+                var rv = record.get(field.name);
                 
-                var forms = Ext.DomQuery.select('form',pr.responseXML),
-                    formId = forms.length ? forms[0].getAttribute('ref') : undefined ,
-                    toUpload = {
-                        upload: formId,
-                        dataId: toUploadPid,
-                        xid:xid
-                    },
-                    uploadableFields = Ext.DomQuery.select ('field', pr.responseXML)
-                ;
+                switch (field.type.type) {
+                    case 'bool':
+                        rv = rv ? 1: 0;
+                        break;
+                    case 'date':
+                        rv = rv.format('d.m.Y')
+                        break;
+                }
                 
-                Ext.iterate (uploadableFields, function (f,i,d) {
-                    
-                    var fname = f.getAttribute('alias'),
-                        rv = record.get(fname),
-                        field = record.fields.getByKey(fname)
-                    ;
-                    
-                    if (field) switch (field.type.type) {
-                        case 'bool':
-                            rv = rv ? 1: 0;
-                            break;
-                        case 'date':
-                            rv = rv.format('d.m.Y')
-                            break;
-                    }
-                    
-                    toUpload[f.getAttribute('id')] = rv;
-                    
-                });
+                var e = uploadXML.createElement ('datum');
+                e.setAttribute('alias',field.name);
+                e.appendChild(uploadXML.createTextNode(rv));
+                dataElement.appendChild(e);
+            });
+            
+            xi.request({
                 
-                if (toUpload && uploadableFields.length) { xi.request({
-                    
-                    command: 'upload',
-                    params: toUpload,
-                    
-                    success: function(ur){
-                        //console.log ('Upload request success: pid = '+ toUploadPid);
-                        //console.log (ur.responseXML);
-                        xi.uploadPut (store, record, ur.responseXML);
-                    }
-                    
-                })} else {
-                    console.log ('Upload request prepare failure: pid = ' + toUploadPid);
-                    if (typeof store.toUploadRecord.store.failureCb == 'function')
-                        store.toUploadRecord.store.failureCb.call (xi, store, pr.responseText)
-                }   
-            }
-        });
-        else xi.commitUpload (Ext.apply (store.toUploadRecord, {uploadStamp: 'no data'}))
+                command: 'upload',
+                xmlData: uploadXML,
+                
+                success: function(ur){
+                    //console.log ('Upload request success: pid = '+ toUploadPid);
+                    //console.log (ur.responseXML);
+                    xi.uploadPut (store, record, ur.responseXML);
+                }
+                
+            });
+            
+        } else xi.commitUpload (Ext.apply (store.toUploadRecord, {uploadStamp: 'no data'}))
     },
     
     uploadPut: function (store, record, xml) {
