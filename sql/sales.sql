@@ -562,12 +562,12 @@ create or replace view sales.bprog as select
 create or replace procedure sales.bprogBySalesman (
     @id int
 ) begin
-    select distinct
-        bp.*
-    from
-        sales.bprog bp
-            join bpb_link_v bpb on bpb.bp = bp.id
-            join dbo.buyer(@salesman = @id) b on b.id = bpb.buyer
+with b as ( select id from dbo.buyer (@salesman = @id))
+ select * from sales.bprog where exists (
+        select * from b buyer
+            join bpb_link_v bpc on bpc.buyer = buyer.id
+        where bpc.bp = bprog.id
+    )
 end;
 
 
