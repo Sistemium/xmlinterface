@@ -480,7 +480,8 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         var xi = this, record = store.getAt(0),
             toUploadPid = store.toUploadRecord.get('pid'),
             isNew = store.toUploadRecord.get('wasPhantom'),
-            xid =  store.toUploadRecord.get('id')
+            xid =  store.toUploadRecord.get('id'),
+            metadata = Ext.getStore('tables').getById(store.model.modelName)
         ;
         
         if (record) {
@@ -504,8 +505,13 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                         break;
                 }
                 
-                var e = uploadXML.createElement ('datum');
+                var e = uploadXML.createElement ('datum'),
+                    parentName = metadata.columnsStore.getById(store.model.modelName+field.name).get('parent')
+                ;
+                
                 e.setAttribute('alias',field.name);
+                parentName && e.setAttribute('parent',parentName);
+                
                 e.appendChild(uploadXML.createTextNode(rv));
                 dataElement.appendChild(e);
             });

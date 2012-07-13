@@ -66,11 +66,17 @@
     
     
     <xsl:template match="xi:datum/@alias" mode="build-import">
+        <xsl:param name="form" select="key('name',parent::*/parent::xi:data[1]/@name)"/>
         <xsl:apply-templates mode="build-ref" select="
-            key('name',parent::*/parent::xi:data[1]/@name)/xi:field
-                [@alias=current() or self::*[not(@alias)]/@name=current()]
+            $form/xi:field[@alias=current() or self::*[not(@alias)]/@name=current()]
         "/>
     </xsl:template>
     
+    <xsl:template match="xi:datum/@parent" mode="build-import">
+        <xsl:param name="form" select="key('name',parent::*/parent::xi:data[1]/@name)"/>
+        <xsl:apply-templates mode="build-ref" select="
+            $form/parent::xi:form[@name=current()]
+        "/>
+    </xsl:template>
     
 </xsl:transform>
