@@ -104,6 +104,55 @@
         
     </pipeline>
 
+    <pipeline name="rawpost">
+        
+        <execute name="import"  href="id.xsl">
+            <include href="datasync/import-raw.xsl"/>
+        </execute>
+        
+        <execute name="import-cleanup" href="id.xsl">
+            <include href="datasync/import-raw.xsl"/>
+        </execute>
+        
+        <execute name="upload" href="datasync/upload.xsl"/>
+        
+        <execute name="build-xmlq" href="id.xsl">
+            <include href="datasync/upload.xsl"/>
+            <include href="main/extend-build.xsl"/>
+        </execute>
+        
+        <execute name="exec-xmlq" href="id.xsl">
+            <include href="main/xmlq.xsl"/>
+        </execute>
+        
+        <execute name="set-modified" href="id.xsl">
+            <include href="datasync/upload.xsl"/>
+        </execute>
+        
+        <execute name="build-persist" href="id.xsl">
+            <include href="datasync/upload.xsl"/>
+            <include href="main/extend-build.xsl"/>
+        </execute>
+        
+        <execute name="exec-persist" href="id.xsl">
+            <include href="main/xmlq.xsl"/>
+        </execute>
+        
+        <execute name="build-response" href="id.xsl">
+            <include href="datasync/upload.xsl"/>
+            <include href="main/extend-build.xsl"/>
+        </execute>
+        
+        <execute name="exec-response" href="id.xsl">
+            <include href="main/xmlq.xsl"/>
+        </execute>
+        
+        <execute name="out" href="id.xsl" output="xml">
+            <include href="datasync/upload.xsl"/>
+        </execute>
+        
+    </pipeline>
+
     <pipeline name="metadata" path="datasync">
         <execute name="prepare" href="datasync/metadata-pre.xsl" />
         <execute name="build" href="datasync/metadata.xsl" />

@@ -58,7 +58,9 @@
         <xsl:text>]</xsl:text>
     </xsl:template>
 
-    <xsl:template match="*" mode="build-ref">
+    <xsl:template match="*" mode="build-ref"/>
+    
+    <xsl:template match="*[@id]" mode="build-ref">
         <xsl:attribute name="ref">
             <xsl:value-of select="@id"/>
         </xsl:attribute>

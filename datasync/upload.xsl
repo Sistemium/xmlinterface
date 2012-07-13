@@ -62,13 +62,29 @@
 <!--            UPLOAD             -->
 
     <xsl:template match="/*[xi:userinput/xi:command[@name='upload']]">
-        <xsl:param name="upload" select="xi:userinput/xi:command[@name='upload']/text()"/>
-        <xsl:param name="xid" select="xi:userinput/xi:command[@name='xid']"/>
+        <xsl:apply-templates select="xi:userinput" mode="build-upload">
+            <xsl:with-param name="form-id" select="xi:userinput/xi:command[@name='upload']/text()"/>
+            <xsl:with-param name="datum-refs" select="xi:userinput/xi:command/@name"/>
+        </xsl:apply-templates>
+    </xsl:template>
+    
+    <xsl:template match="/*[xi:userinput/xi:import]">
+        <xsl:for-each select="xi:userinput">
+            <uploads>
+                <xsl:apply-templates select="xi:import/xi:data[@ref]" mode="build-upload"/>
+            </uploads>
+        </xsl:for-each>
+    </xsl:template>
+    
+    <xsl:template match="*" mode="build-upload">
+        <xsl:param name="form-id" select="@ref"/>
+        <xsl:param name="datum-refs" select="xi:datum/@ref"/>
+        <xsl:param name="xid" select="*[@name='xid']"/>
         
         <upload xid="{$xid}" debug-="true">
             <xsl:copy-of select="@*"/>
             
-            <xsl:for-each select="/*/xi:views/xi:view[1]/xi:view-schema//xi:form[@id=$upload]">
+            <xsl:for-each select="key('id',$form-id)">
                 
                 <xsl:variable name="form" select="."/>
                 
@@ -82,15 +98,16 @@
                     
                     <xsl:for-each select="xi:join|xi:parent-join[not(@name = parent::*/parent::*[not(@hidden)]/@name)]">
                         <xsl:variable name="parent" select="ancestor::xi:form[@name=current()/@name]/xi:field[@name='id']"/>
-                        <datum ref="{@id}" type="field" name="{@role}" editable="new-only">
+                        <datum type="field" name="{@role}" editable="new-only">
+                            <!--xsl:apply-templates select="." mode="build-ref"/-->
                             <xsl:copy-of select="@sql-name"/>
                             <xsl:value-of select="ancestor::xi:view/xi:view-data//xi:datum[@ref=$parent/@id]/text()"/>
                         </datum>
                     </xsl:for-each>
                     
-                    <xsl:for-each select="/*/xi:userinput/*">
-                        <xsl:variable name="userDatum" select="."/>
-                        <xsl:for-each select="key('id',@name)[@modifiable or @editable or @name='xid' or self::xi:join or self::xi:form]">
+                    <xsl:for-each select="$datum-refs">
+                        <xsl:variable name="userDatum" select=".."/>
+                        <xsl:for-each select="key('id',.)[@modifiable or @editable or @name='xid' or self::xi:join or self::xi:form]">
                             <datum ref="{@id}" type="field">
                                 <xsl:copy-of select="@name|@editable|@modifiable"/>
                                 <xsl:if test="self::xi:form">
@@ -115,8 +132,6 @@
                         <xsl:copy-of select="xi:field"/>
                     </xsl:copy>
                 </view-schema>
-                
-                <xsl:copy-of select="/*/xi:userinput--"/>
                 
             </xsl:for-each>
         </upload>
@@ -146,17 +161,16 @@
         </xsl:if>
         
     </xsl:template>
-    
 
     
-    <xsl:template match="/*[@stage='build-persist']/xi:data[xi:datum[@modified] or @is-new]">
+    <xsl:template match="/*[@stage='build-persist']//xi:data[xi:datum[@modified] or @is-new]">
         <data>
             <xsl:copy-of select="@*"/>
             <xsl:call-template name="data-build-update"/>
         </data>
     </xsl:template>
 
-    <xsl:template match="/*[@stage='build-xmlq' or @stage='build-response']/xi:preload">
+    <xsl:template match="/*[@stage='build-xmlq' or @stage='build-response']//xi:preload">
         <xsl:copy>
             <xsl:copy-of select="@*[not(local-name()='retrieve')]"/>
             <xsl:apply-templates select="." mode="build-request"/>
@@ -166,12 +180,12 @@
 
 <!--            RESPONSE             -->
     
-    <xsl:template match="/*[@stage='build-persist']/xi:view-schema">
+    <xsl:template match="/*[@stage='build-persist']//xi:view-schema[parent::xi:upload]">
         
         <xsl:for-each select="xi:form">
             <preload ref="{@id}" name="{@name}" retrieve="true">
                 <datum type="parameter" name="xid">
-                    <xsl:value-of select="/*/@xid"/>
+                    <xsl:value-of select="ancestor::xi:upload[1]/@xid"/>
                 </datum>
             </preload>
         </xsl:for-each>
@@ -180,31 +194,37 @@
         
     </xsl:template>
 
-    <xsl:template match="/*[@stage='out'][xi:view-schema]">
+    <xsl:template match="/*[@stage='out']">
         
         <response>
-            <xsl:variable name="response" select="xi:preload/xi:response/xi:result-set"/>
-            
-            <xsl:choose>
-                <xsl:when test="$response">
-                    <xsl:for-each select="xi:view-schema/*">
-                        <xsl:variable name="data"
-                                      select="$response/xi:data[@name=current()/@name]"/>
-                        <xsl:element name="{@name}">
-                            <xsl:copy-of select="/*/@xid|$response/../@ts"/>
-                            <xsl:for-each select="xi:field" mode="prepare">
-                                <xsl:element name="{@alias|self::*[not(@alias)]/@name}">
-                                    <xsl:value-of select="$data/*[@name=current()/@name]"/>
-                                </xsl:element>
-                            </xsl:for-each>
-                        </xsl:element>
-                    </xsl:for-each>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:copy-of select="(xi:data/xi:response/xi:exception | xi:preload//xi:exception)[1]"/>
-                </xsl:otherwise>
-            </xsl:choose>
-            
+            <xsl:for-each select="xi:upload">
+                
+                <xsl:variable name="response" select="xi:preload/xi:response/xi:result-set"/>
+                
+                <xsl:choose>
+                    
+                    <xsl:when test="$response">
+                        <xsl:for-each select="xi:view-schema/*">
+                            <xsl:variable name="data"
+                                          select="$response/xi:data[@name=current()/@name]"/>
+                            <xsl:element name="{@name}">
+                                <xsl:copy-of select="/*/@xid|$response/../@ts"/>
+                                <xsl:for-each select="xi:field" mode="prepare">
+                                    <xsl:element name="{@alias|self::*[not(@alias)]/@name}">
+                                        <xsl:value-of select="$data/*[@name=current()/@name]"/>
+                                    </xsl:element>
+                                </xsl:for-each>
+                            </xsl:element>
+                        </xsl:for-each>
+                    </xsl:when>
+                    
+                    <xsl:otherwise>
+                        <xsl:copy-of select="(xi:data/xi:response/xi:exception | xi:preload//xi:exception)[1]"/>
+                    </xsl:otherwise>
+                    
+                </xsl:choose>
+                
+            </xsl:for-each>
         </response>
         
     </xsl:template>
