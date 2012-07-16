@@ -213,7 +213,7 @@
                 </xsl:when>
             </xsl:choose>
 
-            <xsl:for-each select="$form/*[not(self::xi:parameter)]">
+            <xsl:for-each select="$form/*[not(self::xi:parameter)][self::xi:field or not(current()/self::xi:preload[not(parent::xi:data)])]">
                 <xsl:choose>
                     <xsl:when test="self::xi:form[xi:parameter[not(@optional) and not(xi:init)]] and $this/xi:data[@ref=current()/@id]">
             	        <xsl:apply-templates select="$this/xi:data[@ref=current()/@id]" mode="build-request"/>
@@ -224,7 +224,7 @@
                 </xsl:choose>
             </xsl:for-each>
 
-            <xsl:if test="not((@refresh-this or $head) and (parent::*[@is-new] or (@role and xi:datum[@type='parameter'])))">
+            <xsl:if test="parent::xi:data and not((@refresh-this or $head) and (parent::*[@is-new] or (@role and xi:datum[@type='parameter'])))">
                 <xsl:apply-templates
                     select="$concept/xi:role[@actor=$form/parent::xi:form/@concept]
 					       |$model/xi:concept[@name=$form/parent::xi:form/@concept]
