@@ -2354,6 +2354,22 @@
         
     </concept>
    
+    <concept name="bonus-program-client-message">
+        
+        <select owner="dbo" sql-name="v_bprog_msg"/>
+        
+        <select owner="sales" sql-name="bprogMessageBySalesman" type="procedure">
+            <parameter name="cat-salesman" type="int" sql-name="@id"/>
+        </select>
+        
+        <property name="msg" type="string" label="Сообщение"/>
+        
+        <role name="bonus-program" actor="bonus-program" sql-name="bprog_id"/>
+        <role name="cat-buyer" actor="cat-buyer" sql-name="buyer"/>
+        <role name="cat-salesman" actor="cat-salesman"/>
+        
+    </concept>
+   
     <concept name="cat-file">
         
         <select owner="dbo" sql-name="xmlconfig" />

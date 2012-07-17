@@ -555,7 +555,7 @@ create or replace view sales.bprog as select
             goal varchar(1024), gain varchar(1024)
           ) option (delimited by '|') as normalized_terms
     ) as d
-    where p.discount is not null
+    where p.discount is not null and today() between ddateb and ddatee
 ;
 
 
@@ -568,6 +568,14 @@ with b as ( select id from dbo.buyer (@salesman = @id))
             join bpb_link_v bpc on bpc.buyer = buyer.id
         where bpc.bp = bprog.id
     )
+end;
+
+create or replace procedure sales.bprogMessageBySalesman (
+    @id int
+) begin 
+    select * from dbo.v_bprog_msg
+        where buyer in (select id from dbo.buyer (@salesman = @id))
+        and bprog_id in (select id from sales.bprogBySalesman (@id) where isactive=1)
 end;
 
 

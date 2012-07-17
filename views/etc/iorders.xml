@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.932" expect-megabytes="15" >
+    <view-schema version="1.941" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -150,7 +150,7 @@
                             <field name="article" alias="product"/>
                             <add-labeled-fields/>
                         </form>
-                            
+                        
                     </form>
                     
                     <form name="Warehouse" concept="sales-warehouse" is-set="true" pipeline="download" 
@@ -308,6 +308,19 @@
                             </form>
                             
                         </form>
+                        
+                    </form>
+                    
+                    <form name="CustomerBonusProgramMessage" concept="bonus-program-client-message"
+                        is-set="true" mainMenu="true"
+                        label="Сообщение от программы" set-label="Сообщения от программ"
+                        pipeline="download"
+                    >
+                        
+                        <field name="cat-buyer" alias="customer" title="true"/>
+                        <field name="bonus-program" alias="bonusProgram" />
+                        
+                        <field name="msg" title="true"/>
                         
                     </form>
                     
