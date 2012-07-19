@@ -515,8 +515,10 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     e.setAttribute('alias',field.name);
                     parentName && e.setAttribute('parent',parentName);
                     
-                    e.appendChild(uploadXML.createTextNode(rv));
-                    dataElement.appendChild(e);
+                    if (rv != null) {
+                        e.appendChild(uploadXML.createTextNode(rv));
+                        dataElement.appendChild(e);
+                    }
                 }
             });
             

@@ -38,6 +38,7 @@
         <xsl:copy-of select="."/>
     </xsl:template>
     
+    <xsl:template match="xi:datum[@parent and text()='null']/text()" mode="build-import" priority="1000"/>    
     
     <xsl:template match="xi:data|xi:datum" mode="build-import">
         <xsl:copy>
