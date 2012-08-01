@@ -269,4 +269,8 @@
         <role ref="qc"/>
     </user>
     
+    <user name="pshepetuk">
+        <role ref="expeditor"/>
+    </user>
+    
 </authorization>

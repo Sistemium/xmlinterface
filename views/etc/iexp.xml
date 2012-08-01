@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iexp" >
+    
+    <access role="expeditor"/>
+    
     <view-schema version="1.0" >
         <form name="sysuser">
             
@@ -14,26 +17,26 @@
                 
                 <join name="sysuser" field="username"/>
                 
+                <form name="Warehouse" concept="sales-warehouse" is-set="true">
+                    <field name="id" />
+                    <field name="name" />
+                </form>
+                
                 <form name="cat-salesman">
                     <field name="id" />
                     <field name="name" />
-                    
-                    <form name="Warehouse" concept="sales-warehouse" is-set="true">
-                        <field name="id" />
-                        <field name="name" />
-                    </form>
                     
                     <form name="salesman-workday">
                         <field name="id" />
                         <join name="sysuser" field="date"/>
                         
-                        <form name="RouteTask" concept="expedition">
+                        <form name="Route" concept="expedition" pipeline="download">
                             <join name="Person"/>
                             <join name="sysuser" field="date"/>
                             <field name="id" />
                             <field name="name" />
                             
-                            <form name="RoutePointTask" concept="expedition-destination" is-set="true">
+                            <form name="RoutePoint" concept="expedition-destination" is-set="true">
                                 <field name="xid" />
                                 <field name="isComplete" format="true-only" label="Г" modifiable="true"/>
                                 <field name="name" label="Адрес"/>
@@ -67,38 +70,31 @@
                             </form>
                         </form>
                         
-                        <secure role="torgpred">
-                        <form name="Stock" concept="sales-stock" is-set="true" pipeline="download" constrain-parent="true" >
-                            <field name="article" alias="product"/>
-                            <field name="level"/>
-                        </form>
-                        </secure>
-                        
-                    </form>
-                    
-                    <form name="Category" concept="category" is-set-="true">
-                        <field name="id"/>
-                        <field name="name"/>
-                        <field name="ord"/>
-                        
-                        <order-by name="ord" dir="asc"/>
-                        
-                        <where name="volOrder">
-                            <more-than>0</more-than>
-                        </where>
-                        
-                        <form name="Product" concept="article" is-set="true" pipeline="download">
-                            <field name="id"/>
-                            <field name="name"/>
-                            <field name="first-name" alias="firstName"/>
-                            <field name="factor" />
-                            <field name="rel" />
-                            <where name="isRemoved">0</where>
-                            <!--parameter name="ts" type="datetime" editable="true" join-operator="more-than"/-->
-                        </form>
                     </form>
                     
                 </form>
+                
+                <form name="Category" concept="category" is-set="true" pipeline="download">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="ord"/>
+                    
+                    <order-by name="ord" dir="asc"/>
+                    
+                    <where name="volOrder">
+                        <more-than>0</more-than>
+                    </where>
+                    
+                    <form name="Product" concept="article" is-set="true" pipeline="download">
+                        <field name="id"/>
+                        <field name="name"/>
+                        <field name="first-name" alias="firstName"/>
+                        <field name="factor" />
+                        <field name="rel" />
+                        <where name="isRemoved">0</where>
+                    </form>
+                </form>
+                
             </form>
             
         </form>

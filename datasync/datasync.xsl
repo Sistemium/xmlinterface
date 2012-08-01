@@ -32,7 +32,7 @@
         <xsl:copy-of select="."/>
     </xsl:template>
 
-    <xsl:template match="xi:menu[not(*)]"/>
+    <xsl:template match="xi:menu[not(*) or /*/xi:userinput/xi:command[@name='filter']]"/>
 
     <xsl:template match="xi:view-data">
         <data>
@@ -42,11 +42,6 @@
     </xsl:template>
 
     <xsl:template match="xi:view-schema"/>
-    <!--    <metadata>
-            <xsl:copy-of select="../@*"/>
-            <xsl:apply-templates/>
-        </metadata>
-    </xsl:template-->
 
     <xsl:template match="xi:view-schema//*|xi:view-schema//*/@* | xi:menu | xi:option |  @*">
         <xsl:copy>
@@ -56,13 +51,11 @@
 
     <xsl:template match="xi:view-schema//*/@id | xi:view-schema//*/@ref"/>
 
-    <xsl:template
-        match="
-            xi:userinput/*
-            [@name='filter']
-            [not( /*/xi:views/xi:view[not(@hidden)]/xi:view-data//xi:data/@name= . )]
-        "
-    >
+    <xsl:template match="
+        xi:userinput/*
+        [@name='filter'][not(@synthetic)]
+        [not( /*/xi:views/xi:view[not(@hidden)]/xi:view-data//xi:data/@name= . )]
+    ">
         <no-data name="{.}">
             <xsl:for-each select="/*/xi:views/xi:view[not(@hidden)]/xi:view-schema//xi:form[@name=current()/text()]/ancestor::xi:form[not(@is-set)]">
                 <xsl:for-each select="ancestor::xi:view/xi:view-data//xi:data[@ref=current()/@id][@choise and not(@chosen)]">
@@ -83,8 +76,10 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="xi:set-of[@is-choise]
-        [parent::xi:data[not(xi:datum[@type='field']) and @name = /*/xi:userinput/*[text()='next']/@name]]" priority="1000"/>
+    <xsl:template priority="1000" match="
+        xi:set-of[@is-choise]
+            [parent::xi:data[not(xi:datum[@type='field']) and @name = /*/xi:userinput/*[text()='next']/@name]]
+    "/>
 
     <xsl:template match="xi:set-of[@is-choise]">
         

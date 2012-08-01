@@ -17,6 +17,7 @@
         <xsl:if test="key('name',text())/@is-set">
             <xsl:copy>
                 <xsl:copy-of select="@*"/>
+                <xsl:attribute name="synthetic">true</xsl:attribute>
                 <xsl:text>set-of-</xsl:text>
                 <xsl:copy-of select="text()"/>
             </xsl:copy>
