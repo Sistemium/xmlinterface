@@ -114,7 +114,9 @@
     <xsl:template match="xi:data[
         not(/*/xi:userinput/*[@name='filter'])
          or /*/xi:userinput/*[@name='filter']=(
-            @name | ancestor::xi:data/@name | descendant::xi:data[not(@is-new)]/@name
+            @name
+            | self::*[not(/*/xi:userinput/*[@name='filter-strict'])]/ancestor::xi:data/@name
+            | self::*[not(/*/xi:userinput/*[@name='filter-strict'])]/descendant::xi:data[not(@is-new)]/@name
         )]"
     >
         <xsl:element name="{@name}">

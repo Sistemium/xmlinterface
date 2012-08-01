@@ -45,9 +45,11 @@
     </pipeline>
 
     <pipeline name="download">
+        
         <execute name="1" href="id.xsl">
             <include href="main/userinput.xsl"/>
         </execute>
+        
         <execute name="2" href="id.xsl" commit="true">
             <include href="main/data-build.xsl"/>
         </execute>
@@ -56,12 +58,14 @@
             <include href="main/extend.xsl"/>
             <include href="main/data-build.xsl"/>
         </execute>
+        
         <execute name="last" href="id.xsl">
             <include href="main/data-build.xsl"/>
             <include href="main/data.xsl"/>
         </execute>
         
         <execute name="out" href="datasync/datasync.xsl" output="xml"/>
+        
     </pipeline>
     
     <pipeline name="upload">
