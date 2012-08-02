@@ -116,7 +116,7 @@
          or /*/xi:userinput/*[@name='filter']=(
             @name
             | self::*[not(/*/xi:userinput/*[@name='filter-strict'])]/ancestor::xi:data/@name
-            | self::*[not(/*/xi:userinput/*[@name='filter-strict'])]/descendant::xi:data[not(@is-new)]/@name
+            | descendant::xi:data[not(@is-new)]/@name
         )]"
     >
         <xsl:element name="{@name}">

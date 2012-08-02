@@ -3,6 +3,10 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xi="http://unact.net/xml/xi"
     xmlns="http://unact.net/xml/xi"
+    xmlns:php="http://php.net/xsl"
+    xmlns:e="http://exslt.org/common"
+    extension-element-prefixes="e"
+    exclude-result-prefixes="e"
 >
 
     <xsl:template match="xi:form[@new-only or xi:parameter[not(@optional) and not(xi:init)]]" mode="build-subrequest"/>
