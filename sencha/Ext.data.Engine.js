@@ -298,9 +298,19 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         console.log ('Ext.data.Engine.persistTableData: '+table.id+' length='+downloadData.length);
         
-        var firstDataChildren=downloadData[0].childNodes;
+        var firstDataChildren=downloadData[0].childNodes,
+            firstDataParent = downloadData[0].parentNode
+        ;
         
-        for (var ei=0; ei<firstDataChildren.length; ei++){
+        if (firstDataParent && firstDataParent.nodeName=='paged'){
+            
+            var currentPos=parseInt(firstDataParent.getAttribute('page-start'));
+            
+            request.willContinue = true;
+            
+            me.requestChoise(table.id, currentPos, 0, xi, currentPos+1);
+            
+        } else for (var ei=0; ei<firstDataChildren.length; ei++){
             var elem=firstDataChildren[ei];
             switch (elem.tagName) {
                 case 'choise':

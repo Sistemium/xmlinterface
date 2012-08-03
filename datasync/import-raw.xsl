@@ -8,6 +8,7 @@
     
     <xsl:key name="name" match="xi:field|xi:form" use="@name"/>
     
+    <xsl:template match="@refresh-this"/>
 
     <xsl:template match="xi:userinput/xi:command[@name='filter' and key('name',text())/@is-set]">
         <xsl:call-template name="id" />
