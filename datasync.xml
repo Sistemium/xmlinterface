@@ -46,6 +46,10 @@
 
     <pipeline name="download">
         
+        <execute name="import"  href="id.xsl">
+            <include href="datasync/import-raw.xsl"/>
+        </execute>
+        
         <execute name="1" href="id.xsl">
             <include href="main/userinput.xsl"/>
         </execute>

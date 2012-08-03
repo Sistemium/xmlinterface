@@ -121,7 +121,7 @@
         xi:view//xi:set-of
             [not(ancestor::xi:set-of[@is-choise]) or @removable]
         |
-        xi:view//xi:preload[@preload]
+        xi:view//xi:preload[@preload or @pipeline=/*/@pipeline-name]
             [not(ancestor::xi:set-of[@is-choise]) or @removable]
         
     ">
@@ -210,6 +210,13 @@
         
         <xsl:if test="self::xi:set-of[@page-size and $ui[text()='next' or text()='prev']]">
             <xsl:attribute name="refresh-this">
+                <xsl:value-of select="$ui/text()"/>
+            </xsl:attribute>
+        </xsl:if>
+        
+        <xsl:if test="self::xi:preload[key('id',@ref)/@page-size] and $ui[number(text()) = .]">
+            <xsl:attribute name="refresh-this">true</xsl:attribute>
+            <xsl:attribute name="page-start">
                 <xsl:value-of select="$ui/text()"/>
             </xsl:attribute>
         </xsl:if>

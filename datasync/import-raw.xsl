@@ -7,7 +7,25 @@
 
     
     <xsl:key name="name" match="xi:field|xi:form" use="@name"/>
+    
 
+    <xsl:template match="xi:userinput/xi:command[@name='filter' and key('name',text())/@is-set]">
+        <xsl:call-template name="id" />
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:attribute name="synthetic">true</xsl:attribute>
+            <xsl:text>set-of-</xsl:text>
+            <xsl:copy-of select="text()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="xi:userinput/xi:command[key('name',@name)/self::xi:form[@is-set]]/@name">
+        <xsl:attribute name="name">
+            <xsl:text>set-of-</xsl:text>
+            <xsl:value-of select="."/>
+        </xsl:attribute>
+    </xsl:template>
+    
     
     <xsl:template match="xi:userinput/xi:rawxml">
         <xsl:apply-templates select="*" mode="build-import"/>

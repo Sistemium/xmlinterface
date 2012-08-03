@@ -106,7 +106,14 @@
     </xsl:template>
 
     <xsl:template match="xi:data|xi:set-of">
-        <xsl:apply-templates select="xi:data|xi:set-of"/>
+        <xsl:apply-templates select="xi:data|xi:set-of[not(@is-choise)]"/>
+    </xsl:template>
+
+    <xsl:template match="xi:set-of[@page-size]">
+        <paged>
+            <xsl:copy-of select="@page-size|@page-start"/>
+            <xsl:apply-templates select="xi:data|xi:set-of"/>
+        </paged>
     </xsl:template>
 
     <xsl:template match="xi:data[@remove-this|@is-new]" priority="1000"/>
