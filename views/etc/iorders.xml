@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.941" expect-megabytes="15" >
+    <view-schema version="1.954" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -67,6 +67,7 @@
                         
                         <field name="id"/>
                         <field name="name"/>
+                        <field name="ord"/>
                         
                         <field name="shop-department" alias="shopDepartment"/>
                         
@@ -327,7 +328,7 @@
                     <form name="Shipment" concept="sales-shipment"
                           is-set="true" 
                           label="Отгрузка" set-label="Отгрузки"
-                          pipeline="download" 
+                          pipeline="download"
                     >
                         
                         <field name="id" />
@@ -590,15 +591,17 @@
             <input form="Customer">
                 <input form="Category">
                     <print form="Category" field="name"/>
+                    <!--print form="Category" field="ord"/-->
                     <print form="SaleOrder" field="totalCost"/>
                     <print form="Category" field="shop-department"/>
                     <print form="ShopDepartment" field="name" alias="ShopDepartment_name"/>
+                    <print form="ShopDepartment" field="ord" alias="ShopDepartment_ord"/>
                     <print form="Shipment" field="lastActive"/>
                 </input>
             </input>
             
             <sql>
-                select c.*, sd.name as shopDepartment_name,
+                select c.*, sd.name as shopDepartment_name, sd.ord as shopDepartment_ord,
                        round(julianday() - (
                                 select julianday(replace(max(s.date), '/', '-'))
                                   from Shipment s
@@ -608,7 +611,7 @@
                                  where g.category = c.category and s.customer = c.customer
                        ),0) as lastActive
                   from (
-                      select cu.id as customer, c.id category, c.name,
+                      select cu.id as customer, c.id category, c.name, c.ord,
                              null as totalCost, c.shopDepartment, cu.warehouse
                         from Customer cu, Category c
                   ) c join ShopDepartment sd on sd.id = c.shopDepartment
