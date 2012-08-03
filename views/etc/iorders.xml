@@ -328,7 +328,7 @@
                     <form name="Shipment" concept="sales-shipment"
                           is-set="true" 
                           label="Отгрузка" set-label="Отгрузки"
-                          pipeline="download"
+                          pipeline="download" page-size="50"
                     >
                         
                         <field name="id" />
@@ -338,6 +338,8 @@
                         <field name="cat-buyer" alias="customer"/>
                         
                         <field name="lastActive" sql-compute="null" hidden="true" type="int"/>
+                        
+                        <order-by name="date" dir="desc"/>
                         
                         <!--where name="date"><more-than>today() - 60</more-than></where-->
                         

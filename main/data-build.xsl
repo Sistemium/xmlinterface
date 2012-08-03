@@ -118,7 +118,7 @@
         <xsl:variable name="sort-field" select="$metadata/xi:sort/@field"/>        
         <xsl:variable name="sort-data-type">text</xsl:variable>
         
-        <xsl:variable name="current-set" select="$data/ancestor::*[self::xi:preload|self::xi:set-of][@ref=$metadata/@id]"/>
+        <xsl:variable name="current-set" select="$data/ancestor::*[self::xi:preload[@page-start]|self::xi:set-of][@ref=$metadata/@id]"/>
         
         <xsl:variable name="current-page">
             
