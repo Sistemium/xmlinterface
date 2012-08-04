@@ -1701,6 +1701,10 @@
             
         <select owner="sales" type="procedure" sql-name="shipment">
             <parameter name="cat-salesman" type="int" sql-name="@salesman" required="true"/>
+            <parameter sql-name="@top" type="int" name="page-size">
+                <top/>
+            </parameter>
+            <parameter sql-name="@start_at" type="int" start-at="true" />
         </select>
         
         <property name="id" key="true" type="int"/>

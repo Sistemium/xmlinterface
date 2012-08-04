@@ -26,6 +26,10 @@
             <xsl:apply-templates select="$concept/@*" />
             <xsl:apply-templates select="$form/@*" mode="build-request"/>
             
+			<xsl:if test="$form/@page-size">
+				<xsl:attribute name="page-start">0</xsl:attribute>
+			</xsl:if>
+            
 			<xsl:for-each select="self::*[@refresh-this='next']/@page-start">
 				<xsl:attribute name="page-start">
 					<xsl:value-of select=". + 1"/>
