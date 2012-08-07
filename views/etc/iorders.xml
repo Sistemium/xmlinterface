@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.954" expect-megabytes="15" >
+    <view-schema version="1.963" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -633,6 +633,31 @@
                 select e.*, c.name as Customer_name
                   from Encashment e join Customer c on c.id = e.customer
                  where e.uncashment is null
+            </sql>
+            
+        </step>
+        
+        <step name="BonusProgramByCustomer">
+            
+            <input form="BonusProgram">
+                <print form="BonusProgram" field="name"/>
+                <print form="BonusProgram" field="goal"/>
+                <print form="BonusProgram" field="gain"/>
+                <print form="BonusProgram" field="isCustomerTargeted"/>
+                <print form="BonusProgram" field="isFirstScreen"/>
+                <print form="BonusProgram" field="isNonHidable"/>
+                <print form="BonusProgram" field="isNonHidable" alias="isWithMsg"/>
+                <print form="Customer" field="id"/>
+                <print form="CustomerBonusProgramMessage" field="msg"/>
+            </input>
+            
+            <sql>
+                select bp.*,
+                       c.id as customer, bpm.msg,
+                       case when bpm.msg is not null then 1 else 0 end as isWithMsg
+                    from customer c, BonusProgram bp
+                        left join CustomerBonusProgramMessage bpm
+                        on bpm.bonusProgram = bp.id and c.id=bpm.customer
             </sql>
             
         </step>
