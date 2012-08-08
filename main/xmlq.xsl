@@ -715,7 +715,7 @@
                             <xsl:text> &lt;&gt; </xsl:text>
                         </xsl:when>
                         
-                        <xsl:when test="$value/@type='boolean' and $property[self::xi:role]">
+                        <xsl:when test="$value/@type='boolean' and $property[self::xi:role[not(@false-means-zero)]]">
                             
                             <xsl:choose>
                                 <xsl:when test="$value/text()='1'">

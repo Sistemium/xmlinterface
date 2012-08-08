@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="op-on-hold" label="Заблокированные платежи">
+    
+    <view-schema><form name="sysuser" concept="op">
+        
+        <parameter name="name"> <init with="username"/> </parameter>
+        <parameter name="device-name"> <init with="device-name"/> </parameter>
+        <parameter name="date" type="date"> <init with="today"/> </parameter>
+        
+        <field name="id" />
+        
+        <form name="op-payment" 
+            label="Заблокированные платежи"
+            is-set="true" page-size="20"
+        >
+            
+            <field name="id"/>
+            <field name="ts"/>
+            <field name="on-hold" editable="true"/>
+            <field name="status"/>
+            <field name="summ" />
+            <field name="account"/>
+            <field name="extra"/>
+            
+            <form name="op-service">
+                <field name="id"/>
+                <field name="name" label="Услуга">
+                    <navigate to="op-services">
+                        <pass name="xid" field="xid" form="op-service"/>
+                    </navigate>
+                </field>
+                <field name="xid"/>
+            </form>
+            
+            <form name="op-payment-error" concept="op-error">
+                <field name="id"/>
+                <field name="name" label="Ошибка"/>
+                <where name="id">
+                    <not>0</not>
+                </where>
+            </form>
+            
+            <form name="op-hold-reason">
+                <field name="id"/>
+                <field name="name" label="Причина подозрения"/>
+            </form>
+            
+            <where name="final">0</where>
+            <where name="on-hold">1</where>
+            <order-by name="ts" dir="desc"/>
+            
+        </form>
+        
+    </form></view-schema>
+    
+    <workflow>
+        
+        <step name="index" >
+            
+            <display>
+                <grid form="op-payment"/>
+            </display>
+            
+        </step>
+        
+    </workflow>
+    
+</view-definition>
