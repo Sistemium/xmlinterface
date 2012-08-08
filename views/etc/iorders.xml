@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.965" expect-megabytes="15" >
+    <view-schema version="1.966" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -655,7 +655,7 @@
             <sql>
                 select bp.*,
                        c.id as customer, bpm.msg,
-                       case when bpm.msg is not null then 1 else 0 end as isWithMsg
+                       case when bpm.msg is not null then 1 end as isWithMsg
                     from customer c, BonusProgram bp
                         left join CustomerBonusProgramMessage bpm
                         on bpm.bonusProgram = bp.id and c.id=bpm.customer
