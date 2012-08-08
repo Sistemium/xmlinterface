@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.963" expect-megabytes="15" >
+    <view-schema version="1.965" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -639,15 +639,16 @@
         
         <step name="BonusProgramByCustomer">
             
-            <input form="BonusProgram">
+            <input form="Customer">
+                <print form="BonusProgram" field="id"/>
                 <print form="BonusProgram" field="name"/>
                 <print form="BonusProgram" field="goal"/>
                 <print form="BonusProgram" field="gain"/>
                 <print form="BonusProgram" field="isCustomerTargeted"/>
                 <print form="BonusProgram" field="isFirstScreen"/>
                 <print form="BonusProgram" field="isNonHidable"/>
+                <print form="BonusProgram" field="isPopAtStart"/>
                 <print form="BonusProgram" field="isNonHidable" alias="isWithMsg"/>
-                <print form="Customer" field="id"/>
                 <print form="CustomerBonusProgramMessage" field="msg"/>
             </input>
             
