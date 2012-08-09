@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<view-definition xmlns="http://unact.net/xml/xi" name="op-on-hold" label="Заблокированные платежи">
+<view-definition xmlns="http://unact.net/xml/xi" name="op-on-hold" label="Заблокированные платежи" version="1.0">
     
     <view-schema><form name="sysuser" concept="op">
         
@@ -51,6 +51,57 @@
             
         </form>
         
+        <form name="payment-detail" concept="op-payment" >
+            
+            <parameter name="pmt-detail-id" type="int" modifiable="true" property="id"/>
+            
+            <field name="id"/>
+            <field name="terminalID" label="Терминал"/>
+            
+            <add-labeled-fields sort-by="type"/>
+            
+            <form name="payment-detail-client" concept="up-client">
+                <field name="name" label="Клиент"/>
+            </form>
+            
+            <form name="pmt-detail-service" concept="op-service">
+                <field name="name" label="Услуга"/>
+            </form>
+            
+            <form name="pmt-detail-error" concept="op-error">
+                <field name="name" label="Ошибка"/>
+                <where name="id">
+                    <not>0</not>
+                </where>
+            </form>
+            
+            <form name="op-payment-process" is-set="true" page-size="10">
+                
+                <field name="cts" />
+                <field name="finalizingDate" />
+                <field name="ts" />
+                
+                <field name="step" />
+                <field name="tryCount" />
+                <!--field name="stepTryCount" /-->
+                <field name="status" />
+                
+                <form name="pc-account">
+                    <field name="name" label="ПЦ"/>
+                </form>
+                
+                <form name="op-error">
+                    <field name="name" label="Результат"/>
+                </form>
+                
+                <field name="bookingDate" />
+                
+                <order-by name="ts" dir="desc"/>
+                
+            </form>
+            
+        </form>
+        
     </form></view-schema>
     
     <workflow>
@@ -58,9 +109,47 @@
         <step name="index" >
             
             <display>
-                <grid form="op-payment"/>
+                <grid form="op-payment">
+                    <option name="process" label="...">
+                        <command name="op-on-hold">pmt-detail</command>
+                        <command name="pmt-detail-id" xpath-compute="xi:datum[@name='id']" />
+                    </option>
+                </grid>
             </display>
             
+        </step>
+        
+        <step name="pmt-detail" label="Детали платежа" hidden="true">
+            <display>
+                
+                <print form="payment-detail-client" field="name"/>
+                <print form="payment-detail" field="terminalID" />
+                <print form="payment-detail" field="status" />
+                <print form="payment-detail" field="clientId" />
+                <print form="pmt-detail-error" field="name" />
+                
+                <region class="tabs">
+                    <region label="Основное">
+                        <print form="pmt-detail-service" field="name"/>
+                        <print form="payment-detail" field="summ" />
+                        <print form="payment-detail" field="summTerminal" />
+                        <print form="payment-detail" field="cts" />
+                        <print form="payment-detail" field="ts" />
+                        <print form="payment-detail" field="clientSessionTerminal" />
+                        <print form="payment-detail" field="smsNumber" />
+                    </region>
+                    <region label="Реквизиты">
+                        <print form="payment-detail" field="account" />
+                        <print form="payment-detail" field="extra" />
+                    </region>
+                    <grid form="op-payment-process" label="Попытки проведения" hide-empty="true"/>
+                </region>
+            </display>
+            <choise>
+                <option label="К списку платежей">
+                    <command name="op-on-hold">index</command>
+                </option>
+            </choise>
         </step>
         
     </workflow>
