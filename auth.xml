@@ -33,6 +33,7 @@
             <role name="qc"/>
             <role name="operator"/>
             <role name="ad-user"/>
+            <role name="blocked-payments"/>
         </role>
     </roles>
 
@@ -96,6 +97,9 @@
         </group>
         <group name="Управление финансами">
             <role ref="finances"/>
+        </group>
+        <group name="Заблокированные платежи">
+            <role ref="blocked-payments"/>
         </group>
     </validator>
     
@@ -271,6 +275,7 @@
         <role ref="it"/>
         <role ref="beta"/>
         <role ref="qc"/>
+        <role ref="blocked-payments"/>
     </user>
     
     <user name="pshepetuk">

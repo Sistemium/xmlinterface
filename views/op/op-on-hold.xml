@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="op-on-hold" label="Заблокированные платежи" version="1.0">
     
+    <access role="blocked-payments"/>
+    
     <view-schema><form name="sysuser" concept="op">
         
         <parameter name="name"> <init with="username"/> </parameter>
@@ -17,6 +19,7 @@
             <field name="id"/>
             <field name="ts"/>
             <field name="on-hold" editable="true"/>
+            <field name="final" editable="true" label="Отказать в проведении"/>
             <field name="status"/>
             <field name="summ" />
             <field name="account"/>
