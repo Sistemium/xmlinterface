@@ -82,8 +82,9 @@
                 <parameter name="pmt-detail-id" type="int" modifiable="true" property="id"/>
                 
                 <field name="id"/>
+                <field name="terminalID" label="Терминал"/>
                 
-                <all-labeled-fields sort-by="type"/>
+                <add-labeled-fields sort-by="type"/>
                 
                 <form name="payment-detail-client" concept="up-client">
                     <field name="name" label="Клиент"/>
@@ -163,6 +164,7 @@
             <display>
                 
                 <print form="payment-detail-client" field="name"/>
+                <print form="payment-detail" field="terminalID" />
                 <print form="payment-detail" field="status" />
                 <print form="payment-detail" field="clientId" />
                 <print form="pmt-detail-error" field="name" />
