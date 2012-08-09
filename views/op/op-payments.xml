@@ -140,7 +140,7 @@
                 <input field="acc"/>
                 <input field="cmp"/>
                 <input field="err"/>
-                <input field="hold"/>
+                <!--input field="hold"/-->
                 <grid form="op-payment" hide-empty="true">
                     <option name="process" label="...">
                         <command name="op-payments">pmt-detail</command>
