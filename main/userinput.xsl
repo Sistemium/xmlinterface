@@ -12,19 +12,6 @@
     <xsl:template match="xi:option/@chosen|xi:events"/>
     
     
-    <xsl:template match="xi:userinput/xi:command[@name='filter']">
-        <xsl:call-template name="id" />
-        <xsl:if test="key('name',text())/@is-set">
-            <xsl:copy>
-                <xsl:copy-of select="@*"/>
-                <xsl:attribute name="synthetic">true</xsl:attribute>
-                <xsl:text>set-of-</xsl:text>
-                <xsl:copy-of select="text()"/>
-            </xsl:copy>
-        </xsl:if>
-    </xsl:template>
-    
-    
     <xsl:template match="xi:userinput/xi:command[key('id',@name)/self::xi:navigate]">
         
         <xsl:param name="datum" select="key('id',text())"/>

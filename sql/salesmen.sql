@@ -57,16 +57,18 @@ create or replace view sales.shipment as select
 
 create or replace procedure sales.shipment (
     @salesman int,
-    @since datetime default today() - 60
-)
-begin
+    @since datetime default today() - 60,
+    @top int default 1000,
+    @start_at int default 1
+) begin
 
-    select so.*
+    select top @top start at @start_at so.*
       from sales.shipment so
       join dbo.partners p on p.id = so.partner
       join dbo.partners_groups_tree pgt on pgt.id = p.parent
      where pgt.parent = (select srv_pgroup from dbo.palm_salesman where salesman_id = @salesman)
        and sddate>=@since
+    order by so.id desc
 
 end;
 

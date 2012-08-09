@@ -284,6 +284,10 @@
             <xsl:call-template name="build-order-by"/>
         </xsl:variable>
         
+        <xsl:variable name="select-id">
+            <xsl:call-template name="select-id"/>
+        </xsl:variable>
+        
         <xsl:if test="parent::xi:data-request">
             <xsl:choose>
                <xsl:when test="@constrain-parent">
@@ -301,9 +305,14 @@
         <xsl:text>SELECT </xsl:text>
         
         <xsl:variable name="no-xmlagg-style"
-                      select="self::xi:data-request[@name- or @storage='mssql' or @page-size-]"/>
+            select="self::xi:data-request[@name- or @storage='mssql' or @page-size-]"
+        />
         
-        <xsl:if test="1=2 and $no-xmlagg-style">
+        <xsl:variable name="select" select="
+            $model/xi:concept [@name=current()/@name] /xi:select [$select-id=generate-id()]
+        "/>
+        
+        <xsl:if test="1=2 and $no-xmlagg-style and $select/xi:parameter[xi:top|@top]">
             <xsl:for-each select="@page-size">
                 <xsl:text> TOP </xsl:text>
                 <xsl:value-of select="."/>
@@ -462,6 +471,32 @@
         
     </xsl:template>
 
+    <xsl:template name="select-id">
+        
+        <xsl:param name="this" select ="."/>
+        <xsl:param name="concept" select="$model/xi:concept[@name=$this/@concept]"/>
+        
+        <xsl:variable name="parmnams"
+                      select="xi:parameter[not(@property)]/@name
+                             |(xi:use|xi:parameter)/@property
+                             |xi:join/xi:on[@name=$this/@name]/@property
+        "/>
+        
+        <xsl:variable name="select-id">
+            <xsl:for-each select="$concept/xi:select[not(xi:parameter[@required][not(@name=$parmnams)])]">
+                <xsl:sort data-type="number" order="descending"
+                          select="count(xi:parameter[@name=$parmnams])"
+                />
+                <xsl:if test="position()=1">
+                    <xsl:value-of select="generate-id()"/>
+                </xsl:if>
+            </xsl:for-each>
+        </xsl:variable>
+        
+        <xsl:value-of select="$select-id"/>
+        
+    </xsl:template>
+
     <xsl:template match="xi:data-request" mode="from">
         
         <xsl:param name="this" select ="."/>
@@ -506,16 +541,18 @@
             
             <xsl:text> ( select</xsl:text>
             
-            <xsl:for-each select="@page-size">
-                <xsl:text> TOP </xsl:text>
-                <xsl:value-of select="."/>
-                <xsl:text> </xsl:text>
-            </xsl:for-each>
-            
-            <xsl:if test="@page-start > 0">
-                <xsl:text> START AT </xsl:text>
-                <xsl:value-of select="@page-start * @page-size"/>
-                <xsl:text> </xsl:text>
+            <xsl:if test="not($select/xi:parameter[xi:top|@top])">
+                <xsl:for-each select="@page-size">
+                    <xsl:text> TOP </xsl:text>
+                    <xsl:value-of select="."/>
+                    <xsl:text> </xsl:text>
+                </xsl:for-each>
+                
+                <xsl:if test="@page-start > 0">
+                    <xsl:text> START AT </xsl:text>
+                    <xsl:value-of select="@page-start * @page-size + 1"/>
+                    <xsl:text> </xsl:text>
+                </xsl:if>
             </xsl:if>
             
             <xsl:text> * from </xsl:text>
@@ -779,10 +816,20 @@
             <xsl:if test="@type='procedure'">
                 <xsl:text>(</xsl:text>
                 
-                <xsl:for-each select="xi:parameter[$this/@storage='mssql' or $parmnams=@name]">
-                    
+                <xsl:variable name="parm-for-top" select="
+                    xi:parameter[$request/@page-size and (xi:top or @top)]
+                "/>
+                <xsl:variable name="parm-for-start-at" select="
+                    xi:parameter[$request/@page-size and $parm-for-top and (xi:start-at or @start-at)]
+                "/>
+                
+                <xsl:for-each select="
+                    xi:parameter[$this/@storage='mssql'
+                        or $parmnams=@name or @sql-name=($parm-for-top/@sql-name|$parm-for-start-at/@sql-name)
+                    ]
+                ">
                     <xsl:variable name="datum" select="
-                        $parmnams[.=current()/@name]/parent::*
+                        $parmnams [.=current()/@name] /parent::*
                     "/>
                 
                     <xsl:if test="not($this/@storage='mssql')">
@@ -797,9 +844,17 @@
                         /xi:on[not(@concept=$this/@name) or not(@name=$request/@name)]"
                     />
                     
-                    <xsl:if test="$this/@storage='mssql' and not($parmnams=@name)">
-                        <xsl:text> default</xsl:text>
-                    </xsl:if>
+                    <xsl:choose>
+                        <xsl:when test="@sql-name=$parm-for-top/@sql-name">
+                            <xsl:value-of select="$request/@page-size"/>
+                        </xsl:when>
+                        <xsl:when test="@sql-name=$parm-for-start-at/@sql-name">
+                            <xsl:value-of select="$request/@page-start * $request/@page-size + 1"/>
+                        </xsl:when>
+                        <xsl:when test="$this/@storage='mssql' and not($parmnams=@name)">
+                            <xsl:text> default</xsl:text>
+                        </xsl:when>
+                    </xsl:choose>
                     
                     <xsl:if test="position()!=last()">
                         <xsl:text>, </xsl:text>

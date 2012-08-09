@@ -328,7 +328,7 @@
                     <form name="Shipment" concept="sales-shipment"
                           is-set="true" 
                           label="Отгрузка" set-label="Отгрузки"
-                          pipeline="download"
+                          pipeline="download" page-size="150"
                     >
                         
                         <field name="id" />
