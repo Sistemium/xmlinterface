@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.966" expect-megabytes="15" >
+    <view-schema version="1.967" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -378,6 +378,18 @@
                         <field name="speed" editable="true" />
                         <field name="deviceCts" editable="new-only" />
                         <field name="errorCode" editable="true" />
+                        <field name="xid" />
+                        
+                        <where name="id">0</where>
+                        
+                    </form>
+                    
+                    <form name="Eventlog" concept="iorders-eventlog" is-set="true" pipeline="-" extendable="true">
+                        
+                        <field name="module" editable="true" />
+                        <field name="action" editable="true" />
+                        <field name="data" editable="true" />
+                        <field name="deviceCts" editable="new-only" />
                         <field name="xid" />
                         
                         <where name="id">0</where>

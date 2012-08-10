@@ -2424,6 +2424,28 @@
         
     </concept>
 
+    <concept name="iorders-eventlog">
+        
+        <select owner="iorders" sql-name="eventlog" />
+        <save owner="iorders" sql-name="eventlog" />
+        
+        <property name="xid" />
+        
+        <property name="id" key="true" type="int" />
+        
+        <property name="ts" type="datetime" />
+        <property name="cts" type="datetime" />
+        
+        <property name="module" type="string" />
+        <property name="action" type="string" />
+        <property name="data" type="string" />
+        
+        <property name="deviceCts" type="datetime" sql-name="device_cts" />
+        
+        <role actor="cat-salesman" name="cat-salesman" sql-name="palm_salesman" />
+        
+    </concept>
+
     <concept name="qc-call-task" storage="mssql" server="hqmssqlcluster0" db="jira">
         
         <select owner="dbo" sql-name="jira_quality_1" type="procedure">
