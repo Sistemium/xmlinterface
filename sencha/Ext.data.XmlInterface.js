@@ -85,11 +85,6 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         
         me.timeouts = {};
         
-        Ext.regModel('ToUpload', {
-            fields: ['table_name', 'id', 'cnt', 'ts', 'pid', 'cs', {name: 'hasPhantom', type: 'boolean'}, 'visibleCnt']
-        });
-        
-        
         Ext.apply(this, config || {}, { sessionData: {} } );
         
         Ext.data.XmlInterface.superclass.constructor.call(this, config);

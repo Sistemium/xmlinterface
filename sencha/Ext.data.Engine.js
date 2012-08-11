@@ -42,7 +42,27 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             name = metadata.name,
             me = this,
             targetSize = metadata['expect-megabytes'] || 10,
-            ok = function () {
+            
+            checkSupports = function(db) {
+                
+                db.supports = {};
+                
+                db.transaction ( function (t) {
+                    t.executeSql(
+                        'select count(*) cnt from Entity1', [],
+                        function(t) {
+                            db.supports.entity = true;
+                            me.fireEvent ('dbstart', me.db = db);
+                        },
+                        function(t) {
+                            me.fireEvent ('dbstart', me.db = db);
+                        }
+                    );
+                });
+                
+            },
+            
+            ok = function (db) {
                 
                 Ext.each (metadata.views, function (view) {
                     me.tables.push (Ext.apply(view, {type: 'view'}))
@@ -81,7 +101,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                     })
                 });
                 
-                me.fireEvent ('dbstart', me.db = db);
+                checkSupports(db);
             }
         ;
         
@@ -125,7 +145,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                     },
                     ok
                 )
-            else ok();
+            else ok(db);
             
             return db;
         }            
