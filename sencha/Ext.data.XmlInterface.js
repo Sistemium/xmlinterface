@@ -86,7 +86,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         me.timeouts = {};
         
         Ext.regModel('ToUpload', {
-            fields: ['table_name', 'id', 'cnt', 'ts', 'pid', 'cs', {name: 'hasPhantom', type: 'boolean'}]
+            fields: ['table_name', 'id', 'cnt', 'ts', 'pid', 'cs', {name: 'hasPhantom', type: 'boolean'}, 'visibleCnt']
         });
         
         

@@ -176,8 +176,11 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         me.executeDDL (t, 'DROP view IF EXISTS ToUpload');
         me.executeDDL (t, 'create view ToUpload as select '
-            + 'table_name, row_id id, count(*) cnt, min (ts) ts, max(wasPhantom) hasPhantom, max(p.id) pid, max(cs) cs'
-            + ' from Phantom p where p.cs is null group by p.row_id, p.table_name'
+            + 'p.table_name, p.row_id id, count(*) cnt, min (p.ts) ts, '
+            + ' max(p.wasPhantom) hasPhantom, max(p.id) pid, max(p.cs) cs, '
+            + ' 1 - e.hidden visibleCnt'
+            + ' from Phantom p join Entity e on e.name = p.table_name'
+            + ' where p.cs is null group by p.row_id, p.table_name'
         );
         
         me.executeDDL (t, 'create trigger commitUpload instead of update on ToUpload begin '
@@ -187,7 +190,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         Ext.each( dbSchema.tables, function (table, idx, tables) {
             
-            me.executeSQL(t, 'insert into Entity (name, hidden) values (?,?)', [table.id, table.name ? 1: 0]);
+            me.executeSQL(t, 'insert into Entity (name, hidden) values (?,?)', [table.id, table.name ? 0: 1]);
             
             me.executeDDL(t, 'DROP TABLE IF EXISTS '+table.id+';');
             
