@@ -49,7 +49,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                 
                 db.transaction ( function (t) {
                     t.executeSql(
-                        'select count(*) cnt from Entity1', [],
+                        'select count(*) cnt from Entity', [],
                         function(t) {
                             db.supports.entity = true;
                             me.fireEvent ('dbstart', me.db = db);
