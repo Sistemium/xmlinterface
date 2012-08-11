@@ -138,6 +138,19 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
     },
     
+    executeSQL: function (t, sql, vars) {
+        
+        if(t.debug) {
+            console.log('Ext.data.Engine.executeSQL: '+ sql);
+            console.log(vars);
+        }
+        
+        if (!vars) vars=[];
+        
+        return t.executeSql (sql, vars, this.nullDataHandler, this.errorHandler)
+        
+    },
+    
     rebuildTables: function (t, dbSchema) {
         
         var me = this;
@@ -146,10 +159,17 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         t.debug = true;
         
+        me.executeDDL (t, 'DROP table IF EXISTS Entity');
+        me.executeDDL (t, 'Create table Entity ('
+            +'name string primary key'
+            +', hidden boolean'
+            +', ts datetime default current_timestamp)')
+        ;
+        
         me.executeDDL (t, 'DROP table IF EXISTS Phantom');
         me.executeDDL (t, 'Create table Phantom ('
             +'id integer primary key autoincrement, table_name string, row_id string'
-            +', wasPhantom boolean'
+            +', wasPhantom int'
             +', cs string'
             +', ts datetime default current_timestamp)')
         ;
@@ -166,6 +186,8 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         );
         
         Ext.each( dbSchema.tables, function (table, idx, tables) {
+            
+            me.executeSQL(t, 'insert into Entity (name, hidden) values (?,?)', [table.id, table.name ? 1: 0]);
             
             me.executeDDL(t, 'DROP TABLE IF EXISTS '+table.id+';');
             
