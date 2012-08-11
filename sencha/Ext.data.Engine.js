@@ -143,7 +143,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         me.fireEvent ('upgradefail')
                         return false;
                     },
-                    ok
+                    function () {ok(db)}
                 )
             else ok(db);
             
