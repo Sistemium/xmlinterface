@@ -4,7 +4,11 @@ body, input {font-size: 15px; color:#333333; -background-color: #FCFBF5; font-fa
 
 .label, .title, th, table, .button {background-color: #BBf0C0; }
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { color:blue !important;}
- .button.recommended, .option.recommended *, .modified.text, .datum.modified .boolean label, .datum.modified, .modified select, select.modified {color: blue; }
+.button.recommended, .option.recommended *, .modified.text,
+.datum.modified .boolean label, .datum.modified, .modified select,
+select.modified, td.modified {
+	color: blue;
+}
 .label, .title, th, tr.group {text-align:center;  color: #404040; font-weight:bold; padding:6px 6px 8px;}
 
 input.xiSent {color:red !important; background-color: lightgray !important;}

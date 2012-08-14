@@ -235,6 +235,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             meta = this.engine.tables[tableName],
             
             fields = (meta)? meta.columns : model.prototype.fields.items,
+            fieldNames = fields.keys ? fields.map : model.prototype.fields.map,
             length  = fields.length,
             i, field, name, sqlSelectList=''
         ;
@@ -271,7 +272,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (scope.isStore && !scope.remoteFilter) filters = false;
         
         if (filters)
-            for (i = 0; i < filters.length; i++) {
+            for (i = 0; i < filters.length; i++) if (!fieldNames || fieldNames[filters[i].property]) {
                 
                 sqlWhere += filters[i].property;
                 

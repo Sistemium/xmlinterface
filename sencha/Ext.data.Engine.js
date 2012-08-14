@@ -42,7 +42,27 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             name = metadata.name,
             me = this,
             targetSize = metadata['expect-megabytes'] || 10,
-            ok = function () {
+            
+            checkSupports = function(db) {
+                
+                db.supports = {};
+                
+                db.transaction ( function (t) {
+                    t.executeSql(
+                        'select count(*) cnt from Entity', [],
+                        function(t) {
+                            db.supports.entity = true;
+                            me.fireEvent ('dbstart', me.db = db);
+                        },
+                        function(t) {
+                            me.fireEvent ('dbstart', me.db = db);
+                        }
+                    );
+                });
+                
+            },
+            
+            ok = function (db) {
                 
                 Ext.each (metadata.views, function (view) {
                     me.tables.push (Ext.apply(view, {type: 'view'}))
@@ -81,7 +101,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                     })
                 });
                 
-                me.fireEvent ('dbstart', me.db = db);
+                checkSupports(db);
             }
         ;
         
@@ -123,9 +143,9 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         me.fireEvent ('upgradefail')
                         return false;
                     },
-                    ok
+                    function () {ok(db)}
                 )
-            else ok();
+            else ok(db);
             
             return db;
         }            
@@ -138,6 +158,19 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
     },
     
+    executeSQL: function (t, sql, vars) {
+        
+        if(t.debug) {
+            console.log('Ext.data.Engine.executeSQL: '+ sql);
+            console.log(vars);
+        }
+        
+        if (!vars) vars=[];
+        
+        return t.executeSql (sql, vars, this.nullDataHandler, this.errorHandler)
+        
+    },
+    
     rebuildTables: function (t, dbSchema) {
         
         var me = this;
@@ -146,18 +179,28 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         t.debug = true;
         
+        me.executeDDL (t, 'DROP table IF EXISTS Entity');
+        me.executeDDL (t, 'Create table Entity ('
+            +'name string primary key'
+            +', hidden boolean'
+            +', ts datetime default current_timestamp)')
+        ;
+        
         me.executeDDL (t, 'DROP table IF EXISTS Phantom');
         me.executeDDL (t, 'Create table Phantom ('
             +'id integer primary key autoincrement, table_name string, row_id string'
-            +', wasPhantom boolean'
+            +', wasPhantom int'
             +', cs string'
             +', ts datetime default current_timestamp)')
         ;
         
         me.executeDDL (t, 'DROP view IF EXISTS ToUpload');
         me.executeDDL (t, 'create view ToUpload as select '
-            + 'table_name, row_id id, count(*) cnt, min (ts) ts, max(wasPhantom) hasPhantom, max(p.id) pid, max(cs) cs'
-            + ' from Phantom p where p.cs is null group by p.row_id, p.table_name'
+            + 'p.table_name, p.row_id id, count(*) cnt, min (p.ts) ts, '
+            + ' max(p.wasPhantom) hasPhantom, max(p.id) pid, max(p.cs) cs, '
+            + ' 1 - e.hidden visibleCnt'
+            + ' from Phantom p join Entity e on e.name = p.table_name'
+            + ' where p.cs is null group by p.row_id, p.table_name'
         );
         
         me.executeDDL (t, 'create trigger commitUpload instead of update on ToUpload begin '
@@ -166,6 +209,8 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         );
         
         Ext.each( dbSchema.tables, function (table, idx, tables) {
+            
+            me.executeSQL(t, 'insert into Entity (name, hidden) values (?,?)', [table.id, table.name ? 0: 1]);
             
             me.executeDDL(t, 'DROP TABLE IF EXISTS '+table.id+';');
             

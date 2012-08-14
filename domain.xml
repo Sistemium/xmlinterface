@@ -87,7 +87,7 @@
         </select>
         
         <property name="id" type="int" key="true"/>
-        <property name="name" type="name" />
+        <property name="name" type="string" />
         
     </concept>
 
@@ -107,8 +107,18 @@
         
     </concept>
     
+    <concept name="op-hold-reason" server="op.unact.ru">
+        <select owner="op" sql-name="holdRule"/>
+        
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" />
+        
+        <property name="xid" />
+    </concept>
+    
     <concept name="op-payment" server="op.unact.ru">
         <select owner="op" sql-name="payment"/>
+        <save owner="op" sql-name="payment"/>
         
         <property name="id" type="int" key="true" label="ОП-ИД"/>
         <property name="xid" />
@@ -123,6 +133,8 @@
         <property name="account" type="string" label="Счет" />
         <property name="extra" type="xml" label="Прочие реквизиты" />
         <property name="final" type="boolean" />
+        <property name="on-hold" type="boolean" sql-name="onHold" label="Заблокирован"/>
+        
         <property name="receipt-number" type="string"  sql-compute="left(clientSessionTerminal,20)"/>
         <property name="receipt-date" type="string" sql-compute="op.receiptDateTime(clientSessionTerminal)"/>
         
@@ -137,7 +149,8 @@
         
         <role name="op-legalentity" actor="op-legalentity" sql-name="legalentity" />
         <role name="op-service" actor="op-service" sql-name="service" />        
-        <role name="op-error" actor="op-error" sql-name="error" />
+        <role name="op-error" actor="op-error" sql-name="error" false-means-zero="true" />
+        <role name="op-hold-reason" actor="op-hold-reason" sql-name="holdRule" />
         <role name="up-client" actor="up-client" sql-name="client" />
         <role name="up-file" actor="up-file" sql-name="CSVFile" />
         <role name="up-file-payment" actor="up-file-payment" sql-name="prepayment" />
@@ -554,6 +567,25 @@
         <role name="criteria" actor="criteria" mdx-name="[Критерий платежа].[Критерий]"/>
     </concept>
 
+    <concept name="op-incident" server="op.unact.ru">
+        
+        <select owner="op" sql-name="incident"/>
+        <save owner="op" sql-name="incident"/>
+        
+        <property name="id" type="int" key="true"/>
+        
+        <property name="source" type="string" />
+        <property name="header" type="string" label="Тема"/>
+        <property name="data" type="string" label="Детали"/>
+        <property name="closed" type="boolean" label="Завершен"/>
+        
+        <property name="cts" type="datetime" label="Когда создан" />
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+        <property name="xid"/>
+        
+    </concept>
+    
     <concept name="fotonova">
         <select owner="sys" sql-name="dummy"/>
         <property name="sync" type="string" sql-compute="case fnova.DataExchange() when 0 then 'Отработало удачно' when 1 then 'Произошла ошибка' end" label="Импорт данных"/>
@@ -2408,6 +2440,28 @@
         <property name="deviceCts" type="datetime" sql-name="device_ts" />
         
         <role actor="cat-salesman" name="cat-salesman" sql-name="entity" />
+        
+    </concept>
+
+    <concept name="iorders-eventlog">
+        
+        <select owner="iorders" sql-name="eventlog" />
+        <save owner="iorders" sql-name="eventlog" />
+        
+        <property name="xid" />
+        
+        <property name="id" key="true" type="int" />
+        
+        <property name="ts" type="datetime" />
+        <property name="cts" type="datetime" />
+        
+        <property name="module" type="string" />
+        <property name="action" type="string" />
+        <property name="data" type="string" />
+        
+        <property name="deviceCts" type="datetime" sql-name="device_cts" />
+        
+        <role actor="cat-salesman" name="cat-salesman" sql-name="palm_salesman" />
         
     </concept>
 

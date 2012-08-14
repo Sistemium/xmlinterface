@@ -22,6 +22,7 @@
                 
                 <parameter name="cmp" type="boolean" label="Завершенные" editable="true" optional="true"/>
                 <parameter name="err" type="boolean" label="С ошибкой" editable="true" optional="true"/>
+                <parameter name="hold" type="boolean" label="Подозрительные" editable="true" optional="true"/>
                 
                 <form name="op-payment" is-set="true" label="Платеж" page-size="15">
                     
@@ -55,12 +56,19 @@
                         </where>
                     </form>
                     
+                    <form name="op-hold-reason">
+                        <field name="id"/>
+                        <field name="name" label="Причина подозрения"/>
+                    </form>
+                    
                     <join name="payment-set" field="id-search" property="id"/>
                     
                     <join name="payment-set" field="acc" property="accounts"/>
                     
                     <join name="payment-set" field="cmp" property="final"/>
                     <join name="payment-set" field="err" property="op-error"/>
+                    <join name="payment-set" field="hold" property="op-hold-reason"/>
+                    
                     <join name="up-client"/>
                     
                     <order-by name="ts" dir="desc"/>
@@ -74,8 +82,9 @@
                 <parameter name="pmt-detail-id" type="int" modifiable="true" property="id"/>
                 
                 <field name="id"/>
+                <field name="terminalID" label="Терминал"/>
                 
-                <all-labeled-fields sort-by="type"/>
+                <add-labeled-fields sort-by="type"/>
                 
                 <form name="payment-detail-client" concept="up-client">
                     <field name="name" label="Клиент"/>
@@ -132,6 +141,7 @@
                 <input field="acc"/>
                 <input field="cmp"/>
                 <input field="err"/>
+                <!--input field="hold"/-->
                 <grid form="op-payment" hide-empty="true">
                     <option name="process" label="...">
                         <command name="op-payments">pmt-detail</command>
@@ -154,6 +164,7 @@
             <display>
                 
                 <print form="payment-detail-client" field="name"/>
+                <print form="payment-detail" field="terminalID" />
                 <print form="payment-detail" field="status" />
                 <print form="payment-detail" field="clientId" />
                 <print form="pmt-detail-error" field="name" />
