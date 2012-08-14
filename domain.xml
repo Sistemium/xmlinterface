@@ -567,6 +567,25 @@
         <role name="criteria" actor="criteria" mdx-name="[Критерий платежа].[Критерий]"/>
     </concept>
 
+    <concept name="op-incident" server="op.unact.ru">
+        
+        <select owner="op" sql-name="incident"/>
+        <save owner="op" sql-name="incident"/>
+        
+        <property name="id" type="int" key="true"/>
+        
+        <property name="source" type="string" />
+        <property name="header" type="string" label="Тема"/>
+        <property name="data" type="string" label="Детали"/>
+        <property name="closed" type="boolean" label="Завершен"/>
+        
+        <property name="cts" type="datetime" label="Когда создан" />
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+        <property name="xid"/>
+        
+    </concept>
+    
     <concept name="fotonova">
         <select owner="sys" sql-name="dummy"/>
         <property name="sync" type="string" sql-compute="case fnova.DataExchange() when 0 then 'Отработало удачно' when 1 then 'Произошла ошибка' end" label="Импорт данных"/>
