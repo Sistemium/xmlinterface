@@ -57,6 +57,7 @@
                         <field name="summ"/>
                         <field name="account"/>
                         <field name="extra"/>
+						<field name="cts" format="smalltime"/>
                         <field name="ts"/>
                         
                         <form name="up-file-payment" concept="up-file-payment">
@@ -146,6 +147,7 @@
                     <columns>
                         <column form="register-detail-process" field="payment"/>
                         <column form="process-error"/>
+                        <column form="register-detail-process" field="cts"/>
                         <column form="register-detail-process" field="summ"/>
                         <column label="Реквизиты">
                             <print form="register-detail-process" field="account"/>
