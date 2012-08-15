@@ -149,7 +149,7 @@
             <xsl:apply-templates select="
                 xi:data|xi:datum
                 |self::*[not(key('id',@ref)/@autosave)]/xi:response
-                |xi:extender|xi:set-of"
+                |xi:extender|xi:set-of|xi:preload"
             />
             
         </xsl:copy>
