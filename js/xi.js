@@ -78,7 +78,7 @@ function domready () {
 function xijax (url){
     postUrl=url+'&pipeline=xijax';
 //    alert(postUrl);
-    AjaxRequest.get(
+    AjaxRequest.post(
       {
         'url':postUrl
         ,'onSuccess': xijaxSuccess
