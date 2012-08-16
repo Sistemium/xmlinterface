@@ -104,15 +104,19 @@
 				
 			<xsl:if test="not(@type='delete')">
 				
-				<xsl:apply-templates select="self::xi:data[not(@role)][@is-new or @ts or @modified]
-				                            /ancestor::xi:data[1][key('id',@ref)/@concept=$model/xi:concept[@name=$concept]/*/@actor]"
-									 mode="build-set">
+				<xsl:apply-templates mode="build-set" select="
+					self::xi:data[not(@role)][@is-new or @ts or @modified]
+					/ancestor::xi:data[1][key('id',@ref)/@concept=$model/xi:concept[@name=$concept]/*/@actor]
+				">
 					<xsl:with-param name="sql-name" select="key('id',@ref)/@parent-sql-name"/>
 				</xsl:apply-templates>
 				
-				<xsl:apply-templates select="xi:datum[@type='field'][@modified or @modifiable or ((../@is-new and (@editable or key('id',@ref)/@use-with-insert)) and text()!='')]
-						|xi:data[@modified or @ts or (current()/@is-new and descendant::xi:datum[@type='field'])][key('id',@ref)/@role]
-						" mode="build-set"/>
+				<xsl:apply-templates mode="build-set" select="
+					xi:datum [@type='field']
+						[@modified or @modifiable or ((../@is-new and (@editable or key('id',@ref)/@use-with-insert)) and text()!='')]
+					| xi:data [key('id',@ref)/@role]
+						[@modified or @ts or (current()/@is-new and descendant::xi:datum[@type='field'])]
+				"/>
 				
 				<xsl:for-each select="key('id',self::*[@is-new]/@ref)/xi:join">
 					<xsl:apply-templates select="$this/ancestor::xi:data[@name=current()/@name][not(current()/@field)]
@@ -138,6 +142,16 @@
             <xsl:with-param name="name" select="@role|self::*[not(@role)]/@name"/>
             <xsl:with-param name="sql-name" select="$sql-name"/>
         </xsl:apply-templates>
+	</xsl:template>
+
+    <xsl:template match="xi:data[not(xi:datum)]" mode="build-set">
+        <xsl:param name="sql-name" select="key('id',@ref)/@sql-name"/>
+		<set name="{@role|self::*[not(@role)]/@name}">
+				<xsl:copy-of select="key('id',@ref)/@sql-name"/>
+				<xsl:if test="$sql-name">
+					<xsl:attribute name="sql-name"><xsl:value-of select="$sql-name"/></xsl:attribute>
+				</xsl:if>
+		</set>
 	</xsl:template>
 
 	<xsl:template match="xi:datum" mode="build-set">

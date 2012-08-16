@@ -272,8 +272,8 @@
                                 
                                 <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
                                 
-                                <xsl:if test="not(@chosen)">
-                                    <option value="">(Значение не указано)</option>
+                                <xsl:if test="not(@chosen) or key('id',@ref)/@unchoosable">
+                                    <option value="unchoose">(Значение не указано)</option>
                                 </xsl:if>
                                 
                                 <xsl:if test="key('id',@ref)/@expect-choise='optional'">

@@ -63,7 +63,15 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:data[@unchoose-this and not(*/@modified)]/@unchoose-this"/>
+    <xsl:template match="xi:data[@unchoose-this and not(*/@modified)]/@unchoose-this">
+        <xsl:apply-templates select="../@role" mode="unchoose"/>
+    </xsl:template>
+    
+    <xsl:template match="@*" mode="unchoose">
+        <xsl:attribute name="modified">unchosen</xsl:attribute>
+    </xsl:template>
+    
+    
     <xsl:template match="xi:data[@unchoose-this and not(*/@modified)]/@chosen"/>
 
     <xsl:template match="xi:data[@unchoose-this and not(*/@modified)]/*[not(self::xi:set-of[@is-choise][*])]"/>
