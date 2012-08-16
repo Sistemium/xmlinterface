@@ -75,12 +75,16 @@ function domready () {
 }
 
 
-function xijax (url){
-    postUrl=url+'&pipeline=xijax';
-//    alert(postUrl);
+function xijax (url, data){
+    if (!url) url='?';
+    else url+='&';
+    
+    postUrl=url+'pipeline=xijax';
+
     AjaxRequest.post(
       {
         'url':postUrl
+        ,'queryString': data
         ,'onSuccess': xijaxSuccess
         ,'onError':function(req){ return false; //alert('Error!\nStatusText='+req.statusText+'\nContents='+req.responseText);
         }
@@ -199,7 +203,7 @@ function itemChanged (element) {
         element.form.submit();
     } else if (!element.name ) {
         
-        href='?'+element.id+'='+element.value;
+        href=element.id+'='+element.value;
         
         $(element.form).addClass('xiSent');
         
@@ -208,7 +212,7 @@ function itemChanged (element) {
         
         $(element).parents('.view').mask('Загрузка');
         
-        xijax(href);
+        xijax(undefined, href);
         
     }
     
@@ -217,14 +221,14 @@ function itemChanged (element) {
 function selectChanged(element){
     var href='';
     
-    href='?'+element.id+'='+element.options[element.selectedIndex].value;
+    href=element.id+'='+element.options[element.selectedIndex].value;
     
     $(element).attr('name',$(element).attr('id'));
     $(element).addClass('xiSent');
     
 //    element.disabled='disabled';
     
-    xijax(href);
+    xijax(undefined, href);
 
 }
 
