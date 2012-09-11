@@ -1,4 +1,4 @@
---grant connect to xmlgate;
+grant connect to xmlgate;
 
 drop table if exists xmlgate.query;
 
@@ -118,63 +118,6 @@ begin
 
 end;
 
-create table if not exists xmlgate.auth (
-
-    id int default autoincrement,
-    
-    k uniqueidentifier,
-    secret varchar (32),
-
-    ts datetime default timestamp,
-    cts datetime default current timestamp,
-    
-    primary key (id),
-    unique (k)
-
-);
-
-create or replace function dba.auth_request (
-    @request xml default null
-) 
-returns xml
-begin
-
-    declare @result xml;
-    
-    for a as a cursor for select * from openxml ( @request, '/*' ) with (
-        @auth_key uniqueidentifier '@auth-key',
-        @auth_sign varchar(32) '@auth-sign',
-        @auth_body text '.'
-    ) do
-        if not hash(string((select secret from xmlgate.auth where k = @auth_key), @auth_body)) = isnull(@auth_sign,'') then
-            set @result = xmlelement( 'not-authorised', @auth_body );
-        end if;
-    end for;
-
-    if (@result is null) then for c as c cursor for
-        select  * from openxml ( @request, '/*/*' ) with (
-            @request_body xml '@mp:xmltext'
-        )
-    do
-        set @result = xmlconcat( @result, dba.xml_query ( xmlelement('r',@request_body) ));
-    end for end if;
-    
-    return xmlelement(
-        'auth-response'
-        ,xmlattributes( 'http://unact.net/xml/xi' as xmlns, now() as ts )
-        ,@result
-    );
-
-end;
-
-/*
-for c as c cursor for 
-    select 'set @result = ( select * from measures for xml auto )' as @q, k as @key, secret as @secret
-    from xmlgate.auth where id = 1
- do
-    select dba.auth_request ('<r auth-key="'+@key+'" auth-sign="'+hash(string(@secret,@q))+'"><sql>'+@q+'</sql></r> ')
-end for
-*/
 
 sa_make_object 'service', 'xmlq';
 
@@ -184,18 +127,10 @@ alter service xmlq
 as call util.xml_for_http(dba.xml_query(:request))
 ;
 
-sa_make_object 'service', 'xmlqa';
-
-alter service xmlqa
- type 'RAW'
- authorization off
- user dba
-as call util.xml_for_http(dba.auth_request( :request ) )
-;
-
 
 drop event xmlgateAsyncQuery
 ;
+
 create event dba.xmlgateAsyncQuery
 handler
 begin
