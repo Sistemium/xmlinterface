@@ -54,6 +54,11 @@
         <access role="sales"/>
     </menu>
     
+    <menu name="megaport" label="Мегапорт" directory="views/megaport">
+        <access role="megaport"/>
+        <access role="beta"/>
+    </menu>
+    
     <menu label="Логистика">
         <option href="views/transport/encashment-planning.xml">
             <access role="osmp"/>

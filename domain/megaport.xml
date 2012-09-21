@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<domain name="megaport" xmlns="http://unact.net/xml/xi">
+
+    <concept name="mp-agent">
+        
+    </concept>
+
+
+    <concept name="mp-agent-route">
+        
+        <role name="mp-agent" actor="mp-agent" sql-name="agent"/>
+        
+    </concept>
+
+
+    <concept name="mp-agent-route-point">
+        
+        <role name="mp-agent-route" actor="mp-agent-route" sql-name="agent_route"/>
+        <role name="mp-terminal" actor="mp-terminal" sql-name="terminal"/>
+        
+    </concept>
+
+
+    <concept name="mp-terminal">
+        
+    </concept>
+
+
+</domain>

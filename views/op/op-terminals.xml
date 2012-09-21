@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="op-terminals" label="Платежные терминалы">
+    
+    <access role="it"/>
+    
+    <view-schema> <form name="op-agent"> 
+        
+        <field name="id"/>
+        
+        <parameter name="name">
+            <init with="username"/>
+        </parameter>
+        
+        <parameter name="terminalID" modifiable="true" optional="true" property="none">
+            <init with="userinput"/>
+        </parameter>
+        
+        <parameter name="searcher" editable="true"
+                   type="string" use-like="true"
+                   optional="true" property="none"
+                   label="Поиск"
+        />
+        
+        <form name="catterminal"
+            label="Терминал"
+            set-label="Терминалы" page-size="15"
+            choise-style="table"
+        >
+            
+            <field name="id" />
+            <field name="name" />
+            <field name="code" />
+            <field name="address" />
+            
+            <join name="op-agent" field="xid" />
+            <join name="op-agent" field="searcher" property="name" />
+            
+            <form name="payment-set" concept="op" preload="true">
+                
+                <parameter name="cmp" type="boolean" label="Завершенные" editable="true" optional="true"/>
+                <parameter name="err" type="boolean" label="С ошибкой" editable="true" optional="true"/>
+                
+                <form name="op-payment" is-set="true" label="Платежи процессинга" page-size="10">
+                    
+                    <field name="id"/>
+                    <field name="ts"/>
+                    <field name="cts" hidden="true"/>
+                    <field name="status"/>
+                    <field name="summ" />
+                    <field name="account"/>
+                    <field name="extra"/>
+                    
+                    <form name="op-payment-error" concept="op-error">
+                        <field name="id"/>
+                        <field name="name" label="Ошибка"/>
+                        <where name="id">
+                            <not>0</not>
+                        </where>
+                    </form>
+                    
+                    <join name="payment-set" field="cmp" property="final"/>
+                    <join name="payment-set" field="err" property="op-error"/>
+                    <join name="op-service"/>
+                    
+                    <order-by name="ts" dir="desc"/>
+                    
+                </form>
+            </form>
+            
+        </form>
+        
+    </form> </view-schema>
+    
+    <workflow name="master">
+        
+        <step name="index" >
+            
+            <display>
+                <input form="op-agent" field="searcher"/>
+                
+                <region label="Терминал">
+                    <print form="op-service" field="*"/>
+                </region>
+            </display>
+            
+            <choise>
+                <option label="Платежи по услуге">
+                    <command name="payment-set">refresh</command>
+                    <command name="op-services">display-payments</command>
+                </option>
+            </choise>
+            
+        </step>
+        
+        <step name="display-payments" hidden="true">
+            
+            <display>
+                <region class="tabs">
+                    <region label="Детали услуги">
+                        <input field="cmp"/>
+                        <input field="err"/>
+                        <grid form="op-payment" hide-empty="true" label="Последние платежи">
+                            <group>
+                                <by field="name" form="op-service"/>
+                            </group>
+                        </grid>
+                    </region>
+                    <region label="Детали услуги">
+                        <print form="op-service" field="*"/>
+                    </region>
+                </region>
+            </display>
+            
+            <choise>
+                <option label="Поиск услуги">
+                    <command name="op-services">index</command>
+                </option>
+            </choise>
+            
+        </step>
+        
+    </workflow>
+    
+</view-definition>

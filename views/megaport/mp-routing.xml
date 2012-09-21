@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="mp-routing" label="Задания агентам">
+    
+    <view-schema><form name="sysuser">
+        
+        <parameter name="name"> <init with="username"/> </parameter>
+        <parameter name="device-name"> <init with="device-name"/> </parameter>
+        <parameter name="date" type="date" editable="true"> <init with="today"/> </parameter>
+        
+        <field name="id" />
+        
+        <form name="agent" concept="mp-agent"
+            label="Агенты" what-label="агента"
+            expect-choise="true"
+        >
+            <field name="id"/>
+            <field name="name"/>
+            
+            <form name="route" concept="mp-agent-route">
+                
+                <join name="sysuser" field="date"/>
+                
+                <field name="xid"/>
+                <field name="ndoc"/>
+                
+                <form name="route-point" concept="mp-agent-route-point"
+                    is-set="true"
+                >
+                    
+                    <field name="xid"/>
+                    
+                    <form name="route-point-terminal" concept="mp-terminal">
+                        <field name="name"/>
+                    </form>
+                    
+                </form>
+                
+            </form>
+            
+        </form>
+        
+    </form></view-schema>
+    
+    <workflow>
+        
+        <step name="index" label-="">
+            
+            <reusables>
+                
+                <choise name="">
+                    <option name="" label="">
+                        <command name=""></command>
+                    </option>
+                </choise>
+                
+            </reusables>
+            
+            <display>
+                
+                <print field="name" form="sysuser"/>
+                <print field="name" form="agent"/>
+                <grid form="route-point">
+                    <group>
+                        <by field="ndoc" form="route"/>
+                    </group>
+                </grid>
+                
+            </display>
+            
+        </step>
+        
+    </workflow>
+    
+</view-definition>
