@@ -1202,6 +1202,11 @@
 
     <concept name="catterminal">
         <select owner="dbo" sql-name="catterminal"/>
+        <select owner="dbo" sql-name="catterminalByUPClientOPTerminal">
+            <parameter name="up-client" type="int" sql-name="@client"/>
+            <parameter name="terminalID" type="int" sql-name="@terminalID"/>
+        </select>
+        
         <save owner="dbo" sql-name="catterminal"/>
         
         <role name="branch" actor="branch"/>
