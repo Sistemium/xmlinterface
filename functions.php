@@ -121,6 +121,8 @@ function xmlRequest($request) {
         } else
             $source_http = $private->mssqlServer;
         
+        if (developerMode()) $request[0]->ownerDocument->save('data/lastrequest.xml');
+        
         if($http->post($source_http,
             $http->make_query_string(array(
                     "request"=>$request[0]->ownerDocument->saveXML(),

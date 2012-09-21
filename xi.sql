@@ -79,7 +79,6 @@ begin
             set @result = dba.xml_sqlExecute(@sql);
             update xmlgate.query set response = isnull(@result,'') where xid = @xid;
         else
-            message 'dba.xml_query @async = true';
             trigger event xmlgateAsyncQuery(query = @xid);
             set @result = xmlelement('asyncQuery', xmlattributes(@xid as "queryXid"));
         end if;
