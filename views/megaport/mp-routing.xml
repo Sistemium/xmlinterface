@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<view-definition xmlns="http://unact.net/xml/xi" name="mp-routing" label="Задания агентам">
+<view-definition xmlns="http://unact.net/xml/xi" name="mp-routing" label="Задания агентам" version="1.0">
     
     <view-schema><form name="sysuser">
         
@@ -11,17 +11,22 @@
         
         <form name="agent" concept="mp-agent"
             label="Агенты" what-label="агента"
-            expect-choise="true"
+            expect-choise="true" choise-style="table"
         >
             <field name="id"/>
             <field name="name"/>
             
-            <form name="route" concept="mp-agent-route">
+            <form name="agent-routes-aggregate" concept="mp-agent-route" no-preload="true">
+                <field name="date" aggregate="max" label="Последний маршрут"/>
+            </form>
+            
+            <form name="route" concept="mp-agent-route" is-set="true" page-size="20">
                 
-                <join name="sysuser" field="date"/>
+                <where name="date"><more-than>today()-5</more-than></where>
                 
                 <field name="xid"/>
                 <field name="ndoc"/>
+                <field name="date"/>
                 
                 <form name="route-point" concept="mp-agent-route-point"
                     is-set="true"
@@ -29,11 +34,13 @@
                     
                     <field name="xid"/>
                     
-                    <form name="route-point-terminal" concept="mp-terminal">
+                    <form name="route-point-terminal" concept="catterminal">
                         <field name="name"/>
                     </form>
                     
                 </form>
+                
+                <order-by name="ndoc" dir="desc"/>
                 
             </form>
             
@@ -57,13 +64,17 @@
             
             <display>
                 
-                <print field="name" form="sysuser"/>
-                <print field="name" form="agent"/>
-                <grid form="route-point">
-                    <group>
-                        <by field="ndoc" form="route"/>
-                    </group>
-                </grid>
+                <input form="sysuser"/>
+                <input field="date" form="sysuser"/>
+                <print field="name" form="agent" label="Агент"/>
+                
+                <region class="tabs">
+                    <for-each form="route">
+                        <print field="date"/>
+                        <print field="ndoc"/>
+                        <grid form="route-point"/>
+                    </for-each>
+                </region>
                 
             </display>
             
