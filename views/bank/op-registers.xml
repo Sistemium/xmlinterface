@@ -34,6 +34,7 @@
                     <parameter name="register-detail-xid" modifiable="true" property="xid" optional="true"/>
                     <parameter name="blank-number" modifiable="true" optional="true"/>
 					<parameter name="id-search" type="int" label="Поиск по ИД" editable="true" optional="true"/>
+					<parameter name="err-search" type="boolean" label="С ошибкой" editable="true" optional="true"/>
                     
                     <field name="id"/>
                     <field name="date"/>
@@ -71,6 +72,7 @@
                         <order-by name="ts" dir="desc"/>
                         
 						<join name="register-detail" field="id-search" property="op-payment"/>
+						<join name="register-detail" field="err-search" property="op-csv-error"/>
 						
                     </form>
                     
@@ -138,6 +140,7 @@
 				
                 <input form="register-detail" field="processed"/>
 				<input field="id-search"/>
+				<input field="err-search"/>
 				
                 <export form="multibank-reestr" type="csv1251" synthesize-attributes="true">
 					<synthesize attribute="file-name"
