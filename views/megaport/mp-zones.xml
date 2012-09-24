@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="mp-zones" label="Зоны обслуживания терминалов" version="1.0">
+    
+    <view-schema><form name="sysuser">
+        
+        <parameter name="name"> <init with="username"/> </parameter>
+        <parameter name="username"> <init with="username"/> </parameter>
+        <parameter name="device-name"> <init with="device-name"/> </parameter>
+        <parameter name="date" type="date" editable="true" label="Дата"> <init with="today"/> </parameter>
+        
+        <field name="id" />
+        
+        <form name="zones" concept="mp-zone" is-set="true">
+            
+            <where name="agent-type">megaport.techniks</where>
+            <join name="sysuser" field="username"/>
+            
+            <field name="name" label="Зона"/>
+            
+            <form name="mp-zone-terminal">
+                <field name="mp-terminal" aggregate="count" label="Кол-во терминалов"/>
+            </form>
+            
+            <form name="zone-routes" concept="mp-agent-route" page-size="1">
+                
+                <join name="sysuser" field="date"/>
+                
+                <order-by name="date" dir="desc"/>
+                
+                <field name="ndoc"/>
+                
+                <form name="agent" concept="mp-agent">
+                    <field name="name" label="Техник"/>
+                </form>
+                
+            </form>
+            
+        </form>
+        
+    </form></view-schema>
+    
+    <workflow>
+        
+        <step name="index" label-="">
+            
+            <display>
+                
+                <input field="date" form="sysuser"/>
+                <grid form="zones"/>
+                
+            </display>
+            
+        </step>
+        
+    </workflow>
+    
+</view-definition>

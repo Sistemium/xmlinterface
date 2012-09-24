@@ -124,6 +124,14 @@
         
         <xsl:variable name="sort-form" select="$metadata/xi:sort/@form"/>
         <xsl:variable name="sort-field" select="$metadata/xi:sort/@field"/>        
+        <xsl:variable name="sort-order">
+            <xsl:value-of select="$metadata/xi:sort/@dir"/>
+            <xsl:if test="not($metadata/xi:sort/@dir)">
+                <xsl:text>asc</xsl:text>
+            </xsl:if>
+            <xsl:text>ending</xsl:text>
+        </xsl:variable>
+        
         <xsl:variable name="sort-data-type">text</xsl:variable>
         
         <xsl:variable name="current-set" select="$data/ancestor::*[self::xi:preload[@page-start]|self::xi:set-of][@ref=$metadata/@id]"/>
@@ -170,7 +178,10 @@
             
             <xsl:for-each select="$data-set">
                 
-                <xsl:sort select="descendant::xi:data[@name=$sort-form]/xi:datum[@name=$sort-field]" data-type="{$sort-data-type}"/>
+                <xsl:sort data-type="{$sort-data-type}" order="{$sort-order}" select="
+                    descendant::xi:data [@name=$sort-form]
+                    /xi:datum [@name=$sort-field]
+                "/>
                 
                 <xsl:apply-templates select="$metadata" mode="build-data">
                     <xsl:with-param name="data" select="."/>

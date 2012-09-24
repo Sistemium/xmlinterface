@@ -10,19 +10,30 @@
         <field name="id" />
         
         <form name="agent" concept="mp-agent"
-            label="Агенты" what-label="агента"
+            label="Агент" what-label="агента"
             expect-choise="true" choise-style="table"
         >
             <field name="id"/>
             <field name="name"/>
             
-            <form name="agent-routes-aggregate" concept="mp-agent-route" no-preload="true">
+            <reduce form="agent-routes-aggregate" field="date"/>
+            
+            <form name="agent-routes-aggregate" concept="mp-agent-route"
+                no-preload="true"
+            >
                 <field name="date" aggregate="max" label="Последний маршрут"/>
+                <where name="date">
+                    <more-than>today()-5</more-than>
+                </where>
             </form>
             
-            <form name="route" concept="mp-agent-route" is-set="true" page-size="20">
+            <form name="route" concept="mp-agent-route" is-set="true" page-size="5">
                 
-                <where name="date"><more-than>today()-5</more-than></where>
+                <!--where name="date">
+                    <more-than>today()-5</more-than>
+                </where-->
+                
+                <order-by name="ndoc" dir="desc"/>
                 
                 <field name="xid"/>
                 <field name="ndoc"/>
@@ -34,13 +45,21 @@
                     
                     <field name="xid"/>
                     
-                    <form name="route-point-terminal" concept="catterminal">
-                        <field name="name"/>
+                    <field name="visited"/>
+                    <field name="info"/>
+                    
+                    <sort form="route-point-terminal" field="error" dir="desc"/>
+                    
+                    <form name="route-point-terminal" concept="mp-terminal">
+                        <field name="code"/>
+                        <field name="address"/>
+                        <field name="terminalid"/>
+                        <field name="lastactivitytime" format="smalltime"/>
+                        <field name="lastpaymenttime" format="smalltime"/>
+                        <field name="error"/>
                     </form>
                     
                 </form>
-                
-                <order-by name="ndoc" dir="desc"/>
                 
             </form>
             
@@ -52,7 +71,7 @@
         
         <step name="index" label-="">
             
-            <reusables>
+            <!--reusables>
                 
                 <choise name="">
                     <option name="" label="">
@@ -60,19 +79,22 @@
                     </option>
                 </choise>
                 
-            </reusables>
+            </reusables-->
             
             <display>
                 
-                <input form="sysuser"/>
-                <input field="date" form="sysuser"/>
+                <input form="agent"/>
+                <!--input field="date" form="sysuser"/-->
                 <print field="name" form="agent" label="Агент"/>
                 
                 <region class="tabs">
-                    <for-each form="route">
-                        <print field="date"/>
+                    <for-each form="route" label-field="date">
                         <print field="ndoc"/>
-                        <grid form="route-point"/>
+                        <grid form="route-point">
+                            <!--group>
+                                <by form="route-point-terminal" field="error"/>
+                            </group-->
+                        </grid>
                     </for-each>
                 </region>
                 
