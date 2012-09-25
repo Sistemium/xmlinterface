@@ -2227,13 +2227,15 @@
     </concept>
 
     <concept name="sales-logger">
+        
         <select owner="sales" sql-name="logger" type="procedure">
             <parameter name="cat-salesman" type="int" sql-name="@salesman"/>
             <parameter name="version" type="string" sql-name="@version"/>
         </select>
-
+        
         
         <role name="cat-salesman" actor="cat-salesman" sql-name="palm_salesman"/>
+        
     </concept>
 
     <!--concept name="article-category">

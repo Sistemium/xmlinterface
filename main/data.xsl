@@ -32,7 +32,7 @@
                         ">
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
-            <xsl:comment>1</xsl:comment>
+            <xsl:comment>main/data/1</xsl:comment>
             <xsl:apply-templates select="../xi:view-schema/xi:form" mode="build-data">
                 <xsl:with-param name="olddata" select="."/>
             </xsl:apply-templates>
@@ -40,8 +40,8 @@
     </xsl:template>
 
     <xsl:template
-        match="xi:view [xi:menu[xi:option[@chosen][@name='refresh']]]/
-                xi:view-data
+        match="xi:view [xi:menu[xi:option[@chosen][@name='refresh']]]
+                /xi:view-data
                 //xi:data[key('id',@ref)[@new-only or xi:parameter[@editable and not(@optional)]]
                             and not(ancestor::xi:data/xi:response[@ts]/xi:exception|descendant::xi:exception)
                 ]
@@ -49,7 +49,8 @@
                  [@refresh-this and key('id',@ref)/@new-only and not(descendant::xi:exception)]
         " priority="1000"
     >
-      
+        <xsl:comment>main/data/2</xsl:comment>
+        
         <xsl:apply-templates select="key('id',@ref)" mode="build-data">
             <xsl:with-param name="olddata" select="."/>
         </xsl:apply-templates>
@@ -58,8 +59,10 @@
 
 
     <!-- пришли свежие данные -->
-    <xsl:template match="xi:view-data//*[xi:response[xi:result-set[*] or ((xi:exception/xi:not-found or xi:result-set[not(*)]) and key('id',../@ref)/@build-blank)]]"
-                  priority="1000">
+    <xsl:template priority="1001" match="
+        xi:view-data
+        //* [xi:response [xi:result-set[*] or ((xi:exception/xi:not-found or xi:result-set[not(*)]) and key('id',../@ref)/@build-blank)]]
+    ">
         <xsl:apply-templates select="key('id',@ref)" mode="build-data">
             <xsl:with-param name="data" select="xi:response/xi:result-set/*"/>
         </xsl:apply-templates>

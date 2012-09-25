@@ -6,7 +6,10 @@
         
         <select owner="megaport" sql-name="agent"/>
         
+        <property name="id" type="int" key="true"/>
+        
         <property name="name" label="Имя"/>
+        <property name="loginname" type="string" label="Логин" />
         
     </concept>
 
@@ -43,6 +46,7 @@
         
         <property name="lastactivitytime" type="datetime" label="Последний сигнал"/>
         <property name="lastpaymenttime" type="datetime" label="Последний платеж"/>
+        
         <property name="error" type="string" label="Ошибка" sql-name="errortext"/>
         
         <property name="name" type="string" label="Название"/>
@@ -60,6 +64,8 @@
         <select owner="megaport" sql-name="zoneByUsername" type="procedure">
             <parameter name="username" sql-name="@username" required="true"/>
         </select>
+        
+        <property name="id" type="int" key="true"/>
         
         <property name="name" label="Название"/>
         

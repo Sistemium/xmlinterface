@@ -1,21 +1,34 @@
 <?xml version="1.0"?>
-<view-definition xmlns="http://unact.net/xml/xi" name="mp-zones" label="Зоны обслуживания терминалов" version="1.0">
+
+<view-definition version="1.0" xmlns="http://unact.net/xml/xi"
+    name="mp-zones" label="Зоны обслуживания терминалов"
+>
     
     <view-schema><form name="sysuser">
         
-        <parameter name="name"> <init with="username"/> </parameter>
+        <parameter name="name">
+            <init with="username"/>
+        </parameter>
         <parameter name="username"> <init with="username"/> </parameter>
         <parameter name="device-name"> <init with="device-name"/> </parameter>
         <parameter name="date" type="date" editable="true" label="Дата"> <init with="today"/> </parameter>
         
         <field name="id" />
         
-        <form name="zones" concept="mp-zone" is-set="true">
+        <form name="zones" concept="mp-zone" is-set="true" what-label="зону">
             
-            <where name="agent-type">megaport.techniks</where>
+            <secure role="megaport.technik">
+                <where name="agent-type">megaport.techniks</where>
+            </secure>
+            
             <join name="sysuser" field="username"/>
             
+            <field name="id"/>
             <field name="name" label="Зона"/>
+            <field name="agent-type" label="Тип зоны"/>
+            
+            <order-by name="agent-type" dir="asc"/>
+            <order-by name="name" dir="asc"/>
             
             <form name="mp-zone-terminal">
                 <field name="mp-terminal" aggregate="count" label="Кол-во терминалов"/>
@@ -30,7 +43,55 @@
                 <field name="ndoc"/>
                 
                 <form name="agent" concept="mp-agent">
-                    <field name="name" label="Техник"/>
+                    <field name="name" label="Ответственный"/>
+                </form>
+                
+            </form>
+            
+        </form>
+        
+        <form name="mp-agent">
+            
+            <join name="sysuser" field="username" property="loginname"/>
+            
+            <form name="detailed-zone" concept="mp-zone">
+                
+                <parameter name="zone-to-detail-id" modifiable="true" property="id"/>
+                
+                <field name="name"/>
+                
+                <form name="current-route" concept="mp-agent-route" page-size="1">
+                    
+                    <join name="sysuser" field="date"/>
+                    
+                    <order-by name="ndoc" dir="desc"/>
+                    
+                    <field name="ndoc"/>
+                    
+                    <form name="current-route-point" concept="mp-agent-route-point" is-set="true">
+                        <field name="visited"/>
+                        <form name="current-route-point-terminal" concept="mp-terminal">
+                            <field name="code"/>
+                            <field name="address"/>
+                            <field name="terminalid"/>
+                        </form>
+                    </form>
+                    
+                </form>
+                
+                <form name="mp-detailed-zone-terminal" concept="mp-zone-terminal" is-set="true">
+                    
+                    <form name="problem-terminal" concept="mp-terminal">
+                        
+                        <where name="error"><not/></where>
+                        
+                        <field name="error"/>
+                        <field name="code"/>
+                        <field name="address"/>
+                        <field name="lastactivitytime"/>
+                        
+                    </form>
+                    
                 </form>
                 
             </form>
@@ -45,10 +106,45 @@
             
             <display>
                 
-                <input field="date" form="sysuser"/>
-                <grid form="zones"/>
+                <secure role="master">
+                    <input field="date" form="sysuser"/>
+                </secure>
+                
+                <grid form="zones">
+                    
+                    <option name="to-zone-details" label="...">
+                        <command name="mp-zones">zone-details</command>
+                        <command name="zone-to-detail-id" xpath-compute="xi:datum[@name='id']" />
+                    </option>
+                    
+                    <group>
+                        <by form="zones" field="agent-type"/>
+                    </group>
+                    
+                </grid>
                 
             </display>
+            
+        </step>
+        
+        <step name="zone-details" label="Дела в зоне" hidden="true">
+            
+            <display>
+                
+                <print form="detailed-zone" field="*"/>
+                
+                <region class="tabs">
+                    <grid form="current-route-point" label="Задания маршрута"/>
+                    <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой"/>
+                </region>
+                
+            </display>
+            
+            <choise>
+                <option name="to-index" label="К выбору зон">
+                    <command name="mp-zones">index</command>
+                </option>
+            </choise>
             
         </step>
         
