@@ -166,7 +166,7 @@
                 <xsl:variable name="prev-value" select="$data-prev//xi:datum[@ref=current()/@ref]|$data-prev/ancestor::xi:data/xi:datum[@ref=current()/@ref]"/>
                 <xsl:if test="not($current-value = $prev-value)">
                     <xsl:apply-templates select="$current-value|key('id',@ref[not($current-value) and $prev-value])" mode="grid-group">
-                        <xsl:with-param name="colspan" select="count($columns/xi:column|$columns/parent::xi:grid[@deletable])"/>
+                        <xsl:with-param name="colspan" select="count($columns/xi:column|$columns/parent::xi:grid[@deletable]|key('id',$columns/parent::xi:grid/@id)[xi:option])"/>
                         <xsl:with-param name="cnt" select="count($data/following::xi:data[@ref=$data/@ref and (descendant::xi:datum|ancestor::xi:data/xi:datum)[@ref=current()/@ref][text()=($data//xi:datum|$data/ancestor::xi:data/xi:datum)[@ref=current()/@ref]]])+1"/>
                         <xsl:with-param name="cnt-show" select="$columns/../@accordeon"/>
                     </xsl:apply-templates>
