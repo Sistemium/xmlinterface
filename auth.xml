@@ -156,6 +156,9 @@
         <role ref="osmp"/>
         <role ref="cashier"/>
         <role ref="call-center"/>
+        <role ref="megaport"/>
+        <role ref="beta"/>
+        <role ref="master"/>
     </user>
 
     <user name="sudakov">
@@ -180,16 +183,6 @@
         <role ref="subdealer"/>
     </user>
 
-    <user name="spilnik">
-        <role ref="subdealer"/>
-        <role ref="sales"/>
-        <role ref="call-center"/>
-        <role ref="osmp"/>
-        <role ref="cashier"/>
-        <role ref="main"/>
-        <role ref="findir"/>
-        <role ref="qc"/>
-    </user>
     
     <user name="iulyanov">
         <role ref="qc"/>
