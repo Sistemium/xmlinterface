@@ -70,6 +70,12 @@
         <property name="name" label="Название"/>
         
         <property name="agent-type" sql-name="agent_type"/>
+        <property name="agent-type-name" label="Тип зоны" sql-compute="
+            case agent_type
+                when 'megaport.techniks' then 'Техники'
+                when 'megaport.encashers' then 'Инкассаторы'
+            end
+        "/>
         
     </concept>
     

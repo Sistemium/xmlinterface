@@ -25,7 +25,7 @@
             
             <field name="id"/>
             <field name="name" label="Зона"/>
-            <field name="agent-type" label="Тип зоны"/>
+            <field name="agent-type-name"/>
             
             <order-by name="agent-type" dir="asc"/>
             <order-by name="name" dir="asc"/>
@@ -69,7 +69,11 @@
                     <field name="ndoc"/>
                     
                     <form name="current-route-point" concept="mp-agent-route-point" is-set="true">
-                        <field name="visited"/>
+                        <field name="task-type" label="Задача">
+                            <sql-compute>
+                                (select break_name from dbo.terminal_break tb where id = [current-route-point].[terminal_break])
+                            </sql-compute>
+                        </field>
                         <form name="current-route-point-terminal" concept="mp-terminal">
                             <field name="code"/>
                             <field name="address"/>
@@ -118,7 +122,7 @@
                     </option>
                     
                     <group>
-                        <by form="zones" field="agent-type"/>
+                        <by form="zones" field="agent-type-name"/>
                     </group>
                     
                 </grid>
@@ -141,7 +145,7 @@
             </display>
             
             <choise>
-                <option name="to-index" label="К выбору зон">
+                <option name="to-index" label="Сменить зону">
                     <command name="mp-zones">index</command>
                 </option>
             </choise>

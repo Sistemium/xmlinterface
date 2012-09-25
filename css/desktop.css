@@ -366,35 +366,6 @@ body.spb {margin:2px;}
 
 .mobile .view .menu {text-align:center; padding-bottom: 1px;}
 .progress {display:none;}
-.android #canvas {padding-bottom:1.5em;}
-.android .step.title {background-color:green; color:white;}
-.android .dialogue .datum * {display:block;}
-.android .dialogue .datum .colon {display:none;}
-.android .dialogue .datum label  {background-color:silver;color:white; font-size:20px; padding-bottom:5px;}
-.android .dialogue .datum {border:solid 4px silver;}
-.android .dialogue, .android .dialogue div.option {text-align:left;}
-.android .dialogue .datum.print > span {padding: 0px 3px;}
-
-.android .dialogue .datum input.text {width:100%;position:relative; left:-3px;}
-
-.android .dialogue thead th {font-size:20px;}
-
-.android .boolean input, .android .option input.radio { float:left !important;margin:10px 5px 0px;}
-.android .datum.input label, .android .boolean label, .android .option label {
-    background-color:green; color:white; padding:5px; display:block;
-}
-.android .boolean, .android .boolean * {display:block;}
-
-.android , .android input, .android a, .android .datum .boolean label {font-size:20px ;}
-
-.android {margin:0px 0px 0px 2px;}
-.android #canvas > .menu.not-chosen, .android #session-wrapper.not-authenticated, .android .view {
-    width:100%;}
-
-.android .view {padding-top:5px !important;}
-.android #canvas > .menu { margin-top: 12px;}
-
-.android #canvas > .menu .option .button {display:block;}
 
 .spb .option input.button {font-size:10px; border:none; padding:4px 2px;}
 .mobile .option {padding: 0px 1px;}
