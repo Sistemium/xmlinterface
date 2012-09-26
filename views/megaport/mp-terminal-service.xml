@@ -1,14 +1,12 @@
 <?xml version="1.0"?>
 
 <view-definition version="1.0" xmlns="http://unact.net/xml/xi"
-    name="mp-zones" label="Зоны обслуживания терминалов"
+    name="mp-zones" label="Обслуживание терминалов"
 >
     
     <view-schema><form name="sysuser">
         
-        <parameter name="name">
-            <init with="username"/>
-        </parameter>
+        <parameter name="name"> <init with="username"/> </parameter>
         <parameter name="username"> <init with="username"/> </parameter>
         <parameter name="device-name"> <init with="device-name"/> </parameter>
         <parameter name="date" type="date" editable="true" label="Дата"> <init with="today"/> </parameter>
@@ -40,11 +38,11 @@
                 
                 <order-by name="date" dir="desc"/>
                 
-                <field name="ndoc"/>
-                
                 <form name="agent" concept="mp-agent">
-                    <field name="name" label="Ответственный"/>
+                    <field name="name" label="Назначен"/>
                 </form>
+                
+                <field name="ndoc"/>
                 
             </form>
             
@@ -74,6 +72,8 @@
                                 (select break_name from dbo.terminal_break tb where id = [current-route-point].[terminal_break])
                             </sql-compute>
                         </field>
+                        <field name="is-served"/>
+                        <field name="is-penalty-canceled"/>
                         <form name="current-route-point-terminal" concept="mp-terminal">
                             <field name="code"/>
                             <field name="address"/>
@@ -135,6 +135,7 @@
             
             <display>
                 
+                <print form="sysuser" field="date"/>
                 <print form="detailed-zone" field="*"/>
                 
                 <region class="tabs">
