@@ -34,7 +34,8 @@
         <role name="mp-agent-route" actor="mp-agent-route" sql-name="agent_route"/>
         <role name="mp-terminal" actor="mp-terminal" sql-name="terminal"/>
         
-        <property name="visited" type="boolean" label="Посещено?" />
+        <property name="is-served" type="boolean" label="Выполнено?" sql-name="servstatus"/>
+        <property name="is-penalty-canceled" type="boolean" label="Отмена штрафа?" sql-name="penaltystatus"/>
         <property name="info" label="Пояснение" />
         
     </concept>
