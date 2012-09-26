@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <view-definition version="1.0" xmlns="http://unact.net/xml/xi"
-    name="mp-zones" label="Обслуживание терминалов"
+    name="mp-terminal-service" label="Обслуживание терминалов"
 >
     
     <view-schema><form name="sysuser">
@@ -32,7 +32,7 @@
                 <field name="mp-terminal" aggregate="count" label="Кол-во терминалов"/>
             </form>
             
-            <form name="zone-routes" concept="mp-agent-route" page-size="1">
+            <form name="zone-duties" concept="mp-agent-duty" page-size="1">
                 
                 <join name="sysuser" field="date"/>
                 
@@ -58,7 +58,7 @@
                 
                 <field name="name"/>
                 
-                <form name="current-route" concept="mp-agent-route" page-size="1">
+                <form name="current-route" concept="mp-agent-duty" page-size="1">
                     
                     <join name="sysuser" field="date"/>
                     
@@ -66,15 +66,15 @@
                     
                     <field name="ndoc"/>
                     
-                    <form name="current-route-point" concept="mp-agent-route-point" is-set="true">
+                    <form name="current-duty-task" concept="mp-agent-duty-task" is-set="true">
                         <field name="task-type" label="Задача">
                             <sql-compute>
-                                (select break_name from dbo.terminal_break tb where id = [current-route-point].[terminal_break])
+                                (select break_name from dbo.terminal_break tb where id = [current-duty-task].[terminal_break])
                             </sql-compute>
                         </field>
                         <field name="is-served"/>
                         <field name="is-penalty-canceled"/>
-                        <form name="current-route-point-terminal" concept="mp-terminal">
+                        <form name="current-duty-task-terminal" concept="mp-terminal">
                             <field name="code"/>
                             <field name="address"/>
                             <field name="terminalid"/>
@@ -139,7 +139,7 @@
                 <print form="detailed-zone" field="*"/>
                 
                 <region class="tabs">
-                    <grid form="current-route-point" label="Задания маршрута"/>
+                    <grid form="current-duty-task" label="Задания маршрута"/>
                     <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой"/>
                 </region>
                 

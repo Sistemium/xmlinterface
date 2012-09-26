@@ -6,37 +6,16 @@
         
         <select owner="megaport" sql-name="agent"/>
         
+        <select owner="megaport" sql-name="agentsByZone" type="procedure">
+            <parameter name="mp-zone" type="int" sql-name="@zone"/>
+        </select>
+        
         <property name="id" type="int" key="true"/>
         
         <property name="name" label="Имя"/>
         <property name="loginname" type="string" label="Логин" />
         
-    </concept>
-
-
-    <concept name="mp-agent-route">
-        
-        <select owner="megaport" sql-name="agent_route"/>
-        
-        <property name="date" type="date" sql-name="ddate" label="Дата"/>
-        <property name="ndoc" label="Номер маршрута"/>
-        
-        <role name="mp-agent" actor="mp-agent" sql-name="agent"/>
-        <role name="mp-zone" actor="mp-zone" sql-name="zone"/>
-        
-    </concept>
-
-
-    <concept name="mp-agent-route-point">
-        
-        <select owner="megaport" sql-name="agent_route_point"/>
-        
-        <role name="mp-agent-route" actor="mp-agent-route" sql-name="agent_route"/>
-        <role name="mp-terminal" actor="mp-terminal" sql-name="terminal"/>
-        
-        <property name="is-served" type="boolean" label="Выполнено?" sql-name="servstatus"/>
-        <property name="is-penalty-canceled" type="boolean" label="Отмена штрафа?" sql-name="penaltystatus"/>
-        <property name="info" label="Пояснение" />
+        <role name="mp-zone" actor="mp-zone"/>
         
     </concept>
 
@@ -62,15 +41,15 @@
         
         <select owner="megaport" sql-name="zone"/>
         
-        <select owner="megaport" sql-name="zoneByUsername" type="procedure">
+        <select owner="megaport" sql-name="zonesByUsername" type="procedure">
             <parameter name="username" sql-name="@username" required="true"/>
         </select>
         
         <property name="id" type="int" key="true"/>
+        <property name="agent-type" sql-name="agent_type"/>
         
         <property name="name" label="Название"/>
         
-        <property name="agent-type" sql-name="agent_type"/>
         <property name="agent-type-name" label="Тип зоны" sql-compute="
             case agent_type
                 when 'megaport.techniks' then 'Техники'
@@ -89,5 +68,33 @@
         <role name="mp-zone" actor="mp-zone" sql-name="zoneid"/>
         
     </concept>
-    
+
+
+    <concept name="mp-agent-duty">
+        
+        <select owner="megaport" sql-name="agent_route"/>
+        
+        <property name="date" type="date" sql-name="ddate" label="Дата"/>
+        <property name="ndoc" label="Номер маршрута"/>
+        
+        <role name="mp-agent" actor="mp-agent" sql-name="agent"/>
+        <role name="mp-zone" actor="mp-zone" sql-name="zone"/>
+        
+    </concept>
+
+
+    <concept name="mp-agent-duty-task">
+        
+        <select owner="megaport" sql-name="agent_route_point"/>
+        
+        <property name="is-served" type="boolean" label="Выполнено?" sql-name="servstatus"/>
+        <property name="is-penalty-canceled" type="boolean" label="Отмена штрафа?" sql-name="penaltystatus"/>
+        <property name="info" label="Пояснение" />
+        
+        <role name="mp-agent-duty" actor="mp-agent-duty" sql-name="agent_route"/>
+        <role name="mp-terminal" actor="mp-terminal" sql-name="terminal"/>
+        
+    </concept>
+
+
 </domain>
