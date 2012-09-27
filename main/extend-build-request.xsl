@@ -68,12 +68,17 @@
                 </xsl:choose>
             </xsl:for-each>
             
-            <xsl:if test="parent::xi:data and not((@refresh-this or $head) and (parent::*[@is-new] or (@role and xi:datum[@type='parameter'])))">
-                <xsl:apply-templates
-                    select="$concept/xi:role[@actor=$form/parent::xi:form/@concept]
-					       |$model/xi:concept[@name=$form/parent::xi:form/@concept]
-					       /xi:role[@actor=$concept/@name and (@name=$form/@role or not($form/@role))]
-					       " mode="join-on">
+            <xsl:if test="
+                    parent::xi:data
+                    and not(
+                        (@refresh-this or $head) and (parent::*[@is-new] or (@role and xi:datum[@type='parameter']))
+                    )
+            ">
+                <xsl:apply-templates mode="join-on" select="
+                        $concept/xi:role [@actor=$form/parent::xi:form[xi:field]/@concept]
+                        |$model/xi:concept [@name=$form/parent::xi:form[xi:field]/@concept]
+                        /xi:role [@actor=$concept/@name and (@name=$form/@role or not($form/@role))]
+				">
                     <xsl:with-param name="form" select="$form"/>
                 </xsl:apply-templates>
             </xsl:if>
