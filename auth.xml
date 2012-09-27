@@ -35,7 +35,7 @@
             <role name="ad-user"/>
             <role name="blocked-payments"/>
             <role name="megaport"/>
-            <role name="megaport.technik"/>
+            <role name="terminal-technik"/>
         </role>
     </roles>
 
@@ -102,6 +102,15 @@
         </group>
         <group name="Заблокированные платежи">
             <role ref="blocked-payments"/>
+        </group>
+        <group name="Мегапорт">
+            <role ref="megaport"/>
+        </group>
+        <group name="Техник терминалов">
+            <role ref="terminal-technik"/>
+        </group>
+        <group name="Бета-тестер">
+            <role ref="beta"/>
         </group>
     </validator>
     

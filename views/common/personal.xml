@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="personal-view" label="Уголок пользователя">
     
+    <access role="it"/>
     <view-schema><form name="sysuser">
         
         <!-- внутри view-schema должна быть ровно одна form

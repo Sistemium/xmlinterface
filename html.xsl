@@ -590,19 +590,21 @@
     <xsl:template name="build-tabs">
         <ul>
             <xsl:for-each select="*[@id]">
-                <li><a href="#{@id}">
-                    <xsl:choose>
-                        <xsl:when test="@label">
-                            <xsl:value-of select="@label"/>
-                        </xsl:when>
-                        <xsl:when test="key('id',@ref)/@label">
-                            <xsl:value-of select="key('id',@ref)/@label"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="position()"/>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </a></li>
+                <li>
+                    <a href="#{@id}">
+                        <xsl:choose>
+                            <xsl:when test="@label">
+                                <xsl:value-of select="@label"/>
+                            </xsl:when>
+                            <xsl:when test="key('id',@ref)/@label">
+                                <xsl:value-of select="key('id',@ref)/@label"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="position()"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </a>
+                </li>
             </xsl:for-each>
         </ul>
     </xsl:template>

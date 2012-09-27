@@ -15,7 +15,7 @@
         
         <form name="zones" concept="mp-zone" is-set="true" what-label="зону">
             
-            <secure role="megaport.technik">
+            <secure role="terminal-technik">
                 <where name="agent-type">megaport.techniks</where>
             </secure>
             
@@ -110,7 +110,7 @@
             
             <display>
                 
-                <secure role="master">
+                <secure role="beta">
                     <input field="date" form="sysuser"/>
                 </secure>
                 

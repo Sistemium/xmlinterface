@@ -30,11 +30,15 @@
                     <xsl:for-each select="@label">
                         <tr class="title">
                            <th colspan="{$colspan}">
-                              <xsl:value-of select="."/>
-                              <xsl:if test="key('id',../@ref)/@toggle-edit-off">
+                                
+                                <a href="?set-of-{key('id',../@ref)/@name}=refresh" onclick="return menupad(this,false,false);">
+                                    <xsl:value-of select="."/>
+                                </a>
+                                
+                                <xsl:if test="key('id',../@ref)/@toggle-edit-off">
                                     <a type="button" href="?{key('id',../@ref)/@name}=toggle-edit&amp;command=cleanUrl"
                                        class="button ui-icon ui-icon-pencil" onclick="return menupad(this,false,false);"/>
-                              </xsl:if>
+                                </xsl:if>
                            </th>
                         </tr>
                     </xsl:for-each>

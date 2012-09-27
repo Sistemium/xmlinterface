@@ -15,7 +15,7 @@
         <property name="name" label="Имя"/>
         <property name="loginname" type="string" label="Логин" />
         
-        <role name="mp-zone" actor="mp-zone"/>
+        <!--role name="mp-zone" actor="mp-zone"/-->
         
     </concept>
 
