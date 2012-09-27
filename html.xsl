@@ -604,6 +604,13 @@
                             </xsl:otherwise>
                         </xsl:choose>
                     </a>
+                    <xsl:if test="self::xi:grid/@refreshable">
+                        <a type="button"
+                           href="?set-of-{@form}=refresh&amp;command=cleanUrl"
+                           class="button ui-icon ui-icon-refresh"
+                           onclick="return menupad(this,false,false);"
+                        />
+                    </xsl:if>
                 </li>
             </xsl:for-each>
         </ul>

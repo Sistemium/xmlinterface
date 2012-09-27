@@ -31,9 +31,17 @@
                         <tr class="title">
                            <th colspan="{$colspan}">
                                 
-                                <a href="?set-of-{key('id',../@ref)/@name}=refresh" onclick="return menupad(this,false,false);">
+                                <span>
                                     <xsl:value-of select="."/>
-                                </a>
+                                </span>
+                                
+                                <xsl:if test="ancestor::xi:grid[1]/@refreshable">
+                                    <a type="button"
+                                       href="?set-of-{key('id',../@ref)/@name}=refresh&amp;command=cleanUrl"
+                                       class="button ui-icon ui-icon-refresh"
+                                       onclick="return menupad(this,false,false);"
+                                    />
+                                </xsl:if>
                                 
                                 <xsl:if test="key('id',../@ref)/@toggle-edit-off">
                                     <a type="button" href="?{key('id',../@ref)/@name}=toggle-edit&amp;command=cleanUrl"
