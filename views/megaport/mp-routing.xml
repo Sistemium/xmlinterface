@@ -18,7 +18,7 @@
             
             <reduce form="agent-routes-aggregate" field="date"/>
             
-            <form name="agent-routes-aggregate" concept="mp-agent-route"
+            <form name="agent-routes-aggregate" concept="mp-agent-duty"
                 no-preload="true"
             >
                 <field name="date" aggregate="max" label="Последний маршрут"/>
@@ -27,7 +27,7 @@
                 </where>
             </form>
             
-            <form name="route" concept="mp-agent-route" is-set="true" page-size="5">
+            <form name="route" concept="mp-agent-duty" is-set="true" page-size="5">
                 
                 <!--where name="date">
                     <more-than>today()-5</more-than>
@@ -39,7 +39,7 @@
                 <field name="ndoc"/>
                 <field name="date"/>
                 
-                <form name="route-point" concept="mp-agent-route-point"
+                <form name="route-point" concept="mp-agent-duty-task"
                     is-set="true"
                 >
                     
