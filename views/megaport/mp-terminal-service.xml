@@ -9,7 +9,11 @@
         <parameter name="name"> <init with="username"/> </parameter>
         <parameter name="username"> <init with="username"/> </parameter>
         <parameter name="device-name"> <init with="device-name"/> </parameter>
-        <parameter name="date" type="date" editable="true" label="Дата"> <init with="today"/> </parameter>
+        <parameter name="date" type="date" label="Дата">
+            <secure role="beta" editable="true"/>
+            <secure role="master" editable="true"/>
+            <init with="today"/>
+        </parameter>
         
         <field name="id" />
         
@@ -110,9 +114,7 @@
             
             <display>
                 
-                <secure role="beta">
-                    <input field="date" form="sysuser"/>
-                </secure>
+                <input field="date" form="sysuser"/>
                 
                 <grid form="zones">
                     
