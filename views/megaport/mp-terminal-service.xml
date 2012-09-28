@@ -3,7 +3,7 @@
 <view-definition version="1.0" xmlns="http://unact.net/xml/xi"
     name="mp-terminal-service" label="Обслуживание терминалов"
 >
-    
+    <!-- providing terminal service -->
     <view-schema><form name="sysuser">
         
         <parameter name="name"> <init with="username"/> </parameter>
@@ -141,8 +141,8 @@
                 <print form="detailed-zone" field="*"/>
                 
                 <region class="tabs">
-                    <grid form="current-duty-task" label="Задания маршрута"/>
-                    <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой"/>
+                    <grid form="current-duty-task" label="Задания маршрута" refreshable="true"/>
+                    <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true"/>
                 </region>
                 
             </display>
