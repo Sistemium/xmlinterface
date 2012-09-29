@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="mp-routing" label="Задания агентам" version="1.0">
     
+    <access role="alpha"/>
+    
     <view-schema><form name="sysuser">
         
         <parameter name="name"> <init with="username"/> </parameter>

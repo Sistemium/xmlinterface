@@ -18,6 +18,7 @@
             <role name="findir"/>
             <role name="sales"/>
             <role name="call-center"/>
+            <role name="alpha"/>
             <role name="beta"/>
             <role name="fotonova"/>
             <role name="sync"/>
