@@ -77,7 +77,16 @@
                             </sql-compute>
                         </field>
                         <field name="is-served"/>
-                        <field name="is-penalty-canceled"/>
+                        <field name="is-penalty-canceled" format="true-only"/>
+                        <field name="resolution" label-="Результат">
+                            <sql-compute>
+                                case
+                                    when servstatus=1 then 'Выполнено'
+                                    when penaltystatus=0 then 'Штраф'
+                                    else 'Отмена'
+                                end
+                            </sql-compute>
+                        </field>
                         <form name="current-duty-task-terminal" concept="mp-terminal">
                             <field name="code"/>
                             <field name="address"/>
