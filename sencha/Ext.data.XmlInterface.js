@@ -302,20 +302,25 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
 
     download: function( engine ) {
         
-        var me = this;
-        
-        me.downloadSession = {
+        var me = this,
+            processSuccessfullResponse = function(response, opts) {
+                var nextRequestParams = me.downloadSession.requestsParams.pop();
+                
+                engine.processDowloadData (response, opts);
+                
+                if (nextRequestParams)
+                    me.request(nextRequestParams);
+                else console.log ('Ext.data.XmlInterface processSuccessfullResponse error')
+            },
             
-            id: Ext.id(),
-            
-            activeRequests: function() {
+            requestsQueue = function() {
                 
                 var res = [],
                     params = {
                         command: 'download' ,
                         timeout: 120000,
                         scope: engine,
-                        success: engine.processDowloadData,
+                        success: processSuccessfullResponse,
                         xi: me
                     }
                 ;
@@ -328,20 +333,27 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                             params.params = {filter: t.id};
                             params.params[t.id] = 'unchoose';
                             
-                            res.push ( me.request ( params ) );
+                            res.splice (0, 0, Ext.apply({},params));
                         }
                     })
                 ;
                 
                 if ( res.length == 0 )
                     res.push (
-                        me.request ( params )
+                        params
                     )
                 ;
                 
                 return res;
                 
-            } ( )
+            }()
+        ;
+        
+        me.downloadSession = {
+            
+            id: Ext.id(),
+            requestsParams: requestsQueue,
+            activeRequests: [me.request(requestsQueue.pop())]
             
         };
         
