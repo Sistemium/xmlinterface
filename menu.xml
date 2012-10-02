@@ -8,6 +8,10 @@
         <access role="beta"/>
     </menu>
     
+    <menu name="uoauth" label="UOAuth" directory="views/uoauth">
+        <access role="it"/>
+        <access role="alpha"/>
+    </menu>
     
     <menu name="it" label="ИТ">
         

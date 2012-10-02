@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<view-definition version="1.0" xmlns="http://unact.net/xml/xi" name="ua-accounts" label="Аккаунты UA">
+    
+    <view-schema><form name="UA">
+        
+        <parameter name="date" type="date"> <init with="today"/> </parameter>
+        
+        <form name="ua-account" is-set="true" page-size="20">
+            
+            <all-labeled-fields/>
+            <order-by name="ts" dir="desc"/>
+            
+        </form>
+        
+        <form name="ua-provider" is-set="true" page-size="20">
+            
+            <all-labeled-fields/>
+            <order-by name="ts" dir="desc"/>
+            
+        </form>
+        
+        <form name="ua-client" is-set="true" page-size="20">
+            
+            <all-labeled-fields/>
+            <order-by name="ts" dir="desc"/>
+            
+        </form>
+        
+        <form name="ua-role" is-set="true" page-size="20">
+            
+            <all-labeled-fields/>
+            <order-by name="ts" dir="desc"/>
+            
+        </form>
+        
+    </form></view-schema>
+    
+    <workflow>
+        
+        <step name="index">
+            
+            <display>
+                <region class="tabs">
+                    <grid form="ua-account" label="Аккаунты"/>
+                    <grid form="ua-provider" label="Провайдеры"/>
+                    <grid form="ua-client" label="Клиенты"/>
+                    <grid form="ua-role" label="Роли"/>
+                </region>
+            </display>
+            
+        </step>
+        
+    </workflow>
+    
+</view-definition>

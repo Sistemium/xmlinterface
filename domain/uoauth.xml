@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<domain name="uoauth" xmlns="http://unact.net/xml/xi">
+
+
+    <concept name="UA" server="uoauth">
+        
+        <select owner="sys" sql-name="dummy"/>
+        
+        <property name="id" sql-compute="1"/>
+        
+    </concept>
+    
+    
+    <concept name="ua-provider" server="uoauth">
+        
+        <select owner="ua" sql-name="authProvider"/>
+        
+        <property name="name" label="Имя"/>
+        <property name="code" label="Код"/>
+        
+        <property name="refreshTokenUrl" label="Refresh-token url"/>
+        <property name="accessTokenUrl" label="Access-token url"/>
+        
+        <property name="ts" type="datetime" label="Последнее изменение" format="smalltime"/>
+        
+    </concept>
+    
+    
+    <concept name="ua-client" server="uoauth">
+        
+        <select owner="ua" sql-name="client"/>
+        
+        <property name="name" label="Имя"/>
+        <property name="code" label="Код"/>
+        
+        <property name="ts" type="datetime" label="Последнее изменение" format="smalltime"/>
+        
+    </concept>
+    
+    
+    <concept name="ua-account" server="uoauth">
+        
+        <select owner="ua" sql-name="account"/>
+        
+        <property name="id" label="ID"/>
+        
+        <property name="name" label="Имя"/>
+        <property name="email" label="e-mail"/>
+        <property name="ts" type="datetime" label="Последнее изменение" format="smalltime"/>
+        
+    </concept>
+    
+    
+    <concept name="ua-role" server="uoauth">
+        
+        <select owner="ua" sql-name="role"/>
+        
+        <property name="name" label="Имя"/>
+        <property name="code" label="Код"/>
+        
+        <property name="ts" type="datetime" label="Последнее изменение" format="smalltime"/>
+        
+    </concept>
+    
+    
+</domain>

@@ -118,7 +118,7 @@ begin
 end;
 
 
-sa_make_object 'service', 'xmlq';
+call sa_make_object ('service', 'xmlq');
 
 alter service xmlq
  type 'RAW'
@@ -127,7 +127,7 @@ as call util.xml_for_http(dba.xml_query(:request))
 ;
 
 
-drop event xmlgateAsyncQuery
+drop event if exists xmlgateAsyncQuery
 ;
 
 create event dba.xmlgateAsyncQuery

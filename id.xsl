@@ -12,7 +12,11 @@
     <xsl:param name="counter">1</xsl:param>
     
     <xsl:param name="userinput" select="/*/xi:userinput/xi:command"/>
-    <xsl:param name="model" select="document('domain.xml')/xi:domain|document('domain/megaport.xml')/xi:domain"/>
+    <xsl:param name="model" select="
+        document('domain.xml')/xi:domain
+        |document('domain/megaport.xml')/xi:domain
+        |document('domain/uoauth.xml')/xi:domain
+    "/>
     <xsl:param name="thisdoc" select="/"/>
     <xsl:param name="session" select="/*/xi:session"/>
 
