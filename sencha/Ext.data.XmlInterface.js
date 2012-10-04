@@ -182,7 +182,10 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         var r = this.connection.request(Ext.apply({
                 scope: this
             },
-            Ext.apply( options || {}, this.remoteParams( options ) || {} ),
+            Ext.applyIf(
+                Ext.apply( options || {}, this.remoteParams( options ) || {} ),
+                {timeout: 30000}
+            ),
             { url: this.connection.url + '&username=' + this.username}
         ));
         

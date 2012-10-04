@@ -1,6 +1,7 @@
 <?php
 include('functions.php');
 
+set_time_limit (180);
 error_reporting ( E_ALL );
 set_error_handler( 'exceptions_error_handler' );
 
