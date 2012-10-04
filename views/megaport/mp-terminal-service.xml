@@ -92,7 +92,19 @@
                         <form name="current-duty-task-terminal" concept="mp-terminal">
                             <field name="code"/>
                             <field name="address"/>
-                            <field name="terminalid"/>
+                            <field name="systerm" sql-compute="null" label="СИС-ИД">
+                                <xpath-compute>
+                                    concat(
+                                        ../xi:data[@name='current-duty-task-terminal-processing']/xi:datum[@name='name']
+                                        , ':'
+                                        , ../xi:datum[@name='terminalid']
+                                    )
+                                </xpath-compute>
+                            </field>
+                            <field name="terminalid" hidden="true"/>
+                            <form name="current-duty-task-terminal-processing" concept="processing">
+                                <field name="name"/>
+                            </form>
                         </form>
                     </form>
                     
@@ -100,7 +112,7 @@
                 
                 <form name="mp-detailed-zone-terminal" concept="mp-zone-terminal" is-set="true">
                     
-                    <form name="problem-terminal" concept="mp-terminal">
+                    <form name="problem-terminal" concept="mp-terminal" constrain-parent="true">
                         
                         <where name="error"><not/></where>
                         
@@ -109,6 +121,9 @@
                         <field name="address"/>
                         <field name="lastactivitytime"/>
                         
+                        <form name="problem-terminal-processing" concept="processing">
+                            <field name="name" label="Система"/>
+                        </form>
                     </form>
                     
                 </form>
@@ -153,7 +168,11 @@
                 
                 <region class="tabs">
                     <grid form="current-duty-task" label="Задания маршрута" refreshable="true"/>
-                    <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true"/>
+                    <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true">
+                        <group>
+                            <by field="name" form="problem-terminal-processing"/>
+                        </group>
+                    </grid>
                 </region>
                 
             </display>
