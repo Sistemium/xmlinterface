@@ -192,7 +192,7 @@
         <xsl:variable name="data" select="."/>
         <xsl:variable name="datas-prev" select="preceding::xi:data[@ref=current()/@ref]"/>
         <xsl:variable name="data-prev" select="$datas-prev[last()]"/>
-
+        
         <xsl:for-each select="$groups">
             <xsl:for-each select="xi:by">
                 
@@ -236,10 +236,19 @@
         <tr xi:id="{@id}">
             
             <xsl:attribute name="class">
+                
                 <xsl:value-of select="concat('data ',local-name(xi:exception),' ',local-name(@is-new), ' ', local-name(@delete-this))"/>
-                <xsl:for-each select="$groups/../xi:class[$data//xi:datum[text()]/@ref=@ref or $data/ancestor::xi:data/xi:datum[text()]/@ref=@ref]">
-                    <xsl:value-of select="concat(' ',@name)"/>
+                
+                <xsl:for-each select="$groups/../xi:class">
+                    <xsl:variable name="class-datum" select="
+                        $data//xi:datum [text()] [@ref=current()/@ref]
+                        | $data/ancestor::xi:data/xi:datum[text()][@ref=current()/@ref]
+                    "/>
+                    <xsl:if test="$class-datum">
+                        <xsl:value-of select="concat(' ', @name | $class-datum[not(current()/@name)])"/>
+                    </xsl:if>
                 </xsl:for-each>
+                
             </xsl:attribute>
             
             <xsl:if test="$columns/parent::*[xi:option or xi:rows[xi:option]] or $columns/../@deletable">
