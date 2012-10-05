@@ -232,6 +232,35 @@ function developerMode() {
     return false;
 }
 
+function authenticateGeneric ($credentials,&$extraData) {
+    if (isset($credentials['username'])) return authenticate ($credentials['username'], $credentials['password'], $extraData);
+    else return uoauth ($credentials['auth_token'], $extraData);
+}
+
+function uoauth ($auth_token, &$extraData) {
+    $address='https://oldcat.unact.ru/iExp/uoauth/roles';
+    $http = new HTTPRetriever();
+    
+    try { if ( $http->post (
+                $address,
+                $http->make_query_string ( array(
+                    "access_token" => $auth_token
+                )
+        ) ) ) {
+            $result = new SimpleXMLElement($http->response);
+            $extraData=$result;
+            //var_dump($result);
+            //die();
+            return isset($result -> roles) ? 'uoauth' : false;
+        }
+        else print "HTTP request error: #{$http->result_code}: {$http->result_text}";
+    }
+    catch (Exception $e){
+        print "{$e->getMessage()}";
+    };
+
+    return false;
+}
 
 function authenticate($login, $password, &$extraData) {
 

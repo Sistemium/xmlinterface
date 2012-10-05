@@ -92,6 +92,9 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             case 'command':
                 $command=$value;
                 break;
+            case 'auth_token':
+                $auth_token=$value;
+                break;
             case 'username':
             case 'login':
                 $username=trim($value);
@@ -112,24 +115,43 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
 
     switch ($command) {
         case 'authenticate':
-            if (!$authenticated && isset($username) && isset($password)){
+            if (!$authenticated) {
+                
                 $extraData=false;
-                if ($validator=authenticate($username,$password,$extraData)) {
+                $credentials = array();
+                
+                if (isset($username) && isset($password)) {
+                    $credentials['username'] = $username;
+                    $credentials['password'] = $password;
+                } else if (isset($auth_token)) {
+                    $credentials['auth_token'] = $auth_token;
+                }
+                
+                if ( $validator = authenticateGeneric ($credentials,$extraData) ) {
+                    
                     if (!isset($_COOKIE["$appname"])) session_start();
-                    $_SESSION['authenticated']=time();
-                    $_SESSION['username']=$username;
-                    $_SESSION['validator']=$validator;
+                    
+                    $_SESSION ['authenticated'] = time();
+                    $_SESSION ['username'] = isset($username)
+                        ? $username : $extraData -> account[0] -> name [0];
+                    $_SESSION ['validator'] = $validator;
+                    
                     if ($extraData && isset($extraData->groups[0])) {
+                        
                         $Context->session[0]='';
+                        
                         foreach ($extraData->groups[0]->group as $grp) {
                             $newChild=$Context->session[0]->addChild('group');
                             $newChild->addAttribute('name',(string) $grp['name']);
                         }
+                        
                     }
+                    
                 } else {
-                    $Context->session['username']=$username;
+                    $Context->session['username'] = isset($username) ? $username : '';
                     $Context->session->exception='Неверное имя или пароль';
                 }
+                
             }
             break;
         case 'logoff':
@@ -158,7 +180,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             ($initFile=='init.xml' && $pipelineName == 'main' && $requestMethod=='POST'
              && $_SERVER["CONTENT_TYPE"] == 'application/x-www-form-urlencoded' && $authenticated
             )
-            || $command=='logoff' || $command=='cleanUrl'
+            || $command=='logoff' || $command=='cleanUrl' //|| ($command == 'authenticate' && !isset($username))
        ) {
         $schema = $_SERVER['SERVER_PORT']=='443'?'https':'http';
         $querylen=strlen($_SERVER["QUERY_STRING"]);
