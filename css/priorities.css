@@ -1,0 +1,15 @@
+tr.overdue {
+    background-color: white;
+}
+
+tr.critical {
+    background-color: red;
+}
+
+tr.caution {
+    background-color: yellow;
+}
+
+tr.hurry {
+    background-color: lightgrey;
+}

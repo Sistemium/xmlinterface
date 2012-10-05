@@ -99,6 +99,7 @@
         <property name="is-penalty-canceled" type="boolean" label="Отмена штрафа?" sql-name="penaltystatus"/>
         <property name="info" label="Пояснение" />
         <property name="do-before" label="Сделать до" type="datetime"/>
+        <property name="agent-priority" sql-name="priority" />
         
         <role name="mp-agent-duty" actor="mp-agent-duty" sql-name="agent_route"/>
         <role name="mp-terminal" actor="mp-terminal" sql-name="terminal"/>

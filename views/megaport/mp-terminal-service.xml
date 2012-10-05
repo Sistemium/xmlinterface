@@ -86,7 +86,7 @@
                         <field name="resolution" label-="Результат">
                             <sql-compute>
                                 case
-                                    when servstatus=1 then 'Выполнено'
+                                    when servstatus=1 then 'OK'
                                     when penaltystatus=0 then 'Штраф'
                                     else 'Отмена'
                                 end
@@ -97,26 +97,18 @@
                         
                         <form name="current-duty-task-terminal" concept="mp-terminal">
                             
-                            <field name="code"/>
                             <field name="address"/>
+                            <field name="code"/>
                             
-                            <field name="systerm" sql-compute="null" label="СИС-ИД">
-                                <xpath-compute>
-                                    concat(
-                                        ../xi:data[@name='current-duty-task-terminal-processing']/xi:datum[@name='name']
-                                        , ':'
-                                        , ../xi:datum[@name='terminalid']
-                                    )
-                                </xpath-compute>
-                            </field>
+                            <form name="current-duty-task-terminal-processing" concept="processing">
+                                <field name="name" label="Система"/>
+                            </form>
                             
                             <field name="terminalid" hidden="true"/>
                             
-                            <form name="current-duty-task-terminal-processing" concept="processing">
-                                <field name="name"/>
-                            </form>
-                            
                         </form>
+                        
+                        <field name="agent-priority"/>
                         
                         <order-by name="is-served" dir="asc"/>
                         <order-by name="do-before" dir="asc"/>
@@ -186,6 +178,7 @@
                         <group>
                             <by field="is-served" form="current-duty-task"/>
                         </group>
+                        <class field="agent-priority" form="current-duty-task"/>
                     </grid>
                     <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true">
                         <group>
