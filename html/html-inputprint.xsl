@@ -449,7 +449,7 @@
     
 
     <xsl:template match="*" mode="render-value" name="render-simple-text">
-        <xsl:param name="value"/>
+        <xsl:param name="value" select="self::xi:datum/text()"/>
         <xsl:choose>
             <xsl:when test="@pipeline">
                 <a href="?pipeline={@pipeline}&amp;datum={$value/@id}&amp;file-name={$value/../xi:datum[@name='name']}">Скачать файл</a>
