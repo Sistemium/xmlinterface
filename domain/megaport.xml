@@ -93,11 +93,12 @@
 
     <concept name="mp-agent-duty-task">
         
-        <select owner="megaport" sql-name="agent_route_point"/>
+        <select owner="megaport" sql-name="agent-duty-task"/>
         
         <property name="is-served" type="boolean" label="Выполнено?" sql-name="servstatus"/>
         <property name="is-penalty-canceled" type="boolean" label="Отмена штрафа?" sql-name="penaltystatus"/>
         <property name="info" label="Пояснение" />
+        <property name="do-before" label="Сделать до" type="datetime"/>
         
         <role name="mp-agent-duty" actor="mp-agent-duty" sql-name="agent_route"/>
         <role name="mp-terminal" actor="mp-terminal" sql-name="terminal"/>

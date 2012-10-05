@@ -73,13 +73,16 @@
                     <field name="ndoc"/>
                     
                     <form name="current-duty-task" concept="mp-agent-duty-task" is-set="true">
+                        
                         <field name="task-type" label="Задача">
                             <sql-compute>
                                 (select break_name from dbo.terminal_break tb where id = [current-duty-task].[terminal_break])
                             </sql-compute>
                         </field>
+                        
                         <field name="is-served"/>
                         <field name="is-penalty-canceled" format="true-only"/>
+                        
                         <field name="resolution" label-="Результат">
                             <sql-compute>
                                 case
@@ -89,9 +92,14 @@
                                 end
                             </sql-compute>
                         </field>
+                        
+                        <field name="do-before" format="hh:mm"/>
+                        
                         <form name="current-duty-task-terminal" concept="mp-terminal">
+                            
                             <field name="code"/>
                             <field name="address"/>
+                            
                             <field name="systerm" sql-compute="null" label="СИС-ИД">
                                 <xpath-compute>
                                     concat(
@@ -101,11 +109,18 @@
                                     )
                                 </xpath-compute>
                             </field>
+                            
                             <field name="terminalid" hidden="true"/>
+                            
                             <form name="current-duty-task-terminal-processing" concept="processing">
                                 <field name="name"/>
                             </form>
+                            
                         </form>
+                        
+                        <order-by name="is-served" dir="asc"/>
+                        <order-by name="do-before" dir="asc"/>
+                        
                     </form>
                     
                 </form>
@@ -167,7 +182,11 @@
                 <print form="detailed-zone" field="*"/>
                 
                 <region class="tabs">
-                    <grid form="current-duty-task" label="Задания маршрута" refreshable="true"/>
+                    <grid form="current-duty-task" label="Задания маршрута" refreshable="true">
+                        <group>
+                            <by field="is-served" form="current-duty-task"/>
+                        </group>
+                    </grid>
                     <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true">
                         <group>
                             <by field="name" form="problem-terminal-processing"/>

@@ -13,6 +13,11 @@
         <access role="alpha"/>
     </menu>
     
+    <menu name="megaport" label="Мегапорт" directory="views/megaport">
+        <access role="megaport"/>
+        <access role="beta"/>
+    </menu>
+    
     <menu name="it" label="ИТ">
         
         <access role="it"/>
@@ -56,11 +61,6 @@
     
     <menu name="sales" label="Продажи" directory="views/sales">
         <access role="sales"/>
-    </menu>
-    
-    <menu name="megaport" label="Мегапорт" directory="views/megaport">
-        <access role="megaport"/>
-        <access role="beta"/>
     </menu>
     
     <menu label="Логистика">
