@@ -133,7 +133,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     
                     $_SESSION ['authenticated'] = time();
                     $_SESSION ['username'] = isset($username)
-                        ? $username : $extraData -> account[0] -> name [0];
+                        ? $username : (string) ($extraData -> account[0] -> name [0]);
                     $_SESSION ['validator'] = $validator;
                     
                     if ($extraData && isset($extraData->groups[0])) {
@@ -180,7 +180,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             ($initFile=='init.xml' && $pipelineName == 'main' && $requestMethod=='POST'
              && $_SERVER["CONTENT_TYPE"] == 'application/x-www-form-urlencoded' && $authenticated
             )
-            || $command=='logoff' || $command=='cleanUrl' //|| ($command == 'authenticate' && !isset($username))
+            || $command=='logoff' || $command=='cleanUrl' || ($command == 'authenticate' && isset($auth_token))
        ) {
         $schema = $_SERVER['SERVER_PORT']=='443'?'https':'http';
         $querylen=strlen($_SERVER["QUERY_STRING"]);

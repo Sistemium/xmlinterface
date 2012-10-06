@@ -18,8 +18,12 @@
             <role name="findir"/>
             <role name="sales"/>
             <role name="call-center"/>
+            
             <role name="alpha"/>
             <role name="beta"/>
+            <role name="ad-user"/>
+            <role name="uoauth-user"/>
+            
             <role name="fotonova"/>
             <role name="sync"/>
             <role name="salesman"/>
@@ -33,7 +37,6 @@
             <role name="checker"/>
             <role name="qc"/>
             <role name="operator"/>
-            <role name="ad-user"/>
             <role name="blocked-payments"/>
             <role name="megaport"/>
             <role name="terminal-technik"/>
@@ -48,6 +51,12 @@
         <role ref="subdealer"/>
     </validator>
 
+    <validator name="uoauth">
+        <role ref="uoauth-user"/>
+        <role ref="it"/>
+        <role ref="beta"/>
+    </validator>
+    
     <validator name="ad">
         <role ref="ad-user"/>
         <group name="fotonova.system">
@@ -121,11 +130,6 @@
 
     <user name="tsvetashova">
         <role ref="findir"/>
-    </user>
-
-    <user name="kulaga">
-        <role ref="findir"/>
-        <role ref="subdealer"/>
     </user>
 
     <user name="iprokoshina">
