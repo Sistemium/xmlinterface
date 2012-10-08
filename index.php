@@ -92,8 +92,8 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             case 'command':
                 $command=$value;
                 break;
-            case 'auth_token':
-                $auth_token=$value;
+            case 'access_token':
+                $access_token=$value;
                 break;
             case 'username':
             case 'login':
@@ -123,8 +123,8 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                 if (isset($username) && isset($password)) {
                     $credentials['username'] = $username;
                     $credentials['password'] = $password;
-                } else if (isset($auth_token)) {
-                    $credentials['auth_token'] = $auth_token;
+                } else if (isset($access_token)) {
+                    $credentials['access_token'] = $access_token;
                 }
                 
                 if ( $validator = authenticateGeneric ($credentials,$extraData) ) {
@@ -136,13 +136,24 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                         ? $username : (string) ($extraData -> account[0] -> name [0]);
                     $_SESSION ['validator'] = $validator;
                     
-                    if ($extraData && isset($extraData->groups[0])) {
+                    if (isset($access_token))
+                        $_SESSION ['access_token'] = $access_token
+                    ;
+                    
+                    if ($extraData) {
                         
                         $Context->session[0]='';
                         
-                        foreach ($extraData->groups[0]->group as $grp) {
-                            $newChild=$Context->session[0]->addChild('group');
-                            $newChild->addAttribute('name',(string) $grp['name']);
+                        if (isset($extraData->groups[0]))
+                            foreach ($extraData->groups[0]->group as $grp) {
+                                $newChild=$Context->session[0]->addChild('group');
+                                $newChild->addAttribute('name', (string) $grp['name']);
+                        }
+                        
+                        if (isset($extraData->roles[0]))
+                            foreach ($extraData->roles[0]->role as $role) {
+                                $newChild=$Context->session[0]->addChild('group');
+                                $newChild->addAttribute('name', (string) $role[0]);
                         }
                         
                     }
@@ -180,7 +191,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             ($initFile=='init.xml' && $pipelineName == 'main' && $requestMethod=='POST'
              && $_SERVER["CONTENT_TYPE"] == 'application/x-www-form-urlencoded' && $authenticated
             )
-            || $command=='logoff' || $command=='cleanUrl' || ($command == 'authenticate' && isset($auth_token))
+            || $command=='logoff' || $command=='cleanUrl' || ($command == 'authenticate' && isset($access_token))
        ) {
         $schema = $_SERVER['SERVER_PORT']=='443'?'https':'http';
         $querylen=strlen($_SERVER["QUERY_STRING"]);

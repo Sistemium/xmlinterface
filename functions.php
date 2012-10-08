@@ -234,17 +234,17 @@ function developerMode() {
 
 function authenticateGeneric ($credentials,&$extraData) {
     if (isset($credentials['username'])) return authenticate ($credentials['username'], $credentials['password'], $extraData);
-    else return uoauth ($credentials['auth_token'], $extraData);
+    else return uoauth ($credentials['access_token'], $extraData);
 }
 
-function uoauth ($auth_token, &$extraData) {
+function uoauth ($access_token, &$extraData) {
     $address='https://oldcat.unact.ru/iExp/uoauth/roles';
     $http = new HTTPRetriever();
     
     try { if ( $http->post (
                 $address,
                 $http->make_query_string ( array(
-                    "access_token" => $auth_token
+                    "access_token" => $access_token
                 )
         ) ) ) {
             $result = new SimpleXMLElement($http->response);
