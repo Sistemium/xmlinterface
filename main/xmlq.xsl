@@ -849,7 +849,7 @@
                             <xsl:value-of select="$request/@page-size"/>
                         </xsl:when>
                         <xsl:when test="@sql-name=$parm-for-start-at/@sql-name">
-                            <xsl:value-of select="$request/@page-start * $request/@page-size + 1"/>
+                            <xsl:value-of select="xi:isnull($request/@page-start,0) * $request/@page-size + 1"/>
                         </xsl:when>
                         <xsl:when test="$this/@storage='mssql' and not($parmnams=@name)">
                             <xsl:text> default</xsl:text>
