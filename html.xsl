@@ -30,6 +30,9 @@
     <xsl:include href="html/html-grid.xsl"/>
     <xsl:include href="html/html-choose.xsl"/>
     <xsl:include href="html/html-inputprint.xsl"/>
+    <xsl:include href="html/html-session.xsl"/>
+    <xsl:include href="html/html-menu.xsl"/>
+    <xsl:include href="html/html-region.xsl"/>
     
     <xsl:key name="id" match="*" use="@id"/>
     
@@ -502,16 +505,23 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:view-schema | xi:view-data | xi:workflow | /*/xi:views[xi:view]/xi:menu"/>
-
+    <xsl:template match="
+        
+        xi:view-schema
+        | xi:view-data
+        | xi:workflow
+        | xi:sql
+        | xi:datum
+        | xi:view[@hidden]
+        | xi:userinput
+    "/>
+    
     <xsl:template match="xi:data">
         <div class="data">
             <xsl:apply-templates select="key('id',@ref)/@label" mode="build-text"/>        
             <xsl:apply-templates select="*"/>
         </div>
     </xsl:template>    
-
-    <xsl:template match="xi:sql"/>
 
     <xsl:template match="xi:rows-affected">
         <div class="message">
@@ -523,53 +533,6 @@
         <xsl:value-of select="concat(.,':')"/>
     </xsl:template>
 
-    <xsl:template match="xi:datum"/>
-
-    <xsl:template match="xi:view[@hidden]" /> 
-
-    <xsl:template match="xi:dialogue//xi:region">
-        
-        <xsl:param name="data" select="xi:null"/>
-        
-        <div>
-            
-            <xsl:attribute name="class">
-                <xsl:text>region </xsl:text>
-                <xsl:value-of select="concat(' ',@name, ' ',local-name(@collapsable), ' ', @class)"/>
-                <xsl:if test="descendant::*[@clientData]">
-                    <xsl:text> ajaxloading</xsl:text>
-                </xsl:if>
-            </xsl:attribute>
-            
-            <xsl:copy-of select="@id"/>
-            
-            <xsl:choose>
-                <xsl:when test="@collapsable">
-                    <div class="label">
-                        <xsl:apply-templates select="@label" mode="build-text">
-                            <xsl:with-param name="class">collapsed-label</xsl:with-param>
-                        </xsl:apply-templates>
-                        <xsl:apply-templates select="@expanded-label|@label[not(../@expanded-label)]" mode="build-text">
-                            <xsl:with-param name="class">expanded-label</xsl:with-param>
-                        </xsl:apply-templates>
-                    </div>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:apply-templates select="@label" mode="build-text"/>
-                </xsl:otherwise>
-            </xsl:choose>
-            
-            <xsl:if test="self::*[@class='tabs']">
-                <xsl:call-template name="build-tabs"/>
-            </xsl:if>
-            
-            <xsl:apply-templates>
-                <xsl:with-param name="data" select="$data"/>
-            </xsl:apply-templates>
-            
-        </div>
-        
-    </xsl:template>
 
     <xsl:template match="xi:text[@class='delimiter']">
         <br/>
@@ -586,48 +549,6 @@
         </div>
     </xsl:template>
 
-
-    <xsl:template name="build-tabs">
-        <ul>
-            <xsl:for-each select="*[@id]">
-                <li>
-                    <a href="#{@id}">
-                        <xsl:choose>
-                            <xsl:when test="@label">
-                                <xsl:value-of select="@label"/>
-                            </xsl:when>
-                            <xsl:when test="key('id',@ref)/@label">
-                                <xsl:value-of select="key('id',@ref)/@label"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:value-of select="position()"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </a>
-                    <xsl:if test="self::xi:grid/@refreshable">
-                        <a type="button"
-                           href="?set-of-{@form}=refresh&amp;command=cleanUrl"
-                           class="button ui-icon ui-icon-refresh"
-                           onclick="return menupad(this,false,false);"
-                        />
-                    </xsl:if>
-                </li>
-            </xsl:for-each>
-        </ul>
-    </xsl:template>
-    
-    
-    <xsl:template match="xi:dialogue//xi:tabs">
-        <xsl:param name="data" select="xi:null"/>
-        <div class="tabs">
-            <xsl:call-template name="build-tabs"/>
-            <xsl:apply-templates>
-                <xsl:with-param name="data" select="$data"/>
-            </xsl:apply-templates>
-        </div>
-    </xsl:template>
-    
-    <xsl:template match="xi:region[@class='tabs']/xi:region/@label" mode="build-text" />
     
     <xsl:template match="xi:iframe">
         <!--iframe src="https://info.unact.ru" width="600px" height="400px" scrolling="yes"/-->
@@ -719,119 +640,6 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="xi:session-control[/*/xi:session[@authenticated]]">
-       <form id="session-wrapper" name="session-form" method="post" action="?">
-           <xsl:attribute name="class">authenticated</xsl:attribute>
-           
-            <xsl:for-each select="/*[not(xi:userinput/@spb-agent)]/xi:views[xi:view][count(xi:menu[@label]/xi:option)&gt;1]">
-                <div class="select">
-                    <select name="views" onchange="viewChange(this)">
-                        <option selected="selected">Выберите программу ...</option>
-                        <xsl:for-each select="xi:menu[@label]">
-                            <optgroup label="{@label}">
-                                <xsl:for-each select="xi:option[@name]">
-                                    <option>
-                                        <xsl:attribute name="value">
-                                            <xsl:value-of select="@name"/>
-                                            <xsl:if test="@pipeline">
-                                                <xsl:value-of select="concat('&amp;pipeline=',@pipeline)"/>
-                                            </xsl:if>
-                                        </xsl:attribute>
-                                        <xsl:if test="ancestor::xi:views/xi:view[@name=current()/@name]">
-                                            <xsl:attribute name="class">open</xsl:attribute>
-                                        </xsl:if>
-                                        <xsl:value-of select="@label"/>
-                                    </option>
-                                </xsl:for-each>
-                            </optgroup>
-                        </xsl:for-each>
-                    </select>
-                </div>
-            </xsl:for-each>
-            
-            <div class="field">
-                <label for="session-username"><span>Имя</span><span class="colon">:</span></label>
-                <span id="session-username"><xsl:value-of select="/*/xi:session/@username"/></span>
-            </div>
-            <div id="clientDataControl"/>
-            <xsl:if test="/*/descendant::xi:workflow[@geolocate] and /*/xi:userinput/@safari-agent">
-                <div class="geolocate">
-                    <a href="?" onclick="return showMap();">
-                        <span id="longitude"/>
-                        <span id="latitude"/>
-                        <span id="geoacc"/>
-                        <span id="geots"/>
-                    </a>
-                </div>
-            </xsl:if>
-            <div class="link">
-                <a class="button">
-                    <xsl:attribute name="href">
-                        <xsl:text>?</xsl:text>
-                        <xsl:apply-templates select="$userinput" mode="links"/>
-                        <xsl:text>command=logoff</xsl:text>
-                    </xsl:attribute>
-                    <xsl:attribute name="onclick">
-                        <xsl:text>return menupad(this,'session-form');</xsl:text>
-                    </xsl:attribute>
-                    <span>Завершить сеанс</span>
-                </a>
-            </div>
-            <xsl:if test="$livechat">
-                <div class="link">
-                    <a class="button" href="?livechat=on">
-                        <xsl:attribute name="onclick">
-                            <xsl:choose>
-                                <xsl:when test="/*/xi:session/@livechat">
-                                        <xsl:text>return initChat();</xsl:text>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                        <xsl:text>return menupad(this,'session-form');</xsl:text>
-                                </xsl:otherwise>
-                            </xsl:choose>
-                        </xsl:attribute>
-                        <span>Техподдержка</span>
-                    </a>
-                </div>
-            </xsl:if>
-        </form>
-    </xsl:template>
-
- <xsl:template match="xi:session-control">
-    <div id="session-wrapper">
-       <xsl:attribute name="class">not-authenticated</xsl:attribute>
-       <div class="title">
-          <span>Пожалуйста, представьтесь</span>
-       </div>
-       <form name="session" method="post">
-            <xsl:attribute name="action">
-                <xsl:text>?</xsl:text>
-                <xsl:apply-templates select="$userinput" mode="links"/>
-                <xsl:text>command=authenticate</xsl:text>
-            </xsl:attribute>
-            <xsl:apply-templates select="/*/xi:session/*"/>
-            <div class="field">
-                <label for="username">Имя:</label>
-                <xsl:call-template name="input">
-                    <xsl:with-param name="id">username</xsl:with-param>
-                </xsl:call-template>
-            </div>
-            <div class="field">
-                <label for="password">Пароль:</label>
-                <xsl:call-template name="input">
-                    <xsl:with-param name="id">password</xsl:with-param>
-                </xsl:call-template>
-            </div>
-            <div class="option">
-                <input type="submit" value="Вход" class="button">
-                    <xsl:if test="/*/xi:userinput/@spb-agent">
-                        <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
-                    </xsl:if>
-                </input>
-            </div>
-        </form>
-    </div>
- </xsl:template>
 
  <xsl:template match="xi:table">
     <a name="the-{@name}"/>
@@ -947,146 +755,6 @@
         <xsl:apply-templates select="xi:expire"/>
     </div>
  </xsl:template>
- 
- <xsl:template match="xi:menu">
-    <div>
-        <xsl:attribute name="class">
-            <xsl:value-of select="local-name()"/>
-            <xsl:choose>
-                <xsl:when test="xi:option[@chosen] or following-sibling::xi:view">
-                    <xsl:text> chosen</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:text> not-chosen</xsl:text>
-                </xsl:otherwise>
-            </xsl:choose>
-            <xsl:if test="not(xi:option)">
-                <xsl:text> empty</xsl:text>
-            </xsl:if>
-        </xsl:attribute>
-        <!--xsl:apply-templates select="@name"/-->
-        <xsl:if test="@label">
-            <div class="title"><span><xsl:value-of select="@label"/></span></div>
-        </xsl:if>
-        <xsl:apply-templates />
-    </div>
- </xsl:template>
 
- <xsl:template match="xi:option[@disabled]"/>
- 
- <xsl:template match="xi:choise/xi:option
-                     [xi:command[text()='next' or text()='unchoose']
-                         [not(ancestor::xi:view//xi:data[@chosen][xi:set-of[@is-choise][count(*) > 1]]/@name=@name)]
-                     ]"/>
- 
- <xsl:template match="xi:choise/xi:option
-                     [xi:command[ancestor::xi:view/xi:view-schema//*/@name=@name or ancestor::xi:view/xi:view-schema//*/@id=@ref]
-                        [not(ancestor::xi:view/xi:view-data//*/@name=@name or ancestor::xi:view/xi:view-data//*/@ref=@ref)]
-                     ]"/>
-
- <xsl:template match="xi:option | xi:data/@deletable | xi:data/@removable">
-    <xsl:param name="option-value" select="@name"/>
-    <div>
-        <xsl:apply-templates select="@name|@chosen" />
-        <xsl:attribute name="class">
-            <xsl:value-of select="normalize-space(concat('option ',@advisor))"/>
-            <xsl:for-each select="xi:command[@field]">
-               <xsl:if test="ancestor::xi:view/xi:view-data//*[not(ancestor::xi:set-of[@is-choise])]/xi:datum[@ref=current()/@ref and text()=current()/text()]">
-                  <xsl:text> avoid</xsl:text>
-               </xsl:if>
-            </xsl:for-each>
-            <xsl:if test="descendant::xi:menu">
-                <xsl:text> submenu</xsl:text>
-            </xsl:if>
-            <xsl:if test="@chosen">
-                <xsl:text> chosen</xsl:text>
-            </xsl:if>
-            <xsl:if test="position()=1">
-                <xsl:text> first</xsl:text>
-            </xsl:if>
-        </xsl:attribute>
-        <xsl:variable name="element">
-            <xsl:choose>
-                <xsl:when test="/*/xi:userinput[@spb-agent or @ipad-agent]">input</xsl:when>
-                <xsl:otherwise>a</xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        <xsl:element name="{$element}">
-            <xsl:apply-templates select="@id" />
-            <xsl:attribute name="class">button</xsl:attribute>
-            <xsl:attribute name="type">button</xsl:attribute>
-            <!--xsl:attribute name="accesskey"><xsl:value-of select="count(preceding-sibling::xi:option)+1"/></xsl:attribute-->
-            
-            <xsl:if test="not(@iframe)">
-                <xsl:attribute name="href">
-                    <xsl:text>?</xsl:text>
-                    <xsl:apply-templates select="$userinput" mode="links"/>
-                    <xsl:for-each select="ancestor-or-self::xi:option">
-                        <xsl:value-of select="concat(parent::xi:menu/@name,@id[not(parent::xi:option[parent::xi:menu])]|@ref,'=',$option-value)"/>
-                        <xsl:if test="@pipeline">
-                            <xsl:value-of select="concat('&amp;pipeline=',@pipeline)"/>
-                        </xsl:if>
-                        <xsl:if test="position()!=last()">&amp;</xsl:if>
-                        <xsl:if test="parent::xi:menu and position()=last() and position()=2" xi:attention="lazha">
-                            <xsl:value-of select="concat('#the-',@name)"/>
-                        </xsl:if>
-                    </xsl:for-each>
-                    <xsl:for-each select="parent::xi:data/@deletable">
-                        <xsl:value-of select="concat(parent::xi:data/@id,'=delete')"/>
-                    </xsl:for-each>
-                    <xsl:for-each select="parent::xi:data/@removable">
-                        <xsl:value-of select="concat(parent::xi:data/@id,'=remove')"/>
-                    </xsl:for-each>
-                </xsl:attribute>
-            </xsl:if>
-            
-            <xsl:if test="/*/xi:userinput/@spb-agent">
-                <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
-            </xsl:if>
-            
-            <xsl:if test="$element='input'">
-                <xsl:attribute name="value">
-                    <xsl:value-of select="@label"/>
-                    <xsl:if test="parent::xi:data[@deletable or @removable]">x</xsl:if>
-                </xsl:attribute>
-            </xsl:if>
-            
-            <xsl:attribute name="onclick">
-                <xsl:choose>
-                    <xsl:when test="@iframe">
-                        <xsl:text>location.replace(&apos;</xsl:text>
-                        <xsl:value-of select="@iframe"/>
-                        <xsl:text>&apos;)</xsl:text>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:text>return menupad(this</xsl:text>
-                        <xsl:if test="ancestor::xi:view/@name">
-                            <xsl:text>,&apos;</xsl:text>
-                            <xsl:value-of select="concat(ancestor::xi:view/@name,'-form')"/>
-                            <xsl:text>&apos;</xsl:text>
-                        </xsl:if>
-                        <xsl:text>)</xsl:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-            
-            <xsl:if test="$element='a'">
-                <xsl:attribute name="title">
-                    <xsl:value-of select="@label"/>
-                    <xsl:if test="parent::xi:data[@deletable or @removable]">x</xsl:if>
-                </xsl:attribute>
-                <span>
-                    <xsl:value-of select="@label"/>
-                    <xsl:if test="parent::xi:data[@deletable or @removable]">x</xsl:if>
-                </span>
-            </xsl:if>
-            
-        </xsl:element>
-        <xsl:apply-templates select="xi:menu|*/xi:menu" />
-    </div>
- </xsl:template>
- 
- <xsl:template match="xi:userinput"/>
- 
  
 </xsl:transform>

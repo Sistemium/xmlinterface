@@ -23,7 +23,7 @@
         <access role="it"/>
         
         <option href="views/etc/test.xml">
-            <access role="beta"/>
+            <access role="alpha"/>
         </option>
         
     </menu>
