@@ -134,7 +134,12 @@
         
         <xsl:variable name="sort-data-type">text</xsl:variable>
         
-        <xsl:variable name="current-set" select="$data/ancestor::*[self::xi:preload[@page-start]|self::xi:set-of][@ref=$metadata/@id]"/>
+        <xsl:variable name="current-set" select="
+            $data/ancestor::*[
+                self::xi:preload [@page-start]
+                | self::xi:set-of
+            ] [@ref=$metadata/@id]
+        "/>
         
         <xsl:variable name="current-page">
             
@@ -179,7 +184,7 @@
             <xsl:for-each select="$data-set">
                 
                 <xsl:sort data-type="{$sort-data-type}" order="{$sort-order}" select="
-                    descendant::xi:data [@name=$sort-form]
+                    descendant-or-self::xi:data [@name=$sort-form]
                     /xi:datum [@name=$sort-field]
                 "/>
                 
