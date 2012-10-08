@@ -1,7 +1,18 @@
 var chatInit=false;
 
+function isiPhone(){
+    return (
+        (navigator.platform.indexOf("iPhone") != -1) ||
+        (navigator.platform.indexOf("iPod") != -1)
+    );
+}
+
 function domready () {
 
+//    isiPhone() ||
+        $('input.date').prop('readonly', true)
+    ;
+    
     $('input.date').datepicker({
             showOn: 'button',
             buttonImage: 'images/calendar.gif',
