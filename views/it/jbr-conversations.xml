@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <view-definition xmlns="http://unact.net/xml/xi" version="1.0" name="jbr-conversations" label="Диалоги джаббера">
-
-    <access role="alpha"/>
+    
+    <access role="jabber"/>
 
     <view-schema><form name="jbr-user">
         
@@ -70,7 +70,7 @@
     
     <workflow>
         
-        <step name="s2" label="Диалоги по-отдельности">
+        <step name="s2" label="Все по-отдельности">
             
             <display>
                 <input field="date" form="jbr-user"/>

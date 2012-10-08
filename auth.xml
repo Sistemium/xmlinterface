@@ -19,6 +19,7 @@
             <role name="sales"/>
             <role name="call-center"/>
             
+            <role name="jabber"/>
             <role name="alpha"/>
             <role name="beta"/>
             <role name="ad-user"/>
@@ -59,6 +60,7 @@
     
     <validator name="ad">
         <role ref="ad-user"/>
+        <role ref="jabber"/>
         <group name="fotonova.system">
             <role ref="fotonova"/>
         </group>
