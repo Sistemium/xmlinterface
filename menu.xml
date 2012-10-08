@@ -18,21 +18,12 @@
         <access role="beta"/>
     </menu>
     
-    <menu name="it" label="ИТ">
+    <menu name="it" label="ИТ" directory="views/it">
         
         <access role="it"/>
         
         <option href="views/etc/test.xml">
             <access role="beta"/>
-        </option>
-        
-        <option href="views/it/sysusers.xml">
-            <access role="admin"/>
-        </option>
-        
-        <option href="views/it/qc-call-tasks.xml">
-            <access role="qc"/>
-            <access role="operator"/>
         </option>
         
     </menu>

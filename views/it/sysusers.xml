@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="useradmin" label="Пользователи">
+    
+    <access role="admin"/>
+    
     <view-schema>
         <form name="useradmin" concept="sysuser">
             <parameter name="name">

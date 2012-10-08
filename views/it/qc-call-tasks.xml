@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="qc-call-tasks" label="Задания на обзвон">
+    
+    <access role="qc"/>
+    <access role="operator"/>
+    
     <view-schema>
         <form name="qc-operator">
             <parameter name="login">
@@ -13,6 +17,7 @@
             </form>
         </form>
     </view-schema>
+    
     <workflow>
         <step>
             <display>
@@ -20,4 +25,5 @@
             </display>
         </step>
     </workflow>
+    
 </view-definition>
