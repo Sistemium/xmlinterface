@@ -12,22 +12,41 @@
         
         <field name="id" />
         
-        <form name="jbr-conversation" is-set="true">
+        <form name="jbr-conversation" is-set="true" page-size="50">
             
             <join name="jbr-user" field="date"/>
             
             <field name="id"/>
             <field name="with-name"/>
             <field name="start-time"/>
-            <field name="end-time"/>            
+            <field name="end-time"/>
+            
+            <field name="conversant" sql-compute="null" label="Собеседник">
+                <xpath-compute>
+                    concat (
+                        parent::xi:data
+                        /xi:datum [@name='with-name']
+                        , ' в '
+                        , substring (
+                            parent::xi:data
+                            /xi:datum [@name='start-time']
+                            , 12,5
+                        )
+                    )
+                </xpath-compute>
+            </field>
             
             <add-labeled-fields/>
             
-            <form name="jbr-message" is-set="true">
+            <sort field="start-time" form="jbr-conversation" dir="asc"/>
+            
+            <form name="jbr-message" is-set="true" page-size-="10">
                 
                 <field name="direction"/>
                 <field name="ts" format="hh:mm"/>
                 <field name="msg" hidden="true"/>
+                
+                <sort field="ts" form="jbr-message" dir="asc"/>
                 
                 <field name="from-msg" sql-compute="null" label="Мне">
                     <xpath-compute>
@@ -51,30 +70,28 @@
     
     <workflow>
         
-        <step name="s1" label="Длинная таблица">
+        <step name="s2" label="Диалоги по-отдельности">
+            
+            <display>
+                <input field="date" form="jbr-user"/>
+                <region class="tabs">
+                    <for-each form="jbr-conversation" label-field="conversant">
+                        <grid form="jbr-message"/>
+                    </for-each>
+                </region>
+            </display>
+            
+        </step>
+        
+        <step name="s1" label="Все на одном экране">
             
             <display>
                 <input field="date" form="jbr-user"/>
                 <grid form="jbr-message">
                     <group>
-                        <by form="jbr-conversation" field="with-name"/>
+                        <by form="jbr-conversation" field="conversant"/>
                     </group>
                 </grid>
-            </display>
-            
-        </step>
-        
-        <step name="s2" label="Табпейдж">
-            
-            <display>
-                <input field="date" form="jbr-user"/>
-                <region class="tabs">
-                    <for-each form="jbr-conversation" label-field="with-name">
-                        <print field="start-time"/>
-                        <print field="end-time"/>
-                        <grid form="jbr-message"/>
-                    </for-each>
-                </region>
             </display>
             
         </step>

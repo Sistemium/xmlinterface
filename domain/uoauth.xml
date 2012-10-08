@@ -108,7 +108,7 @@
             <parameter sql-name="@PageSize" type="int" top="true"/>
         </select>
         
-        <property name="ts" type="datetime" label="Последнее изменение" sql-name="Time"/>
+        <property name="ts" type="datetime" label="Время" sql-name="Time"/>
         
         <property name="from-user" label="Отправитель" sql-name="from user"/>
         <property name="to-user" label="Получатель" sql-name="to user"/>
