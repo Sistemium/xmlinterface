@@ -156,6 +156,7 @@
         <role ref="osmp"/>
         <role ref="cashier"/>
         <role ref="call-center"/>
+        <role ref="alpha"/>
     </user>
 
     <user name="kovtash">
