@@ -1,6 +1,7 @@
 @import "button.css";
 @import "jquery-overrides.css";
 @import "priorities.css";
+@import "grid.css";
 
 body, input {font-size: 15px; color:#333333; -background-color: #FCFBF5; font-family: verdana;}
 
