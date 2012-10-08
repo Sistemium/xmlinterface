@@ -22,7 +22,7 @@
         <property name="refreshTokenUrl" label="Refresh-token url"/>
         <property name="accessTokenUrl" label="Access-token url"/>
         
-        <property name="ts" type="datetime" label="Последнее изменение" format="smalltime"/>
+        <property name="ts" type="datetime" label="Последнее изменение"/>
         
     </concept>
     
@@ -34,7 +34,7 @@
         <property name="name" label="Имя"/>
         <property name="code" label="Код"/>
         
-        <property name="ts" type="datetime" label="Последнее изменение" format="smalltime"/>
+        <property name="ts" type="datetime" label="Последнее изменение"/>
         
     </concept>
     
@@ -47,7 +47,7 @@
         
         <property name="name" label="Имя"/>
         <property name="email" label="e-mail"/>
-        <property name="ts" type="datetime" label="Последнее изменение" format="smalltime"/>
+        <property name="ts" type="datetime" label="Последнее изменение"/>
         
     </concept>
     
@@ -59,7 +59,67 @@
         <property name="name" label="Имя"/>
         <property name="code" label="Код"/>
         
-        <property name="ts" type="datetime" label="Последнее изменение" format="smalltime"/>
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+    </concept>
+    
+    
+    <concept name="jbr-user" storage="mssql" server="hqvsrv41" db="openfire_db">
+        
+        <select owner="dbo" sql-name="fn_getUser" type="procedure">
+            <parameter name="name" sql-name="@name"/>
+        </select>
+        
+        <property name="id" />
+        
+    </concept>
+    
+    
+    <concept name="jbr-conversation" storage="mssql" server="hqvsrv41" db="openfire_db">
+        
+        <select owner="dbo" sql-name="fn_getConversation" type="procedure">
+            <parameter name="jbr-user-from" sql-name="@Jid" />
+            <parameter name="date" type="datetime" sql-name="@ddate"/>
+            <parameter sql-name="@StartAt" type="int" start-at="true"/>
+            <parameter sql-name="@PageSize" type="int" top="true"/>
+        </select>
+        
+        <property name="id" type="int" sql-name="conversationID"/>
+        
+        <property name="start-time" type="datetime" label="Начало" sql-name="startTime"/>
+        <property name="end-time" type="datetime" label="Конец" sql-name="endTime"/>
+        
+        <property name="with-name" label="Получатель" sql-name="withJid"/>
+        
+        <role name="jbr-user-from" actor="jbr-user" />
+        
+    </concept>
+    
+    
+    <concept name="jbr-message" storage="mssql" server="hqvsrv41" db="openfire_db">
+        
+        <select owner="dbo" sql-name="fn_getArchiveMessage" type="procedure">
+            <parameter name="jbr-user-from" sql-name="@OwnerJid" />
+            <parameter name="jbr-user-to" sql-name="@WithJid"/>
+            <parameter name="start-date" type="datetime" sql-name="@ddateb"/>
+            <parameter name="end-date" type="datetime" sql-name="@ddatee"/>
+            <parameter name="jbr-conversation" type="int" sql-name="@conversationID"/>
+            <parameter sql-name="@PageNum" type="int" start-at="true"/>
+            <parameter sql-name="@PageSize" type="int" top="true"/>
+        </select>
+        
+        <property name="ts" type="datetime" label="Последнее изменение" sql-name="Time"/>
+        
+        <property name="from-user" label="Отправитель" sql-name="from user"/>
+        <property name="to-user" label="Получатель" sql-name="to user"/>
+        
+        <property name="msg" label="Текст сообщения" sql-name="Message"/>
+        
+        <property name="direction" />
+        
+        <role name="jbr-conversation" actor="jbr-conversation" sql-name="conversation"/>
+        <role name="jbr-user-from" actor="jbr-user" />
+        <!--role name="jbr-user-to" actor="jbr-user" /-->
         
     </concept>
     

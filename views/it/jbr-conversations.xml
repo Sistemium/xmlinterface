@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+
+<view-definition xmlns="http://unact.net/xml/xi" version="1.0" name="jbr-conversations" label="Диалоги джаббера">
+
+    <access role="alpha"/>
+
+    <view-schema><form name="jbr-user">
+        
+        <parameter name="name"> <init with="username"/> </parameter>
+        <parameter name="device-name"> <init with="device-name"/> </parameter>
+        <parameter name="date" type="date" editable="true" label="Дата"> <init with="today"/> </parameter>
+        
+        <field name="id" />
+        
+        <form name="jbr-conversation" is-set="true">
+            
+            <join name="jbr-user" field="date"/>
+            
+            <field name="id"/>
+            <field name="with-name"/>
+            <field name="start-time"/>
+            <field name="end-time"/>            
+            
+            <add-labeled-fields/>
+            
+            <form name="jbr-message" is-set="true">
+                
+                <field name="direction"/>
+                <field name="ts" format="hh:mm"/>
+                <field name="msg" hidden="true"/>
+                
+                <field name="from-msg" sql-compute="null" label="Мне">
+                    <xpath-compute>
+                        parent::xi:data [xi:datum[@name='direction' and text()='from']]
+                        /xi:datum [@name='msg']
+                    </xpath-compute>
+                </field>
+                
+                <field name="from-msg" sql-compute="null" label="Я">
+                    <xpath-compute>
+                        parent::xi:data [xi:datum[@name='direction' and text()='to']]
+                        /xi:datum [@name='msg']
+                    </xpath-compute>
+                </field>
+                
+            </form>
+            
+        </form>
+        
+    </form></view-schema>
+    
+    <workflow>
+        
+        <step name="s1" label="Длинная таблица">
+            
+            <display>
+                <input field="date" form="jbr-user"/>
+                <grid form="jbr-message">
+                    <group>
+                        <by form="jbr-conversation" field="with-name"/>
+                    </group>
+                </grid>
+            </display>
+            
+        </step>
+        
+        <step name="s2" label="Табпейдж">
+            
+            <display>
+                <input field="date" form="jbr-user"/>
+                <region class="tabs">
+                    <for-each form="jbr-conversation" label-field="with-name">
+                        <print field="start-time"/>
+                        <print field="end-time"/>
+                        <grid form="jbr-message"/>
+                    </for-each>
+                </region>
+            </display>
+            
+        </step>
+        
+    </workflow>
+    
+</view-definition>
