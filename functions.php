@@ -11,6 +11,13 @@ function exceptions_error_handler($errno, $errstr, $errfile, $errline, $errconte
 
 };
 
+    function dumpNice ($array) {
+        foreach ($array as $key=>$value)
+            print $key .' = '. $value."<br/>";
+    }    
+
+
+
 
 function dateAdd ($shift = 0, $start = 'now') {
     return date('Y/m/d G:i:s',strtotime($shift,strtotime($start)));

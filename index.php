@@ -194,9 +194,9 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             || $command=='logoff' || $command=='cleanUrl' || ($command == 'authenticate' && isset($access_token))
        ) {
         $schema = $_SERVER['SERVER_PORT']=='443'?'https':'http';
-        $querylen=strlen($_SERVER["QUERY_STRING"]);
-        $querylen+=$querylen?1:0;
-        $host.=substr($_SERVER["REQUEST_URI"],0,-$querylen);
+        $querylen = strlen($_SERVER["QUERY_STRING"]);
+        $querylen += $querylen ? 1 : (strpos ($_SERVER["REQUEST_URI"], '?') ? 1 : 0);
+        $host .= $querylen ? substr($_SERVER["REQUEST_URI"],0,-$querylen) : $_SERVER["REQUEST_URI"];
         
         $location = '';
         if ($initName!='init') $location='config='.$initName;

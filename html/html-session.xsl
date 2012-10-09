@@ -87,17 +87,19 @@
     
     <xsl:template match="xi:session-control">
         <div id="session-wrapper">
+            
            <xsl:attribute name="class">not-authenticated</xsl:attribute>
+           
            <div class="title">
               <span>Пожалуйста, представьтесь</span>
            </div>
+           
            <form name="session" method="post">
-                <xsl:attribute name="action">
-                    <xsl:text>?</xsl:text>
-                    <xsl:apply-templates select="$userinput" mode="links"/>
-                    <xsl:text>command=authenticate</xsl:text>
-                </xsl:attribute>
+            
                 <xsl:apply-templates select="/*/xi:session/*"/>
+                
+                <input type="hidden" name="command" value="authenticate"/>
+                
                 <div class="field">
                     <label for="username">Имя:</label>
                     <xsl:call-template name="input">
