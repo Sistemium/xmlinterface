@@ -10,6 +10,13 @@
             <all-labeled-fields/>
             <order-by name="ts" dir="desc"/>
             
+            <form name="ua-account-provider" is-set="true" preload="true">
+                <form name="ua-account-provider-name" concept="ua-provider">
+                    <field name="name" label="Провайдер"/>
+                </form>
+                <field name="data" />
+            </form>
+            
         </form>
         
         <form name="ua-provider" is-set="true" page-size="20">
@@ -41,7 +48,21 @@
             
             <display>
                 <region class="tabs">
-                    <grid form="ua-account" label="Аккаунты"/>
+                    <grid form="ua-account" label="Аккаунты">
+                        <option name="show-account-provider-data" label="...">
+                            <command xpath-compute="
+                                xi:preload[@name='set-of-ua-account-provider']/@id
+                            ">refresh</command>
+                        </option>
+                        <columns>
+                            <column field="id"/>
+                            <column field="name"/>
+                            <column field="email"/>
+                            <column label="Прочее">
+                                <grid form="ua-account-provider"/>
+                            </column>
+                        </columns>
+                    </grid>
                     <grid form="ua-provider" label="Провайдеры"/>
                     <grid form="ua-client" label="Клиенты"/>
                     <grid form="ua-role" label="Роли"/>

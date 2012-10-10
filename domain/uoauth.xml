@@ -64,6 +64,20 @@
     </concept>
     
     
+    <concept name="ua-account-provider" server="uoauth">
+        
+        <select owner="ua" sql-name="accountProviderData"/>
+        
+        <property name="data" label="Учетные данные" sql-name="providerData"/>
+        
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+        <role name="ua-account" actor="ua-account" sql-name="account"/>
+        <role name="ua-provider" actor="ua-provider" sql-name="authProvider"/>
+        
+    </concept>
+    
+    
     <concept name="jbr-user" storage="mssql" server="hqvsrv41" db="openfire_db">
         
         <select owner="dbo" sql-name="fn_getUser" type="procedure">

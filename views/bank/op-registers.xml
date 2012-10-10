@@ -26,7 +26,7 @@
                     <field name="id"/>
                     <field name="xid"/>
                     <add-labeled-fields />
-                    <order-by name="date" dir="desc"/>
+                    <order-by name="cts" dir="desc"/>
                 </form>
                 
                 <form name="register-detail" concept="op-payment-register" parent-sql-name="pcaccount" preload="true">
