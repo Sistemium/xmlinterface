@@ -69,4 +69,10 @@
         <func:result select="dyn:evaluate($xpath)"/>
     </func:function>
     
+    <func:function name="xi:map">
+        <xsl:param name="point" />
+        <xsl:param name="xpath" />
+        <func:result select="dyn:map($point, $xpath)"/>
+    </func:function>
+    
 </xsl:transform>

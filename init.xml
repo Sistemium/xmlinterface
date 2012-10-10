@@ -24,6 +24,11 @@
 
     
     <pipeline name="main">
+        
+        <execute name="targets" href="id.xsl">
+            <include href="main/targets.xsl"/>
+        </execute>
+        
         <execute name="stage1" href="id.xsl">
             <include href="main/userinput.xsl"/>
         </execute>
