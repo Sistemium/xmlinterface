@@ -1,4 +1,7 @@
-grant connect to xmlgate;
+if user_id ('xmlgate') is null then
+    grant connect to xmlgate;
+    // don't forget to set pasword
+end if;
 
 drop table if exists xmlgate.query;
 
@@ -45,8 +48,6 @@ begin
     body: begin
         
         set @request=csconvert(@request,'os_charset','utf-8');
-        
-        message 'dba.xml_query @request = ', @request;
         
         select query_name, if show_sql is not null then 1 endif, sql_raw, username, ip, path, async
             into @query_name, @show_sql, @sql, @username, @ip, @path, @async
