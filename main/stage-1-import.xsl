@@ -84,8 +84,31 @@
             
         </xsl:for-each>
         
+        <domains>
+            <xsl:apply-templates mode="import-domain" select="
+                xi:directoryList('domain')/*
+            "/>
+        </domains>
+        
     </xsl:template>
 
+    
+    <xsl:template mode="import-domain" match="xi:file">
+        <domain>
+            <xsl:attribute name="href">
+                <xsl:for-each select="ancestor::xi:directory">
+                    <xsl:value-of select="@name"/>
+                    <xsl:text>/</xsl:text>
+                </xsl:for-each>
+                <xsl:value-of select="text()"/>
+            </xsl:attribute>
+        </domain>
+    </xsl:template>
+
+    <xsl:template mode="import-domain" match="xi:directory">
+        <xsl:apply-templates mode="import-domain" select="*"/>
+    </xsl:template>
+    
     <xsl:template match="
         /*[xi:userinput/*[@name='livechat' and text()='on']]
         /xi:session [@authenticated]

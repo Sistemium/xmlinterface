@@ -13,9 +13,8 @@
     
     <xsl:param name="userinput" select="/*/xi:userinput/xi:command"/>
     <xsl:param name="model" select="
-        document('domain.xml')/xi:domain
-        |document('domain/megaport.xml')/xi:domain
-        |document('domain/uoauth.xml')/xi:domain
+        document(/*/xi:session/xi:domains/xi:domain/@href)/xi:domain
+        |document('domain.xml')/xi:domain
     "/>
     <xsl:param name="thisdoc" select="/"/>
     <xsl:param name="session" select="/*/xi:session"/>
