@@ -61,18 +61,24 @@
 
     <xsl:template match="xi:session[@authenticated][not(xi:role)]">
         
-        <xsl:variable name="userRoles" select="$auth/xi:user[@name=current()/@username]/xi:role"/>
         <xsl:variable name="validator" select="$auth/xi:validator[@name=current()/@validator]"/>
-        <xsl:variable name="validatorRoles" select="$validator/xi:role|$validator/xi:group[@name=current()/xi:group/@name]/xi:role"/>
+        
+        <xsl:variable name="userRoles" select="
+            $validator/xi:role
+            |$validator/xi:group [@name=current()/xi:group/@name]
+                /xi:role
+            |xi:group[@ref]
+            |$auth/xi:user[@name=current()/@username]/xi:role
+        "/>
         
         <xsl:for-each select="
             $auth/xi:roles//xi:role
-                [($userRoles|$validatorRoles)/@ref=@name or ($userRoles|$validatorRoles)/@ref='*']
+                [$userRoles/@ref=@name or $userRoles/@ref='*']
             /ancestor-or-self::xi:role
         ">
             <xsl:if test="not(preceding::xi:role[@name=current()/@name])">
                 <xsl:copy>
-                    <xsl:apply-templates select="@*"/>
+                    <xsl:apply-templates select="@*|$userRoles[@ref=current()/@name]/node()"/>
                 </xsl:copy>
             </xsl:if>
             

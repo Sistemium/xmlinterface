@@ -19,6 +19,7 @@
             <role name="sales"/>
             <role name="call-center"/>
             
+            <role name="authenticated"/>
             <role name="jabber"/>
             <role name="alpha"/>
             <role name="beta"/>
@@ -184,6 +185,8 @@
 
     <user name="sasha" admin="true" password-="1">
         <role ref="*"/>
+        <role ref="sales">1</role>
+        <role ref="it"><director of="department"/></role>
     </user>
     
     <user name="lesha" >

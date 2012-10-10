@@ -153,7 +153,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                         if (isset($extraData->roles[0]))
                             foreach ($extraData->roles[0]->role as $role) {
                                 $newChild=$Context->session[0]->addChild('group');
-                                $newChild->addAttribute('name', (string) $role[0]);
+                                $newChild->addAttribute('ref', (string) $role[0]);
                         }
                         
                     }
