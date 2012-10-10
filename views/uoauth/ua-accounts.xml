@@ -10,11 +10,15 @@
             <all-labeled-fields/>
             <order-by name="ts" dir="desc"/>
             
+            <form name="ua-account-provider-agg" concept="ua-account-provider">
+                <field name="id" aggregate="count" label="Связано аккаунтов"/>
+            </form>
+            
             <form name="ua-account-provider" is-set="true" preload="true">
                 <form name="ua-account-provider-name" concept="ua-provider">
                     <field name="name" label="Провайдер"/>
                 </form>
-                <field name="data" />
+                <field name="data"/>
             </form>
             
         </form>
@@ -58,6 +62,7 @@
                             <column field="id"/>
                             <column field="name"/>
                             <column field="email"/>
+                            <column form="ua-account-provider-agg" field="id"/>
                             <column label="Прочее">
                                 <grid form="ua-account-provider"/>
                             </column>

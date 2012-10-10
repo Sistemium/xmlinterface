@@ -68,7 +68,7 @@
         
         <select owner="ua" sql-name="accountProviderData"/>
         
-        <property name="data" label="Учетные данные" sql-name="providerData"/>
+        <property name="data" type-="xml" label="Учетные данные" sql-name="providerData"/>
         
         <property name="ts" type="datetime" label="Последнее изменение"/>
         
