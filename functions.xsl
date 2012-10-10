@@ -17,6 +17,12 @@
         </xsl:attribute>
     </xsl:template>
 
+
+    <func:function name="xi:directoryList">
+        <xsl:param name="path" select="xi:null"/>
+        <func:result select="php:function('directoryList',string($path))"/>
+    </func:function>
+
     <func:function name="xi:regexp">
         <xsl:param name="pattern" select="xi:null"/>
         <xsl:param name="string" select="xi:null"/>
