@@ -112,7 +112,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     }
 
     $authenticated=isset($_SESSION['authenticated']);
-
+    
     switch ($command) {
         case 'authenticate':
             if (!$authenticated) {
@@ -215,7 +215,15 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         unset($_SESSION['redirected-content']);
         return;
     }
-        
+
+    if (!$authenticated) {
+        $private=simplexml_load_file('../secure.xml');
+        if (isset ($private -> oauth ['login-page'])) {
+            header ('Location:'.$private -> oauth ['login-page'], 302);
+            die ('Redirecting...');
+        }
+    }
+
     $tracing = (strpos($host,'mac')!==false || strpos($host,'192.168')!==false || isset($Context['debug']));
 
     $xslt = new XSLTProcessor(); 

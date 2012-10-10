@@ -231,62 +231,63 @@ function authenticateSOA($login, $password, &$extraData) {
 }
 
 
-function developerMode() {
-    $doc = new DOMDocument;
-    $doc -> load('../secure.xml');
-    if ($doc -> documentElement -> getAttribute ('environment') == 'developer') return true;
-    
-    return false;
-}
-
-function authenticateGeneric ($credentials,&$extraData) {
-    if (isset($credentials['username'])) return authenticate ($credentials['username'], $credentials['password'], $extraData);
-    else return uoauth ($credentials['access_token'], $extraData);
-}
-
-function uoauth ($access_token, &$extraData) {
-    $address='https://oldcat.unact.ru/iExp/uoauth/roles';
-    $http = new HTTPRetriever();
-    
-    try { if ( $http->post (
-                $address,
-                $http->make_query_string ( array(
-                    "access_token" => $access_token
-                )
-        ) ) ) {
-            $result = new SimpleXMLElement($http->response);
-            $extraData=$result;
-            //var_dump($result);
-            //die();
-            return isset($result -> roles) ? 'uoauth' : false;
-        }
-        else print "HTTP request error: #{$http->result_code}: {$http->result_text}";
-    }
-    catch (Exception $e){
-        print "{$e->getMessage()}";
-    };
-
-    return false;
-}
-
-function authenticate($login, $password, &$extraData) {
-
-    if (developerMode()) {
+    function developerMode() {
         $doc = new DOMDocument;
-        $doc->load('auth.xml');   
-        $xpath = new DOMXPath($doc);
-        $xpath -> registerNamespace('xi','http://unact.net/xml/xi');
-        $xpathRes = $xpath->query('/*/xi:user[@password and @name="'.$login.'"]');
-        if ($xpathRes->length > 0) {
-            $userNode= $xpathRes->item(0);
-            
-            if ($simplepass=$userNode->attributes->getNamedItem('password')->nodeValue)
-                return $password == $simplepass;
-        }
+        $doc -> load('../secure.xml');
+        if ($doc -> documentElement -> getAttribute ('environment') == 'developer') return true;
+        
+        return false;
     }
     
-    return authenticateSOA($login, $password, $extraData);
-}
+    function authenticateGeneric ($credentials,&$extraData) {
+        if (isset($credentials['username'])) return authenticate ($credentials['username'], $credentials['password'], $extraData);
+        else return uoauth ($credentials['access_token'], $extraData);
+    }
+
+    function uoauth ($access_token, &$extraData) {
+        $address='https://oldcat.unact.ru/iExp/uoauth/roles';
+        $http = new HTTPRetriever();
+        
+        try { if ( $http->post (
+                    $address,
+                    $http->make_query_string ( array(
+                        "access_token" => $access_token
+                    )
+            ) ) ) {
+                $result = new SimpleXMLElement($http->response);
+                $extraData=$result;
+                //var_dump($result);
+                //die();
+                return isset($result -> roles) ? 'uoauth' : false;
+            }
+            else print "HTTP request error: #{$http->result_code}: {$http->result_text}";
+        }
+        catch (Exception $e){
+            print "{$e->getMessage()}";
+        };
+    
+        return false;
+    }
+    
+
+    function authenticate($login, $password, &$extraData) {
+    
+        if (developerMode()) {
+            $doc = new DOMDocument;
+            $doc->load('auth.xml');   
+            $xpath = new DOMXPath($doc);
+            $xpath -> registerNamespace('xi','http://unact.net/xml/xi');
+            $xpathRes = $xpath->query('/*/xi:user[@password and @name="'.$login.'"]');
+            if ($xpathRes->length > 0) {
+                $userNode= $xpathRes->item(0);
+                
+                if ($simplepass=$userNode->attributes->getNamedItem('password')->nodeValue)
+                    return $password == $simplepass;
+            }
+        }
+        
+        return authenticateSOA($login, $password, $extraData);
+    }
 
     function uuidSecure() {
        
