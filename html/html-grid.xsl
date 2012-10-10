@@ -6,11 +6,15 @@
  
     <xsl:template match="xi:grid">
         
+        <xsl:param name="data" select="xi:null"/>
+        <xsl:param name="top" select="@top[not($data)]|$data/@id"/>
+        
         <xsl:variable name="this" select="."/>
         <xsl:variable name="colspan"
                       select="count($this/xi:columns/xi:column)+count($this//xi:option)+count($this/@deletable)"
         />
         
+        <xsl:if test="not($data) or $data//*[@name=current()/@form][xi:field|xi:data]">
         <div id="{@id}">
             
             <xsl:attribute name="class">
@@ -65,7 +69,9 @@
                 </thead>
                 
                 <tbody>
-                    <xsl:apply-templates select="xi:rows"/>
+                    <xsl:apply-templates select="xi:rows">
+                        <xsl:with-param name="top" select="$top"/>
+                    </xsl:apply-templates>
                 </tbody>
                 
                 <tfoot>
@@ -115,7 +121,39 @@
                 </tfoot>
             </table>
         </div>
+        </xsl:if>
     </xsl:template>
+    
+
+    <xsl:template match="xi:rows[@ref]">
+        
+        <xsl:param name="top" select="parent::xi:grid/@top"/>
+        
+        <xsl:for-each select="@clientData">
+            <xsl:attribute name="class">clientData empty </xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="."/></xsl:attribute>
+        </xsl:for-each>
+        
+        <xsl:apply-templates mode="gridrow" select="
+            key('id',$top)//xi:data
+                [not(@hidden)]
+                [not(ancestor::xi:set-of[@is-choise])]
+                [@ref=current()/@ref]
+        ">
+            
+            <xsl:with-param name="columns" select="../xi:columns"/>
+            <xsl:with-param name="groups" select="xi:group"/>
+            
+        </xsl:apply-templates>
+        
+    </xsl:template>
+    
+
+    <!--xsl:template match="xi:rows/xi:row">
+        <xsl:apply-templates select="key('id',@ref)[1]">
+            <xsl:with-param name="columns" select="ancestor::xi:grid/xi:columns"/>
+        </xsl:apply-templates>
+    </xsl:template-->
     
 
     <xsl:template match="*" mode="build-tools">
@@ -330,36 +368,6 @@
         </tr>
         
     </xsl:template>
-    
-
-    <xsl:template match="xi:rows[@ref]">
-        
-        <xsl:for-each select="@clientData">
-            <xsl:attribute name="class">clientData empty </xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="."/></xsl:attribute>
-        </xsl:for-each>
-        
-        <xsl:apply-templates select="
-                    key('id',parent::xi:grid/@top)//xi:data
-                    [not(@hidden)]
-                    [not(ancestor::xi:set-of[@is-choise])]
-                    [@ref=current()/@ref]
-                " mode="gridrow"
-        >
-            
-            <xsl:with-param name="columns" select="../xi:columns"/>
-            <xsl:with-param name="groups" select="xi:group"/>
-            
-        </xsl:apply-templates>
-        
-    </xsl:template>
-    
-
-    <!--xsl:template match="xi:rows/xi:row">
-        <xsl:apply-templates select="key('id',@ref)[1]">
-            <xsl:with-param name="columns" select="ancestor::xi:grid/xi:columns"/>
-        </xsl:apply-templates>
-    </xsl:template-->
     
 
 </xsl:stylesheet>

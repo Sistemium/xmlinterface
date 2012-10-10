@@ -206,16 +206,19 @@
         <xsl:param name="grid" select="."/>
         <xsl:param name="form" select="key('id',@ref)"/>
         
-        <xsl:variable name="rows"
-                      select="key('id',$top)//xi:data
-                             [not(ancestor::xi:set-of[@is-choise])][@name=current()/@form]
-                             [descendant::xi:datum[@type='field']]
-                             "
-        />
+        <xsl:variable name="rows" select="
+            key('id',$top)//xi:data
+            [not(ancestor::xi:set-of[@is-choise])][@name=current()/@form]
+            [descendant::xi:datum[@type='field']]
+        "/>
         
         <xsl:choose>
             
-            <xsl:when test="$rows or $form[@extendable or @pipeline='clientData']">
+            <xsl:when test="
+                $rows
+                or $form[@extendable or @pipeline='clientData']
+                or $top[../self::xi:column]
+            ">
                 <xsl:copy>
                     
                     <xsl:copy-of select="@*"/>
@@ -268,6 +271,12 @@
                    <xsl:text> отcутствуют</xsl:text>
                 </text>
             </xsl:when>
+            
+            <xsl:otherwise>
+                <xsl:comment>
+                    no data top = <xsl:value-of select="$top"/>
+                </xsl:comment>
+            </xsl:otherwise>
             
         </xsl:choose>
     </xsl:template>

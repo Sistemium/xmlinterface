@@ -24,7 +24,7 @@
     
     <?build-template new-data id ?>  
 
-    <xsl:template match="xi:data/@refresh-this | xi:data[@show-this]/@hidden"/>
+    <xsl:template match="xi:preload/@refresh-this | xi:data/@refresh-this | xi:data[@show-this]/@hidden"/>
 
     <!-- рефреш всего view-data для непараметризованных представлений-->
     <xsl:template match="xi:view[xi:menu[xi:option[@chosen][@name='refresh']]]/xi:view-data
@@ -63,16 +63,21 @@
         xi:view-data
         //* [xi:response [xi:result-set[*] or ((xi:exception/xi:not-found or xi:result-set[not(*)]) and key('id',../@ref)/@build-blank)]]
     ">
+        <xsl:comment>1001</xsl:comment>
+        
         <xsl:apply-templates select="key('id',@ref)" mode="build-data">
             <xsl:with-param name="data" select="xi:response/xi:result-set/*"/>
         </xsl:apply-templates>
+        
     </xsl:template>
 
     <!-- пришел ответ на запрос, но данных нет -->
     <xsl:template match="xi:view-data//*[xi:response/xi:result-set[not(*[*])]]">
         <xsl:copy>
             <xsl:apply-templates select="@*|xi:response/@ts"/>
+            
             <xsl:comment>empty result-set</xsl:comment>
+            
             <xsl:apply-templates select="*[@type='parameter']"/>
         </xsl:copy>
     </xsl:template>
@@ -84,15 +89,16 @@
     <xsl:template match="xi:view-data//xi:preload[xi:response/xi:exception]" name="build-not-found-data">
         <data>
             <xsl:apply-templates select="@*"/>
-            <xsl:apply-templates select="key('id',@ref)/@name|*"/>
+            <xsl:apply-templates select="key('id',@ref)/@name"/>
         </data>
     </xsl:template>
 
     <xsl:template match="xi:view-data//xi:preload[xi:response/xi:exception][key('id',@ref)/@is-set]">
         <set-of>
-            <xsl:apply-templates select="@*"/>
+            <xsl:apply-templates select="@*[not(local-name()='preload')]"/>
             <xsl:call-template name="build-id"/>
             <xsl:apply-templates select="key('id',@ref)" mode="build-ref"/>
+            <xsl:comment>preload exception</xsl:comment>
             <xsl:call-template name="build-not-found-data"/>
         </set-of>
     </xsl:template>
