@@ -133,7 +133,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     
                     $_SESSION ['authenticated'] = time();
                     $_SESSION ['username'] = isset($username)
-                        ? $username : (string) ($extraData -> account[0] -> name [0]);
+                        ? $username : (string) ($extraData -> account[0] -> code [0]);
                     $_SESSION ['validator'] = $validator;
                     
                     if (isset($access_token))
