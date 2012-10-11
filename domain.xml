@@ -3,10 +3,6 @@
 <domain xmlns="http://unact.net/xml/xi" >
     
     
-    <!-- sysuser dbserver-console payroll-person
-        - покзательные понятия, пусть они всегда вверху будут
-    -->
-
     <concept name="dbserver-console">
         
         <select owner="dbo" type="procedure" sql-name="sa_server_messages"/>
@@ -45,31 +41,6 @@
         <role name="payroll-person" actor="payroll-person" sql-name="person"/>
         
     </concept>
-    
-    <!-- sysuser dbserver-console payroll-person
-        - покзательные понятия, пусть они всегда вверху будут
-    -->
 
-
-    <concept name="cat">
-        <select owner="sys" sql-name="dummy"/>
-    </concept>
-
-
-    <concept name="cat-file">
-        
-        <select owner="dbo" sql-name="xmlconfig" />
-        
-        <property name="xid" />
-        
-        <property name="id" key="true" type="int" />
-        
-        <property name="ts" type="datetime" label="Дата обновления" />
-        
-        <property name="code" type="string" label="Код" />
-        <property name="data" type="file" label="XML-данные" />
-        
-    </concept>
-    
 
 </domain>

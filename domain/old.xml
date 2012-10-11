@@ -10,6 +10,27 @@
     </concept>
 
  
+    <concept name="cat">
+        <select owner="sys" sql-name="dummy"/>
+    </concept>
+
+
+    <concept name="cat-file">
+        
+        <select owner="dbo" sql-name="xmlconfig" />
+        
+        <property name="xid" />
+        
+        <property name="id" key="true" type="int" />
+        
+        <property name="ts" type="datetime" label="Дата обновления" />
+        
+        <property name="code" type="string" label="Код" />
+        <property name="data" type="file" label="XML-данные" />
+        
+    </concept>
+    
+
     <concept name="expreturn-position">
         <select type="procedure"/>
         <role name="expeditor" actor="agent"/>
