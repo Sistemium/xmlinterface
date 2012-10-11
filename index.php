@@ -125,6 +125,13 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     $credentials['password'] = $password;
                 } else if (isset($access_token)) {
                     $credentials['access_token'] = $access_token;
+                } else {
+                    header ('Content-type:text/html; charset=utf-8');
+                    print '<h2>Ошибка аутентификации</h2>';
+                    if (isset($_REQUEST['error']))
+                        print '<pre>'.$_REQUEST['error'].'</pre>'
+                    ;
+                    die();
                 }
                 
                 if ( $validator = authenticateGeneric ($credentials,$extraData) ) {
