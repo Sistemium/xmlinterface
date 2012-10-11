@@ -5,230 +5,229 @@ require_once('../libs/HTTPRetriever.php');
 date_default_timezone_set('Europe/Moscow');
 set_time_limit (180);
 
-function exceptions_error_handler($errno, $errstr, $errfile, $errline, $errcontext) { 
-    
-    throw new ErrorException($errstr, $errno, 0, $errfile, $errline); 
 
-};
+    function exceptions_error_handler($errno, $errstr, $errfile, $errline, $errcontext) { 
+        
+        throw new ErrorException($errstr, $errno, 0, $errfile, $errline); 
+    
+    };
 
     function dumpNice ($array) {
         foreach ($array as $key=>$value)
             print $key .' = '. $value."<br/>";
-    }    
-
-
-
-
-function dateAdd ($shift = 0, $start = 'now') {
-    return date('Y/m/d G:i:s',strtotime($shift,strtotime($start)));
-}
-
-function initToday () {
-    return date('d.m.Y',strtotime('now'));
-}
-
-
-function dateEach ($each) {
-    $today = getdate();
-    $datepart='hour';
-    $num=1;
-    $chunks = explode (" ", $each, 10);
-
-    if (!isset($chunks[0])) return '';
-    
-    if (is_numeric($chunks[0])){
-        $num=$chunks[0];
-        $datepart=$chunks[1];
-    } else $datepart=$chunks[0];
-
-    if (substr($datepart,-1)=='s') $datepart=substr($datepart,0,-1);
-    
-    
-    $day=1;
-    $month=1;
-    $minute=0;
-    $hour=0;
-    $second=0;
-    $year=$today['year'];
-    
-    switch ($datepart) {
-        case 'month':
-            $month=$today['mon'];
-            break;
-        case 'day':
-            $month=$today['mon'];
-            $day=  $today['mday'];
-            break;
-        case 'hour':
-            $month=$today['mon'];
-            $day=  $today['mday'];
-            $hour= $today['hours'];
-            break;
-        case 'minute':
-            $month=$today['mon'];
-            $day=  $today['mday'];
-            $hour= $today['hours'];
-            $minute= $today['minutes'];
-            break;
-        case 'week':
-            $month=$today['mon'];
-            $day=  $today['mday'];
-            break;
-    }
-    
-    $next=mktime($hour,$minute,$second,$month,$day,$year);
-    
-    if ($datepart=='week') $next=strtotime('- ' . ($today['wday'] + 6)%7 . ' days',$next);
-    
-    $next = strtotime("$num $datepart",$next);
-    
-    return date('Y/m/d G:i:s',$next);
-}
-
-function dateExpired($date1) {
-    $d1= new DateTime($date1);
-    $d2= new DateTime("now");
-    
-    return $d1<=$d2?'expired':'not expired';
-}
-
-function docAvailable($filename) {
-    return isfile($filename)?'true':'false';
-}
-
-function getContext($contextName) {
-    $doc=new DOMDocument();
-
-    $doc->loadxml($_SESSION[$contextName]);
-    
-    return $doc;
-};
-
-
-function xmlRequest($request) {
-    $doc=new DOMDocument();
-    
-    try {
-        $http = new HTTPRetriever();
-        $http->stream_timeout = 120;
-        $private=simplexml_load_file('../secure.xml');
-    
-        $src=$request[0]->ownerDocument->documentElement->getAttribute('storage');
-        $db=$request[0]->ownerDocument->documentElement->getAttribute('db');
-        $server=$request[0]->ownerDocument->documentElement->getAttribute('server');
-        
-        if ($src!='mssql'){
-            $http->auth_username = $private->username;
-            $http->auth_password = $private->password;
-            
-            $httphost = isset($private->{$server}) ? $private->{$server} : ($server?'https://'.$server:$private->server[0]);
-            
-            $source_http=$httphost;
-            if (!strpos( $httphost , '?')) $source_http .= '/xmlq';
-        } else
-            $source_http = $private->mssqlServer;
-        
-        if (developerMode()) $request[0]->ownerDocument->save('data/lastrequest.xml');
-        
-        if($http->post($source_http,
-            $http->make_query_string(array(
-                    "request"=>$request[0]->ownerDocument->saveXML(),
-                    "login"=>(string)$private->username,
-                    "pwd"=>(string)$private->password,
-                    "db"=>$db, "server"=>$server))
-            )) try {
-                $doc->loadXML($http->response);
-            } catch (Exception $loadError) {
-                throw new ErrorException($http->response); 
-        } else throw new ErrorException('http error: '.$http->get_error());
-        
-    } catch (Exception $e) {
-        $doc->loadXML('<exception xmlns="http://unact.net/xml/xi"><![CDATA['.$e->getMessage().']]></exception>');
-    }
-    
-    $doc->documentElement->setAttribute('ts',dateAdd('+ 0 days'));
-
-    return $doc;
-};
-
-
-function sqlRequest(
-    $request, $storage = 'cat', $server='', $db = '', $expect = 'resultset', $username = false
-    ){
-    
-    $username = isset($_SESSION['username'])?$_SESSION['username']:false;
-    $uri = $_SERVER["REQUEST_URI"];
-    $qrs = $_SERVER["QUERY_STRING"];
-    
-    if ($qrs != '') $uri = str_replace ('?'.$qrs, '', $uri);
-
-    $doc=new DomDocument();
-    $doc -> loadXML('<?xml version="1.0" encoding="utf-8" ?>'."<r show-sql='true'><sql><![CDATA[".$request."]]></sql></r>");
-    if ($username) $doc -> documentElement -> setAttribute('username',$username);
-    $doc -> documentElement -> setAttribute('expect',$expect);
-    $doc -> documentElement -> setAttribute('storage',$storage);
-    $doc -> documentElement -> setAttribute('server',$server);
-    $doc -> documentElement -> setAttribute('ip',$_SERVER['REMOTE_ADDR']);
-    $doc -> documentElement -> setAttribute('path',$uri);
-    
-    if ($db != '')  $doc -> documentElement -> setAttribute('db',$db);
-    
-    return xmlRequest(array(0 => $doc->documentElement));
-};
-
-function stringRequest($address, $request, $auth = false) {
-
-    $http = new HTTPRetriever();
-    
-    if ($auth) {
-        $http->auth_username = $auth->username;
-        $http->auth_password = $auth->password;
     }
 
-    $doc=new DOMDocument();
 
-    try {
-        if($http->post($address, $http->make_query_string(array("request"=>$request)))){
-          $doc->loadXML($http->response) ;}
-        else $doc->loadXML("<exception xmlns='http://unact.net/xml/xi'>HTTP request error: #{$http->result_code}: {$http->result_text}</exception>");
+    function dateAdd ($shift = 0, $start = 'now') {
+        return date('Y/m/d G:i:s',strtotime($shift,strtotime($start)));
     }
-    catch (Exception $e){
-     $doc->loadxml("<exception xmlns='http://unact.net/xml/xi'>{$e->getMessage()}</exception>");
-    };
-    $doc->documentElement->setAttribute('ts',dateAdd('+ 0 days'));
-    $doc->documentElement->setAttribute('xmlns','http://unact.net/xml/xi');
-    $doc->loadXML($doc->saveXML());
-    return $doc;
-}
-
-function mdxRequest($request, $server = 'bi', $db = 'uw') {
-    return stringRequest('https://soa.unact.ru/xmlrawdata/Default.aspx?server='.$server.'&database='.$db, trim($request));    
-};
-
-
-function authenticateSOA($login, $password, &$extraData) {
-    $address='https://soa.unact.ru/AuthenticationService/Default.aspx';
-    $http = new HTTPRetriever();
     
-    try { if ( $http->post(
-            $address,
-            $http->make_query_string(array(
-                "username" => urlencode($login),
-                "password" => urlencode($password)
-            )
-        ) ) ) {
-            $result = new SimpleXMLElement($http->response);
-            $extraData=$result;
-            return (string) $result ['validator'];
+    function initToday () {
+        return date('d.m.Y',strtotime('now'));
+    }
+    
+    
+    function dateEach ($each) {
+        $today = getdate();
+        $datepart='hour';
+        $num=1;
+        $chunks = explode (" ", $each, 10);
+    
+        if (!isset($chunks[0])) return '';
+        
+        if (is_numeric($chunks[0])){
+            $num=$chunks[0];
+            $datepart=$chunks[1];
+        } else $datepart=$chunks[0];
+    
+        if (substr($datepart,-1)=='s') $datepart=substr($datepart,0,-1);
+        
+        
+        $day=1;
+        $month=1;
+        $minute=0;
+        $hour=0;
+        $second=0;
+        $year=$today['year'];
+        
+        switch ($datepart) {
+            case 'month':
+                $month=$today['mon'];
+                break;
+            case 'day':
+                $month=$today['mon'];
+                $day=  $today['mday'];
+                break;
+            case 'hour':
+                $month=$today['mon'];
+                $day=  $today['mday'];
+                $hour= $today['hours'];
+                break;
+            case 'minute':
+                $month=$today['mon'];
+                $day=  $today['mday'];
+                $hour= $today['hours'];
+                $minute= $today['minutes'];
+                break;
+            case 'week':
+                $month=$today['mon'];
+                $day=  $today['mday'];
+                break;
         }
-        else print "HTTP request error: #{$http->result_code}: {$http->result_text}";
+        
+        $next=mktime($hour,$minute,$second,$month,$day,$year);
+        
+        if ($datepart=='week') $next=strtotime('- ' . ($today['wday'] + 6)%7 . ' days',$next);
+        
+        $next = strtotime("$num $datepart",$next);
+        
+        return date('Y/m/d G:i:s',$next);
     }
-    catch (Exception $e){
-        print "{$e->getMessage()}";
+    
+    function dateExpired($date1) {
+        $d1= new DateTime($date1);
+        $d2= new DateTime("now");
+        
+        return $d1<=$d2?'expired':'not expired';
+    }
+    
+    function docAvailable($filename) {
+        return isfile($filename)?'true':'false';
+    }
+    
+    function getContext($contextName) {
+        $doc=new DOMDocument();
+    
+        $doc->loadxml($_SESSION[$contextName]);
+        
+        return $doc;
     };
-
-    return false;
-}
+    
+    
+    function xmlRequest($request) {
+        $doc=new DOMDocument();
+        
+        try {
+            $http = new HTTPRetriever();
+            $http->stream_timeout = 120;
+            $private=simplexml_load_file('../secure.xml');
+        
+            $src=$request[0]->ownerDocument->documentElement->getAttribute('storage');
+            $db=$request[0]->ownerDocument->documentElement->getAttribute('db');
+            $server=$request[0]->ownerDocument->documentElement->getAttribute('server');
+            
+            if ($src!='mssql'){
+                $http->auth_username = $private->username;
+                $http->auth_password = $private->password;
+                
+                $httphost = isset($private->{$server}) ? $private->{$server} : ($server?'https://'.$server:$private->server[0]);
+                
+                $source_http=$httphost;
+                if (!strpos( $httphost , '?')) $source_http .= '/xmlq';
+            } else
+                $source_http = $private->mssqlServer;
+            
+            if (developerMode()) $request[0]->ownerDocument->save('data/lastrequest.xml');
+            
+            if($http->post($source_http,
+                $http->make_query_string(array(
+                        "request"=>$request[0]->ownerDocument->saveXML(),
+                        "login"=>(string)$private->username,
+                        "pwd"=>(string)$private->password,
+                        "db"=>$db, "server"=>$server))
+                )) try {
+                    $doc->loadXML($http->response);
+                } catch (Exception $loadError) {
+                    throw new ErrorException($http->response); 
+            } else throw new ErrorException('http error: '.$http->get_error());
+            
+        } catch (Exception $e) {
+            $doc->loadXML('<exception xmlns="http://unact.net/xml/xi"><![CDATA['.$e->getMessage().']]></exception>');
+        }
+        
+        $doc->documentElement->setAttribute('ts',dateAdd('+ 0 days'));
+    
+        return $doc;
+    };
+    
+    
+    function sqlRequest(
+        $request, $storage = 'cat', $server='', $db = '', $expect = 'resultset', $username = false
+        ){
+        
+        $username = isset($_SESSION['username'])?$_SESSION['username']:false;
+        $uri = $_SERVER["REQUEST_URI"];
+        $qrs = $_SERVER["QUERY_STRING"];
+        
+        if ($qrs != '') $uri = str_replace ('?'.$qrs, '', $uri);
+    
+        $doc=new DomDocument();
+        $doc -> loadXML('<?xml version="1.0" encoding="utf-8" ?>'."<r show-sql='true'><sql><![CDATA[".$request."]]></sql></r>");
+        if ($username) $doc -> documentElement -> setAttribute('username',$username);
+        $doc -> documentElement -> setAttribute('expect',$expect);
+        $doc -> documentElement -> setAttribute('storage',$storage);
+        $doc -> documentElement -> setAttribute('server',$server);
+        $doc -> documentElement -> setAttribute('ip',$_SERVER['REMOTE_ADDR']);
+        $doc -> documentElement -> setAttribute('path',$uri);
+        
+        if ($db != '')  $doc -> documentElement -> setAttribute('db',$db);
+        
+        return xmlRequest(array(0 => $doc->documentElement));
+    };
+    
+    function stringRequest($address, $request, $auth = false) {
+    
+        $http = new HTTPRetriever();
+        
+        if ($auth) {
+            $http->auth_username = $auth->username;
+            $http->auth_password = $auth->password;
+        }
+    
+        $doc=new DOMDocument();
+    
+        try {
+            if($http->post($address, $http->make_query_string(array("request"=>$request)))){
+              $doc->loadXML($http->response) ;}
+            else $doc->loadXML("<exception xmlns='http://unact.net/xml/xi'>HTTP request error: #{$http->result_code}: {$http->result_text}</exception>");
+        }
+        catch (Exception $e){
+         $doc->loadxml("<exception xmlns='http://unact.net/xml/xi'>{$e->getMessage()}</exception>");
+        };
+        $doc->documentElement->setAttribute('ts',dateAdd('+ 0 days'));
+        $doc->documentElement->setAttribute('xmlns','http://unact.net/xml/xi');
+        $doc->loadXML($doc->saveXML());
+        return $doc;
+    }
+    
+    function mdxRequest($request, $server = 'bi', $db = 'uw') {
+        return stringRequest('https://soa.unact.ru/xmlrawdata/Default.aspx?server='.$server.'&database='.$db, trim($request));    
+    };
+    
+    
+    function authenticateSOA($login, $password, &$extraData) {
+        $address='https://soa.unact.ru/AuthenticationService/Default.aspx';
+        $http = new HTTPRetriever();
+        
+        try { if ( $http->post(
+                $address,
+                $http->make_query_string(array(
+                    "username" => urlencode($login),
+                    "password" => urlencode($password)
+                )
+            ) ) ) {
+                $result = new SimpleXMLElement($http->response);
+                $extraData=$result;
+                return (string) $result ['validator'];
+            }
+            else print "HTTP request error: #{$http->result_code}: {$http->result_text}";
+        }
+        catch (Exception $e){
+            print "{$e->getMessage()}";
+        };
+    
+        return false;
+    }
 
 
     function developerMode() {
