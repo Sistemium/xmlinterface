@@ -89,24 +89,26 @@
         
     </xsl:template>
 
-    <xsl:template match="/*[xi:views]/xi:session/xi:domains/@verify-this"/>
-    
-    <xsl:template match="/*[xi:views]/xi:session/xi:domains[@verify-this]/xi:domain">
-        
+    <xsl:template match="/*[xi:views]/xi:session/xi:domains[@verify-this]">
         <xsl:param name="views" select="document(/*/xi:views/xi:menu/xi:option/@href)/*"/>
         
-        <xsl:if test="
-            document(@href)/*/xi:concept[
-                @name = 
-                    ($views/xi:view-schema//xi:form/@concept
-                        |$views/xi:view-schema//xi:form/@name
-                    )
-            ]
-        ">
+        <xsl:copy>
             
-            <xsl:copy-of select="."/>
-            
-        </xsl:if>
+            <xsl:for-each select="xi:domain">
+                <xsl:if test="
+                    document(@href)/*/xi:concept[
+                        @name = 
+                            $views/xi:view-schema//xi:form/@concept
+                        or @name =
+                            $views/xi:view-schema//xi:form[not(@concept)]/@name
+                    ]
+                ">
+                    
+                    <xsl:copy-of select="."/>
+                    
+                </xsl:if>
+            </xsl:for-each>
+        </xsl:copy>
         
     </xsl:template>
     
