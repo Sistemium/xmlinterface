@@ -3,7 +3,7 @@
 
     function exceptions_error_handler($errno, $errstr, $errfile, $errline, $errcontext) { 
         
-        throw new ErrorException($errstr, $errno, 0, $filename, $lineno); 
+        throw new ErrorException($errstr, $errno, 0, $errfile, $errline); 
     
     };
     
