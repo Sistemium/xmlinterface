@@ -26,21 +26,26 @@
         
         <form name="ua-provider" is-set="true" page-size="20">
             
-            <all-labeled-fields/>
+            <add-labeled-fields/>
             <order-by name="ts" dir="desc"/>
             
         </form>
         
-        <form name="ua-client" is-set="true" page-size="20">
+        <form name="ua-client" is-set="true" page-size="20" extendable="true">
             
-            <all-labeled-fields/>
+            <field name="xid"/>
+            <add-labeled-fields/>
+            <field name="code" editable="true"/>
+            <field name="name" editable="true"/>
+            <field name="secret" editable="password"/>
+            <field name="redirectUrl" editable="true"/>
             <order-by name="ts" dir="desc"/>
             
         </form>
         
         <form name="ua-role" is-set="true" page-size="20">
             
-            <all-labeled-fields/>
+            <add-labeled-fields/>
             <order-by name="ts" dir="desc"/>
             
         </form>
@@ -53,7 +58,14 @@
             
             <display>
                 <region class="tabs">
-                    <grid form="ua-account" label="Аккаунты">
+                    <grid form="ua-client" label="Клиенты"/>
+                    <grid form="ua-role" label="Роли"/>
+                </region>
+            </display>
+            
+            <step name="acccounts" label="Аккаунты">
+                <display>
+                    <grid form="ua-account">
                         <option name="show-account-provider-data" label="...">
                             <command xpath-compute="
                                 xi:preload[@name='set-of-ua-account-provider']/@id
@@ -70,11 +82,14 @@
                             </column>
                         </columns>
                     </grid>
-                    <grid form="ua-provider" label="Провайдеры"/>
-                    <grid form="ua-client" label="Клиенты"/>
-                    <grid form="ua-role" label="Роли"/>
-                </region>
-            </display>
+                </display>
+            </step>
+            
+            <step name="providers" label="Провайдеры">
+                <display>
+                    <grid form="ua-provider"/>
+                </display>
+            </step>
             
         </step>
         
