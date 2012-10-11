@@ -42,5 +42,10 @@
         
     </concept>
 
+    <concept name="cat">
+        <select owner="sys" sql-name="dummy"/>
+    </concept>
+
+
 
 </domain>

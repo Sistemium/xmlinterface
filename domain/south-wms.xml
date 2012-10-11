@@ -53,6 +53,14 @@
         <role name="warehouse" actor="warehouse"/>
     </concept>
 
+    <concept name="goodspackage" type="association">
+        <select type="procedure">
+            <parameter name="barcode" sql-name="@searcher"/>
+        </select>
+        <role name="goods" actor="goods" key="true"/>
+        <role name="package" actor="package" key="true"/>
+    </concept>
+
     <concept name="picking-cell">
         <select type="procedure" owner="dbo" sql-name="picking_cell">
             <parameter name="searcher" type="string" sql-name="@searcher"/>

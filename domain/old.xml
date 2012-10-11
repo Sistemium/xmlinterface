@@ -10,11 +10,6 @@
     </concept>
 
  
-    <concept name="cat">
-        <select owner="sys" sql-name="dummy"/>
-    </concept>
-
-
     <concept name="cat-file">
         
         <select owner="dbo" sql-name="xmlconfig" />
@@ -89,16 +84,6 @@
         <property name="production-date" type="date"/>
         <property name="palette" type="string"/>
     </concept>
-
-    <concept name="goodspackage" type="association">
-        <select type="procedure">
-            <parameter name="barcode" sql-name="@searcher"/>
-        </select>
-        <role name="goods" actor="goods" key="true"/>
-        <role name="package" actor="package" key="true"/>
-    </concept>
-
-
     
 
 </domain>
