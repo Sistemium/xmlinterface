@@ -6,5 +6,6 @@
 >
 
     <xsl:import href="build-targets.xsl"/>
+    <xsl:import href="session-import.xsl"/>
 
 </xsl:transform>

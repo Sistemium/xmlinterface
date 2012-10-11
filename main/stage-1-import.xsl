@@ -8,8 +8,6 @@
  extension-element-prefixes="dyn"
 >
     
-    <xsl:param name="auth" select="document('../auth.xml')/*"/>
-    
     <xsl:template match="/*">
         <xsl:attribute name="pipeline">
             <xsl:value-of select="/*/xi:userinput/xi:command[@name='stage1']"/>
@@ -59,73 +57,7 @@
         
     </xsl:template>
 
-    <xsl:template match="xi:session[@authenticated][not(xi:role)]">
-        
-        <xsl:variable name="validator" select="$auth/xi:validator[@name=current()/@validator]"/>
-        
-        <xsl:variable name="userRoles" select="
-            $validator/xi:role
-            |$validator/xi:group [@name=current()/xi:group/@name]
-                /xi:role
-            |xi:group[@ref]
-            |$auth/xi:user[@name=current()/@username]/xi:role
-        "/>
-        
-        <xsl:for-each select="
-            $auth/xi:roles//xi:role
-                [$userRoles/@ref=@name or $userRoles/@ref='*']
-            /ancestor-or-self::xi:role
-        ">
-            <xsl:if test="not(preceding::xi:role[@name=current()/@name])">
-                <xsl:copy>
-                    <xsl:apply-templates select="@*|$userRoles[@ref=current()/@name]/node()"/>
-                </xsl:copy>
-            </xsl:if>
-            
-        </xsl:for-each>
-        
-        <domains>
-            <domain href="domain.xml"
-                concepts-count="{count(document('../domain.xml')/*/xi:concept)}"
-            />
-            <xsl:apply-templates mode="import-domain" select="
-                xi:directoryList('domain')/*
-            "/>
-        </domains>
-        
-    </xsl:template>
 
-    
-    <xsl:template mode="import-domain" match="xi:file">
-        
-        <xsl:param name="href">
-            <xsl:for-each select="ancestor::xi:directory">
-                <xsl:value-of select="@name"/>
-                <xsl:text>/</xsl:text>
-            </xsl:for-each>
-            <xsl:value-of select="text()"/>
-        </xsl:param>
-        
-        <domain
-            
-            href="{$href}"
-            concepts-count="{count(document(concat('../',$href))/*/xi:concept)}"
-            
-        />
-        
-    </xsl:template>
-
-    <xsl:template mode="import-domain" match="xi:directory">
-        <xsl:apply-templates mode="import-domain" select="*"/>
-    </xsl:template>
-    
-    <xsl:template match="
-        /*[xi:userinput/*[@name='livechat' and text()='on']]
-        /xi:session [@authenticated]
-    ">
-        <xsl:attribute name="livechat">true</xsl:attribute>
-    </xsl:template>
-    
     <xsl:template match="xi:menu/xi:option">
         <xsl:if test="$userinput[
             @name = current()/ancestor::xi:view/xi:workflow/xi:step/xi:choise/xi:option
