@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<domain version="1.0"
+    xmlns:xi="http://unact.net/xml/xi"
+    xmlns="http://unact.net/xml/xi"
+>
+
+    <concept name="qc-call-task" storage="mssql" server="hqmssqlcluster0" db="jira">
+        
+        <select owner="dbo" sql-name="jira_quality_1" type="procedure">
+            <parameter name="days" type="int" sql-name="@days"/>
+        </select>
+        
+        <property name="id" key="true" type="string" sql-name="Обращение" label="Обращение"/>
+        
+        <property name="cts" type="datetime" sql-name="Создан" label="Создан"/>
+        <property name="title" type="string" label="Информация" sql-name="Информация" />
+        
+    </concept>
+    
+    <concept name="qc-operator" storage="mssql" server="hqmssqlcluster0" db="jira">
+        
+        <select owner="dbo" sql-name="jira_qauth_1" type="procedure">
+            <parameter name="login" type="string" sql-name="@l"/>
+        </select>
+        
+        <property name="id" key="true" type="string" sql-name="Login" />
+        
+        <!--property name="name" type="string" label="Имя" sql-name="" /-->
+        
+    </concept>
+    
+
+</domain>

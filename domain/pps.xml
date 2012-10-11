@@ -1,0 +1,245 @@
+<?xml version="1.0" ?>
+<domain version="1.0"
+    xmlns:xi="http://unact.net/xml/xi"
+    xmlns="http://unact.net/xml/xi"
+>
+
+    <concept name="pps" storage="mssql" server="pps" db="Preprocessing">
+        <select owner="dbo" sql-name="dummy"/>
+    </concept>
+
+    <concept name="bank-terminal" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="bankAccount"/>
+        
+        <property name="id" type="int" key="true" sql-name="account"/>
+        <property name="address" type="string" label="Адрес" sql-name="fulladdress"/>
+        
+    </concept>
+    
+    <concept name="legalentity" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="legalentity"/>
+        <save owner="dbo" sql-name="legalentity"/>
+
+        <property name="xid"/>
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" label="Название"/>
+        <property name="inn" type="string" label="ИНН" />
+        <property name="active_terminals_cnt" type="int" 
+            sql-compute="(select sum(active_terminals_cnt) from dbo.subdealer_func(default) where legalentity=legalentity.id)" label="Терминалов активно"/>
+    </concept>
+
+    <concept name="subdealer-legalentity" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="subdealer_legalentity"/>
+        <save owner="dbo" sql-name="subdealer_legalentity"/>
+
+        <property name="xid"/>
+        
+        <role name="legalentity" actor="legalentity"/>
+        <role name="subdealer" actor="subdealer" />
+
+    </concept>
+
+    <concept name="bpatotal" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="bpa_paysystem_date"/>
+        <save owner="dbo" sql-name="bpa_paysystem_date"/>
+
+        <property name="xid"/>
+        <property name="id" type="int" key="true" />
+        <property name="date" type="date" sql-name="ddate" />
+
+        <role name="bpa" actor="bpa"/>
+        <role name="paysystem" actor="paysystem"/>
+
+        <property name="summ" type="decimal" label="Сумма" />
+    </concept>
+
+    <concept name="payments-csv" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" type="procedure" sql-name="csv_payments_func">
+            <parameter name="date" type="date" sql-name="@ddate"/>
+            <parameter name="branch" type="int" sql-name="@branch"/>
+            <parameter name="type" type="int" sql-name="@type"/>
+        </select>
+    </concept>
+
+    <concept name="bpa-totals-change" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" type="procedure" sql-name="bpa_totals_change"/>
+        
+        <property name="date" type="date" sql-name="ddate" label="Рабочий день"/>
+        <property name="change-date" type="datetime" sql-name="change_ddate" label="Дата изменения"/>
+
+        <property name="new-total" type="decimal" sql-name="new_bank_total" label="Новый итог"/>
+        <property name="old-total" type="decimal" sql-name="old_bank_total" label="Старый итог"/>
+        
+    </concept>
+
+
+    <concept name="active-terminal" storage="mssql" server="pps" db="preprocessing">
+        <select owner="dbo" sql-name="active_terminal"/>
+        <property name="deleted" type="boolean" sql-name="is_deleted"/>
+    </concept>
+
+    <concept name="subdealer" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" type="procedure" sql-name="subdealer_func">
+            <parameter name="username" type="string" sql-name="@username"/>
+        </select>
+        <save owner="dbo" type="procedure" sql-name="subdealer_set">
+            <parameter name="id" type="int" sql-name="@subdealer"/>
+            <parameter name="legalentity" type="int" sql-name="@legalentity"/>
+        </save>
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string"/>
+        <property name="terminals_cnt" type="int"/>
+        <property name="active_terminals_cnt" type="int"/>
+        <property name="terminals_cash" type="decimal"/>
+
+        <role name="legalentity" actor="legalentity"/>
+        <role name="main_subdealer" actor="main_subdealer"/>
+
+    </concept>
+
+    <concept name="branch_subdealer" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" />
+
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string"/>
+
+        <role name="legalentity" actor="legalentity"/>
+
+    </concept>
+
+    <concept name="main_subdealer" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" />
+
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string"/>
+
+        <role name="branch_subdealer" actor="branch_subdealer"/>
+
+    </concept>
+
+    <concept name="paysystem" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="paysystem"/>
+        <save owner="dbo"/>
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string"/>
+    </concept>
+
+    <concept name="dates" storage="mssql" server="pps" db="ppscat" mdx-name="[Время].[Дата].[Дата].members">
+        <select owner="dbo" sql-name="ddates"/>
+        <save owner="dbo" sql-name="ddates"/>
+        <property name="date" type="date" sql-name="ddate" key="semitrue" label="Дата"/>
+        <property name="closed" type="boolean" label="Закрыта"/>
+        <property name="month" type="date"
+             sql-compute="cast (cast(year(ddate) as varchar)+'/'+cast (month(ddate) as varchar)+'/01' as datetime)" />
+    </concept>
+
+    <concept name="month" storage="mssql" server="pps" db="ppscat" mdx-name="[Время].[Календарь].[Месяц].members">
+        <select owner="dbo" sql-name="yearmonth"/>
+        <property name="id" type="int" key="true" />
+        <property name="name" type="string" label="Период"/>
+    </concept>
+
+    <concept name="paysystem-date" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" sql-name="paysystem_date"/>
+        <save owner="dbo"/>
+        <property name="id" type="int" key="true"/>
+        <role name="paysystem" actor="paysystem"/>
+        <property name="date" sql-name="ddate" type="date"/>
+        <property name="bank-total" type="decimal" sql-name="bank_summ" label="Итог банк"/>
+        <property name="bpa-total" type="decimal" sql-name="bpa_summ" label="Итог БПА"/>
+    </concept>
+
+    <concept name="paysystemetc" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo"/>
+        <save owner="dbo"/>
+        <role name="paysystem" actor="paysystem"/>
+        <property name="id" type="int" key="true"/>
+        <property name="summ" sql-name="bank_total" type="decimal" label="Итог платежной системы"/>
+        <property name="delta" sql-compute="bank_total - payments_total" type="decimal" label="Корректировка БПА"/>
+        <property name="date" sql-name="ddate" type="date"/>
+        <property name="dateb" sql-name="ddateb" type="date"/>
+        <property name="returned_bpa" type="int"/>
+        <role name="delta-bpa" actor="bpa" sql-name="returned_bpa"/>
+        <property name="returned" type="decimal"/>
+        <property name="checked" type="int"/>
+        <property name="month" type="date"
+             sql-compute="cast (cast(year(ddateb) as varchar)+'/'+cast (month(ddateb) as varchar)+'/01' as datetime)" />
+    </concept>
+
+    <concept name="terminals-state" storage="mssql" server="pps" db="ppscat">
+        <select owner="dbo" type="procedure" sql-name="TerminalState4Web"/>
+        
+        <property name="terminalid" type="int" sql-name="TerminalID"/>
+        <property name="state" type="string" />
+        <property name="address" type="string" />
+        <property name="name" type="string" />
+        <property name="lastconnecttime" type="string" />
+        <property name="fulladdress" type="string" />
+        <property name="administrativearea" type="string" />
+        <property name="city" type="string" />
+        <property name="street" type="string" />
+        <property name="building" type="string" />
+        <property name="districtadministrativearea" type="string" />
+        <property name="districtcity" type="string" />
+        <property name="latitude" type="decimal" />
+        <property name="longitude" type="decimal" />
+        <property name="legal_name" type="string" />
+        <property name="tsystem" type="string" />
+        <property name="ddatee" type="string" />
+        
+    </concept>
+    
+     <concept name="terminal-payment" storage="mssql" server="pps" db="ppscat" >
+        <select type="procedure" owner="dbo" sql-name="terminal_payment">
+            <parameter name="terminal" type="int" sql-name="@terminal"/>
+            <parameter name="searcher" type="string" sql-name="@searcher"/>
+        </select>
+        
+        <role name="terminal" actor="ppsterminal"/>
+        
+        <property name="initializedatetime" type="datetime" label="Время платежа" />
+        <property name="payment-status" type="int" label="Статус" sql-name="statusid"/>
+        <property name="summ" type="decimal" label="Сумма"/>
+        <property name="params" type="string" label="Реквизиты"/>
+
+    </concept>
+    
+    <concept name="ppsterminal" storage="mssql" server="pps" db="ppscat">
+        <select type="procedure" owner="dbo" sql-name="terminal_search">
+            <parameter name="searcher" type="string" sql-name="@searcher"/>
+        </select>
+        
+        <save owner="dbo" sql-name="terminal"/>
+
+        <property name="id" type="int" key="true" label="ИД"/>
+        
+        <property name="name" type="string" label="Название"/>
+        <property name="address" type="string" label="Адрес"/>
+        <property name="isdeleted" type="boolean" initial="0" label="Удален"/>
+        <property name="lastconnect" type="datetime" label="Последний отклик" sql-name="lastconnecttime"/>
+        
+        <substate name="deleted">
+            <when field="isdeleted">
+                <equals number="1"/>
+            </when>
+            <before-entering>
+                <set field="isdeleted" number="1"/>
+            </before-entering>
+        </substate>      
+        
+    </concept>
+
+    <concept name="preprocessing" storage="olap" db="Preprocessing" server="hqsrv27">
+        <select type="mdx" cube="Препроцессинг"/>
+
+        <role name="date" type="date" actor="dates" mdx-name="[Время].[Дата].[Дата]"/>
+        <property name="processed-total" type="decimal" mdx-name="[Measures].[Платежи препроцессинга-Сумма без комиссии]" label="Проведено на сумму"/>
+        <property name="subdealer-payments-in" type="decimal" mdx-name="[Measures].[Платежи субдилера-Приход]" label="Субдилер Приход"/>
+        <property name="subdealer-payments-out" type="decimal" mdx-name="[Measures].[Платежи субдилера-Расход]" label="Субдилер Расход"/>
+        <property name="subdealer-balance" type="decimal" mdx-compute=" - ([Критерий платежа].[Критерий].&amp;[2],[Measures].[Платежи препроцессинга-Сумма без комиссии Итого]) + [Measures].[Платежи субдилера-Сумма Итого]" mdx-name="[Measures].[subdealer-balance]" label="Баланс субдилера"/>
+        <role name="subdealer" actor="subdealer" mdx-name="[Терминал].[Отделение].[Субдилер]"/>
+        <role name="month" actor="subdealer" mdx-name="[Время].[Календарь].[Месяц года]"/>
+        <role name="criteria" actor="criteria" mdx-name="[Критерий платежа].[Критерий]"/>
+    </concept>
+    
+</domain>

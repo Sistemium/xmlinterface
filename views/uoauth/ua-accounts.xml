@@ -5,9 +5,10 @@
         
         <parameter name="date" type="date"> <init with="today"/> </parameter>
         
-        <form name="ua-account" is-set="true" page-size="20">
+        <form name="ua-account" is-set="true" page-size="20" deletable="true">
             
-            <all-labeled-fields/>
+            <add-labeled-fields/>
+            <field name="code" editable="true"/>
             <order-by name="ts" dir="desc"/>
             
             <form name="ua-account-provider-agg" concept="ua-account-provider">
@@ -61,6 +62,7 @@
                         <columns>
                             <column field="id"/>
                             <column field="name"/>
+                            <column field="code"/>
                             <column field="email"/>
                             <column form="ua-account-provider-agg" field="id"/>
                             <column label="Прочее">
