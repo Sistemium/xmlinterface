@@ -85,6 +85,9 @@
         </xsl:for-each>
         
         <domains>
+            <domain href="domain.xml"
+                concepts-count="{count(document('../domain.xml')/*/xi:concept)}"
+            />
             <xsl:apply-templates mode="import-domain" select="
                 xi:directoryList('domain')/*
             "/>
@@ -94,15 +97,22 @@
 
     
     <xsl:template mode="import-domain" match="xi:file">
-        <domain>
-            <xsl:attribute name="href">
-                <xsl:for-each select="ancestor::xi:directory">
-                    <xsl:value-of select="@name"/>
-                    <xsl:text>/</xsl:text>
-                </xsl:for-each>
-                <xsl:value-of select="text()"/>
-            </xsl:attribute>
-        </domain>
+        
+        <xsl:param name="href">
+            <xsl:for-each select="ancestor::xi:directory">
+                <xsl:value-of select="@name"/>
+                <xsl:text>/</xsl:text>
+            </xsl:for-each>
+            <xsl:value-of select="text()"/>
+        </xsl:param>
+        
+        <domain
+            
+            href="{$href}"
+            concepts-count="{count(document(concat('../',$href))/*/xi:concept)}"
+            
+        />
+        
     </xsl:template>
 
     <xsl:template mode="import-domain" match="xi:directory">

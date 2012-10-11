@@ -14,7 +14,6 @@
     <xsl:param name="userinput" select="/*/xi:userinput/xi:command"/>
     <xsl:param name="model" select="
         document(/*/xi:session/xi:domains/xi:domain/@href)/xi:domain
-        |document('domain.xml')/xi:domain
     "/>
     <xsl:param name="thisdoc" select="/"/>
     <xsl:param name="session" select="/*/xi:session"/>
