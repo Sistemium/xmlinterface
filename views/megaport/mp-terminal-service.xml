@@ -185,9 +185,11 @@
                     <columns>
                         <column field="task-type"/>
                         <column field="do-before"/>
-                        <column field="code" form="current-duty-task-terminal"/>
-                        <column>
-                            <print field="address" form="current-duty-task-terminal"/>
+                        <column label="Терминал">
+                            <region class="hbox">
+                                <print field="code" form="current-duty-task-terminal"/>
+                                <print field="address" form="current-duty-task-terminal"/>
+                            </region>
                             <print field="error" form="current-duty-task-terminal" class="exception"/>
                         </column>
                     </columns>

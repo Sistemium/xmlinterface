@@ -218,7 +218,7 @@
         <view-data/>
     </xsl:template>
 
-    <xsl:template match="xi:view-definition//xi:workflow">
+    <xsl:template match="xi:view-definition/xi:workflow">
         <xsl:call-template name="id"/>
         <xsl:if test="not(following-sibling::*[1]/self::xi:dialogue)">
             <dialogue>
