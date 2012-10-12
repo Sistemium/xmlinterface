@@ -74,6 +74,8 @@
                     
                     <form name="current-duty-task" concept="mp-agent-duty-task" is-set="true">
                         
+                        <field name="id"/>
+                        
                         <field name="task-type" label="Задача">
                             <sql-compute>
                                 (select break_name from dbo.terminal_break tb where id = [current-duty-task].[terminal_break])
@@ -103,6 +105,8 @@
                             <form name="current-duty-task-terminal-processing" concept="processing">
                                 <field name="name" label="Система"/>
                             </form>
+                            
+                            <field name="error"/>
                             
                             <field name="terminalid" hidden="true"/>
                             
@@ -152,7 +156,7 @@
                 <grid form="zones">
                     
                     <option name="to-zone-details" label="...">
-                        <command name="mp-zones">zone-details</command>
+                        <command name="mp-terminal-service">zone-tasks</command>
                         <command name="zone-to-detail-id" xpath-compute="xi:datum[@name='id']" />
                     </option>
                     
@@ -166,32 +170,63 @@
             
         </step>
         
-        <step name="zone-details" label="Дела в зоне" hidden="true">
+        <step name="zone-tasks" label="Задания маршрута" hidden="true">
             
             <display>
                 
                 <print form="sysuser" field="date"/>
                 <print form="detailed-zone" field="*"/>
                 
-                <region class="tabs">
-                    <grid form="current-duty-task" label="Задания маршрута" refreshable="true">
-                        <group>
-                            <by field="is-served" form="current-duty-task"/>
-                        </group>
-                        <class field="agent-priority" form="current-duty-task"/>
-                    </grid>
-                    <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true">
-                        <group>
-                            <by field="name" form="problem-terminal-processing"/>
-                        </group>
-                    </grid>
-                </region>
+                <grid form="current-duty-task" refreshable="true">
+                    <group>
+                        <by field="is-served" form="current-duty-task"/>
+                    </group>
+                    <class field="agent-priority" form="current-duty-task"/>
+                    <columns>
+                        <column field="task-type"/>
+                        <column field="do-before"/>
+                        <column field="code" form="current-duty-task-terminal"/>
+                        <column>
+                            <print field="address" form="current-duty-task-terminal"/>
+                            <print field="error" form="current-duty-task-terminal" class="exception"/>
+                        </column>
+                    </columns>
+                </grid>
                 
             </display>
             
             <choise>
                 <option name="to-index" label="Сменить зону">
-                    <command name="mp-zones">index</command>
+                    <command name="mp-terminal-service">index</command>
+                </option>
+                <option name="to-index" label="К терминалам с ошибкой">
+                    <command name="mp-terminal-service">zone-problems</command>
+                </option>
+            </choise>
+            
+        </step>
+        
+        <step name="zone-problems" label="Терминалы с ошибкой" hidden="true">
+            
+            <display>
+                
+                <print form="sysuser" field="date"/>
+                <print form="detailed-zone" field="*"/>
+                
+                <grid form="mp-detailed-zone-terminal" refreshable="true">
+                    <group>
+                        <by field="name" form="problem-terminal-processing"/>
+                    </group>
+                </grid>
+                
+            </display>
+            
+            <choise>
+                <option name="to-index" label="Сменить зону">
+                    <command name="mp-terminal-service">index</command>
+                </option>
+                <option name="to-index" label="К заданиям">
+                    <command name="mp-terminal-service">zone-tasks</command>
                 </option>
             </choise>
             

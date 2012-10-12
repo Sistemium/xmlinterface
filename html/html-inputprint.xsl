@@ -30,7 +30,12 @@
             
             <xsl:attribute name="class">
                 <xsl:text>datum </xsl:text>
-                <xsl:value-of select="normalize-space(concat(local-name(.),' ',@name,' ',local-name($datum/@modified)))"/>
+                <xsl:value-of select="normalize-space(concat(
+                    local-name(.),' ',
+                    @name,' ',
+                    local-name($datum/@modified),' ',
+                    @class
+                ))"/>
             </xsl:attribute>
             
             <xsl:for-each select="@extra-style">

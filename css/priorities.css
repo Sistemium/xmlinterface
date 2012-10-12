@@ -13,3 +13,8 @@ tr.caution {
 tr.hurry {
     background-color: lightgrey;
 }
+
+
+.critical .exception {
+    color: white;
+}
