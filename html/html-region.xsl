@@ -2,7 +2,7 @@
 <xsl:transform version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xi="http://unact.net/xml/xi"
-    xmlns="http://unact.net/xml/xi"
+    xmlns="http://www.w3.org/1999/xhtml"
 >
 
     <xsl:template match="xi:dialogue//xi:region">

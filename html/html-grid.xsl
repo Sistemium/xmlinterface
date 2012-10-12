@@ -4,17 +4,15 @@
     xmlns="http://www.w3.org/1999/xhtml"
 >
  
+    <xsl:include href="html-table.xsl"/>
+    
     <xsl:template match="xi:grid">
         
         <xsl:param name="data" select="xi:null"/>
         <xsl:param name="top" select="@top[not($data)]|$data/@id"/>
         
         <xsl:variable name="this" select="."/>
-        <xsl:variable name="colspan"
-                      select="count($this/xi:columns/xi:column)+count($this//xi:option)+count($this/@deletable)"
-        />
         
-        <xsl:if test="not($data) or $data//*[@name=current()/@form][xi:field|xi:data]">
         <div id="{@id}">
             
             <xsl:attribute name="class">
@@ -24,104 +22,27 @@
                 </xsl:if>
             </xsl:attribute>
             
-            <table class="grid">
-                <thead>
-                    
-                    <xsl:apply-templates select="." mode="build-tools">
-                        <xsl:with-param name="colspan" select="$colspan"/>
-                    </xsl:apply-templates>
-                    
-                    <xsl:for-each select="@label">
-                        <tr class="title">
-                           <th colspan="{$colspan}">
-                                
-                                <span>
-                                    <xsl:value-of select="."/>
-                                </span>
-                                
-                                <xsl:if test="ancestor::xi:grid[1]/@refreshable">
-                                    <a type="button"
-                                       href="?set-of-{key('id',../@ref)/@name}=refresh&amp;command=cleanUrl"
-                                       class="button ui-icon ui-icon-refresh"
-                                       onclick="return menupad(this,false,false);"
-                                    />
-                                </xsl:if>
-                                
-                                <xsl:if test="key('id',../@ref)/@toggle-edit-off">
-                                    <a type="button" href="?{key('id',../@ref)/@name}=toggle-edit&amp;command=cleanUrl"
-                                       class="button ui-icon ui-icon-pencil" onclick="return menupad(this,false,false);"/>
-                                </xsl:if>
-                           </th>
-                        </tr>
-                    </xsl:for-each>
-                    <tr class="header">
-                        <xsl:if test="descendant::xi:option or @deletable">
-                            <th class="options">
-                                <xsl:apply-templates select="xi:option"/>
-                            </th>
-                        </xsl:if>
-                        <xsl:for-each select="xi:columns/xi:column">
-                            <th>
-                                <span><xsl:apply-templates select="." mode="label"/></span>
-                            </th>
-                        </xsl:for-each>
-                    </tr>
-                </thead>
+            <xsl:choose>
                 
-                <tbody>
-                    <xsl:apply-templates select="xi:rows">
+                <xsl:when test="not($data) or $data//*[@name=current()/@form][xi:field|xi:data]">
+                    <xsl:call-template name="build-table">
+                        <xsl:with-param name="data" select="$data"/>
                         <xsl:with-param name="top" select="$top"/>
-                    </xsl:apply-templates>
-                </tbody>
+                    </xsl:call-template>
+                </xsl:when>
                 
-                <tfoot>
-                    <xsl:variable name="totals-footer">
-                        <tr class="footer">
-                            <xsl:if test="xi:option or @deletable">
-                                <th/>
-                            </xsl:if>
-                            <xsl:for-each select="xi:columns/xi:column">
-                                <th>
-                                    <span>
-                                        <xsl:apply-templates select="." mode="class"/>
-                                        <xsl:apply-templates select="." mode="grid-totals"/>
-                                    </span>
-                                </th>
-                            </xsl:for-each>
-                        </tr>
-                    </xsl:variable>
-                    
-                    <xsl:if test="string-length(normalize-space($totals-footer))>0">
-                        <xsl:copy-of select="$totals-footer"/>
-                    </xsl:if>
-                    
-                    <xsl:if test="xi:page-control[not(xi:final-page)]">
-                        <tr class="page-control">
-                            <th colspan="{$colspan}">
-                                <xsl:for-each select="xi:page-control">
-                                    <!--xsl:if test="position()=1">
-                                        <span><a class="button" href="?{@ref}=prev&amp;command=cleanUrl">&lt;</a></span>
-                                    </xsl:if-->
-                                    <a class="button" href="?{@ref}=refresh&amp;command=cleanUrl">
-                                        <xsl:if test="@visible"><span><xsl:text>Страница </xsl:text></span></xsl:if>
-                                        <span><xsl:value-of select="@page-start + 1"/></span>
-                                    </a>
-                                    <xsl:if test="position()=last() and not(xi:final-page)">
-                                        <span><a class="button" href="?{@ref}=next&amp;command=cleanUrl">&gt;</a></span>
-                                    </xsl:if>
-                                </xsl:for-each>
-                            </th>
-                        </tr>
-                    </xsl:if>
-                    
-                    <xsl:apply-templates select="." mode="build-tools">
-                        <xsl:with-param name="colspan" select="$colspan"/>
-                    </xsl:apply-templates>
-                    
-                </tfoot>
-            </table>
+                <xsl:when test="$data/@id or @build-preload">
+                    <!--a type="button"
+                       href="?{$data//xi:preload[@ref=current()/@ref]/@id}=refresh&amp;command=cleanUrl"
+                       class="button ui-icon ui-icon-refresh"
+                       onclick="return menupad(this,false,false);"
+                    /-->
+                </xsl:when>
+                
+            </xsl:choose>
+            
         </div>
-        </xsl:if>
+        
     </xsl:template>
     
 

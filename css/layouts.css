@@ -1,0 +1,16 @@
+.hbox {
+	display: -webkit-box;
+	
+    -webkit-box-orient: horizontal;
+    box-orient: vertical;
+    
+	-webkit-box-align: stretch;
+	box-align: stretch;
+	
+    -webkit-box-pack: start;
+	box-pack: start;
+}
+
+.region.hbox {
+    margin: 0;
+}
