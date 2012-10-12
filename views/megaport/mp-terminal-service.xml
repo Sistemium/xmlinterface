@@ -60,7 +60,7 @@
                 
                 <parameter name="zone-to-detail-id" modifiable="true" property="id"/>
                 
-                <field name="name"/>
+                <field name="name" label="Зона"/>
                 <field name="id"/>
                 
                 <form name="current-route" concept="mp-agent-duty" page-size="1">
@@ -170,14 +170,14 @@
             
         </step>
         
-        <step name="zone-tasks" label="Задания маршрута" hidden="true">
+        <step name="zone-tasks" hidden="true">
             
             <display>
                 
                 <print form="sysuser" field="date"/>
                 <print form="detailed-zone" field="*"/>
                 
-                <grid form="current-duty-task" refreshable="true">
+                <grid form="current-duty-task" refreshable="true" label="Задания маршрута" >
                     <group>
                         <by field="is-served" form="current-duty-task"/>
                     </group>
@@ -206,14 +206,14 @@
             
         </step>
         
-        <step name="zone-problems" label="Терминалы с ошибкой" hidden="true">
+        <step name="zone-problems" hidden="true">
             
             <display>
                 
                 <print form="sysuser" field="date"/>
                 <print form="detailed-zone" field="*"/>
                 
-                <grid form="mp-detailed-zone-terminal" refreshable="true">
+                <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true">
                     <group>
                         <by field="name" form="problem-terminal-processing"/>
                     </group>
