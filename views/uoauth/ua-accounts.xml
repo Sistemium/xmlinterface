@@ -5,14 +5,23 @@
         
         <parameter name="date" type="date"> <init with="today"/> </parameter>
         
-        <form name="ua-account" is-set="true" page-size="20" deletable="true">
+        <form name="ua-account" is-set="true" page-size="20" deletable="true" toggle-edit-off="true">
             
             <add-labeled-fields/>
+            
             <field name="code" editable="true"/>
+            
             <order-by name="ts" dir="desc"/>
             
             <form name="ua-account-provider-agg" concept="ua-account-provider">
                 <field name="id" aggregate="count" label="Связано аккаунтов"/>
+            </form>
+            
+            <form name="ua-account-role" is-set="true" extendable="true">
+                <form name="ua-account-role-name" concept="ua-role">
+                    <field name="name" label="Провайдер"/>
+                </form>
+                <field name="data"/>
             </form>
             
             <form name="ua-account-provider" is-set="true" preload="true">
@@ -31,7 +40,7 @@
             
         </form>
         
-        <form name="ua-client" is-set="true" page-size="20" extendable="true">
+        <form name="ua-client" is-set="true" page-size="20" extendable="true" toggle-edit-off="true">
             
             <field name="xid"/>
             <add-labeled-fields/>
@@ -52,7 +61,7 @@
         
     </form></view-schema>
     
-    <workflow>
+    <workflow name="ua-accounting">
         
         <step name="index">
             
@@ -63,33 +72,38 @@
                 </region>
             </display>
             
-            <step name="acccounts" label="Аккаунты">
-                <display>
-                    <grid form="ua-account">
-                        <option name="show-account-provider-data" label="...">
-                            <command xpath-compute="
-                                xi:preload[@name='set-of-ua-account-provider']/@id
-                            ">refresh</command>
-                        </option>
-                        <columns>
-                            <column field="id"/>
-                            <column field="name"/>
-                            <column field="code"/>
-                            <column field="email"/>
-                            <column form="ua-account-provider-agg" field="id"/>
-                            <column label="Прочее">
-                                <grid form="ua-account-provider"/>
-                            </column>
-                        </columns>
-                    </grid>
-                </display>
-            </step>
-            
-            <step name="providers" label="Провайдеры">
-                <display>
-                    <grid form="ua-provider"/>
-                </display>
-            </step>
+            <!--workflow name="manage">
+                <step name="acccounts" -->
+                    <display>
+                        <grid form="ua-account" label="Аккаунты">
+                            <option name="show-account-provider-data" label="...">
+                                <command xpath-compute="
+                                    xi:preload[@name='set-of-ua-account-provider']/@id
+                                ">refresh</command>
+                            </option>
+                            <columns>
+                                <column field="id"/>
+                                <column field="name"/>
+                                <column field="code"/>
+                                <column field="email"/>
+                                <column form="ua-account-provider-agg" field="id"/>
+                                <column label="Данные провайдеров">
+                                    <grid form="ua-account-provider"/>
+                                </column>
+                                <column label="Назначенные роли">
+                                    <grid form="ua-account-role"/>
+                                </column>
+                            </columns>
+                        </grid>
+                    </display>
+                <!--/step>
+                
+                <step name="providers" -->
+                    <display>
+                        <grid form="ua-provider" label="Провайдеры"/>
+                    </display>
+                <!--/step>
+            </workflow-->
             
         </step>
         
