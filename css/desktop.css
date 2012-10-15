@@ -3,6 +3,7 @@
 @import "priorities.css";
 @import "grid.css";
 @import "layouts.css";
+@import "tabs.css";
 
 body, input {font-size: 15px; color:#333333; -background-color: #FCFBF5; font-family: verdana;}
 
@@ -395,64 +396,6 @@ body.spb, .spb input {font-size: 11px;}
 
 .ui-widget > div {
 	font-size: 15px;
-}
-
-.region.tabs.ui-widget-content  {
-	-background: inherit;
-}
-
-.tabs .ui-tabs-nav > li {
-	font-size: small;
-}
-
-.tabs {
-	border:none;
-	margin: 0;
-	background: #BBF0C0;
-}
-
-.tabs .ui-widget-header {
-	background: #F9F8F1;
-	border: none;
-}
-
-.tabs .ui-tabs-panel.region {
-	margin: 0.5em;
-}
-
-.tabs .ui-tabs-panel.grid {
-	margin-bottom: 0;
-}
-
-.tabs .ui-widget-header .ui-state-default {
-	background: #F0F0DD;
-	border: none;
-}
-
-.tabs .ui-widget-header .ui-tabs-selected {
-	background: #BBF0C0;
-	border: none;
-}
-
-.tabs .ui-widget-header .ui-state-default a {
-	color: #707070;
-}
-
-.tabs .ui-widget-header .ui-tabs-selected a {
-	color: #404040 ;
-}
-
-.tabs .grid.ui-tabs-panel thead tr.title {
-	display: none;
-}
-
-.ui-tabs .ui-tabs-panel.region {
-	padding: 1em 1.4em;
-	background: #F0F0DD;
-}
-
-.ui-tabs .ui-tabs-panel.grid {
-	padding: 0;
 }
 
 .text.editable textarea {
