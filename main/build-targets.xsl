@@ -77,12 +77,16 @@
     </xsl:template>
     
     
-    <xsl:template mode="build-target" match="xi:command [not(@name)] [@xpath-compute]">
+    <xsl:template mode="build-target" match="xi:command [not(@name)] [@xpath-compute|xi:xpath-compute]">
         
         <xsl:param name="command"/>
         <xsl:param name="this" select="."/>
         
-        <xsl:for-each select="xi:map(key('id', $command), @xpath-compute)">
+        <xsl:for-each select="xi:map(
+            key('id', $command)
+            , self::*[not(xi:xpath-compute)]/@xpath-compute
+            | xi:xpath-compute
+        )">
             <xsl:call-template name="build-target">
                 <xsl:with-param name="target-id" select="current()/@id|current()[not(@id)]"/>
                 <xsl:with-param name="payload" select="$this"/>
