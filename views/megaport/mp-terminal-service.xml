@@ -85,6 +85,8 @@
                         <field name="is-served"/>
                         <field name="is-penalty-canceled" format="true-only"/>
                         
+                        <field name="mp-terminal"/>
+                        
                         <field name="resolution" label-="Результат">
                             <sql-compute>
                                 case
@@ -99,8 +101,22 @@
                         
                         <form name="current-duty-task-terminal" concept="mp-terminal">
                             
+                            <parameter name="current-duty-task-ok-parm"
+                                type="int"
+                                modifiable="true"
+                                property="ok-pressed"
+                                optional="true"
+                            />
+                            
+                            <parameter name="current-duty-task-ok-user"
+                                property="ok-user"
+                                optional="true"
+                                modifiable="true"
+                            />
+                            
                             <field name="address"/>
                             <field name="code"/>
+                            <field name="last-check-ts"/>
                             
                             <form name="current-duty-task-terminal-processing" concept="processing">
                                 <field name="name" label="Система"/>
@@ -189,10 +205,24 @@
                             <region class="hbox">
                                 <print field="code" form="current-duty-task-terminal"/>
                                 <print field="address" form="current-duty-task-terminal"/>
+                                <print field="last-check-ts" form="current-duty-task-terminal"/>
                             </region>
                             <print field="error" form="current-duty-task-terminal" class="exception"/>
                         </column>
                     </columns>
+                    <option label="OK" name="current-duty-task-ok-button">
+                        <command xpath-compute="
+                            descendant-or-self :: xi:datum [@name='current-duty-task-ok-parm']
+                        "><increment/></command>
+                        <command xpath-compute="
+                            descendant-or-self :: xi:datum [@name='current-duty-task-ok-user']
+                        ">  <value>
+                                <xpath-compute>
+                                    ancestor::xi:data[@name='sysuser']/xi:datum[@name='id']
+                                </xpath-compute>
+                            </value>
+                        </command>
+                    </option>
                 </grid>
                 
             </display>

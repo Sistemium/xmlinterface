@@ -24,15 +24,25 @@
         
         <select owner="megaport" sql-name="terminal"/>
         
+        <select owner="megaport" sql-name="terminal_check" type="procedure">
+            <parameter name="ok-pressed" required="true" type="int" sql-name="@seed"/>
+            <parameter name="ok-user" required="true" type="int" sql-name="@username"/>
+            <parameter name="id" type="int" sql-name="@terminal"/>
+        </select>
+        
         <property name="lastactivitytime" type="datetime" label="Последний сигнал"/>
         <property name="lastpaymenttime" type="datetime" label="Последний платеж"/>
         
         <property name="error" type="string" label="Ошибка" sql-name="errortext"/>
         
+        <property name="id" key="true" type="int"/>
+        
         <property name="name" type="string" label="Название"/>
         <property name="address" type="string" label="Адрес"/>
         <property name="code" type="string" label="Код"/>
         <property name="terminalid" type="int" label="ID"/>
+        
+        <property name="last-check-ts" type="datetime" label="Последнее обновление" sql-name="last_check_ts"/>
         
         <role name="processing" actor="processing" sql-name="src_system"/>
         
