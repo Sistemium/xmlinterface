@@ -190,8 +190,10 @@
             
             <display>
                 
-                <print form="sysuser" field="date"/>
-                <print form="detailed-zone" field="*"/>
+                <region class="hbox">
+                    <print form="sysuser" field="date"/>
+                    <print form="detailed-zone" field="*"/>
+                </region>
                 
                 <grid form="current-duty-task" refreshable="true" label="Задания маршрута" >
                     
