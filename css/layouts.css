@@ -2,15 +2,26 @@
 	display: -webkit-box;
 	
     -webkit-box-orient: horizontal;
-    box-orient: vertical;
-    
 	-webkit-box-align: stretch;
+    -webkit-box-pack: center;
+    
+    box-orient: horizontal;
 	box-align: stretch;
-	
-    -webkit-box-pack: start;
-	box-pack: start;
+	box-pack: center;
 }
 
+
 .region.hbox {
-    margin: 0;
+    margin: 0 auto;
 }
+
+.grid .hbox {
+    display: block;
+    overflow: auto;
+	width: 100%
+}
+
+.grid .hbox > div {
+    float: left;
+}
+
