@@ -8,6 +8,7 @@
             <form name="payments-csv" is-set="true" pipeline="csv1251">
             	<field name="terminalid" />
             	<field name="summ" />
+                      <field name="komiss"/>
             	<field name="paysystem"/>
             	<join name="dates" field="date"/>
             </form>
