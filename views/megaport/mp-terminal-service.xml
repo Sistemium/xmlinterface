@@ -190,6 +190,11 @@
             
             <display>
                 
+                
+                <!--input field="zone-to-detail-id" label="Зона">
+                    <by form="zones" field="id"/>
+                </input-->
+                
                 <region class="hbox">
                     <print form="sysuser" field="date"/>
                     <print form="detailed-zone" field="*"/>
@@ -197,12 +202,9 @@
                 
                 <grid form="current-duty-task" refreshable="true" label="Задания маршрута" >
                     
-                    <group>
-                        
-                        <by field="is-served" form="current-duty-task"/>
-                    </group>
-                    
                     <class field="agent-priority" form="current-duty-task"/>
+                    
+                    <option reuse="current-duty-task-ok-button"/>
                     
                     <columns>
                         <column field="task-type"/>
@@ -217,7 +219,9 @@
                         </column>
                     </columns>
                     
-                    <option reuse="current-duty-task-ok-button"/>
+                    <group>
+                        <by field="is-served" form="current-duty-task"/>
+                    </group>
                     
                 </grid>
                 
