@@ -263,8 +263,8 @@
         <xsl:variable name="ui" select="
             ($userinput
                 |key('id',ancestor::xi:view/xi:dialogue/@current-step)
-                //xi:option [@id=$userinput/@name]
-                /xi:command
+                    //xi:option [@id=$userinput/@name]
+                    /xi:command
             ) [@name=current()/@name
                 or @name = current()/@id
                 or (@ref = current()/@ref
@@ -274,6 +274,8 @@
                         )
                 )
             ]
+            
+            | /*/xi:userinput/xi:targets/xi:target[@ref=current()/@id]
         "/>
         
         <xsl:variable name="newValue" select="
@@ -298,9 +300,13 @@
         </xsl:variable>
         
         <xsl:choose>
-            <xsl:when test="$spin or ($newValue and ((text() and $newValue/text() and $newValue!=.) 
-                                        or (not(text()) and $newValue/text())
-                                        or (text() and not($newValue/text())) ))">
+            <xsl:when test="$spin or $ui/xi:increment or (
+                    $newValue and (
+                        (text() and $newValue/text() and $newValue!=.) 
+                        or (not(text()) and $newValue/text())
+                        or (text() and not($newValue/text()))
+                    )
+            )">
                 <xsl:variable name="value">
                     <xsl:choose>
                         <xsl:when test="$spin/self::xi:less">
@@ -308,6 +314,10 @@
                         </xsl:when>
                         <xsl:when test="$spin/self::xi:more">
                             <xsl:value-of select="$numval + (ancestor::xi:data/xi:datum)[@ref=$spin/parent::xi:spin/@ref]"/>
+                        </xsl:when>
+                        <xsl:when test="$ui/xi:increment and key('id',@ref)/@type='int'">
+                            <xsl:comment>1</xsl:comment>
+                            <xsl:value-of select="$numval + 1"/>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:value-of select="$newValue"/>

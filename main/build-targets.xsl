@@ -40,8 +40,40 @@
         <xsl:param name="target-id"/>
         <xsl:param name="payload"/>
         <target ref="{$target-id}">
-            <xsl:value-of select="$payload"/>
+            <xsl:apply-templates mode="build-target-value" select="$payload">
+                <xsl:with-param name="target" select="current()"/>
+            </xsl:apply-templates>
         </target>
+    </xsl:template>
+    
+    
+    <xsl:template mode="build-target-value" match="*[*]">
+        <xsl:param name="target" select="xi:null"/>
+        <xsl:comment>
+            <xsl:value-of select="local-name()"/>
+        </xsl:comment>
+        <xsl:apply-templates mode="build-target-value" select="*">
+            <xsl:with-param name="target" select="$target"/>
+        </xsl:apply-templates>
+    </xsl:template>
+    
+    
+    <xsl:template mode="build-target-value" match="xi:xpath-compute[text()]">
+        <xsl:param name="target" select="."/>
+        <xsl:comment>1</xsl:comment>
+        <xsl:value-of select="xi:map($target, text())"/>
+    </xsl:template>
+    
+    
+    <xsl:template mode="build-target-value" match="*[text()][not(*)]">
+        <xsl:comment>text of <xsl:value-of select="local-name()"/></xsl:comment>
+        <xsl:copy-of select="text()"/>
+    </xsl:template>
+    
+    
+    <xsl:template mode="build-target-value" match="*[not(*|text())]">
+        <xsl:comment>*</xsl:comment>
+        <xsl:copy-of select="."/>
     </xsl:template>
     
     
@@ -52,7 +84,7 @@
         
         <xsl:for-each select="xi:map(key('id', $command), @xpath-compute)">
             <xsl:call-template name="build-target">
-                <xsl:with-param name="target-id" select="current()"/>
+                <xsl:with-param name="target-id" select="current()/@id|current()[not(@id)]"/>
                 <xsl:with-param name="payload" select="$this"/>
             </xsl:call-template>
         </xsl:for-each>
