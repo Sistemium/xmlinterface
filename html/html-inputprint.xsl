@@ -470,6 +470,9 @@
             <xsl:when test="@format='smalltime' and not(@aggregate)">
                 <xsl:value-of select="concat(substring($value,1,6),substring($value,9,8))"/>
             </xsl:when>
+            <xsl:when test="@format='hh:mm:ss'">
+                <xsl:value-of select="substring($value,12,8)"/>
+            </xsl:when>
             <xsl:when test="@format='hh:mm'">
                 <xsl:value-of select="substring($value,12,5)"/>
             </xsl:when>
