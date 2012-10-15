@@ -116,7 +116,7 @@
                             
                             <field name="address"/>
                             <field name="code"/>
-                            <field name="last-check-ts"/>
+                            <field name="last-check-ts" format="hh:mm:ss"/>
                             
                             <form name="current-duty-task-terminal-processing" concept="processing">
                                 <field name="name" label="Система"/>
@@ -194,10 +194,14 @@
                 <print form="detailed-zone" field="*"/>
                 
                 <grid form="current-duty-task" refreshable="true" label="Задания маршрута" >
+                    
                     <group>
+                        
                         <by field="is-served" form="current-duty-task"/>
                     </group>
+                    
                     <class field="agent-priority" form="current-duty-task"/>
+                    
                     <columns>
                         <column field="task-type"/>
                         <column field="do-before"/>
@@ -210,30 +214,16 @@
                             <print field="error" form="current-duty-task-terminal" class="exception"/>
                         </column>
                     </columns>
-                    <option label="OK" name="current-duty-task-ok-button">
-                        <command xpath-compute="
-                            descendant-or-self :: xi:datum [@name='current-duty-task-ok-parm']
-                        "><increment/></command>
-                        <command xpath-compute="
-                            descendant-or-self :: xi:datum [@name='current-duty-task-ok-user']
-                        ">  <value>
-                                <xpath-compute>
-                                    ancestor::xi:data[@name='sysuser']/xi:datum[@name='id']
-                                </xpath-compute>
-                            </value>
-                        </command>
-                    </option>
+                    
+                    <option reuse="current-duty-task-ok-button"/>
+                    
                 </grid>
                 
             </display>
             
             <choise>
-                <option name="to-index" label="Сменить зону">
-                    <command name="mp-terminal-service">index</command>
-                </option>
-                <option name="to-index" label="К терминалам с ошибкой">
-                    <command name="mp-terminal-service">zone-problems</command>
-                </option>
+                <option reuse="to-index"/>
+                <option reuse="to-faults"/>
             </choise>
             
         </step>
@@ -254,15 +244,39 @@
             </display>
             
             <choise>
-                <option name="to-index" label="Сменить зону">
-                    <command name="mp-terminal-service">index</command>
-                </option>
-                <option name="to-index" label="К заданиям">
-                    <command name="mp-terminal-service">zone-tasks</command>
-                </option>
+                <option reuse="to-index"/>
+                <option reuse="to-tasks"/>
             </choise>
             
         </step>
+        
+        <reusables>
+            
+            <option name="to-index" label="Сменить зону">
+                <command name="mp-terminal-service">index</command>
+            </option>
+            <option name="to-tasks" label="К заданиям">
+                <command name="mp-terminal-service">zone-tasks</command>
+            </option>
+            <option name="to-faults" label="К терминалам с ошибкой">
+                <command name="mp-terminal-service">zone-problems</command>
+            </option>
+            
+            <option name="current-duty-task-ok-button" label="OK">
+                <command xpath-compute="
+                    descendant-or-self :: xi:datum [@name='current-duty-task-ok-parm']
+                "><increment/></command>
+                <command xpath-compute="
+                    descendant-or-self :: xi:datum [@name='current-duty-task-ok-user']
+                ">  <value>
+                        <xpath-compute>
+                            ancestor::xi:data[@name='sysuser']/xi:datum[@name='id']
+                        </xpath-compute>
+                    </value>
+                </command>
+            </option>
+            
+        </reusables>
         
     </workflow>
     
