@@ -1,0 +1,43 @@
+.ipad .view form > div  {text-align:right; margin:5px 5px;}
+.ipad .view table {margin-right:0px;}
+.ipad .view form > div.exception  {text-align: center;}
+.ipad.desktop .view .dialogue { margin:0px;}
+
+.ipad .view form .title {text-align:right; padding-left:20px;}
+
+.ipad input.radio {height: 35px; width:35px;}
+.ipad .choose .option {text-align:right; }
+
+.ipad .option.avoid {display:none;}
+
+.ipad .input .button.ui-icon.ui-icon-refresh {display:none}
+.ipad select {font-size:inherit; font-weight:inherit; font-family:inherit;}
+.ipad #session-wrapper .select {padding-top:1px !important;}
+
+.ipad.desktop .view {
+    box-shadow: none;
+	-webkit-box-shadow: none;
+}  
+
+.desktop.ipad #session-wrapper.authenticated {
+    position: relative;
+    top:-2px;
+	-webkit-box-shadow: none;
+	z-index:1;
+    border-bottom: none;
+}
+
+.desktop.ipad #canvas {
+    padding-top:0px;
+}
+
+body.ipad {
+    margin:0px; padding:0px;
+}
+
+.ipad td .editable input[type='number'] {left:-1px;}
+
+/*
+.ipad .region.collapsable { display:block; border: dashed 0px; padding-bottom: inherit;}
+*/
+
