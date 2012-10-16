@@ -153,6 +153,8 @@
                         </form>
                     </form>
                     
+                    <sort form="problem-terminal" field="address"/>
+                    
                 </form>
                 
             </form>
@@ -191,13 +193,11 @@
             <display>
                 
                 
-                <!--input field="zone-to-detail-id" label="Зона">
-                    <by form="zones" field="id"/>
-                </input-->
-                
-                <region class="hbox">
+                <region>
                     <print form="sysuser" field="date"/>
-                    <print form="detailed-zone" field="*"/>
+                    <input field="zone-to-detail-id" label="Зона">
+                        <by form="zones" field="id"/>
+                    </input>
                 </region>
                 
                 <grid form="current-duty-task" refreshable="true" label="Задания маршрута" >
@@ -258,7 +258,7 @@
         
         <reusables>
             
-            <option name="to-index" label="Сменить зону">
+            <option name="to-index" label="К таблице зон">
                 <command name="mp-terminal-service">index</command>
             </option>
             <option name="to-tasks" label="К заданиям">
