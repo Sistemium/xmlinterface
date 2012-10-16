@@ -5,6 +5,8 @@
 @import "layouts.css";
 @import "tabs.css";
 @import "ipad.css";
+@import "spb-mobile.css";
+
 
 body, input {font-size: 15px; color:#333333; -background-color: #FCFBF5; font-family: verdana;}
 
@@ -177,6 +179,9 @@ option.open {color:green;}
     text-align:left; 
 }
 
+.desktop .dialogue {
+	text-align:  center;
+}
 
 
 .accordeon tr.data {display:none;}
@@ -192,43 +197,6 @@ tr.group.collapsed.featured td {
 	color: inherit;
 }
 
-.desktop .region.twocolumn {min-width:1em; width: 49%;}
-
-.desktop .dialogue {
-	text-align:  center;
-}
-
-.desktop .region.collapsable {
-	border: none;
-	margin: 3px;
-	width: auto;
-	padding-bottom: 0px;
-}
-
-.region.collapsable.collapsed > .print, .desktop .region.collapsable.collapsed > .grid,
-.desktop .region.collapsable.collapsed > .text {
-	display:none;
-}
-
-.region.collapsable.collapsed .label{
-	background-color: #F9F5F0; color: darkgray;
-	font-size: small; font-weight: normal; margin:auto;
-}
-
-.region.collapsable.collapsed .expanded-label {
-	display: none;
-}
-
-.region.collapsable.expanded .collapsed-label {
-	display: none;
-}
-
-.region.collapsable.expanded {
-	display:block;
-	background-color: inherit;
-	border: 3px solid #DDC;
-	border-radius: 6px;
-}
 
 .desktop #session-wrapper.authenticated > * {padding:4px; vertical-align: middle;  float:left; }
 .desktop #session-wrapper.authenticated .field {margin-top:2px;}
@@ -241,10 +209,6 @@ tr.group.collapsed.featured td {
 
 .dialogue  div {margin: 5px; vertical-align: middle;}
 
-.spb .dialogue  div {margin-left: 0px; margin-right: 0px; }
-
-
-body.spb { padding-bottom:10px;}
 
 .exception {color:red;}
 .exception .message {color:white; background-color:red; padding:0.5em;}
@@ -265,21 +229,6 @@ label {padding:0px 0.2em;}
 
 .grid {text-align:center;}
 table {border-spacing:2px; margin:0px auto;}
-
-.region.for-each {
-	margin-bottom: 1em;
-	border: dashed 1px gray;
-}
-
-.desktop .region.default {
-	margin:0.25em;
-	padding-bottom: 8px;
-}
-
-.desktop .region.default {
-	display: inline-block;
-	border: dashed 1px silver;
-}
 
 th {padding-bottom: 6px;}
 th.options {padding:0px;}
@@ -323,38 +272,8 @@ td .editable input {position:relative; left:-3px;}
 
 .datum.input span.text {display: block;}
 
-body.spb {margin:2px;}
 
-.spb div.choise .option {display:inline;}
 
-.mobile.sub-page #session-wrapper {display:none;}
-.mobile #canvas > div {border:none; margin: 0px auto;}
-.mobile .view {padding:0px;padding-bottom: 0px;}
-.mobile #session-wrapper.authenticated {text-align: center; margin:4px auto;}
-.mobile #session-wrapper.authenticated div.field {padding-right: 0.5em;}
-.mobile .view span, .mobile #session-wrapper.authenticated div {vertical-align: middle;}
-.spb #session-wrapper.authenticated input.button {font-size: 8px; font-weight: normal;}
-
-.mobile .view .menu {text-align:center; padding-bottom: 1px;}
-.progress {display:none;}
-
-.spb .option input.button {font-size:10px; border:none; padding:4px 2px;}
-.mobile .option {padding: 0px 1px;}
-body.spb, .spb input {font-size: 11px;}
-
-.spb .date.editable input {width:6em;}
-
-.region.pageflow  {
-	display: -webkit-box;
-	border-width: 0;
-	overflow-x: auto;
-	-webkit-box-align: stretch;
-}
-
-.region.pageflow > .region {
-	display: block;
-	max-width: 40%;
-}
 
 .ui-widget {
 	font-family: inherit;

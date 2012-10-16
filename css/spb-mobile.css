@@ -1,0 +1,25 @@
+body.spb {margin:2px;}
+
+.spb div.choise .option {display:inline;}
+
+.mobile.sub-page #session-wrapper {display:none;}
+.mobile #canvas > div {border:none; margin: 0px auto;}
+.mobile .view {padding:0px;padding-bottom: 0px;}
+.mobile #session-wrapper.authenticated {text-align: center; margin:4px auto;}
+.mobile #session-wrapper.authenticated div.field {padding-right: 0.5em;}
+.mobile .view span, .mobile #session-wrapper.authenticated div {vertical-align: middle;}
+.spb #session-wrapper.authenticated input.button {font-size: 8px; font-weight: normal;}
+
+.mobile .view .menu {text-align:center; padding-bottom: 1px;}
+.progress {display:none;}
+
+.spb .option input.button {font-size:10px; border:none; padding:4px 2px;}
+.mobile .option {padding: 0px 1px;}
+body.spb, .spb input {font-size: 11px;}
+
+.spb .date.editable input {width:6em;}
+
+.spb .dialogue  div {margin-left: 0px; margin-right: 0px; }
+
+
+body.spb { padding-bottom:10px;}

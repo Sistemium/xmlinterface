@@ -1,0 +1,60 @@
+.desktop .region.twocolumn {min-width:1em; width: 49%;}
+
+.desktop .region.collapsable {
+	border: none;
+	margin: 3px;
+	width: auto;
+	padding-bottom: 0px;
+}
+
+.region.collapsable.collapsed > .print, .desktop .region.collapsable.collapsed > .grid,
+.desktop .region.collapsable.collapsed > .text {
+	display:none;
+}
+
+.region.collapsable.collapsed .label{
+	background-color: #F9F5F0; color: darkgray;
+	font-size: small; font-weight: normal; margin:auto;
+}
+
+.region.collapsable.collapsed .expanded-label {
+	display: none;
+}
+
+.region.collapsable.expanded .collapsed-label {
+	display: none;
+}
+
+.region.collapsable.expanded {
+	display:block;
+	background-color: inherit;
+	border: 3px solid #DDC;
+	border-radius: 6px;
+}
+
+.region.for-each {
+	margin-bottom: 1em;
+	border: dashed 1px gray;
+}
+
+.desktop .region.default {
+	margin:0.25em;
+	padding-bottom: 8px;
+}
+
+.desktop .region.default {
+	display: inline-block;
+	border: dashed 1px silver;
+}
+
+.region.pageflow  {
+	display: -webkit-box;
+	border-width: 0;
+	overflow-x: auto;
+	-webkit-box-align: stretch;
+}
+
+.region.pageflow > .region {
+	display: block;
+	max-width: 40%;
+}

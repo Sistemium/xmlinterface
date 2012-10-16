@@ -41,3 +41,7 @@ body.ipad {
 .ipad .region.collapsable { display:block; border: dashed 0px; padding-bottom: inherit;}
 */
 
+.ipad.desktop #canvas > .menu .option .button {
+    width: 90%;
+}
+
