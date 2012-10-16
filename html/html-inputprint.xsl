@@ -27,7 +27,6 @@
         <xsl:param name="datum" select="xi:null"/>
         
         <div>
-            
             <xsl:attribute name="class">
                 <xsl:text>datum </xsl:text>
                 <xsl:value-of select="normalize-space(concat(
@@ -91,6 +90,21 @@
             </xsl:if>
             
             <xsl:choose>
+                
+                <xsl:when test="self::xi:input[xi:by]">
+                    <xsl:variable name="by" select="xi:by"/>
+                    
+                    <xsl:for-each select="ancestor::xi:view[1] / xi:view-data//xi:set-of
+                        [@ref = key('id',$by/@ref)/parent::*/@id ]
+                    ">
+                        <xsl:call-template name="input">
+                            <xsl:with-param name="id" select="$datum/@id"/>
+                            <xsl:with-param name="element">select</xsl:with-param>
+                            <xsl:with-param name="by" select="$by"/>
+                        </xsl:call-template>
+                    </xsl:for-each>
+                </xsl:when>
+                
                 <xsl:when test="
                     self::xi:input [not(@noforward)
                         and not(following-sibling::xi:input
@@ -104,9 +118,11 @@
                         <xsl:with-param name="command">forward</xsl:with-param>
                     </xsl:apply-templates>
                 </xsl:when>
+                
                 <xsl:otherwise>
                     <xsl:apply-templates select="key('id',self::xi:input/@ref)" mode="render"/>
                 </xsl:otherwise>
+                
             </xsl:choose>
             
             <xsl:for-each select="key('id',self::xi:input/@ref)[@type='parameter'][text()][not(@modified)]">
@@ -166,9 +182,14 @@
 
 
     <xsl:template mode="render" name="input" match="
-        xi:data [not(@delete-this)] /xi:datum [@editable]
-        |xi:data [not(@delete-this or @toggle-edit-off)] /xi:data [@choise]
-        |xi:view-data /xi:data [@choise]
+        xi:data [not(@delete-this)]
+            /xi:datum [@editable]
+        |
+        xi:data [not(@delete-this or @toggle-edit-off)]
+            /xi:data [@choise]
+        |
+        xi:view-data/xi:data
+            [@choise]
     ">
         
         <xsl:param name="id" select="@id"/>
@@ -181,13 +202,14 @@
                 <xsl:otherwise>input</xsl:otherwise>
             </xsl:choose>
         </xsl:param>
+        <xsl:param name="by" select="xi:by"/>
         
         <xsl:variable name="this" select="."/>
         <xsl:variable name="file-name" select="self::xi:datum[@editable='file']/../xi:datum[@editable='file-name']/@id"/>
         <xsl:variable name="def" select="key('id',@ref)"/>
         
         <span>
-            <xsl:apply-templates select="self::*" mode="class"/>
+            <xsl:apply-templates select="self::*[not($by)]" mode="class"/>
             <xsl:choose>
                 <xsl:when test="$def/@type='boolean'">
                     <span class="bool">
@@ -230,9 +252,13 @@
                 </xsl:when>
         
                 <xsl:when test="$element='option'">
-                    <xsl:for-each select="self::*[@choise][not(xi:set-of[@is-choise])]/ancestor::xi:view-data//xi:data[@name=current()/@choise]
-                                         |xi:set-of[@is-choise][@id=current()/@choise]/*
-                                         ">
+                    <xsl:for-each select="
+                        self::* [@choise] [not(xi:set-of[@is-choise])]
+                            /ancestor::xi:view-data
+                            //xi:data [@name=current()/@choise]
+                        |xi:set-of [@is-choise] [@id=current()/@choise]
+                            /*
+                    ">
                         <div class="option">
                             <label for="{@id}">
                                 <xsl:value-of select="@label|self::*[not(@label)]/xi:datum[@name='name']"/>
@@ -264,7 +290,7 @@
                         
                         <xsl:choose>
                             
-                            <xsl:when test="self::xi:data">
+                            <xsl:when test="self::xi:data | self::xi:set-of">
                                 
                                 <xsl:attribute name="onchange">
                                     <xsl:choose>
@@ -286,15 +312,27 @@
                                 </xsl:if>
                                 
                                 <xsl:for-each select="
-                                    self::node() [@choise] [not(xi:set-of[@is-choise])] /ancestor::xi:view-data
-                                    //xi:data [@name=current()/@choise] [not(ancestor::xi:set-of[@is-choise])]
-                                    |xi:set-of [@is-choise] [@id=current()/@choise]/*
+                                    self::node()
+                                        [@choise] [not(xi:set-of[@is-choise])]
+                                    /ancestor::xi:view-data
+                                    //xi:data
+                                        [@name=current()/@choise]
+                                        [not(ancestor::xi:set-of[@is-choise])]
+                                    |
+                                    xi:set-of
+                                        [@is-choise] [@id=current()/@choise]
+                                    /xi:data
+                                    |
+                                    self::xi:set-of [$by] /xi:data
                                 ">
-                                    <option value="{@id}">
-                                        <xsl:if test="$this/@chosen=@id">
+                                    <option value="{@id[not($by)] | xi:datum[@ref=$by/@ref]}">
+                                        
+                                        <xsl:if test="$this/@chosen=@id or ($by and xi:datum[@ref=$by/@ref] = $id/parent::*)">
                                             <xsl:attribute name="selected">selected</xsl:attribute>
                                         </xsl:if>
+                                        
                                         <xsl:value-of select="@label|self::*[not(@label)]/xi:datum[@name='name']"/>
+                                        
                                    </option>
                                 </xsl:for-each>
                                 

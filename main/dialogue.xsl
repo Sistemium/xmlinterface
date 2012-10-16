@@ -260,7 +260,10 @@
                 /@id
         "/>
         
-        <xsl:variable name="form-not-a-choise" select="$ref/parent::xi:data[not(@choise)]/xi:datum[@name='name']"/>
+        <xsl:variable name="form-not-a-choise" select="
+            $ref/parent::xi:data [not(@choise)]
+            /xi:datum [@name='name']
+        "/>
         
         <xsl:variable name="should-show" select="
             ( string-length($ref)!=0
@@ -268,7 +271,7 @@
             ) and ( not( self::xi:input )
                 or key('id',$ref)[@choise or self::xi:datum]
             ) and (( not(self::xi:print)
-                    and ( $ref/parent::*[@editable or @choise or @modifiable]
+                    and ( $ref/parent::*[@editable or @choise]
                         or ($ref/parent::*/@modifiable and self::xi:input[xi:by/@ref])
                     )
                 )
@@ -326,7 +329,11 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:display//xi:iframe | xi:display//xi:link" mode="build-dialogue">
+    <xsl:template mode="build-dialogue" match="
+        xi:display//xi:iframe
+        | xi:display//xi:link
+        | xi:display//xi:by
+    ">
         <xsl:copy-of select="."/>
     </xsl:template>
 
