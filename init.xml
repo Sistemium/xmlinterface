@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<configuration xmlns="http://unact.net/xml/xi" name="xmlgate">
+<configuration xmlns="http://unact.net/xml/xi" name="xmlgate" label="Система ЮНЭКТ">
 
     <context-extension>
         
@@ -256,4 +256,10 @@
         </execute>
     </pipeline>
 
+    <pipeline name="bootstrap">
+        
+        <execute name="html" href="bootstrap/bootstrap.xsl" output="html" doctype-="html"/>
+        
+    </pipeline>
+    
 </configuration>

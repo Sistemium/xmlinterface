@@ -126,6 +126,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                 } else if (isset($access_token)) {
                     $credentials['access_token'] = $access_token;
                 } else {
+                    break;
                     header ('Content-type:text/html; charset=utf-8');
                     print '<h2>Ошибка аутентификации</h2>';
                     if (isset($_REQUEST['error']))
@@ -217,11 +218,13 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             return;
         };
     } elseif (isset($_SESSION['redirect'])) {
+        
         header ($_SESSION['redirected-content']);
         print $_SESSION['redirect'];
         unset($_SESSION['redirect']);
         unset($_SESSION['redirected-content']);
         return;
+    
     }
 
     if (!$authenticated) {
@@ -307,12 +310,23 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                 header($contentType);
                 
                 if (!(isset($xsl_task['header']) || $xsl_task['output']=='plain')){
-                    $output = new DOMDocument('1.0','UTF-8');
-                    $output->preserveWhiteSpace = false;
-                    $output->formatOutput = false;
-                    $output->loadXML($xslt->transformToDoc($uncommitted)->saveXML());
-                    if ($tracing) $output->save('data/dump/'.$initName.'/'.$pipelineName.'/'.$stagename.'.xml');
-                    $result=$output->saveXML();
+                    
+                    $result = $xslt->transformToXML($uncommitted);
+                    
+                    if ($tracing) file_put_contents(
+                        'data/dump/'.$initName.'/'.$pipelineName.'/'.$stagename.'.xml'
+                        , $result = $xslt->transformToXml($uncommitted)
+                    );
+                    
+                    //$result = ltrim(substr($result, strpos($result, '?'.'>')+2)); // removing <?xml
+                    $result = preg_replace("!<(div|iframe|script|span|textarea)([^>]*?)/>!s", "<$1$2></$1>", $result);
+                    // some browsers does not support empty div, iframe, script and textarea tags
+                    $result = preg_replace("!<(meta)([^>]*?)/>!s", "<$1$2 />", $result);
+                    // meta tag should have extra space before />
+                    $result = preg_replace("!&#(9|10|13);!s", '', $result);
+                    // nobody needs 9, 10, 13 chars 
+                    $result = str_replace(chr(0xc2).chr(0x97), '&mdash;', $result);
+                    $result = str_replace(chr(0xc2).chr(0xa0), '&nbsp;', $result);
                 } else {
                     if (isset($_GET['file-name'])) {
                         header('Content-disposition: attachment;filename='.$_GET['file-name']);
@@ -326,7 +340,12 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                         $result = base64_decode($result);
                 }
                 
-                if (!isset($location)) print $result;
+                if (isset($xsl_task['doctype'])) {
+                    $result = '<!DOCTYPE ' . $xsl_task['doctype'] . ">\n\n" . $result;
+                }
+                
+                if (!isset($location))
+                    print $result;
                 else {
                      $_SESSION['redirect']=$result;
                      $_SESSION['redirected-content']=$contentType;
