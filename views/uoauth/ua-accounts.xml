@@ -19,9 +19,10 @@
             
             <form name="ua-account-role" is-set="true" extendable="true">
                 <form name="ua-account-role-name" concept="ua-role">
+                     <field name="id"/>
                     <field name="name" label="Провайдер"/>
                 </form>
-                <field name="data"/>
+                <field name="data" editable="true"/>
             </form>
             
             <form name="ua-account-provider" is-set="true" preload="true">
