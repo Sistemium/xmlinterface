@@ -1,20 +1,33 @@
-tr.overdue {
+.overdue {
     background-color: white;
 }
 
-tr.critical {
+.critical {
     background-color: red;
 }
 
-tr.caution {
+.caution {
     background-color: yellow;
 }
 
-tr.hurry {
+.hurry {
     background-color: lightgrey;
 }
 
-
 .critical .exception {
     color: white;
+}
+
+.exception {
+    color:red;
+}
+
+.exception .message {
+    color:white;
+    background-color:red;
+    padding:0.5em;
+}
+
+.success {
+    color:green;
 }

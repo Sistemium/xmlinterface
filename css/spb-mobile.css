@@ -23,3 +23,6 @@ body.spb, .spb input {font-size: 11px;}
 
 
 body.spb { padding-bottom:10px;}
+
+.spb td input.button, .spb td input.text, .spb td select {width:90%;}
+
