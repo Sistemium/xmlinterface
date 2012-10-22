@@ -183,7 +183,12 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                 scope: this
             },
             Ext.apply( options || {}, this.remoteParams( options ) || {} ),
-            { url: this.connection.url + '&username=' + this.username}
+            { url: this.connection.url
+                + '&username=' + this.username
+                + ((this.downloadSession && this.downloadSession.requestsParams)
+                    ? ('&ql=' + (this.downloadSession.requestsParams.length ? this.downloadSession.requestsParams.length : 0))
+                    : '')
+            }
         ));
         
         if (this.downloadSession && options.command=='download')
