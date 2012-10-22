@@ -187,7 +187,12 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                 + '&username=' + this.username
                 + ((this.downloadSession && this.downloadSession.requestsParams)
                     ? ('&ql=' + (this.downloadSession.requestsParams.length ? this.downloadSession.requestsParams.length : 0))
-                    : '')
+                    : ''
+                )
+                + ((options.params && options.params.filter)
+                    ? ('&fv=' + options.params.filter)
+                    : ''
+                )
             }
         ));
         
