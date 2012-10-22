@@ -182,11 +182,18 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         var r = this.connection.request(Ext.apply({
                 scope: this
             },
-            Ext.applyIf(
-                Ext.apply( options || {}, this.remoteParams( options ) || {} ),
-                {timeout: 30000}
-            ),
-            { url: this.connection.url + '&username=' + this.username}
+            Ext.apply( options || {}, this.remoteParams( options ) || {} ),
+            { url: this.connection.url
+                + '&username=' + this.username
+                + ((this.downloadSession && this.downloadSession.requestsParams)
+                    ? ('&ql=' + (this.downloadSession.requestsParams.length ? this.downloadSession.requestsParams.length : 0))
+                    : ''
+                )
+                + ((options.params && options.params.filter)
+                    ? ('&fv=' + options.params.filter)
+                    : ''
+                )
+            }
         ));
         
         if (this.downloadSession && options.command=='download')
@@ -615,6 +622,10 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     xi.uploadData (store.toUploadRecord.store);
             }
             
+        } else store.toUploadRecord.store.failureCb.call (xi, store, 'No response found')
+    }
+    
+})    
         } else store.toUploadRecord.store.failureCb.call (xi, store, 'No response found')
     }
     
