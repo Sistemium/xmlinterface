@@ -125,16 +125,9 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     $credentials['password'] = $password;
                 } else if (isset($access_token)) {
                     $credentials['access_token'] = $access_token;
-                } else {
-                    header ('Content-type:text/html; charset=utf-8');
-                    print '<h2>Ошибка аутентификации</h2>';
-                    if (isset($_REQUEST['error']))
-                        print '<pre>'.$_REQUEST['error'].'</pre>'
-                    ;
-                    die();
                 }
                 
-                if ( $validator = authenticateGeneric ($credentials,$extraData) ) {
+                if ( count($credentials) && $validator = authenticateGeneric ($credentials,$extraData) ) {
                     
                     if (!isset($_COOKIE["$appname"])) session_start();
                     
@@ -227,7 +220,12 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     if (!$authenticated) {
         $private=simplexml_load_file('../secure.xml');
         if (isset ($private -> oauth ['login-page'])) {
-            header ('Location:'.$private -> oauth ['login-page'], 302);
+            $notAuthentocatedHeader = $private -> oauth ['login-page'];
+            
+            if (isset($_REQUEST['error']))
+                $notAuthentocatedHeader .= '&authError='.$_REQUEST['error']
+            ;
+            header ('Location:' . $notAuthentocatedHeader, 302);
             die ('Redirecting...');
         }
     }
