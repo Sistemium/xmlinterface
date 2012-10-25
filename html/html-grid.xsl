@@ -212,7 +212,7 @@
             
             <xsl:if test="$columns/parent::*[xi:option or xi:rows[xi:option]] or $columns/../@deletable">
                 <td class="options">
-                    <xsl:apply-templates select="@deletable|$columns/../xi:rows/xi:option">
+                    <xsl:apply-templates select="self::*[not(@toggle-edit-off) or @is-new]/@deletable|$columns/../xi:rows/xi:option">
                         <xsl:with-param name="option-value" select="$data/@id"/>
                     </xsl:apply-templates>
                 </td>

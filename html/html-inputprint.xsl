@@ -303,7 +303,7 @@
                                 
                                 <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
                                 
-                                <xsl:if test="not(@chosen) or key('id',@ref)/@unchoosable">
+                                <xsl:if test="self::xi:data[not(@chosen)] or key('id',@ref)/@unchoosable">
                                     <option value="unchoose">(Значение не указано)</option>
                                 </xsl:if>
                                 
