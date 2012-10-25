@@ -501,6 +501,10 @@
         <xsl:value-of select="/*/xi:session/@username"/>
     </xsl:template>
 
+    <xsl:template match="xi:init[@with='role']" mode="build-data-init">
+        <xsl:value-of select="/*/xi:session/xi:role[@name=current()]"/>
+    </xsl:template>
+
     <!--xsl:template match="xi:init[@with='field']" mode="build-data-init">
         <xsl:apply-templates select="." mode="init-with-field"/>
     </xsl:template>

@@ -110,11 +110,11 @@
        </xsl:apply-templates>
     </xsl:template>
 
-    <xsl:template match="xi:view-data//*[@toggle-edit]/@toggle-edit-off">
+    <xsl:template match="xi:view-data//*[@toggle-edit|@is-new]/@toggle-edit-off">
         <xsl:attribute name="toggle-edit-on">true</xsl:attribute>
     </xsl:template>
    
-    <xsl:template match="xi:view-data//*[@toggle-edit]/@toggle-edit-on">
+    <xsl:template match="xi:view-data//*[@toggle-edit and not(@is-new)]/@toggle-edit-on">
         <xsl:attribute name="toggle-edit-off">true</xsl:attribute>
     </xsl:template>
 

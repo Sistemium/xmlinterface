@@ -6,8 +6,12 @@
     <!-- providing terminal service -->
     <view-schema><form name="sysuser">
         
-        <parameter name="name"> <init with="username"/> </parameter>
-        <parameter name="username"> <init with="username"/> </parameter>
+        <parameter name="name">
+            <init with="role">terminal-technik</init>
+        </parameter>
+        <parameter name="username">
+            <init with="role">terminal-technik</init>
+        </parameter>
         <parameter name="device-name"> <init with="device-name"/> </parameter>
         <parameter name="date" type="date" label="Дата">
             <secure role="beta" editable="true"/>
