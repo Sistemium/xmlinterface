@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="ua-roles" label="Роли UA">
+    
+    <view-schema><form name="UA">
+        
+        <parameter name="date" type="date"> <init with="today"/> </parameter>
+        
+        <form name="ua-role" is-set="true" page-size="10"
+            deletable="true" extendable="true" toggle-edit-off="true"
+        >
+            
+            <field name="name" editable="true"/>
+            <field name="code" editable="true"/>
+            
+            <add-labeled-fields/>
+            
+        </form>
+    </form></view-schema>
+    
+    <workflow>
+        
+        <step name="index">
+            
+            <display>
+                <grid form="ua-role" label="Роли"/>
+            </display>
+            
+        </step>
+        
+    </workflow>
+    
+</view-definition>

@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<view-definition version="1.0" xmlns="http://unact.net/xml/xi" name="ua-accounts" label="Аккаунты UA">
+<view-definition xmlns="http://unact.net/xml/xi" name="ua-accounts" label="Аккаунты UA">
     
     <view-schema><form name="UA">
         
         <parameter name="date" type="date"> <init with="today"/> </parameter>
         
-        <form name="ua-account" is-set="true" page-size="20" deletable="true" toggle-edit-off="true">
+        <form name="ua-account" is-set="true" page-size="10" deletable-="true" toggle-edit-off="true">
             
             <add-labeled-fields/>
             
@@ -17,15 +17,30 @@
                 <field name="id" aggregate="count" label="Связано аккаунтов"/>
             </form>
             
-            <form name="ua-account-role" is-set="true" extendable="true">
-                <form name="ua-account-role-name" concept="ua-role">
-                     <field name="id"/>
-                    <field name="name" label="Провайдер"/>
+        </form>
+        
+        <form name="ua-account-details" concept="ua-account">
+            
+            <parameter name="account-to-detail-id" type="int" modifiable="true" property="id"/>
+            
+            <field name="code" editable="true"/>
+            
+            <add-labeled-fields/>
+            
+            <form name="ua-account-provider-agg" concept="ua-account-provider">
+                <field name="id" aggregate="count" label="Связано аккаунтов"/>
+            </form>
+            
+            <form name="ua-account-role" is-set="true" extendable="true" deletable="true">
+                <field name="xid"/>
+                <form name="ua-account-role-name" concept="ua-role" role="ua-role" choise="ua-role-cache" label="Роль">
+                    <field name="id"/>
+                    <field name="name"/>
                 </form>
                 <field name="data" editable="true"/>
             </form>
             
-            <form name="ua-account-provider" is-set="true" preload="true">
+            <form name="ua-account-provider" is-set="true">
                 <form name="ua-account-provider-name" concept="ua-provider">
                     <field name="name" label="Провайдер"/>
                 </form>
@@ -34,29 +49,10 @@
             
         </form>
         
-        <form name="ua-provider" is-set="true" page-size="20">
+        <form name="ua-role-cache" concept="ua-role" is-set="true">
             
-            <add-labeled-fields/>
-            <order-by name="ts" dir="desc"/>
-            
-        </form>
-        
-        <form name="ua-client" is-set="true" page-size="20" extendable="true" toggle-edit-off="true">
-            
-            <field name="xid"/>
-            <add-labeled-fields/>
-            <field name="code" editable="true"/>
-            <field name="name" editable="true"/>
-            <field name="secret" editable="password"/>
-            <field name="redirectUrl" editable="true"/>
-            <order-by name="ts" dir="desc"/>
-            
-        </form>
-        
-        <form name="ua-role" is-set="true" page-size="20">
-            
-            <add-labeled-fields/>
-            <order-by name="ts" dir="desc"/>
+            <field name="id"/>
+            <field name="name" label="Роль"/>
             
         </form>
         
@@ -67,46 +63,43 @@
         <step name="index">
             
             <display>
+                <grid form="ua-account" label="Аккаунты">
+                    <option name="show-account-provider-data" label="...">
+                        <command name="account-to-detail-id" xpath-compute="
+                            xi:datum[@name='id']
+                        "/>
+                        <command name="ua-accounting">account-details-page</command>
+                    </option>
+                </grid>
+            </display>
+            
+        </step>
+        
+        <step name="account-details-page" hidden="true">
+            
+            <display>
+                <region>
+                    <print form="ua-account-details" field="*"/>
+                </region>
                 <region class="tabs">
-                    <grid form="ua-client" label="Клиенты"/>
-                    <grid form="ua-role" label="Роли"/>
+                    <grid form="ua-account-role" label="Роли"/>
+                    <grid form="ua-account-provider" label="Данные провадеров"/>
                 </region>
             </display>
             
-            <!--workflow name="manage">
-                <step name="acccounts" -->
-                    <display>
-                        <grid form="ua-account" label="Аккаунты">
-                            <option name="show-account-provider-data" label="...">
-                                <command xpath-compute="
-                                    xi:preload[@name='set-of-ua-account-provider']/@id
-                                ">refresh</command>
-                            </option>
-                            <columns>
-                                <column field="id"/>
-                                <column field="name"/>
-                                <column field="code"/>
-                                <column field="email"/>
-                                <column form="ua-account-provider-agg" field="id"/>
-                                <column label="Данные провайдеров">
-                                    <grid form="ua-account-provider"/>
-                                </column>
-                                <column label="Назначенные роли">
-                                    <grid form="ua-account-role"/>
-                                </column>
-                            </columns>
-                        </grid>
-                    </display>
-                <!--/step>
-                
-                <step name="providers" -->
-                    <display>
-                        <grid form="ua-provider" label="Провайдеры"/>
-                    </display>
-                <!--/step>
-            </workflow-->
+            <choise>
+                <option reuse="to-index"/>
+            </choise>
             
         </step>
+        
+        <reusables>
+            
+            <option name="to-index" label="К таблице аккаунтов">
+                <command name="ua-accounting">index</command>
+            </option>
+            
+        </reusables>
         
     </workflow>
     

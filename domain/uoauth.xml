@@ -71,6 +71,9 @@
         <select owner="ua" sql-name="role"/>
         <save owner="ua" sql-name="role"/>
         
+        <property name="xid"/>
+        <property name="id" key="true"/>
+        
         <property name="name" label="Имя"/>
         <property name="code" label="Код"/>
         
@@ -82,6 +85,8 @@
     <concept name="ua-account-provider" server="uoauth">
         
         <select owner="ua" sql-name="accountProviderData"/>
+        
+        <property name="xid"/>
         
         <property name="data" type-="xml" label="Учетные данные" sql-name="providerData"/>
         
@@ -96,13 +101,16 @@
     <concept name="ua-account-role" server="uoauth">
         
         <select owner="ua" sql-name="accountRole"/>
+        <save owner="ua" sql-name="accountRole"/>
+        
+        <property name="xid"/>
         
         <property name="data" label="Идентификатор" sql-name="data"/>
         
         <property name="ts" type="datetime" label="Последнее изменение"/>
         
         <role name="ua-account" actor="ua-account" sql-name="account"/>
-        <role name="ua-provider" actor="ua-provider" sql-name="authProvider"/>
+        <role name="ua-role" actor="ua-role" sql-name="role"/>
         
     </concept>
     
