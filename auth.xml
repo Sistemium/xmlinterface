@@ -19,6 +19,8 @@
             <role name="sales"/>
             <role name="call-center"/>
             
+            <role name="ua"/>
+            
             <role name="authenticated"/>
             <role name="jabber"/>
             <role name="alpha"/>
@@ -102,6 +104,9 @@
         </group>
         <group name="ОП">
             <role ref="op"/>
+        </group>
+        <group name="UA">
+            <role ref="up"/>
         </group>
         <group name="ЮП">
             <role ref="up"/>

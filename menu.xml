@@ -10,7 +10,7 @@
     
     <menu name="uoauth" label="UOAuth" directory="views/uoauth">
         <access role="it"/>
-        <access role="alpha"/>
+        <access role="ua"/>
     </menu>
     
     <menu name="megaport" label="Мегапорт" directory="views/megaport">
