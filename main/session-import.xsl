@@ -14,7 +14,7 @@
         <xsl:variable name="userRoles" select="
             $validator/xi:role
             |$validator/xi:group [@name=current()/xi:group/@name]
-                /xi:role
+            /xi:role
             |xi:group[@ref]
             |$auth/xi:user[@name=current()/@username]/xi:role
         "/>

@@ -37,8 +37,8 @@
             </xsl:for-each>
             
             <div class="field">
-                <label for="session-username"><span>Имя</span><span class="colon">:</span></label>
-                <span id="session-username"><xsl:value-of select="/*/xi:session/@username"/></span>
+                <label for="session-username"><span>Оператор</span><span class="colon">:</span></label>
+                <span id="session-username"><xsl:value-of select="/*/xi:session/@user-label"/></span>
             </div>
             <div id="clientDataControl"/>
             <xsl:if test="/*/descendant::xi:workflow[@geolocate] and /*/xi:userinput/@safari-agent">

@@ -134,6 +134,8 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     $_SESSION ['authenticated'] = time();
                     $_SESSION ['username'] = isset($username)
                         ? $username : (string) ($extraData -> account[0] -> code [0]);
+                    $_SESSION ['user-label'] = isset($extraData -> account[0] -> name [0])
+                        ? (string) ($extraData -> account[0] -> name [0]) : $username;
                     $_SESSION ['validator'] = $validator;
                     
                     if (isset($access_token))
@@ -182,6 +184,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         $Context->session['authenticated']=date('Y/m/d G:i:s',$_SESSION['authenticated']);
         $Context->session['username']=$_SESSION['username'];
         $Context->session['validator']=$_SESSION['validator'];
+        $Context->session['user-label']=$_SESSION['user-label'];
         setcookie(session_name(), session_id(), time()+28800, $uri);
     } elseif (isset($_COOKIE["$appname"]))
         setcookie(session_name(), '', time()-42000, $uri);

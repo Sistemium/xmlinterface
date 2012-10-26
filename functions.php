@@ -244,7 +244,7 @@ set_time_limit (180);
     }
 
     function uoauth ($access_token, &$extraData) {
-        $address='https://oldcat.unact.ru/iExp/uoauth/roles';
+        $address = secureParm () -> oauth ['roles-href'];
         $http = new HTTPRetriever();
         
         try { if ( $http->post (
@@ -425,6 +425,18 @@ set_time_limit (180);
             else
                 unlink($file);
         }
+    }
+    
+    function secureParm ($name = false) {
+        
+        $private=simplexml_load_file('../secure.xml');
+        
+        if ($name)
+            return $private [0] [$name];
+        else
+            return $private
+        ;
+        
     }
 
     
