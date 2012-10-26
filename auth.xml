@@ -57,7 +57,6 @@
 
     <validator name="uoauth">
         <role ref="uoauth-user"/>
-        <role ref="beta"/>
     </validator>
     
     <validator name="ad">
