@@ -24,7 +24,7 @@
     
     <xsl:param name="userinput" select="/*/xi:userinput/xi:command"/>
     <xsl:param name="developer" select="/*/xi:userinput[contains(@host,'macbook')]"/>
-    <xsl:param name="livechat" select="/*/xi:session[@authenticated and not(/*/xi:userinput/@mobile-agent)]"/>
+    <xsl:param name="livechat" select="/*/xi:session[/*/xi:session/xi:role[@name='livechat']][@authenticated and not(/*/xi:userinput/@mobile-agent)]"/>
     <xsl:param name="geo" select="descendant::xi:workflow[@geolocate] and /*/xi:userinput/@safari-agent"/>
     
     <xsl:include href="html/html-grid.xsl"/>
