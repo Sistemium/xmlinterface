@@ -143,10 +143,26 @@
                 
                 <form name="mp-detailed-zone-terminal" concept="mp-zone-terminal" is-set="true">
                     
+                    <field name="mp-terminal"/>
+                    
                     <form name="problem-terminal" concept="mp-terminal" constrain-parent="true">
+                        
+                        <parameter name="problem-terminal-make-task-parm"
+                            type="int"
+                            modifiable="true"
+                            property="make-task-pressed"
+                            optional="true"
+                        />
+                        
+                        <parameter name="problem-terminal-make-task-user"
+                            property="make-task-user"
+                            optional="true"
+                            modifiable="true"
+                        />
                         
                         <where name="error"><not/></where>
                         
+                        <field name="id"/>
                         <field name="error"/>
                         <field name="code"/>
                         <field name="address"/>
@@ -246,6 +262,7 @@
                 <print form="detailed-zone" field="*"/>
                 
                 <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true">
+                    <option reuse="problem-terminal-make-task-button"/>
                     <group>
                         <by field="name" form="problem-terminal-processing"/>
                     </group>
@@ -266,9 +283,11 @@
                 <command name="mp-terminal-service">index</command>
             </option>
             <option name="to-tasks" label="К заданиям">
+                <command name="set-of-current-duty-task">refresh</command>
                 <command name="mp-terminal-service">zone-tasks</command>
             </option>
             <option name="to-faults" label="К терминалам с ошибкой">
+                <command name="set-of-mp-detailed-zone-terminal">refresh</command>
                 <command name="mp-terminal-service">zone-problems</command>
             </option>
             
@@ -278,6 +297,20 @@
                 "><increment/></command>
                 <command xpath-compute="
                     descendant-or-self :: xi:datum [@name='current-duty-task-ok-user']
+                ">  <value>
+                        <xpath-compute>
+                            ancestor::xi:data[@name='sysuser']/xi:datum[@name='id']
+                        </xpath-compute>
+                    </value>
+                </command>
+            </option>
+            
+            <option name="problem-terminal-make-task-button" label="В маршрут">
+                <command xpath-compute="
+                    descendant-or-self :: xi:datum [@name='problem-terminal-make-task-parm']
+                "><increment/></command>
+                <command xpath-compute="
+                    descendant-or-self :: xi:datum [@name='problem-terminal-make-task-user']
                 ">  <value>
                         <xpath-compute>
                             ancestor::xi:data[@name='sysuser']/xi:datum[@name='id']

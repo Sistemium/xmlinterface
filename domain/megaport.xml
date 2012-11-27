@@ -30,6 +30,12 @@
             <parameter name="id" type="int" sql-name="@terminal"/>
         </select>
         
+        <select owner="megaport" sql-name="terminal_fault_accept" type="procedure">
+            <parameter name="make-task-pressed" required="true" type="int" sql-name="@seed"/>
+            <parameter name="make-task-user" required="true" type="int" sql-name="@username"/>
+            <parameter name="id" type="int" sql-name="@terminal"/>
+        </select>
+        
         <property name="lastactivitytime" type="datetime" label="Последний сигнал"/>
         <property name="lastpaymenttime" type="datetime" label="Последний платеж"/>
         
