@@ -2204,6 +2204,7 @@
         
         <property name="id" type="string" sql-compute="string(stock_id,'-',goods_id)"/>
         <property name="level" type="int" sql-compute="2 - isVollow" label="Уровень запаса"/>
+        <property name="factor" type="int" label="Кратность"/>
         <role name="article" actor="article" sql-name="goods_id"/>
         <role name="sales-warehouse" actor="sales-warehouse" sql-name="stock_id"/>
     </concept>
