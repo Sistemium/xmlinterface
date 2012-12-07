@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.967" expect-megabytes="15" >
+    <view-schema version="1.97" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -163,6 +163,7 @@
                               label="Остаток" set-label="Остатки">
                             <field name="article" alias="product" key="true"/>
                             <field name="level" alias="stockLevel"/>
+                            <field name="factor" />
                         </form>
                         
                     </form>
@@ -453,7 +454,7 @@
                    g.firstName, g.lastName,
                    g.name,
                    g.rel,
-                   g.factor,
+                   s.factor,
                    g.package,
                    g.extraLabel,
                    (select group_concat(bp.tag)
@@ -547,7 +548,7 @@
                    g.firstName, g.lastName,
                    g.name,
                    g.rel,
-                   g.factor,
+                   s.factor,
                    g.package,
                    g.extraLabel,
                    (select group_concat(bp.tag)
