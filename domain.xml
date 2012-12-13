@@ -2200,7 +2200,7 @@
     </concept>
     
     <concept name="sales-stock">
-        <select owner="cache" sql-name="OrdGoodsInStockMulti"/>
+        <select owner="sales" sql-name="stock"/>
         
         <property name="id" type="string" sql-compute="string(stock_id,'-',goods_id)"/>
         <property name="level" type="int" sql-compute="2 - isVollow" label="Уровень запаса"/>
