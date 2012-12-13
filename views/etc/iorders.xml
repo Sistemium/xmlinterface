@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.97" expect-megabytes="15" >
+    <view-schema version="1.971" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -85,7 +85,6 @@
                             <field name="first-name" alias="firstName" sql-compute="left(product.name, locate(product.name,' ') - 1)" >
                                 <!--secure role="ad-user" sql-compute="'Роллтон'"/-->
                             </field>
-                            <field name="factor" />
                             <field name="rel" />
                             <field name="cost"/>
                             <field name="lastName" type="string"
@@ -418,7 +417,7 @@
                                 <print form="Product" field="lastName"/>
                                 <print form="Product" field="name"/>
                                 <print form="Product" field="rel"/>
-                                <print form="Product" field="factor"/>
+                                <print form="Stock" field="factor"/>
                                 <print form="Product" field="package"/>
                                 <print form="Product" field="extraLabel"/>
                                 
@@ -516,7 +515,7 @@
                                 <print form="Product" field="lastName"/>
                                 <print form="Product" field="name"/>
                                 <print form="Product" field="rel"/>
-                                <print form="Product" field="factor"/>
+                                <print form="Stock" field="factor"/>
                                 <print form="Product" field="package"/>
                                 <print form="Product" field="extraLabel"/>
                                 
