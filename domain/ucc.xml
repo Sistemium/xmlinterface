@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<domain name="uoauth" xmlns="http://unact.net/xml/xi">
+
+
+    <concept name="UCC">
+        
+        <select owner="sys" sql-name="dummy"/>
+        
+        <property name="id" sql-compute="1" type="int"/>
+        
+    </concept>
+    
+    
+    <concept name="ucc-account">
+        
+        <select owner="ucc" sql-name="account"/>
+        <save owner="ucc" sql-name="account"/>
+        
+        <property name="xid"/>
+        <property name="id" key="true" type="int"/>
+        
+        <property name="name" label="Имя"/>
+        <property name="code" label="Код"/>
+        
+        <property name="funds" type="decimal" label="Остаток средств"/>
+        
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+    </concept>
+    
+    
+    <concept name="ucc-agent">
+        
+        <select owner="ucc" sql-name="counteragent"/>
+        <save owner="ucc" sql-name="counteragent"/>
+        
+        <property name="xid"/>
+        <property name="id" key="true" type="int"/>
+        
+        <property name="name" label="Имя"/>
+        <property name="code" label="Код"/>
+        
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+    </concept>
+    
+
+    <concept name="ucc-bank-account" server="uoauth">
+        
+        <select owner="ua" sql-name="clientAccount"/>
+        <save owner="ua" sql-name="clientAccount"/>
+        
+        <property name="fname" label="Имя"/>
+        <property name="mname" label="Отчество"/>
+        <property name="lname" label="Фамилия"/>
+        
+        <property name="bik" label="БИК" sql-name="bankBik"/>
+        <property name="account-number" label="Номер счета" sql-name="bankAccount"/>
+        <property name="extra-number" label="Номер договора/карты" sql-name="bankCardNumber"/>
+        
+        <property name="op-service" label="Номер ОП-услуги" sql-name="opService"/>
+        
+        <role name="ucc-account" actor="ucc-account" sql-name="client"/>
+        <role name="ucc-agent" actor="ucc-agent" sql-name="counteragent"/>
+        
+        <property name="xid"/>
+        <property name="id" label="ID" key="true" type="int"/>
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+    </concept>
+    
+    
+    <concept name="ucc-income">
+        
+        <select owner="ucc" sql-name="income"/>
+        <save owner="ucc" sql-name="income"/>
+        
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+        <property name="summ" type="decimal" label="Код"/>
+        
+        <role name="ucc-account" actor="ucc-account" sql-name="client"/>
+        <role name="ucc-agent" actor="ucc-agent" sql-name="counteragent"/>
+        
+        <property name="xid"/>
+        <property name="id" key="true" type="int"/>
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+    </concept>
+    
+    
+    <concept name="ucc-expense">
+        
+        <select owner="ucc" sql-name="expense"/>
+        <save owner="ucc" sql-name="expense"/>
+        
+        <property name="date" type="date" label="Дата" sql-name="ddate"/>
+        <property name="summ" type="decimal" label="Код"/>
+        
+        <property name="isSent" type="boolean" label="Отправлено" sql-name="send"/>
+        <property name="isFinal" type="boolean" label="Завершено" sql-name="final"/>
+        <property name="error" type="int" label="Код ошибки" />
+        
+        <role name="ucc-account" actor="ucc-account" sql-name="client"/>
+        <role name="ucc-agent" actor="ucc-agent" sql-name="counteragent"/>
+        
+        <property name="xid"/>
+        <property name="id" key="true" type="int"/>
+        <property name="ts" type="datetime" label="Последнее изменение"/>
+        
+    </concept>
+    
+    
+    
+</domain>
