@@ -14,8 +14,8 @@
     
     <concept name="ucc-account">
         
-        <select owner="ucc" sql-name="account"/>
-        <save owner="ucc" sql-name="account"/>
+        <select owner="ucc" sql-name="client"/>
+        <save owner="ucc" sql-name="client"/>
         
         <property name="xid"/>
         <property name="id" key="true" type="int"/>
@@ -48,8 +48,8 @@
 
     <concept name="ucc-bank-account" server="uoauth">
         
-        <select owner="ua" sql-name="clientAccount"/>
-        <save owner="ua" sql-name="clientAccount"/>
+        <select owner="ucc" sql-name="clientAccount"/>
+        <save owner="ucc" sql-name="clientAccount"/>
         
         <property name="fname" label="Имя"/>
         <property name="mname" label="Отчество"/>

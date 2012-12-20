@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<view-definition xmlns="http://unact.net/xml/xi" name="ucc-accounts" label="Счета UCC">
+    
+    <view-schema><form name="UCC">
+        
+        <parameter name="date" type="date"> <init with="today"/> </parameter>
+        
+        <form name="ucc-account" is-set="true" page-size="20" toggle-edit-off-="true">
+            
+            <add-labeled-fields/>
+            <field name="id"/>
+            <!--field name="code" editable="true"/-->
+            
+            <order-by name="ts" dir="desc"/>
+            
+        </form>
+        
+        <form name="ucc-account-details" concept="ucc-account">
+            
+            <parameter name="account-to-detail-id" type="int" modifiable="true" property="id"/>
+            
+            <add-labeled-fields/>
+            
+            <form name="ucc-account-income-agg" concept="ucc-income" label="Сводка приходов">
+                <field name="id" aggregate="count" label="Кол-во приходов"/>
+                <field name="summ" aggregate="sum" label="Сумма приходов"/>
+            </form>
+            
+            <form name="ucc-account-income" concept="ucc-income" label="Приходы" is-set="true" page-size="5" >
+                <add-labeled-fields/>
+                <order-by name="date" dir="desc"/>
+            </form>
+            
+            <form name="ucc-account-expense" concept="ucc-expense" label="Расходы" is-set="true" page-size="5" >
+                <add-labeled-fields/>
+                <order-by name="date" dir="desc"/>
+            </form>
+            
+            <form name="ucc-account-bank-account" concept="ucc-bank-account" label="Реквизиты" is-set="true" page-size="5" >
+                <add-labeled-fields/>
+                <order-by name="ts" dir="desc"/>
+            </form>
+            
+        </form>
+        
+    </form></view-schema>
+    
+    <workflow name="ucc-accounting">
+        
+        <step name="index-page">
+            
+            <display>
+                <grid form="ucc-account" label="Счета">
+                    <option name="detail-account" label="...">
+                        <command name="account-to-detail-id" xpath-compute="
+                            xi:datum[@name='id']
+                        "/>
+                        <command name="ucc-accounting">account-details-page</command>
+                    </option>
+                </grid>
+            </display>
+            
+        </step>
+        
+        <step name="account-details-page" hidden="true">
+            
+            <display>
+                <region>
+                    <print form="ucc-account-details" field="*"/>
+                </region>
+                <region>
+                    <print form="ucc-account-income-agg" field="*" />
+                </region>
+                <region class="tabs">
+                    <grid form="ucc-account-income" label="Недавние приходы"/>
+                    <grid form="ucc-account-expense" label="Недавние расходы" hide-empty="true"/>
+                    <grid form="ucc-account-bank-account" label="Банковские реквизиты" hide-empty="true"/>
+                </region>
+            </display>
+            
+            <choise>
+                <option reuse="to-index"/>
+            </choise>
+            
+        </step>
+        
+        <reusables>
+            
+            <option name="to-index" label="К таблице счетов">
+                <command name="ua-accounting">index-page</command>
+            </option>
+            
+        </reusables>
+        
+    </workflow>
+    
+</view-definition>
