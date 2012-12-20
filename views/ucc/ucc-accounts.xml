@@ -11,6 +11,11 @@
             <field name="id"/>
             <!--field name="code" editable="true"/-->
             
+            <!--form name="ucc-account-income-agg" concept="ucc-income" label="Сводка приходов">
+                <field name="id" aggregate="count" label="Кол-во приходов"/>
+                <field name="summ" aggregate="sum" label="Сумма приходов"/>
+            </form-->
+            
             <order-by name="ts" dir="desc"/>
             
         </form>
@@ -20,11 +25,6 @@
             <parameter name="account-to-detail-id" type="int" modifiable="true" property="id"/>
             
             <add-labeled-fields/>
-            
-            <form name="ucc-account-income-agg" concept="ucc-income" label="Сводка приходов">
-                <field name="id" aggregate="count" label="Кол-во приходов"/>
-                <field name="summ" aggregate="sum" label="Сумма приходов"/>
-            </form>
             
             <form name="ucc-account-income" concept="ucc-income" label="Приходы" is-set="true" page-size="5" >
                 <add-labeled-fields/>
@@ -70,9 +70,6 @@
             <display>
                 <region>
                     <print form="ucc-account-details" field="*"/>
-                </region>
-                <region>
-                    <print form="ucc-account-income-agg" field="*" />
                 </region>
                 <region class="tabs">
                     <grid form="ucc-account-income" label="Недавние приходы"/>
