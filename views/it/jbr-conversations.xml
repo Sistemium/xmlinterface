@@ -6,7 +6,7 @@
 
     <view-schema><form name="jbr-user">
         
-        <parameter name="name"> <init with="username"/> </parameter>
+        <parameter name="name"> <init with="role">jabber</init> </parameter>
         <parameter name="device-name"> <init with="device-name"/> </parameter>
         <parameter name="date" type="date" editable="true" label="Дата"> <init with="today"/> </parameter>
         
