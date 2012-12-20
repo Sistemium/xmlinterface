@@ -28,6 +28,9 @@
             
             <form name="ucc-account-income" concept="ucc-income" label="Приходы" is-set="true" page-size="5" >
                 <add-labeled-fields/>
+                <form name="ucc-income-agent" concept="ucc-agent">
+                    <field name="name" label="Источник"/>
+                </form>
                 <order-by name="date" dir="desc"/>
             </form>
             
