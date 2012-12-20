@@ -65,7 +65,7 @@
         <role name="ucc-agent" actor="ucc-agent" sql-name="counteragent"/>
         
         <property name="xid"/>
-        <property name="id" label="ID" key="true" type="int"/>
+        <property name="id" key="true" type="int"/>
         <property name="ts" type="datetime" label="Последнее изменение"/>
         
     </concept>
