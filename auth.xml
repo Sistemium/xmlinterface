@@ -44,6 +44,7 @@
             <role name="blocked-payments"/>
             <role name="megaport"/>
             <role name="terminal-technik"/>
+            <role name="ucc"/>
         </role>
     </roles>
 
@@ -305,6 +306,11 @@
     
     <user name="pshepetuk">
         <role ref="expeditor"/>
+    </user>
+    
+    <user name="ucc" password="123">
+        <role ref="ucc"/>
+        <role ref="alpha"/>
     </user>
     
 </authorization>
