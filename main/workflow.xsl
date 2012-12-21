@@ -48,12 +48,14 @@
         <xsl:variable name="cs" select="key('id',@current-step)"/>
         <xsl:for-each select="$cs|key('id',@current-step)/preceding-sibling::xi:step[xi:validate or $cs/@hidden]">
             <xsl:if test="position() = 1">
+                <xsl:comment>p1</xsl:comment>
                 <xsl:apply-templates select="." mode="build-dialogue"/>
             </xsl:if>
         </xsl:for-each>
     </xsl:template>
 
-    <xsl:template match="xi:dialogue[xi:events/xi:jump/@to=key('id',@current-step)/preceding-sibling::xi:step/@name]" priority="100">
+    <xsl:template match="xi:dialogue[xi:events[not(xi:event[@name='save']|xi:save)]/xi:jump/@to=key('id',@current-step)/preceding-sibling::xi:step/@name]" priority="100">
+        <xsl:comment>p100</xsl:comment>
         <xsl:apply-templates select="ancestor::xi:view/xi:workflow/xi:step[@name=current()/xi:events/xi:jump/@to]" mode="build-dialogue"/>
     </xsl:template>
     
@@ -63,8 +65,12 @@
             <xsl:apply-templates select="$step" mode="validate"/>
         </xsl:variable>
         <!--xsl:comment><xsl:copy-of select="$validated"/></xsl:comment-->
+        <xsl:comment>p0</xsl:comment>
         <xsl:choose>
-            <xsl:when test="xi:events/xi:forward and (../xi:view-data//xi:exception[not(xi:not-found)] or contains($validated,'invalid'))">
+            <xsl:when test="xi:events[xi:forward|xi:jump[parent::*[xi:event[@name='save']|xi:save]]] and (../xi:view-data//xi:exception[not(xi:not-found)])">
+                <xsl:apply-templates select="$step" mode="build-dialogue"/>
+            </xsl:when>
+            <xsl:when test="xi:events[xi:forward] and (../xi:view-data//xi:exception[not(xi:not-found)] or contains($validated,'invalid'))">
                 <xsl:copy-of select="$validated"/> 
                 <xsl:apply-templates select="../xi:view-data//xi:exception"/>
                 <xsl:apply-templates select="$step" mode="build-dialogue"/>
