@@ -5,6 +5,12 @@
         
         <parameter name="date" type="date"> <init with="today"/> </parameter>
         
+        <form name="ucc-account-create" build-blank="true" new-only="true" concept="ucc-account">
+            <field name="xid"/>
+            <field name="name" editable="true"/>
+            <field name="code" editable="true"/>
+        </form>
+        
         <form name="ucc-account" is-set="true" page-size="20" toggle-edit-off-="true">
             
             <add-labeled-fields/>
@@ -19,13 +25,6 @@
             <order-by name="ts" dir="desc"/>
             
         </form>
-        
-        <form name="ucc-account-create" build-blank="true" new-only="true" concept="ucc-account">
-            <field name="xid"/>
-            <field name="name" editable="true"/>
-            <field name="code" editable="true"/>
-        </form>
-        
         
         <form name="ucc-account-details" concept="ucc-account">
             
@@ -46,14 +45,6 @@
             <form name="ucc-account-expense" concept="ucc-expense" label="Расходы" is-set="true" page-size="5" >
                 <add-labeled-fields/>
                 <order-by name="date" dir="desc"/>
-            </form>
-            
-            <form name="ucc-account-bank-account" concept="ucc-bank-account" label="Реквизиты" is-set="true" page-size="5" >
-                <add-labeled-fields/>
-                <order-by name="ts" dir="desc"/>
-                <form name="ucc-bank-account-agent" concept="ucc-agent">
-                    <field name="name" label="Проводник"/>
-                </form>
             </form>
             
             <form
@@ -86,6 +77,14 @@
                 
             </form>
             
+            <form name="ucc-account-bank-account" concept="ucc-bank-account" label="Реквизиты" is-set="true" page-size="5" >
+                <add-labeled-fields/>
+                <order-by name="ts" dir="desc"/>
+                <form name="ucc-bank-account-agent" concept="ucc-agent">
+                    <field name="name" label="Проводник"/>
+                </form>
+            </form>
+            
         </form>
         
         <form name="ucc-agent-cache" concept="ucc-agent" is-set="true">
@@ -111,7 +110,7 @@
             
         </step>
         
-        <step name="account-details-page" hidden="true">
+        <step name="account-details-page" hidden="true" label="Детализация счета">
             
             <display>
                 <region>
@@ -131,7 +130,7 @@
             
         </step>
         
-        <step name="create-account-page" hidden="true">
+        <step name="create-account-page" hidden="true" label="Добавление счета">
             
             <display>
                 <region>
@@ -140,14 +139,20 @@
             </display>
             
             <choise>
-                <option reuse="to-index">
+                <option name="commit-account-creation" label="Сохранить">
+                    <command name="ucc-account-create">save</command>
                     <command name="set-of-ucc-account">refresh</command>
+                    <command name="ucc-accounting">index-page</command>
+                </option>
+                <option name="cancel-account-creation" label="Отменить">
+                    <command name="ucc-account-create">refresh</command>
+                    <command name="ucc-accounting">index-page</command>
                 </option>
             </choise>
             
         </step>
         
-        <step name="create-bank-account-page" hidden="true">
+        <step name="create-bank-account-page" hidden="true" label="Добавление реквизитов">
             
             <display>
                 <region>
@@ -157,9 +162,14 @@
             </display>
             
             <choise>
-                <option name="back-to-detail-account" label="К счету">
-                    <command name="ucc-accounting">account-details-page</command>
+                <option name="commit-bank-account-creation" label="Сохранить">
+                    <command name="ucc-bank-account-create">save</command>
                     <command name="set-of-ucc-account-bank-account">refresh</command>
+                    <command name="ucc-accounting">account-details-page</command>
+                </option>
+                <option name="cancel-bank-account-creation" label="Отменить">
+                    <command name="ucc-bank-account-create">refresh</command>
+                    <command name="ucc-accounting">account-details-page</command>
                 </option>
             </choise>
             
@@ -167,16 +177,18 @@
         
         <reusables>
             
-            <option name="create-account" label="Добавить аккаунт">
-                <command name="ua-accounting">create-account-page</command>
+            <option name="create-account" label="Добавить счет">
+                <command name="ucc-accounting">create-account-page</command>
+                <command name="ucc-account-create">refresh</command>
             </option>
             
             <option name="create-bank-account" label="Добавить реквизиты">
-                <command name="ua-accounting">create-bank-account-page</command>
+                <command name="ucc-accounting">create-bank-account-page</command>
+                <command name="ucc-bank-account-create">refresh</command>
             </option>
             
             <option name="to-index" label="К таблице счетов">
-                <command name="ua-accounting">index-page</command>
+                <command name="ucc-accounting">index-page</command>
             </option>
             
             <option name="detail-account" label="...">
