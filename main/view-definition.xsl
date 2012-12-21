@@ -22,7 +22,7 @@
                     </xsl:if>
                 </option>
                 <option name="save" label="Сохранить">
-                    <xsl:if test="xi:workflow[descendant::xi:command[@name='save' or text()='save']]">
+                    <xsl:if test="xi:workflow [descendant::xi:command[@name='save']]">
                         <xsl:attribute name="disabled">true</xsl:attribute>
                     </xsl:if>
                 </option>

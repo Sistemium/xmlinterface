@@ -105,10 +105,22 @@
         " mode="advisor">
         recommended
     </xsl:template>
-<!--        or (@is-new and not(xi:datum[@type='field'][@editable] or xi:data[@choise]))-->
-  
+    
     <xsl:template match="xi:view/xi:menu/xi:option[@name='save']" mode="advisor" priority="-1000">
         avoid
     </xsl:template>
 
+    <xsl:template match="xi:view/xi:menu/xi:option[@name='save']/@disabled"/>
+
+    <xsl:template match="xi:view/xi:menu/xi:option[@name='save']" mode="extend">
+        <xsl:for-each select="ancestor::xi:view">
+            <xsl:if test="
+                xi:workflow [descendant::xi:command[@name='save']]
+                | key('id',xi:dialogue/@current-step)/xi:choise/xi:option[xi:command='save']
+            ">
+                <xsl:attribute name="disabled">true</xsl:attribute>
+            </xsl:if>
+        </xsl:for-each>
+    </xsl:template>
+    
 </xsl:transform>
