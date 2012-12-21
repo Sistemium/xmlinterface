@@ -641,120 +641,120 @@
     </xsl:template>
 
 
- <xsl:template match="xi:table">
-    <a name="the-{@name}"/>
-    <div class="datagram">
-        <xsl:apply-templates select="@label|xi:self[not(@label)]/@name" mode="build-text"/>
-        <xsl:apply-templates select="xi:summary"/>
-        <table>
-            <xsl:apply-templates select="xi:thead|xi:tbody"/>
-        </table>
-        <xsl:apply-templates select="xi:ts"/>
-        <xsl:apply-templates select="xi:expire"/>
-    </div>
- </xsl:template>
+    <xsl:template match="xi:table">
+       <a name="the-{@name}"/>
+       <div class="datagram">
+           <xsl:apply-templates select="@label|xi:self[not(@label)]/@name" mode="build-text"/>
+           <xsl:apply-templates select="xi:summary"/>
+           <table>
+               <xsl:apply-templates select="xi:thead|xi:tbody"/>
+           </table>
+           <xsl:apply-templates select="xi:ts"/>
+           <xsl:apply-templates select="xi:expire"/>
+       </div>
+    </xsl:template>
+    
+    <xsl:template match="xi:thead">
+       <thead>
+           <xsl:for-each select="xi:column">
+               <th><xsl:apply-templates select="@type"/><xsl:value-of select="@name"/></th>
+           </xsl:for-each>
+       </thead>
+    </xsl:template>
+    
+    <xsl:template match="xi:tbody">
+       <tbody>
+           <xsl:for-each select="xi:row">
+               <tr>
+                   <xsl:apply-templates select="@name"/>
+                   <xsl:apply-templates select="xi:column"/>
+                   <xsl:if test="../../xi:thead/xi:column[@type='totals-column']">
+                       <xsl:apply-templates select="@sum"/>
+                   </xsl:if>
+               </tr>
+           </xsl:for-each>
+       </tbody>
+    </xsl:template>
+    
+    <xsl:template match="xi:column|xi:row/@sum|xi:row/@name">
+       <td class="{local-name()}">
+           <xsl:value-of select="."/>
+       </td>
+    </xsl:template>
+    
+    <xsl:template match="node()|@*" mode="td">
+       <td><xsl:value-of select="."/></td>
+    </xsl:template>
+    
+    <xsl:template match="xi:page//xi:image/@src">
+       <xsl:attribute name="src">
+           <xsl:value-of select="concat(.,'.png')"/>
+       </xsl:attribute>
+       <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@width"/>
+       <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@height"/>
+    </xsl:template>
+    
+    <xsl:template match="xi:page//xi:image/@src" mode="object">
+       <xsl:attribute name="data">
+           <xsl:value-of select="concat(.,'.svg')"/>
+       </xsl:attribute>
+       <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@width"/>
+       <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@height"/>
+    </xsl:template>
+    
+    <xsl:template match="xi:image" name="image-default">
+       <img id="{@name}">
+           <xsl:apply-templates select="@width|@height|@src"/>
+           <xsl:apply-templates select="@label">
+               <xsl:with-param name="name">alt</xsl:with-param>
+           </xsl:apply-templates>
+       </img>
+    </xsl:template>
+    
+    <xsl:template match="xi:image" mode="image-object" name="image-object">
+       <object id="{@name}" type="image/svg+xml" class="svg">
+           <xsl:apply-templates select="@src" mode="object"/>
+       </object>
+    </xsl:template>
+    
+    <xsl:template match="xi:legend">
+       <div class="legend">
+           <xsl:apply-templates select= "../@columns-label"/>
+           <xsl:apply-templates />
+       </div>
+    </xsl:template>
+    
+    <xsl:template match="@columns-label">
+       <span class="label"><xsl:value-of select="."/>:</span>
+    </xsl:template>
+    
+    <xsl:template match="xi:serie">
+       <span class="serie obj{position()}">
+           <span class="serie-box"/>
+           <span class="serie-label"><xsl:value-of select="@name"/></span>
+       </span>
+    </xsl:template>
+    
+    <xsl:template match="xi:page//xi:image" xi:attention="bullshit">
+       <a id="the-{@name}"/>
+       <div class="datagram">
+           <xsl:apply-templates select="@label|xi:self[not(@label)]/@name" mode="build-text"/>
+           <xsl:apply-templates select="xi:summary"/>
+           <!--xsl:apply-templates select="document('data/data.xml')/*/*[@name=current()/../@name]//xi:legend"/-->
+           <div class="chart">
+               <xsl:choose>
+                   <xsl:when test="@as-svg">
+                       <xsl:call-template name="image-object"/>
+                   </xsl:when>
+                   <xsl:otherwise>
+                       <xsl:call-template name="image-default"/>
+                   </xsl:otherwise>
+               </xsl:choose>
+           </div>
+           <xsl:apply-templates select="xi:ts"/>
+           <xsl:apply-templates select="xi:expire"/>
+       </div>
+    </xsl:template>
 
- <xsl:template match="xi:thead">
-    <thead>
-        <xsl:for-each select="xi:column">
-            <th><xsl:apply-templates select="@type"/><xsl:value-of select="@name"/></th>
-        </xsl:for-each>
-    </thead>
- </xsl:template>
 
- <xsl:template match="xi:tbody">
-    <tbody>
-        <xsl:for-each select="xi:row">
-            <tr>
-                <xsl:apply-templates select="@name"/>
-                <xsl:apply-templates select="xi:column"/>
-                <xsl:if test="../../xi:thead/xi:column[@type='totals-column']">
-                    <xsl:apply-templates select="@sum"/>
-                </xsl:if>
-            </tr>
-        </xsl:for-each>
-    </tbody>
- </xsl:template>
-
- <xsl:template match="xi:column|xi:row/@sum|xi:row/@name">
-    <td class="{local-name()}">
-        <xsl:value-of select="."/>
-    </td>
- </xsl:template>
-
- <xsl:template match="node()|@*" mode="td">
-    <td><xsl:value-of select="."/></td>
- </xsl:template>
- 
- <xsl:template match="xi:page//xi:image/@src">
-    <xsl:attribute name="src">
-        <xsl:value-of select="concat(.,'.png')"/>
-    </xsl:attribute>
-    <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@width"/>
-    <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@height"/>
- </xsl:template>
-
- <xsl:template match="xi:page//xi:image/@src" mode="object">
-    <xsl:attribute name="data">
-        <xsl:value-of select="concat(.,'.svg')"/>
-    </xsl:attribute>
-    <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@width"/>
-    <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@height"/>
- </xsl:template>
- 
- <xsl:template match="xi:image" name="image-default">
-    <img id="{@name}">
-        <xsl:apply-templates select="@width|@height|@src"/>
-        <xsl:apply-templates select="@label">
-            <xsl:with-param name="name">alt</xsl:with-param>
-        </xsl:apply-templates>
-    </img>
- </xsl:template>
-
- <xsl:template match="xi:image" mode="image-object" name="image-object">
-    <object id="{@name}" type="image/svg+xml" class="svg">
-        <xsl:apply-templates select="@src" mode="object"/>
-    </object>
- </xsl:template>
-
- <xsl:template match="xi:legend">
-    <div class="legend">
-        <xsl:apply-templates select= "../@columns-label"/>
-        <xsl:apply-templates />
-    </div>
- </xsl:template>
- 
- <xsl:template match="@columns-label">
-    <span class="label"><xsl:value-of select="."/>:</span>
- </xsl:template>
-
- <xsl:template match="xi:serie">
-    <span class="serie obj{position()}">
-        <span class="serie-box"/>
-        <span class="serie-label"><xsl:value-of select="@name"/></span>
-    </span>
- </xsl:template>
- 
- <xsl:template match="xi:page//xi:image" xi:attention="bullshit">
-    <a id="the-{@name}"/>
-    <div class="datagram">
-        <xsl:apply-templates select="@label|xi:self[not(@label)]/@name" mode="build-text"/>
-        <xsl:apply-templates select="xi:summary"/>
-        <!--xsl:apply-templates select="document('data/data.xml')/*/*[@name=current()/../@name]//xi:legend"/-->
-        <div class="chart">
-            <xsl:choose>
-                <xsl:when test="@as-svg">
-                    <xsl:call-template name="image-object"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:call-template name="image-default"/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </div>
-        <xsl:apply-templates select="xi:ts"/>
-        <xsl:apply-templates select="xi:expire"/>
-    </div>
- </xsl:template>
-
- 
 </xsl:transform>
