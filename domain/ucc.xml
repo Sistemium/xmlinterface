@@ -46,7 +46,7 @@
     </concept>
     
 
-    <concept name="ucc-bank-account" server="uoauth">
+    <concept name="ucc-bank-account">
         
         <select owner="ucc" sql-name="clientAccount"/>
         <save owner="ucc" sql-name="clientAccount"/>
