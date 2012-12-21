@@ -9,7 +9,7 @@
             
             <add-labeled-fields/>
             <field name="id"/>
-            <!--field name="code" editable="true"/-->
+            <field name="code" hidden="true"/>
             
             <!--form name="ucc-account-income-agg" concept="ucc-income" label="Сводка приходов">
                 <field name="id" aggregate="count" label="Кол-во приходов"/>
@@ -20,9 +20,18 @@
             
         </form>
         
+        <form name="ucc-account-create" build-blank="true" new-only="true" concept="ucc-account">
+            <field name="xid"/>
+            <field name="name" editable="true"/>
+            <field name="code" editable="true"/>
+        </form>
+        
+        
         <form name="ucc-account-details" concept="ucc-account">
             
             <parameter name="account-to-detail-id" type="int" modifiable="true" property="id"/>
+            
+            <field name="id"/>
             
             <add-labeled-fields/>
             
@@ -42,8 +51,46 @@
             <form name="ucc-account-bank-account" concept="ucc-bank-account" label="Реквизиты" is-set="true" page-size="5" >
                 <add-labeled-fields/>
                 <order-by name="ts" dir="desc"/>
+                <form name="ucc-bank-account-agent" concept="ucc-agent">
+                    <field name="name" label="Проводник"/>
+                </form>
             </form>
             
+            <form
+                name="ucc-bank-account-create" concept="ucc-bank-account"
+                new-only="true" build-blank="true"
+                parent-sql-name="client"
+            >
+                
+                <field name="xid"/>
+                
+                <field name="fname" editable="true"/>
+                <field name="mname" editable="true"/>
+                <field name="lname" editable="true"/>
+                
+                <field name="bik" editable="true"/>
+                <field name="account-number" editable="true"/>
+                <field name="extra-number" editable="true"/>
+                
+                <field name="op-service" use-with-insert="true">
+                    <init with="const">741745</init>
+                </field>
+                
+                <form name="ucc-bank-account-create-agent"
+                    concept="ucc-agent" choise="ucc-agent-cache" role="ucc-agent"
+                    label="Проводить через"
+                >
+                    <field name="id"/>
+                    <field name="name"/>
+                </form>
+                
+            </form>
+            
+        </form>
+        
+        <form name="ucc-agent-cache" concept="ucc-agent" is-set="true">
+            <field name="id"/>
+            <field name="name"/>
         </form>
         
     </form></view-schema>
@@ -54,14 +101,13 @@
             
             <display>
                 <grid form="ucc-account" label="Счета">
-                    <option name="detail-account" label="...">
-                        <command name="account-to-detail-id" xpath-compute="
-                            xi:datum[@name='id']
-                        "/>
-                        <command name="ucc-accounting">account-details-page</command>
-                    </option>
+                    <option reuse="detail-account"/>
                 </grid>
             </display>
+            
+            <choise>
+                <option reuse="create-account"/>
+            </choise>
             
         </step>
         
@@ -80,14 +126,64 @@
             
             <choise>
                 <option reuse="to-index"/>
+                <option reuse="create-bank-account"/>
+            </choise>
+            
+        </step>
+        
+        <step name="create-account-page" hidden="true">
+            
+            <display>
+                <region>
+                    <input form="ucc-account-create" field="*"/>
+                </region>
+            </display>
+            
+            <choise>
+                <option reuse="to-index">
+                    <command name="set-of-ucc-account">refresh</command>
+                </option>
+            </choise>
+            
+        </step>
+        
+        <step name="create-bank-account-page" hidden="true">
+            
+            <display>
+                <region>
+                    <input form="ucc-bank-account-create" field="*"/>
+                    <input form="ucc-bank-account-create-agent"/>
+                </region>
+            </display>
+            
+            <choise>
+                <option name="back-to-detail-account" label="К счету">
+                    <command name="ucc-accounting">account-details-page</command>
+                    <command name="set-of-ucc-account-bank-account">refresh</command>
+                </option>
             </choise>
             
         </step>
         
         <reusables>
             
+            <option name="create-account" label="Добавить аккаунт">
+                <command name="ua-accounting">create-account-page</command>
+            </option>
+            
+            <option name="create-bank-account" label="Добавить реквизиты">
+                <command name="ua-accounting">create-bank-account-page</command>
+            </option>
+            
             <option name="to-index" label="К таблице счетов">
                 <command name="ua-accounting">index-page</command>
+            </option>
+            
+            <option name="detail-account" label="...">
+                <command name="account-to-detail-id" xpath-compute="
+                    xi:datum[@name='id']
+                "/>
+                <command name="ucc-accounting">account-details-page</command>
             </option>
             
         </reusables>
