@@ -11,7 +11,7 @@
             <field name="code" editable="true"/>
         </form>
         
-        <form name="ucc-account" is-set="true" page-size="20" toggle-edit-off-="true">
+        <form name="ucc-account" is-set="true" page-size="20" toggle-edit-off-="true" deletable="true">
             
             <add-labeled-fields/>
             <field name="id"/>
@@ -77,8 +77,12 @@
                 
             </form>
             
-            <form name="ucc-account-bank-account" concept="ucc-bank-account" label="Реквизиты" is-set="true" page-size="5" >
+            <form name="ucc-account-bank-account" concept="ucc-bank-account"
+                label="Реквизиты" is-set="true" page-size="5"
+                deletable="true"
+            >
                 <add-labeled-fields/>
+                <field name="xid"/>
                 <order-by name="ts" dir="desc"/>
                 <form name="ucc-bank-account-agent" concept="ucc-agent">
                     <field name="name" label="Проводник"/>
