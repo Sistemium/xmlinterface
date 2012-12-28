@@ -26,7 +26,9 @@
             <role name="alpha"/>
             <role name="beta"/>
             <role name="ad-user"/>
+            <role name="local-user"/>
             <role name="uoauth-user"/>
+            <role name="system-username"/>
             
             <role name="fotonova"/>
             <role name="sync"/>
@@ -56,11 +58,15 @@
         <role ref="subdealer"/>
     </validator>
 
-    <validator name="uoauth">
+    <validator name="uoauth" username-role="system-username">
         <role ref="uoauth-user"/>
     </validator>
     
-    <validator name="ad">
+    <validator name="1" username-role="system-username">
+        <role ref="local-user"/>
+    </validator>
+    
+    <validator name="ad" username-role="system-username">
         <role ref="ad-user"/>
         <role ref="jabber"/>
         <group name="fotonova.system">

@@ -19,6 +19,12 @@
             |$auth/xi:user[@name=current()/@username]/xi:role
         "/>
         
+        <xsl:for-each select="$userRoles[@ref=$validator/@username-role]">
+            <xsl:attribute name="username">
+                <xsl:value-of select="."/>
+            </xsl:attribute>
+        </xsl:for-each>
+        
         <xsl:for-each select="
             $auth/xi:roles//xi:role
                 [$userRoles/@ref=@name or $userRoles/@ref='*']
