@@ -49,9 +49,13 @@
         <xsl:param name="overrides" select="xi:column"/>
         
         <xsl:element name="columns">
-            
-            <xsl:for-each select="key('id',@ref)//*[not (@hidden or @new-only or ancestor::xi:form[@choise])]">
-                <xsl:variable name="override" select="$overrides[@ref=current()/@id]"/>                
+            <xsl:comment>building columns</xsl:comment>
+            <xsl:for-each select="
+                key('id',@ref)//*[not (@hidden or @new-only or ancestor::xi:form[@choise])]
+                |key('id',@ref)/ancestor::xi:form/xi:field[@id=$overrides/@ref]
+            ">
+                <xsl:variable name="override" select="$overrides[@ref=current()/@id]"/>
+                <xsl:comment>building column for: <xsl:value-of select="concat(local-name(),'.',@name)"/></xsl:comment>
                 <xsl:if test="(self::xi:field|self::xi:parameter|self::xi:form[@choise]|$override)[@label]">
                     <column ref="{@id}" label="{@label}">
                         <xsl:copy-of select="$override/@label|@format"/>
