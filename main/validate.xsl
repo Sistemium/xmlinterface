@@ -19,17 +19,33 @@
         <xsl:variable name="ref"
             select="key('id',self::*[not(@field)]/@ref)/xi:field[@key][1]/@id|self::*[@field]/@ref"
         />
-        <xsl:variable name="checkdatum"
-            select="ancestor::xi:view/xi:view-data/descendant::*[@ref=$ref][not(ancestor::xi:set-of[@is-choise])]"
-        />
         <xsl:variable name="not-found"
             select="ancestor::xi:view/xi:view-data/descendant::*[@ref=current()/@ref]
                     [not(ancestor::xi:set-of[@is-choise])]/xi:response/xi:exception/xi:not-found"
         />
-        <xsl:if test="$not-found or not(count($checkdatum)=count(ancestor::xi:view/xi:view-data/descendant::*[@ref=current()/@ref][not(ancestor::xi:set-of[@is-choise])])) or $checkdatum[not(text() and string-length(normalize-space(text())) &gt; 0)]">
+        <xsl:variable name="checkdatum" select="
+            ancestor::xi:view/xi:view-data/descendant::*
+                [@ref=$ref]
+                [not(ancestor::xi:set-of[@is-choise])]"
+        />
+        <xsl:variable name="check2" select="
+            ancestor::xi:view/xi:view-data/descendant::*
+                [@ref=current()/@ref]
+                [not(ancestor::xi:set-of[@is-choise]|self::xi:set-of)]
+        "/>
+        <xsl:if test="
+            $not-found
+            or not(count($checkdatum)=count($check2))
+            or $checkdatum[not(text() and string-length(normalize-space(text())) &gt; 0)]
+        ">
             <exception>
                 <message>
-                    <result>invalid</result>
+                    <result
+                        ref="{$ref}"
+                        current-ref="{current()/@ref}"
+                        checkdatum-count="{count($checkdatum)}"
+                        check2-count="{count($check2)}"
+                    >invalid</result>
                     <for-human>
                         <xsl:text>Необходимо указать </xsl:text>
                         <xsl:apply-templates mode="label" select="
