@@ -39,7 +39,8 @@
     </xsl:template>
 
     <xsl:template match="xi:init[@with='role']" mode="build-data-init">
-        <xsl:value-of select="/*/xi:session/xi:role[@name=current()]"/>
+        <xsl:variable name="role" select="/*/xi:session/xi:role[@name=current()]"/>
+        <xsl:value-of select="$role|/*[not($role/text())]/xi:session/@username"/>
     </xsl:template>
 
     <!--xsl:template match="xi:init[@with='field']" mode="build-data-init">
