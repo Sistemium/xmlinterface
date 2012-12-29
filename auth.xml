@@ -290,11 +290,11 @@
         <role ref="sales"/>
     </user>
     
-    <user name="astrelnikov" password="123">
+    <user name="terminal-technik" password="123">
         <role ref="megaport"/>
         <role ref="beta"/>
         <role ref="master"/>
-        <role ref="megaport.technik--"/>
+        <role ref="terminal-technik"></role>
     </user>
 
     <user name="op" >
