@@ -11,6 +11,11 @@
     <xsl:template match="xi:message"/>
     <xsl:template match="xi:option/@chosen|xi:events"/>
     
+    <xsl:template match="xi:session [xi:role[@name='admin'] and /*/xi:userinput/xi:command[@name='--set-username']]/@username">
+        <xsl:attribute name="username">
+            <xsl:value-of select="../../xi:userinput/xi:command[@name='--set-username']"/>
+        </xsl:attribute>
+    </xsl:template>
     
     <xsl:template match="xi:userinput/xi:command[key('id',@name)/self::xi:navigate]">
         
