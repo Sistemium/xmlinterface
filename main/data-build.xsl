@@ -5,8 +5,6 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://unact.net/xml/xi"
     xmlns:xi="http://unact.net/xml/xi"
-    xmlns:php="http://php.net/xsl"
-    exclude-result-prefixes="php"
 >
 
     <xsl:include href="default-attributes.xsl"/>
@@ -288,12 +286,32 @@
                         <xsl:attribute name="is-new">true</xsl:attribute>
                     </xsl:if>
                     
-                    <xsl:for-each select="$metadata/xi:reduce[$data and not(@join)]">
+                    <xsl:for-each select="$metadata/xi:reduce[@of='..'][$data and not(@join)]">
+                        <xsl:if test="not(
+                            $data/descendant::xi:data [@name=current()/@by-form]
+                                /xi:datum [@name=current()/@by-field]
+                            = (
+                                $data/ancestor-or-self::xi:response/../../descendant::xi:data [@name=current()/@form]
+                                    /xi:datum [@name=current()/@field]
+                                |$data/../descendant::xi:data [@name=current()/@form]
+                                /xi:datum [@name=current()/@field]
+                            )
+                        )">
+                            <xsl:attribute name="remove-this">
+                                <xsl:value-of select="
+                                    $data/descendant::xi:data [@name=current()/@by-form]
+                                    /xi:datum [@name=current()/@by-field]
+                                "/>
+                            </xsl:attribute>
+                        </xsl:if>
+                    </xsl:for-each>
+                    
+                    <xsl:for-each select="$metadata/xi:reduce[$data and not(@join|@of)]">
                         <xsl:if test="not($data/descendant-or-self::xi:data[@name=current()/@form]/xi:datum[@name=current()/@field])">
                             <xsl:attribute name="remove-this">true</xsl:attribute>
                         </xsl:if>
                     </xsl:for-each>
-                            
+                    
                     <xsl:for-each select="$metadata/xi:reduce[@join and $data]">
                         <xsl:if test="not( key('id',concat(current()/@form,'-',$data/*[@name=current()/@join])) )">
                             <xsl:attribute name="remove-this">true</xsl:attribute>
