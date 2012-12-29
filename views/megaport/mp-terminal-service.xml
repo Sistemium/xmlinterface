@@ -9,10 +9,15 @@
         <parameter name="name">
             <init with="role">terminal-technik</init>
         </parameter>
+        
         <parameter name="username">
             <init with="role">terminal-technik</init>
         </parameter>
-        <parameter name="device-name"> <init with="device-name"/> </parameter>
+        
+        <parameter name="device-name">
+            <init with="device-name"/>
+        </parameter>
+        
         <parameter name="date" type="date" label="Дата">
             <secure role="beta" editable="true"/>
             <secure role="master" editable="true"/>
@@ -118,6 +123,7 @@
                                 modifiable="true"
                             />
                             
+                            <field name="id"/>
                             <field name="address"/>
                             <field name="code"/>
                             <field name="last-check-ts" format="hh:mm:ss"/>
@@ -145,6 +151,11 @@
                     
                     <field name="mp-terminal"/>
                     
+                    <reduce by-form="problem-terminal" by-field="id"
+                        form="current-duty-task" field="mp-terminal"
+                        of=".."
+                    />
+                    
                     <form name="problem-terminal" concept="mp-terminal" constrain-parent="true">
                         
                         <parameter name="problem-terminal-make-task-parm"
@@ -171,6 +182,7 @@
                         <form name="problem-terminal-processing" concept="processing">
                             <field name="name" label="Система"/>
                         </form>
+                        
                     </form>
                     
                     <sort form="problem-terminal" field="address"/>
