@@ -11,6 +11,8 @@
             <field name="code" editable="true"/>
         </form>
         
+        <parameter name="searcher" label="Поиск" editable="true" optional="true"/>
+        
         <form name="ucc-account" is-set="true" page-size="20" toggle-edit-off-="true" deletable="true">
             
             <add-labeled-fields/>
@@ -103,6 +105,7 @@
         <step name="index-page">
             
             <display>
+                <input form="UCC" field="searcher"/>
                 <grid form="ucc-account" label="Счета">
                     <option reuse="detail-account"/>
                 </grid>
