@@ -5,6 +5,8 @@
         
         <parameter name="date" type="date"> <init with="today"/> </parameter>
         
+        <parameter name="searcher" label="Поиск" editable="true" optional="true"/>
+        
         <form name="ua-account" is-set="true" page-size="10" deletable-="true" toggle-edit-off="true">
             
             <add-labeled-fields/>
@@ -16,6 +18,8 @@
             <form name="ua-account-provider-agg" concept="ua-account-provider">
                 <field name="id" aggregate="count" label="Связано аккаунтов"/>
             </form>
+            
+            <join name="UA" field="searcher"/>
             
         </form>
         
@@ -63,6 +67,7 @@
         <step name="index">
             
             <display>
+                <input form="UA" field="searcher"/>
                 <grid form="ua-account" label="Аккаунты">
                     <option name="show-account-provider-data" label="...">
                         <command name="account-to-detail-id" xpath-compute="
