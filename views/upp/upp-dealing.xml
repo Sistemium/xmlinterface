@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="upp-dealing" label="Сделки">
+	
+    <view-schema> <form name="sysuser"> 
+		
+		<parameter name="name">
+			<init with="username"/>
+		</parameter>
+		
+		<field name="id"/>
+		
+		<form name="deals" concept="upp-deal" is-set="true" page-size="20">
+			<form name="client" concept="upp-client">
+				<field name="id"/>
+				<field name="name" label="Клиент"/>
+			</form>
+			<add-labeled-fields/>
+			<order-by name="ts" dir="desc"/>
+		</form>
+		
+    </form> </view-schema>
+	
+	<workflow>
+		
+		<step name="deal-list" label="Сделки">
+			<display>
+				<grid form="deals" hide-empty="true">
+					<option label="...">
+						<command name="deal-to-detail-id" xpath-compute="xi:datum[@name='id']" />
+						<command name="upp-dealing">amendment-details</command>
+					</option>
+				</grid>
+			</display>
+		</step>
+		
+	</workflow>
+	
+</view-definition>

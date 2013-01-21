@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<domain version="1.0"
+    xmlns:xi="http://unact.net/xml/xi"
+    xmlns="http://unact.net/xml/xi"
+>
+    
+    <concept name="upp-deal">
+        
+        <select owner="upp" sql-name="deal" type="procedure"/>
+        
+        <property name="id" key="true" type="int"/>
+        
+        <property name="date" type="date" sql-name="ddate" label="Дата"/>
+        <property name="summ" type="decimal" label="Сумма"/>
+        <property name="is-final" type="boolean" sql-name="status" label="Завершена?"/>
+        
+        <property name="ts" type="datetime" sql-name="ts" label="Дата обновления"/>
+        
+        <role name="upp-client" actor="upp-client" sql-name="partner"/>
+        
+    </concept>
+    
+    
+    <concept name="upp-client">
+        
+        <select owner="upp" sql-name="client" type="procedure"/>
+        
+        <property name="id" key="true" type="int"/>
+        <property name="name" label="Название"/>
+        
+    </concept>
+    
+    
+</domain>

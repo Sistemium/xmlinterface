@@ -8,6 +8,7 @@
         <form name="ua-role" is-set="true" page-size="10"
             deletable="true" extendable="true" toggle-edit-off="true"
         >
+            <field name="xid"/>
             
             <field name="name" editable="true"/>
             <field name="code" editable="true"/>
