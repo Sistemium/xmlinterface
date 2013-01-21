@@ -151,10 +151,10 @@
                     
                     <field name="mp-terminal"/>
                     
-                    <reduce by-form="problem-terminal" by-field="id"
+                    <!--reduce by-form="problem-terminal" by-field="id"
                         form="current-duty-task" field="mp-terminal"
                         of=".."
-                    />
+                    /-->
                     
                     <form name="problem-terminal" concept="mp-terminal" constrain-parent="true">
                         
@@ -274,7 +274,7 @@
                 <print form="detailed-zone" field="*"/>
                 
                 <grid form="mp-detailed-zone-terminal" label="Терминалы с ошибкой" refreshable="true">
-                    <option reuse="problem-terminal-make-task-button"/>
+                    <!--option reuse="problem-terminal-make-task-button"/-->
                     <group>
                         <by field="name" form="problem-terminal-processing"/>
                     </group>
