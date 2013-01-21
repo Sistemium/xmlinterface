@@ -26,6 +26,8 @@
             
             <order-by name="ts" dir="desc"/>
             
+            <join name="UCC" field="searcher"/>
+            
         </form>
         
         <form name="ucc-account-details" concept="ucc-account">

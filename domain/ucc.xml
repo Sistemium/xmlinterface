@@ -27,6 +27,8 @@
         
         <property name="ts" type="datetime" label="Последнее изменение"/>
         
+        <index name="searcher" sql-name="name, code, id" label="Поиск"/>
+        
     </concept>
     
     
