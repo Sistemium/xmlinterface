@@ -11,12 +11,16 @@
         <property name="id" key="true" type="int"/>
         
         <property name="date" type="date" sql-name="ddate" label="Дата"/>
-        <property name="summ" type="decimal" label="Сумма"/>
+        <property name="summ" type="decimal" label="Обязательства клиента"/>
+        <property name="usumm" type="decimal" label="Наши обязательства"/>
         <property name="is-final" type="boolean" sql-name="status" label="Завершена?"/>
+        
+        <property name="p-date" type="date" label="Дата клиента" sql-name="partnerddate"/>
         
         <property name="ts" type="datetime" sql-name="ts" label="Дата обновления"/>
         
         <role name="upp-client" actor="upp-client" sql-name="partner"/>
+        <role name="upp-type" actor="upp-type" sql-name="type"/>
         
     </concept>
     
@@ -24,6 +28,16 @@
     <concept name="upp-client">
         
         <select owner="upp" sql-name="client" type="procedure"/>
+        
+        <property name="id" key="true" type="int"/>
+        <property name="name" label="Название"/>
+        
+    </concept>
+    
+    
+    <concept name="upp-type">
+        
+        <select owner="upp" sql-name="type" type="procedure"/>
         
         <property name="id" key="true" type="int"/>
         <property name="name" label="Название"/>

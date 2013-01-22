@@ -11,12 +11,41 @@
 		<field name="id"/>
 		
 		<form name="deals" concept="upp-deal" is-set="true" page-size="20">
+			
+			<field name="id"/>
+			
 			<form name="client" concept="upp-client">
 				<field name="id"/>
 				<field name="name" label="Клиент"/>
 			</form>
+			
 			<add-labeled-fields/>
+			
+			<form name="deal-type" concept="upp-type">
+				<field name="id"/>
+				<field name="name" label="Тип"/>
+			</form>
+			
 			<order-by name="ts" dir="desc"/>
+			
+		</form>
+		
+		<form name="deal" concept="upp-deal">
+			
+			<parameter name="deal-id" property="id" modifiable="true"/>
+			
+			<form name="deal-type" concept="upp-type">
+				<field name="id"/>
+				<field name="name" label="Тип"/>
+			</form>
+			
+			<form name="deal-client" concept="upp-client" role="upp-client">
+				<field name="id"/>
+				<field name="name" label="Клиент"/>
+			</form>
+			
+			<add-labeled-fields/>
+			
 		</form>
 		
     </form> </view-schema>
@@ -27,11 +56,36 @@
 			<display>
 				<grid form="deals" hide-empty="true">
 					<option label="...">
-						<command name="deal-to-detail-id" xpath-compute="xi:datum[@name='id']" />
-						<command name="upp-dealing">amendment-details</command>
+						<command name="deal-id" xpath-compute="xi:datum[@name='id']" />
+						<command name="upp-dealing">deal-details</command>
 					</option>
+					<columns>
+						<column field="name" form="client"/>
+						<column field="date"/>
+						<column field="is-final"/>
+						<column field="ts"/>
+						<column label="Параметры">
+							<print field="name" form="deal-type"/>
+							<print field="summ" form="deals"/>
+							<print field="usumm" form="deals"/>
+							<print field="p-date" form="deals"/>
+						</column>
+					</columns>
 				</grid>
 			</display>
+		</step>
+		
+		<step name="deal-details" label="Сделка" hidden="true">
+			<display>
+				<print form="deal-client" field="name"/>
+				<print form="deal-type" field="name"/>
+				<print form="deal" field="*"/>
+			</display>
+			<choise>
+				<option name="to-deal-list" label="К списку сделок">
+					<command name="upp-dealing">deal-list</command>
+				</option>
+			</choise>
 		</step>
 		
 	</workflow>
