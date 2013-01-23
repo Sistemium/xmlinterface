@@ -116,6 +116,16 @@
     </xsl:template>
     
     
+    <xsl:template match="xi:data[@choise][@id = /*/xi:userinput/xi:targets/*/@ref]" priority="1000">
+        <xsl:param name="target" select="/*/xi:userinput/xi:targets/*[@ref=current()/@id]"/>
+        
+        <xsl:call-template name="import-choise-command">
+            <xsl:with-param name="command" select="$target"/>
+        </xsl:call-template>
+        
+    </xsl:template>
+    
+    
     <xsl:template name="import-command">
         
         <xsl:param name="command"/>
@@ -166,6 +176,39 @@
         
     </xsl:template>
     
+    <xsl:template name="import-choise-command">
+        
+        <xsl:param name="command"/>
+        
+        <xsl:for-each select="$command[(
+            text()=current()/xi:set-of[@is-choise]/xi:data/@id
+                       or text()=current()/ancestor::xi:view-data//xi:data[@name=current()/@choise]/@id
+            ) and not( text()=current()/@chosen )
+        ]">
+            <chosen ref="{text()}"/>
+        </xsl:for-each>
+        
+        <xsl:for-each select="key('id',self::*[$command[text()='next']]/@chosen)">
+            <xsl:for-each select="following-sibling::xi:data[@ref=current()/@ref][1]">
+                <chosen ref="{@id}"/>
+            </xsl:for-each>
+        </xsl:for-each>
+        
+        <xsl:if test="self::*[$command[text()='next'] and not(@chosen)]">
+            <xsl:for-each select="key('id',@choise)/xi:data[@ref=current()/@ref][1]">
+                <chosen ref="{@id}"/>
+            </xsl:for-each>
+        </xsl:if>
+        
+        <xsl:if test="$command[@xpath-compute]">
+            <xsl:variable name="dyn" select="dyn:map(key('id',$userinput[@name=$command/../@id]/text()),$command/@xpath-compute)"/>
+            <!--xsl:comment>c=<xsl:value-of select="$dyn"/></xsl:comment-->
+            <xsl:for-each select="set-of[@is-choise]/xi:data[xi:datum[@name='id']=$dyn]">
+                <chosen ref="{@id}"/>
+            </xsl:for-each>
+        </xsl:if>
+        
+    </xsl:template>
     
     <xsl:template match="
         
@@ -206,33 +249,9 @@
         
         <xsl:if test="@choise">
             
-            <xsl:for-each select="$ui[(
-                text()=current()/xi:set-of[@is-choise]/xi:data/@id
-                           or text()=current()/ancestor::xi:view-data//xi:data[@name=current()/@choise]/@id
-                ) and not( text()=current()/@chosen )
-            ]">
-                <chosen ref="{text()}"/>
-            </xsl:for-each>
-            
-            <xsl:for-each select="key('id',self::*[$ui[text()='next']]/@chosen)">
-                <xsl:for-each select="following-sibling::xi:data[@ref=current()/@ref][1]">
-                    <chosen ref="{@id}"/>
-                </xsl:for-each>
-            </xsl:for-each>
-            
-            <xsl:if test="self::*[$ui[text()='next'] and not(@chosen)]">
-                <xsl:for-each select="key('id',@choise)/xi:data[@ref=current()/@ref][1]">
-                    <chosen ref="{@id}"/>
-                </xsl:for-each>
-            </xsl:if>
-            
-            <xsl:if test="$ui[@xpath-compute]">
-                <xsl:variable name="dyn" select="dyn:map(key('id',$userinput[@name=$ui/../@id]/text()),$ui/@xpath-compute)"/>
-                <!--xsl:comment>c=<xsl:value-of select="$dyn"/></xsl:comment-->
-                <xsl:for-each select="set-of[@is-choise]/xi:data[xi:datum[@name='id']=$dyn]">
-                    <chosen ref="{@id}"/>
-                </xsl:for-each>
-            </xsl:if>
+            <xsl:call-template name="import-choise-command">
+                <xsl:with-param name="command" select="$ui"/>
+            </xsl:call-template>
             
         </xsl:if>
         
