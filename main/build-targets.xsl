@@ -17,6 +17,20 @@
     </xsl:template>
 
 
+    <!-- build-target -->
+    
+    
+    <xsl:template mode="build-target" match="*">
+        
+        <xsl:param name="command" select="/.."/>
+        
+        <xsl:apply-templates select="*" mode="build-target">
+            <xsl:with-param name="command" select="$command"/>
+        </xsl:apply-templates>
+        
+    </xsl:template>
+    
+    
     <xsl:template mode="build-target" match="xi:userinput/xi:command">
         
         <xsl:apply-templates mode="build-target" select="
@@ -28,23 +42,61 @@
     </xsl:template>
 
 
-    <xsl:template mode="build-target" match="*">
-        <xsl:param name="command" select="xi:null"/>
-        <xsl:apply-templates select="*" mode="build-target">
-            <xsl:with-param name="command" select="$command"/>
-        </xsl:apply-templates>
+    <xsl:template mode="build-target" match="xi:command [not(@name)] [@xpath-compute|xi:xpath-compute]">
+        
+        <xsl:param name="command"/>
+        <xsl:param name="this" select="."/>
+        
+        <xsl:for-each select="xi:map(
+            key('id', $command)
+            , self::*[not(xi:xpath-compute)]/@xpath-compute
+            | xi:xpath-compute
+        )">
+            <xsl:call-template name="build-target">
+                <xsl:with-param name="target-id" select="current()/@id|current()[not(@id)]"/>
+                <xsl:with-param name="payload" select="$this"/>
+            </xsl:call-template>
+        </xsl:for-each>
+        
+    </xsl:template>
+    
+
+    <xsl:template mode="build-target" match="xi:command [@ref = ancestor::xi:view/xi:view-data//xi:data[@choise]/@ref]">
+        
+        <xsl:param name="command"/>
+        <xsl:param name="this" select="."/>
+        
+        <xsl:variable name="payload" select="xi:map(
+            key('id', $command)
+            , self::*[not(xi:xpath-compute)]/@xpath-compute
+            | xi:xpath-compute
+        )"/>
+        <xsl:call-template name="build-target">
+                <xsl:with-param name="target-id" select="ancestor::xi:view/xi:view-data//xi:data[@choise][@ref=current()/@ref]/@id"/>
+                <xsl:with-param name="payload" select="$payload"/>
+        </xsl:call-template>
+        
     </xsl:template>
     
     
+    <!-- build-target helper -->
+    
+    
     <xsl:template name="build-target">
+        
         <xsl:param name="target-id"/>
         <xsl:param name="payload"/>
+        
         <target ref="{$target-id}">
             <xsl:apply-templates mode="build-target-value" select="$payload">
                 <xsl:with-param name="target" select="current()"/>
             </xsl:apply-templates>
         </target>
+        
     </xsl:template>
+    
+    
+    <!-- build-target-value -->
     
     
     <xsl:template mode="build-target-value" match="*[*]">
@@ -77,23 +129,4 @@
     </xsl:template>
     
     
-    <xsl:template mode="build-target" match="xi:command [not(@name)] [@xpath-compute|xi:xpath-compute]">
-        
-        <xsl:param name="command"/>
-        <xsl:param name="this" select="."/>
-        
-        <xsl:for-each select="xi:map(
-            key('id', $command)
-            , self::*[not(xi:xpath-compute)]/@xpath-compute
-            | xi:xpath-compute
-        )">
-            <xsl:call-template name="build-target">
-                <xsl:with-param name="target-id" select="current()/@id|current()[not(@id)]"/>
-                <xsl:with-param name="payload" select="$this"/>
-            </xsl:call-template>
-        </xsl:for-each>
-        
-    </xsl:template>
-    
-
 </xsl:transform>
