@@ -4,6 +4,10 @@
     xmlns="http://unact.net/xml/xi"
 >
     
+    <concept name="upp">
+        <select owner="sys" sql-name="dummy"/>
+    </concept>
+    
     <concept name="upp-deal">
         
         <select owner="upp" sql-name="deal" type="procedure"/>
