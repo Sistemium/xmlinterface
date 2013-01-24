@@ -36,6 +36,13 @@
 					<parameter name="id-search" type="int" label="Поиск по ИД" editable="true" optional="true"/>
 					<parameter name="err-search" type="boolean" label="С ошибкой" editable="true" optional="true"/>
                     
+					<parameter name="bank-kind">
+						<init with="const">bank</init>
+					</parameter>
+					<parameter name="card-kind">
+						<init with="const">card</init>
+					</parameter>
+					
                     <field name="id"/>
                     <field name="date"/>
                     <field name="name"/>
@@ -77,6 +84,30 @@
                     </form>
                     
                     <form name="multibank-reestr" is-set="true" pipeline="csv1251">
+						<join name="register-detail" field="bank-kind" property="kind"/>
+                        <field name="receiptNumber" />
+                        <field name="receiptDate"/>
+                        <field name="summ" />
+                        <field name="account" sql-compute="null" />
+                        <field name="Fio" />
+                        <field name="address" />
+                        <field name="ufkAccount" />
+                        <field name="ufkINN" />
+                        <field name="ufkName" />
+                        <field name="ufkBIK" />
+                        <field name="paymentType" />
+                        <field name="ufkKPP" />
+                        <field name="ufkKBK" />
+                        <field name="ufkOKATO" />
+                        <field name="field106" />
+                        <field name="field107" />
+                        <field name="field108" />
+                        <field name="field109" />
+                        <field name="field110" />
+                        <field name="field111" type="decimal" sql-compute="0.00"/>
+                    </form>
+                    <form name="multibank-reestr-card" concept="multibank-reestr" is-set="true" pipeline="csv1251">
+						<join name="register-detail" field="card-kind" property="kind"/>
                         <field name="receiptNumber" />
                         <field name="receiptDate"/>
                         <field name="summ" />
@@ -142,10 +173,17 @@
 				<input field="id-search"/>
 				<input field="err-search"/>
 				
-                <export form="multibank-reestr" type="csv1251" synthesize-attributes="true">
+                <export form="multibank-reestr" type="csv1251" label="Выгрузка csv (Терминалы)" synthesize-attributes="true">
 					<synthesize attribute="file-name"
 						 xpath-precompute="ancestor::xi:view/xi:view-data//xi:data[@name='register-detail']/xi:datum[@name='name']"
 						    xpath-compute="concat('FL_',$precompute,'.csv')"
+					/>
+				</export>
+				
+                <export form="multibank-reestr-card" type="csv1251" label="Выгрузка csv (Карты)" synthesize-attributes="true">
+					<synthesize attribute="file-name"
+						 xpath-precompute="ancestor::xi:view/xi:view-data//xi:data[@name='register-detail']/xi:datum[@name='name']"
+						    xpath-compute="concat('FLBPA_',$precompute,'.csv')"
 					/>
 				</export>
 				
