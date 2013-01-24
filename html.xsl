@@ -468,8 +468,11 @@
                     <xsl:value-of select="concat('?pipeline=',@type,'&amp;form=',@ref)"/>
                     <xsl:apply-templates select="@*" mode="build-export-query"/>
                 </xsl:attribute>
-                <xsl:text>Экспорт данных в </xsl:text>
-                <xsl:value-of select="@type"/>
+                <xsl:value-of select="@label"/>
+                <xsl:if test="not(@label)">
+                    <xsl:text>Экспорт данных в </xsl:text>
+                    <xsl:value-of select="@type"/>
+                </xsl:if>
             </a>
         </div>
     </xsl:template>
