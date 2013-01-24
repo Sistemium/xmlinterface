@@ -26,7 +26,22 @@ function domready () {
             }
     });
     
-    $('div.tabs').tabs();
+    $('div.tabs').each(function(tabNumber, tab) {
+        var viewId = $(tab).parents('.view').first().attr('id')
+            , uiId = $(tab).attr('id')
+            , selected = sessionStorage.getItem(viewId+'.'+uiId)
+            tabToSelect = (selected ? selected : 0)
+        ;
+        $(tab).tabs({
+            select: function(event, ui) {
+                var viewId = $(ui.panel).parents('.view').first().attr('id')
+                    , uiId = $(ui.panel).parent().attr('id')
+                ;
+                sessionStorage.setItem(viewId+'.'+uiId, ui.index);
+            },
+            selected: tabToSelect
+        });
+    });
     
     $('div.tabs .ui-tabs-nav').removeClass('ui-corner-all');
     $('div.tabs .ui-tabs-nav').addClass('ui-corner-top');
