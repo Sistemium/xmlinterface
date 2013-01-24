@@ -337,6 +337,7 @@
         <select owner="report" sql-name="multibankReestr" type="procedure">
             <parameter name="date" type="date" sql-name="@dateb"/>
             <parameter name="op-payment-register" type="int" sql-name="@csvRegister"/>
+            <parameter name="kind" type="string" sql-name="@paymentKind"/>
         </select>
         <role name="op-payment-register" actor="op-payment-register" />
     </concept>
