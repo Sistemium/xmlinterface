@@ -82,24 +82,32 @@
                 
             </xsl:when-->
             <xsl:otherwise>
-                <xsl:variable name="next" select="($step/following-sibling::xi:step[not(@hidden)])[1]"/>
+                <xsl:variable name="next" select="
+                    ($step [not(xi:validate/@for)]
+                        /following-sibling::xi:step[not(@hidden)]
+                    ) [1]
+                    | $step/../xi:step[@name=$step/xi:validate/@for]
+                "/>
                 <xsl:apply-templates select="(key('id',@current-step)|$next)[last()]" mode="build-dialogue"/>                
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 
 
-    <xsl:template match="xi:step[xi:validate or preceding-sibling::*[1][xi:validate]]" mode="build-menu">
+    <xsl:template match="xi:step[xi:validate or (not(@hidden) and preceding-sibling::*[1][xi:validate])]" mode="build-menu">
         <menu>
-            <xsl:for-each select="preceding-sibling::xi:step[1]" mode="build-option">
+            <xsl:for-each select="preceding-sibling::xi:step[1][xi:validate]">
                 <option name="backward" label="Вернуться"/>
             </xsl:for-each>
-            <xsl:for-each select="following-sibling::xi:step[1][not(hidden)]" mode="build-option">
+            <xsl:for-each select="following-sibling::xi:step[1][not(hidden)]">
                 <option name="forward" label="Продолжить"/>
             </xsl:for-each>
         </menu>
     </xsl:template>
 
+
+    <xsl:template match="xi:step[@hidden and not(xi:validate)]" mode="build-menu" priority="1000"/>
+    
 
     <xsl:template match="xi:step" mode="build-menu">
         <menu>
@@ -112,8 +120,13 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:step[@hidden]" mode="build-menu" priority="1000"/>
-    <xsl:template match="xi:step[@hidden]" mode="build-option" />
+    <xsl:template match="xi:step[@hidden]" mode="build-option"/>
+    
+    <xsl:template match="xi:step[@hidden][xi:validate]" mode="build-option">
+        <xsl:for-each select="../xi:step[@name=current()/xi:validate/@for]" mode="build-option">
+            <option name="forward" label="Продолжить"/>
+        </xsl:for-each>
+    </xsl:template>
 
     <xsl:template match="xi:step" mode="build-option">
         <xsl:param name="label" select="@label"/>
