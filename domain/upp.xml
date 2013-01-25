@@ -11,6 +11,7 @@
     <concept name="upp-deal">
         
         <select owner="upp" sql-name="deal" type="procedure"/>
+        <save owner="upp" sql-name="deal"/>
         
         <property name="id" key="true" type="int"/>
         
