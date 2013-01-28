@@ -121,6 +121,7 @@
                     <xsl:for-each select="$form">
                         
                         <xsl:copy-of select="@deletable"/>
+                        <xsl:copy-of select="$grid/@deletable"/>
                         <xsl:attribute name="ref"><xsl:value-of select="@id"/></xsl:attribute>
                         
                         <columns>
@@ -128,6 +129,7 @@
                             <xsl:for-each select="$grid/xi:columns/*">
                                 <xsl:apply-templates select="key('id',@ref) | self::*[not(@ref)]" mode="build-column">
                                     <xsl:with-param name="grid" select="$grid"/>
+                                    <xsl:with-param name="column" select="current()"/>
                                 </xsl:apply-templates>
                             </xsl:for-each>
                             
@@ -196,11 +198,19 @@
     <xsl:template match="*" mode="build-column">
         
         <xsl:param name="grid" select="."/>
+        <xsl:param name="column" select="."/>
         
-        <xsl:if test="not(@id=$grid/xi:group/xi:by/@ref)
-                      and (not($grid/@hide-empty) or key('id',@ref)/@editable or self::xi:form/@choise or ancestor::xi:view[1]/xi:view-data//*[@ref=current()/@id][text()|*])">
+        <xsl:if test="
+            not(@id=$grid/xi:group/xi:by/@ref)
+            and (not($grid/@hide-empty)
+                    or key('id',@ref)/@editable
+                    or self::xi:form/@choise
+                    or ancestor::xi:view[1]/xi:view-data//*
+                        [@ref=current()/@id] [text()|*]
+                )
+        ">
             <column ref="{@id}">
-                <xsl:copy-of select="@extra-style | $grid/xi:column[@ref=current()/@id]/@*"/>
+                <xsl:copy-of select="@extra-style | $grid/xi:columns/xi:column[@ref=current()/@id]/@*"/>
                 <xsl:apply-templates select="*" mode="build-dialogue"/>
             </column>
         </xsl:if>
