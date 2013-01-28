@@ -13,7 +13,7 @@
         
         <parameter name="searcher" label="Поиск" editable="true" optional="true"/>
         
-        <form name="ucc-account" is-set="true" page-size="20" toggle-edit-off-="true" deletable="true">
+        <form name="ucc-account" is-set="true" page-size="15" toggle-edit-off-="true" deletable="true">
             
             <add-labeled-fields/>
             <field name="id"/>
@@ -108,7 +108,7 @@
             
             <display>
                 <input form="UCC" field="searcher"/>
-                <grid form="ucc-account" label="Счета">
+                <grid form="ucc-account" label="Счета" deletable="false">
                     <option reuse="detail-account"/>
                 </grid>
             </display>
@@ -122,13 +122,45 @@
         <step name="account-details-page" hidden="true" label="Детализация счета">
             
             <display>
-                <region>
-                    <print form="ucc-account-details" field="*"/>
-                </region>
-                <region class="tabs">
-                    <grid form="ucc-account-income" label="Недавние приходы"/>
-                    <grid form="ucc-account-expense" label="Недавние расходы" hide-empty="true"/>
-                    <grid form="ucc-account-bank-account" label="Банковские реквизиты" hide-empty="true"/>
+                <region class="hbox">
+                    <region class="sidebar">
+                        <input form="UCC" field="searcher"/>
+                        <grid form="ucc-account" deletable="false">
+                            <option name="change-detailed-account" label="Выбрать">
+                                <command name="account-to-detail-id" xpath-compute="
+                                    xi:datum[@name='id']
+                                "/>
+                            </option>
+                            <columns>
+                                <column field="name" label="Счет"/>
+                            </columns>
+                        </grid>
+                    </region>
+                    <region class="flex">
+                        <region>
+                            <print form="ucc-account-details" field="*"/>
+                        </region>
+                        <region class="tabs">
+                            <grid form="ucc-account-income" label="Недавние приходы"/>
+                            <grid form="ucc-account-expense" label="Недавние расходы" hide-empty="true"/>
+                            <grid form="ucc-account-bank-account" label="Банковские реквизиты" hide-empty="true">
+                                <columns>
+                                    <column field="bik"/>
+                                    <column label="Счет">
+                                        <print field="account-number"/>
+                                        <print field="extra-number"/>
+                                        <print field="op-service"/>
+                                        <print field="name" form="ucc-bank-account-agent"/>
+                                    </column>
+                                    <column label="ФИО">
+                                        <print field="fname"/>
+                                        <print field="mname"/>
+                                        <print field="lname"/>
+                                    </column>
+                                </columns>
+                            </grid>
+                        </region>
+                    </region>
                 </region>
             </display>
             
