@@ -79,7 +79,7 @@
         <save owner="ucc" sql-name="income"/>
         
         <property name="date" type="date" label="Дата" sql-name="ddate"/>
-        <property name="summ" type="decimal" label="Код"/>
+        <property name="summ" type="decimal" label="Сумма"/>
         
         <role name="ucc-account" actor="ucc-account" sql-name="client"/>
         <role name="ucc-agent" actor="ucc-agent" sql-name="counteragent"/>
@@ -97,7 +97,7 @@
         <save owner="ucc" sql-name="expense"/>
         
         <property name="date" type="date" label="Дата" sql-name="ddate"/>
-        <property name="summ" type="decimal" label="Код"/>
+        <property name="summ" type="decimal" label="Сумма"/>
         
         <property name="isSent" type="boolean" label="Отправлено" sql-name="send"/>
         <property name="isFinal" type="boolean" label="Завершено" sql-name="final"/>
