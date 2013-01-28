@@ -210,10 +210,10 @@
                 
             </xsl:attribute>
             
-            <xsl:if test="$columns/parent::*[xi:option or xi:rows[xi:option]] or $columns/../@deletable">
+            <xsl:if test="$columns/parent::*[xi:option or xi:rows[xi:option]] or $columns/../@deletable[not(.='false')]">
                 <td class="options">
                     <xsl:apply-templates select="
-                        self::*[not(@toggle-edit-off) or @is-new]/@deletable
+                        self::*[not(@toggle-edit-off) or @is-new]/@deletable[not($columns/../@deletable='false')]
                         | $columns/../xi:rows/xi:option [not(xi:when [not($data/descendant-or-self::*[text() or *]/@ref)] )]
                     ">
                         <xsl:with-param name="option-value" select="$data/@id"/>
