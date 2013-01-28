@@ -127,10 +127,12 @@
             
             <xsl:for-each select="key('id',self::xi:input/@ref)[@type='parameter'][text()][not(@modified)]">
                 <a type="button"
+                   class="button"
                    href="?{parent::xi:data/@id}=refresh&amp;command=cleanUrl"
-                   class="button ui-icon ui-icon-refresh"
                    onclick="return menupad(this,false,false);"
-                />
+                > <span class="ui-icon ui-icon-refresh"/>
+                </a>
+
             </xsl:for-each>
             
             <xsl:for-each select="$datum[current()/self::xi:print/@ref]">
