@@ -27,3 +27,13 @@
     position: relative;
     overflow: hidden;
 }
+
+thead .title a {
+    padding: 0;
+    position: relative;
+    top: 3px;
+}
+
+.iphone-agent thead .title a {
+    padding: 3px;
+}

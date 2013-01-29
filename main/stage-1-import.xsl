@@ -55,6 +55,10 @@
             <xsl:attribute name="ipad-agent">true</xsl:attribute>
         </xsl:if>
         
+        <xsl:if test="contains(@user-agent,'iPhone')">
+            <xsl:attribute name="iphone-agent">true</xsl:attribute>
+        </xsl:if>
+        
     </xsl:template>
 
 

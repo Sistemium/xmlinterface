@@ -35,9 +35,9 @@
                             <xsl:if test="ancestor::xi:grid[1]/@refreshable">
                                 <a type="button"
                                    href="?set-of-{key('id',../@ref)/@name}=refresh&amp;command=cleanUrl"
-                                   class="button ui-icon ui-icon-refresh"
+                                   class="button"
                                    onclick="return menupad(this,false,false);"
-                                />
+                                ><span class="ui-icon ui-icon-refresh"/></a>
                             </xsl:if>
                             
                             <xsl:if test="key('id',../@ref)/@toggle-edit-off">
