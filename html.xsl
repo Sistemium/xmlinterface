@@ -211,6 +211,7 @@
                 <xsl:text>)</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="class">
+                
                 <xsl:choose>
                     <xsl:when test="/*/xi:userinput/@mobile-agent">
                         <xsl:text>mobile</xsl:text>
@@ -225,9 +226,13 @@
                         </xsl:if>
                     </xsl:otherwise>
                 </xsl:choose>
+                
                 <xsl:if test="/*/xi:userinput/@android-agent">
                     <xsl:text> android</xsl:text>
                 </xsl:if>
+                
+                <xsl:value-of select="concat(' ',local-name(/*/xi:userinput/@iphone-agent))"/>
+                
                 <xsl:choose>
                     <xsl:when test="descendant::xi:option[@chosen] or descendant::xi:menu[@chosen] or descendant::xi:view">
                         <xsl:text> sub-page</xsl:text>
