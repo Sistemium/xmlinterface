@@ -17,6 +17,12 @@
         
         <xsl:apply-templates select="self::xi:input | self::xi:print[$datum/node()]" mode="render">
             <xsl:with-param name="datum" select="$datum"/>
+            <xsl:with-param name="elem">
+                <xsl:choose>
+                    <xsl:when test="parent::xi:by">span</xsl:when>
+                    <xsl:otherwise>div</xsl:otherwise>
+                </xsl:choose>
+            </xsl:with-param>
         </xsl:apply-templates>
         
     </xsl:template>
@@ -25,8 +31,9 @@
     <xsl:template match="xi:input|xi:print" mode="render">
         
         <xsl:param name="datum" select="xi:null"/>
+        <xsl:param name="elem">div</xsl:param>
         
-        <div>
+        <xsl:element name="{$elem}">
             <xsl:attribute name="class">
                 <xsl:text>datum </xsl:text>
                 <xsl:value-of select="normalize-space(concat(
@@ -139,7 +146,7 @@
                 <xsl:call-template name="print"/>
             </xsl:for-each>
             
-        </div>
+        </xsl:element>
         
     </xsl:template>
 

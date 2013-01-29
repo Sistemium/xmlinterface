@@ -45,3 +45,7 @@ td div.option {margin:0px auto;}
 td .editable input {position:relative; left:-3px;}
 
 .grid td .option {display:inline;}
+
+tr.group div {
+	display: inline;
+}

@@ -104,6 +104,7 @@
 
     <xsl:template match="xi:datum|xi:field" mode="grid-group">
         
+        <xsl:param name="context" select="/.."/>
         <xsl:param name="colspan"/>
         <xsl:param name="cnt"/>
         <xsl:param name="cnt-show"/>
@@ -136,6 +137,10 @@
                     </span>
                 </xsl:if>
                 
+                <xsl:apply-templates select="$context/xi:print">
+                    <xsl:with-param name="data" select="current()"/>
+                </xsl:apply-templates>
+                
             </td>
             
         </tr>
@@ -167,6 +172,7 @@
                         $current-value
                         | key( 'id', @ref [not($current-value) and $prev-value] )
                     ">
+                        <xsl:with-param name="context" select="current()"/>
                         <xsl:with-param name="colspan" select="
                             count(
                                 $columns/xi:column
