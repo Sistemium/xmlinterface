@@ -54,4 +54,26 @@
     </concept>
     
     
+    <concept name="upp-client-balance">
+        
+        <select owner="upp" sql-name="balance" type="procedure">
+            <parameter name="upp-client" type="int" sql-name="@client"/>
+        </select>
+        
+        <property name="date" type="date" sql-name="ddate" label="Дата"/>
+        <property name="isumm" type="decimal" sql-name="isumm" label="Приход"/>
+        <property name="rsumm" type="decimal" sql-name="rsumm" label="Расход"/>
+        <property name="i1" type="string" sql-name="i1" label="Вид начислений"/>
+        <property name="i2" type="string" sql-name="i2" label="Комментарий"/>
+        
+        <property name="balance" type="decimal" sql-name="balance" label="Баланс"/>
+        
+        <property name="balance-start" type="decimal" sql-name="bsumm" label="Баланс на начало периода"/>
+        <property name="balance-end" type="decimal" sql-name="esumm" label="Баланс на конец периода"/>
+        
+        <role name="upp-client" actor="upp-client" />
+        
+    </concept>
+    
+    
 </domain>
