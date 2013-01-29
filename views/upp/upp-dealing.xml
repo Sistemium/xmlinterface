@@ -179,20 +179,24 @@
 		</step>
 		
 		<reusables>
+			
 			<option name="choose-client" label="Выбрать">
 				<command form="deal-blank-client">
 					<xpath-compute>@id</xpath-compute>
 				</command>
 				<command name="upp-dealing">forward</command>
 			</option>
+			
 			<option name="to-deal-list" label="К списку сделок">
 				<command name="upp-dealing">deal-list</command>
 			</option>
+			
 			<option name="confirm-deal-create" label="Сохранить">
 				<command name="set-of-deals">refresh</command>
 				<command name="deal-blank">save</command>
 				<command name="upp-dealing">deal-list</command>
 			</option>
+			
 		</reusables>
 		
 	</workflow>
