@@ -1,0 +1,191 @@
+<?xml version="1.0" ?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="upp-clients" label="Клиенты сделок">
+	
+    <view-schema> <form name="sysuser"> 
+		
+		<parameter name="name">
+			<init with="username"/>
+		</parameter>
+		
+		<field name="id"/>
+		
+		<form name="deal-blank" concept="upp-deal" new-only="true" build-blank="true">
+			
+			<field name="xid"/>
+			
+			<form name="deal-blank-type" concept="upp-type" choise="deal-types" role="upp-type" label="Тип сделки">
+				<field name="id"/>
+				<field name="name" label="Тип"/>
+			</form>
+			
+			<form name="deal-blank-client" concept="upp-client" role="upp-client" choise="deal-clients" label="Клиент">
+				<field name="id"/>
+				<field name="name" label="Клиент"/>
+			</form>
+			
+			<field name="summ" editable="true"/>
+			<field name="usumm" editable="true"/>
+			
+		</form>
+		
+		<form name="client-searcher" concept="upp">
+			
+			<parameter name="client-searcher" editable="true" label="Поиск клиента" optional="true" use-like="true"/>
+			
+			<form name="upp-clients" concept="upp-client" is-set="true" page-size="10">
+				<field name="id"/>
+				<field name="name" label="Выберите клиента"/>
+				<join name="client-searcher" field="client-searcher" property="name"/>
+			</form>
+			
+		</form>
+        
+        <form name="client" concept="upp-client">
+            
+            <field name="id"/>
+            <field name="name" label="Клиент"/>
+            
+            <parameter name="client-id" property="id" modifiable="true"/>
+            
+            <form name="open-deals" concept="upp-deal" is-set="true" page-size="5">
+                
+                <field name="id"/>
+                
+                <field name="rem-summ" totals="sum"/>
+                <field name="rem-usumm" totals="sum"/>
+                
+                <add-labeled-fields/>
+                
+                <form name="deal-type" concept="upp-type">
+                    <field name="id"/>
+                    <field name="name" label="Тип"/>
+                </form>
+                
+                <order-by name="date" dir="desc"/>
+                
+                <where name="is-final">0</where>
+                
+            </form>
+            
+        </form>
+        
+		<form name="deal-types" concept="upp-type" is-set="true">
+			<field name="id"/>
+			<field name="name" label="Тип"/>
+		</form>
+		
+		
+    </form> </view-schema>
+	
+	<workflow>
+		
+		<step name="client-list" label="Клиенты">
+            
+			<display>
+                <region class="hbox">
+                    <region class="sidebar">
+                        <input field="client-searcher"/>
+                        <grid form="upp-clients">
+                            <option label="...">
+                                <command name="client-id" xpath-compute="xi:datum[@name='id']" />
+                            </option>
+                        </grid>
+                    </region>
+                    <region class="flex">
+                        <print form="client" field="*"/>
+                        <grid form="open-deals">
+                            <columns>
+                                <column field="date"/>
+                                <column field="rem-summ"/>
+                                <column field="rem-usumm"/>
+                            </columns>
+                        </grid>
+                    </region>
+                </region>
+			</display>
+			
+            <choise>
+				<option name="to-deal-creation" label="Новая сделка">
+					<command name="deal-blank">refresh</command>
+					<command name="upp-clients">deal-creation</command>
+				</option>
+			</choise>
+            
+		</step>
+		
+		
+		<step name="deal-creation" label="Новая сделка - 1" hidden="true">
+			<display>
+				<input form="deal-blank-type" label="Тип сделки"/>
+				<print form="deal-blank-client" field="name"/>
+				<region>
+					<input field="client-searcher"/>
+					<grid form="deal-clients">
+						<option reuse="choose-client"/>
+						<columns>
+							<column field="name" />
+						</columns>
+					</grid>
+				</region>
+			</display>
+			<choise>
+				<option label="Отменить" reuse="to-deal-list"/>
+			</choise>
+			<validate for="deal-creation-2">
+				<nonempty form="deal-blank-type"/>
+				<nonempty form="deal-blank-client"/>
+			</validate>
+		</step>
+		
+		<step name="deal-creation-2" label="Новая сделка - 2">
+			<display>
+				<print form="deal-blank-type" field="name" label="Тип сделки"/>
+				<print form="deal-blank-client" field="name"/>
+				<input form="deal-blank" field="*"/>
+			</display>
+			<choise>
+				<option label="Отменить" reuse="to-deal-list"/>
+			</choise>
+			<validate for="deal-creation-3">
+				<nonempty form="deal-blank" field="summ"/>
+				<nonempty form="deal-blank" field="usumm"/>
+			</validate>
+		</step>
+		
+		<step name="deal-creation-3" label="Новая сделка - 3">
+			<display>
+				<print form="deal-blank-type" field="name" label="Тип сделки"/>
+				<print form="deal-blank-client" field="name"/>
+				<print form="deal-blank" field="*"/>
+			</display>
+			<choise>
+				<option label="Сохранить" reuse="confirm-deal-create"/>
+				<option label="Отменить" reuse="to-deal-list"/>
+			</choise>
+		</step>
+		
+		<reusables>
+			
+			<option name="choose-client" label="Выбрать">
+				<command form="deal-blank-client">
+					<xpath-compute>@id</xpath-compute>
+				</command>
+				<command name="upp-clients">forward</command>
+			</option>
+			
+			<option name="to-deal-list" label="К списку сделок">
+				<command name="upp-clients">deal-list</command>
+			</option>
+			
+			<option name="confirm-deal-create" label="Сохранить">
+				<command name="open-deals">refresh</command>
+				<command name="deal-blank">save</command>
+				<command name="upp-clients">client-list</command>
+			</option>
+			
+		</reusables>
+		
+	</workflow>
+	
+</view-definition>

@@ -18,6 +18,10 @@
         <property name="date" type="date" sql-name="ddate" label="Дата"/>
         <property name="summ" type="decimal" label="Обязательства клиента"/>
         <property name="usumm" type="decimal" label="Наши обязательства"/>
+        
+        <property name="rem-summ" type="decimal" label="Остаток обязательств клиента" sql-name="rem_summ"/>
+        <property name="rem-usumm" type="decimal" label="Остаток наших обязательств" sql-name="rem_usumm"/>
+        
         <property name="is-final" type="boolean" sql-name="status" label="Завершена?"/>
         
         <property name="p-date" type="date" label="Дата клиента" sql-name="partnerddate"/>
