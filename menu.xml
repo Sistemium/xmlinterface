@@ -8,12 +8,12 @@
         <access role="beta"/>
     </menu>
     
-    <menu name="uoauth" label="UPP" directory="views/upp">
+    <menu name="upp" label="UPP" directory="views/upp">
         <access role="alpha"/>
         <access role="upp"/>
     </menu>
     
-    <menu name="uoauth" label="UCC" directory="views/ucc">
+    <menu name="ucc" label="UCC" directory="views/ucc">
         <access role="alpha"/>
         <access role="ucc"/>
     </menu>
