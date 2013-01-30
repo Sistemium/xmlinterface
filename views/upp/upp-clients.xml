@@ -12,7 +12,7 @@
 		
 		<form name="client-searcher" concept="upp">
 			
-			<parameter name="client-searcher" editable="true" label="Поиск клиента" optional="true" use-like="true"/>
+			<parameter name="client-searcher" editable="true" label="Поиск" optional="true" use-like="true"/>
 			
 			<form name="upp-clients" concept="upp-client" is-set="true" page-size="10">
 				<field name="id"/>
@@ -50,7 +50,7 @@
                 
             </form>
             
-            <form name="open-deals" concept="upp-deal" is-set="true" page-size="5">
+            <form name="open-deals" concept="upp-deal" is-set="true" page-size="5" refreshable="true">
                 
                 <field name="id"/>
                 
@@ -59,7 +59,7 @@
                 
                 <add-labeled-fields/>
                 
-                <form name="deal-type" concept="upp-type">
+                <form name="open-deal-type" concept="upp-type">
                     <field name="id"/>
                     <field name="name" label="Тип"/>
                 </form>
@@ -67,6 +67,7 @@
                 <order-by name="date" dir="desc"/>
                 
                 <where name="is-final">0</where>
+                <where name="rem"><not>0</not></where>
                 
             </form>
             
@@ -87,7 +88,7 @@
 			<display>
                 <region class="hbox">
                     <region class="sidebar">
-                        <input field="client-searcher"/>
+                        <input field="client-searcher" class="title"/>
                         <grid form="upp-clients">
                             <option label="...">
                                 <command name="client-id" xpath-compute="xi:datum[@name='id']" />
@@ -95,7 +96,7 @@
                         </grid>
                     </region>
                     <region class="flex">
-                        <print form="client" field="*"/>
+                        <print form="client" field="name" class="title"/>
                         <region class="tabs">
                             <grid form="open-deals" label="Открытые сделки">
                                 <columns>
@@ -123,48 +124,38 @@
 			</display>
 			
             <choise>
-				<option name="to-deal-creation" label="Новая сделка">
-					<command name="deal-blank">refresh</command>
-					<command name="upp-clients">deal-creation</command>
-				</option>
+                <when form="client" field="id">
+                    <option name="to-deal-creation" label="Новая сделка">
+                        <command name="deal-blank">refresh</command>
+                        <command name="upp-clients">deal-creation</command>
+                    </option>
+                </when>
 			</choise>
             
 		</step>
 		
 		
-		<step name="deal-creation" label="Новая сделка - 1" hidden="true">
+		<step name="deal-creation" label="Новая сделка" hidden="true">
 			<display>
 				<print form="client" field="name"/>
 				<input form="deal-blank-type" label="Тип сделки"/>
-			</display>
-			<choise>
-				<option label="Отменить" reuse="cancel-deal"/>
-			</choise>
-			<validate for="deal-creation-2">
-				<nonempty form="deal-blank-type"/>
-				<nonempty form="client"/>
-			</validate>
-		</step>
-		
-		<step name="deal-creation-2" label="Новая сделка - 2">
-			<display>
-				<print form="deal-blank-type" field="name" label="Тип сделки"/>
-				<print form="deal-blank-client" field="name"/>
 				<input form="deal-blank" field="*"/>
 			</display>
 			<choise>
 				<option label="Отменить" reuse="cancel-deal"/>
 			</choise>
-			<validate for="deal-creation-3">
+			<validate for="deal-creation-confirm">
+				<nonempty form="deal-blank-type"/>
+				<nonempty form="client"/>
 				<nonempty form="deal-blank" field="summ"/>
 				<nonempty form="deal-blank" field="usumm"/>
 			</validate>
 		</step>
 		
-		<step name="deal-creation-3" label="Новая сделка - 3">
+		<step name="deal-creation-confirm" label="Подтвердите новую сделку">
 			<display>
-				<print form="deal-blank-type" field="name" label="Тип сделки"/>
 				<print form="deal-blank-client" field="name"/>
+				<print form="deal-blank-type" field="name" label="Тип сделки"/>
 				<print form="deal-blank" field="*"/>
 			</display>
 			<choise>
