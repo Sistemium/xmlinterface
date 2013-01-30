@@ -31,6 +31,8 @@
 
     <xsl:template match="xi:dialogue[xi:choose and key('id',@current-step)//xi:input[not(@ref=key('id',ancestor::xi:view/xi:dialogue/xi:input/@ref)/@ref)]]/@action"/>
     
+    <xsl:template match="xi:dialogue//xi:region[not(descendant::* [not(self::xi:region)] )]"/>
+    
     <xsl:template match="xi:view[not(preceding-sibling::xi:view)]/@hidden"/>
     <xsl:template match="xi:view[@hidden][count(descendant::xi:datum[@editable])&gt;60 or count(descendant::xi:data) &gt; 150]"/>
 
