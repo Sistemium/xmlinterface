@@ -11,6 +11,11 @@
     </context-extension>
     
     <pipeline name="main">
+        
+        <execute name="targets" href="id.xsl">
+            <include href="main/targets.xsl"/>
+        </execute>
+        
         <execute name="1" href="id.xsl">
             <include href="main/userinput.xsl"/>
         </execute>
