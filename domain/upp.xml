@@ -22,6 +22,8 @@
         <property name="rem-summ" type="decimal" label="Остаток обязательств клиента" sql-name="rem_summ"/>
         <property name="rem-usumm" type="decimal" label="Остаток наших обязательств" sql-name="rem_usumm"/>
         
+        <property name="rem" type="decimal" />
+        
         <property name="is-final" type="boolean" sql-name="status" label="Завершена?"/>
         
         <property name="p-date" type="date" label="Дата клиента" sql-name="partnerddate"/>
