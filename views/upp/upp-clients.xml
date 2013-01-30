@@ -8,6 +8,10 @@
 			<init with="username"/>
 		</parameter>
 		
+		<parameter name="date">
+			<init with="today"/>
+		</parameter>
+        
 		<field name="id"/>
 		
 		<form name="client-searcher" concept="upp">
@@ -29,6 +33,10 @@
             
             <parameter name="client-id" property="id" modifiable="true"/>
             
+            <form name="client-rate" concept="upp-rate" role="upp-client">
+                <field name="rate" editable="true"/>
+            </form>
+            
             <form name="deal-blank" concept="upp-deal" new-only="true" build-blank="true" parent-sql-name="partner">
                 
                 <field name="xid"/>
@@ -38,8 +46,16 @@
                     <field name="name" label="Тип"/>
                 </form>
                 
-                <field name="summ" editable="true"/>
                 <field name="usumm" editable="true"/>
+                <field name="summ" modifiable="true">
+                    <xpath-compute>
+                        ../xi:datum[@name='usumm'] * (
+                            ancestor::*[@name='client']
+                            /xi:data[@name='client-rate']
+                            /xi:datum[@name='rate'] div 100.0 + 1.0
+                        )
+                    </xpath-compute>
+                </field>
                 
             </form>
             
@@ -139,7 +155,9 @@
 			<display>
 				<print form="client" field="name"/>
 				<input form="deal-blank-type" label="Тип сделки"/>
+                <input form="client-rate" field="rate" label="Комиссия"/>
 				<input form="deal-blank" field="*"/>
+                <print form="deal-blank" field="summ"/>
 			</display>
 			<choise>
 				<option label="Отменить" reuse="cancel-deal"/>

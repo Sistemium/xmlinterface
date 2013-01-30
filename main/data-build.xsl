@@ -413,11 +413,9 @@
         <xsl:apply-templates select="parent::xi:response/@ts"/>
         
         <xsl:apply-templates select="
-        
             parent::xi:response/parent::*/*
-            
-            [self::xi:datum[@type='parameter'] or self::xi:set-of[@is-choise]]
-            [not(key('id',@ref)/xi:init[@with='userinput'])]
+                [self::xi:datum[@type='parameter'] or self::xi:set-of[@is-choise]]
+                [not(key('id',@ref)/xi:init[@with='userinput'])]
         "/>
         
     </xsl:template>
