@@ -40,6 +40,7 @@
                 </grid>
             </display>
             <validate>
+				<nonempty field="includeSupervisor"/>
                 <nonempty form="sales-territory"/>
             </validate>
         </step>
