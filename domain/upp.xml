@@ -78,4 +78,26 @@
     </concept>
     
     
+    <concept name="upp-rate">
+        
+        <select owner="upp" sql-name="rate" type="procedure">
+            <parameter name="date" type="date" sql-name="@date" />
+            <parameter name="upp-client" type="int" sql-name="@client" required="true"/>
+        </select>
+        
+        <!--select owner="dbo" sql-name="dealrate"/-->
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        
+        <property name="ddateb" type="date" sql-name="ddateb"/>
+        <property name="ddatee" type="date" sql-name="ddatee"/>
+        <property name="rate" type="decimal" sql-name="rate"/>
+        <property name="ts" type="datetime" sql-name="ts"/>
+        
+        <role name="upp-client" actor="upp-client"/>
+        
+    </concept>
+    
+    
 </domain>
