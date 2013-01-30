@@ -420,6 +420,12 @@
         </div>
     </xsl:template>
 
+    <xsl:template match="xi:when[@ref]">
+        <xsl:if test="ancestor::xi:view[1]/xi:view-data//xi:datum[@ref=current()/@ref]">
+            <xsl:apply-templates/>
+        </xsl:if>
+    </xsl:template>
+        
     <xsl:template match="xi:dialogue">
         <xsl:apply-templates select="key('id',@current-step)" mode="render"/>
         <div class="dialogue">
