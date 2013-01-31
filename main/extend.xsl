@@ -51,13 +51,15 @@
 		<xsl:call-template name="needrefresh"/>
     </xsl:template>
 
-    <xsl:template match=
-	    "xi:view[xi:menu[xi:option[@chosen][@name='save']]]/xi:view-data//xi:data
-	    |xi:data[*[@modified][key('id',@ref)/@autosave or (not(@xpath-compute) and ../@persist-this)]
-	            or self::*[@delete-this or descendant-or-self::*/@persist-this][key('id',@ref)/@autosave]
-				or (@is-new and xi:datum[@type='field' and @editable] and key('id',descendant::xi:data[@is-new]/@ref)[@autosave]/xi:join/@name=@name)
-			    ]
-	    ">
+    <xsl:template match="
+	    xi:view[xi:menu[xi:option[@chosen][@name='save']]]/xi:view-data//xi:data
+	    | xi:data[
+			* [@modified] [key('id',@ref)/@autosave or (not(@xpath-compute) and ../@persist-this)]
+			or self::*
+				[@delete-this or descendant-or-self::*/@persist-this] [key('id',@ref)/@autosave or @persist-this]
+			or (@is-new and xi:datum[@type='field' and @editable] and key('id',descendant::xi:data[@is-new]/@ref)[@autosave]/xi:join/@name=@name)
+		]
+	">
 		<xsl:copy>
 			<xsl:apply-templates select="@*"/>
 			
