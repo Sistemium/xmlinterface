@@ -2,13 +2,25 @@
 <view-definition xmlns="http://unact.net/xml/xi" name="sales-smsing" label="СМС-рассылка торговым">
     <view-schema>
         <form name="sysuser">
+			
             <parameter name="name">
                 <init with="username"/>
             </parameter>
-            <parameter name="msg" type="text" editable="true" label="Текст сообщения"/>
+            
+			<parameter name="role-code">
+                <init with="role">sales</init>
+            </parameter>
+            
+			<parameter name="msg" type="text" editable="true" label="Текст сообщения"/>
             <parameter name="includeSupervisor" type="boolean" editable="true" label="Оповестить супервайзеров?"/>
-            <form name="sales-territory" is-set="true" label="Территория" removable="true">
-                <field name="id"/>
+            
+			<form name="sales-territory" is-set="true" label="Территория" removable="true">
+				
+				<secure not-role="master">
+					<join name="sysuser" field="role-code" property="id"/>
+				</secure>
+                
+				<field name="id"/>
             	<field name="name" label="Территория" />
                 <form name="salesman-group" is-set="true">
                     <field name="id" />
