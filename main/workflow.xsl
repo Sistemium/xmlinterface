@@ -120,7 +120,12 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:step[@hidden]" mode="build-option"/>
+    <xsl:template mode="build-option" match="
+        xi:step[
+            @hidden
+            | xi:when [not( ancestor::xi:view[1]/xi:view-data//xi:datum/@ref = @ref)]
+        ]
+    "/>
     
     <xsl:template match="xi:step[@hidden][xi:validate]" mode="build-option">
         <xsl:for-each select="../xi:step[@name=current()/xi:validate/@for]" mode="build-option">
