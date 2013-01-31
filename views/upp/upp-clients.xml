@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 
-<view-definition xmlns="http://unact.net/xml/xi" name="upp-clients" label="Клиенты сделок">
+<view-definition xmlns="http://unact.net/xml/xi" name="upp-clients" label="Заявки за выплаты">
 	
     <view-schema> <form name="sysuser"> 
 		
@@ -41,21 +41,27 @@
                 
                 <field name="xid"/>
                 
-                <form name="deal-blank-type" concept="upp-type" choise="deal-types" role="upp-type" label="Тип сделки">
+                <!--form name="deal-blank-type" concept="upp-type" choise="deal-types" role="upp-type" label="Тип сделки">
                     <field name="id"/>
                     <field name="name" label="Тип"/>
-                </form>
+                </form-->
+                
+                <field name="upp-type" use-with-insert="true">
+                    <init with="const">9043</init>
+                </field>
                 
                 <field name="usumm" editable="true"/>
                 <field name="summ" modifiable="true">
                     <xpath-compute>
-                        ../xi:datum[@name='usumm'] * (
+                        xi:isnull(../xi:datum[@name='usumm'],0) * (
                             ancestor::*[@name='client']
                             /xi:data[@name='client-rate']
                             /xi:datum[@name='rate'] div 100.0 + 1.0
                         )
                     </xpath-compute>
                 </field>
+                
+                <field name="pay-request-comment" editable="true" label="Комментарий"/>
                 
             </form>
             
@@ -89,10 +95,10 @@
             
         </form>
         
-		<form name="deal-types" concept="upp-type" is-set="true">
+		<!--form name="deal-types" concept="upp-type" is-set="true">
 			<field name="id"/>
 			<field name="name" label="Тип"/>
-		</form>
+		</form-->
 		
 		
     </form> </view-schema>
@@ -141,7 +147,7 @@
 			
             <choise>
                 <when form="client" field="id">
-                    <option name="to-deal-creation" label="Новая сделка">
+                    <option name="to-deal-creation" label="Заявка на выплату">
                         <command name="deal-blank">refresh</command>
                         <command name="upp-clients">deal-creation</command>
                     </option>
@@ -151,29 +157,30 @@
 		</step>
 		
 		
-		<step name="deal-creation" label="Новая сделка" hidden="true">
+		<step name="deal-creation" label="Новая заявка на выплату" hidden="true">
 			<display>
 				<print form="client" field="name"/>
-				<input form="deal-blank-type" label="Тип сделки"/>
+				<!--input form="deal-blank-type" label="Тип сделки"/-->
                 <input form="client-rate" field="rate" label="Комиссия"/>
-				<input form="deal-blank" field="*"/>
+				<input form="deal-blank" field="usumm"/>
                 <print form="deal-blank" field="summ"/>
+                <input form="deal-blank" field="pay-request-comment"/>
 			</display>
 			<choise>
 				<option label="Отменить" reuse="cancel-deal"/>
 			</choise>
 			<validate for="deal-creation-confirm">
-				<nonempty form="deal-blank-type"/>
+				<!--nonempty form="deal-blank-type"/-->
 				<nonempty form="client"/>
 				<nonempty form="deal-blank" field="summ"/>
 				<nonempty form="deal-blank" field="usumm"/>
 			</validate>
 		</step>
 		
-		<step name="deal-creation-confirm" label="Подтвердите новую сделку">
+		<step name="deal-creation-confirm" label="Подтвердите заявку на выплату">
 			<display>
 				<print form="deal-blank-client" field="name"/>
-				<print form="deal-blank-type" field="name" label="Тип сделки"/>
+				<!--print form="deal-blank-type" field="name" label="Тип сделки"/-->
 				<print form="deal-blank" field="*"/>
 			</display>
 			<choise>

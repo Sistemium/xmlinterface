@@ -30,6 +30,8 @@
         
         <property name="ts" type="datetime" sql-name="ts" label="Дата обновления"/>
         
+        <property name="pay-request-comment" sql-name="pay_request_comment" sql-compute="NULL"/>
+        
         <role name="upp-client" actor="upp-client" sql-name="partner"/>
         <role name="upp-type" actor="upp-type" sql-name="type"/>
         
