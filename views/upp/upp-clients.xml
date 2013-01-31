@@ -37,6 +37,11 @@
                 <field name="rate" editable="true"/>
             </form>
             
+            <form name="client-casher-create" concept="upp-casher" new-only="true" parent-sql-name="partner">
+                <field name="xid"/>
+                <field name="name" editable="true"/>
+            </form>
+            
             <form name="client-cashers" concept="upp-casher" is-set="true">
                 <field name="id" />
                 <field name="name" />
@@ -166,6 +171,20 @@
             
 		</step>
 		
+		<step name="casher-creation" label="Добавление получателя" hidden="true">
+			<display>
+				<print form="client" field="name"/>
+                <input form="client-casher-create" field="name" />
+			</display>
+			<choise>
+				<option label="Сохранить">
+                    <command name="client-casher-create">save</command>
+                    <command name="set-of-client-cashers">refresh</command>
+                    <command name="upp-clients">deal-creation</command>
+                </option>
+				<option label="Отменить" reuse="to-deal-creation"/>
+			</choise>
+		</step>
 		
 		<step name="deal-creation" label="Новая заявка на выплату" hidden="true">
 			<display>
@@ -179,6 +198,7 @@
 			</display>
 			<choise>
 				<option label="Отменить" reuse="cancel-deal"/>
+                <option label="Новый получатель" reuse="to-casher-creation"/>
 			</choise>
 			<validate for="deal-creation-confirm">
 				<!--nonempty form="deal-blank-type"/-->
@@ -212,6 +232,10 @@
 			
 			<option name="cancel-deal" label="К сводной ведомости">
 				<command name="upp-clients">client-list</command>
+			</option>
+			
+			<option name="to-casher-creation" label="Добавить получателя">
+				<command name="upp-clients">casher-creation</command>
 			</option>
 			
 			<option name="confirm-deal-create" label="Сохранить">
