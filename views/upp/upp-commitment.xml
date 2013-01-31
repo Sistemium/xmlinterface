@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+
+<view-definition xmlns="http://unact.net/xml/xi" name="upp-commitment" label="Утверждение заявок">
+	
+    <view-schema> <form name="sysuser"> 
+		
+		<parameter name="name">
+			<init with="username"/>
+		</parameter>
+		
+		<field name="id"/>
+		
+		<form name="requests-to-commit" concept="upp-pay-request" is-set="true" page-size="15">
+			
+			<field name="id"/>
+			
+			<form name="client" concept="upp-client" constrain-parent="true">
+				<field name="id"/>
+				<field name="name" label="Клиент"/>
+			</form>
+			
+			<form name="casher" concept="upp-casher" >
+				<field name="id"/>
+				<field name="name" label="Получатель"/>
+			</form>
+			
+			<field name="is-committed" editable="true"/>
+			
+			<add-labeled-fields/>
+			
+			<where name="is-committed">0</where>
+			
+			<order-by name="date" dir="desc"/>
+			
+		</form>
+		
+    </form> </view-schema>
+	
+	<workflow>
+		
+		<step name="request-list" label="Заявки на утверждение">
+			<display>
+				
+				<grid form="requests-to-commit" hide-empty="true">
+					
+					<!--option reuse="commit"/-->
+					
+				</grid>
+				
+			</display>
+		</step>
+		
+		<reusables>
+			
+			<option name="commit" label="Утвердить">
+				<command name="deal-id" xpath-compute="xi:datum[@name='id']" />
+				<command name="upp-dealing">deal-details</command>
+			</option>
+			
+		</reusables>
+		
+	</workflow>
+	
+</view-definition>
