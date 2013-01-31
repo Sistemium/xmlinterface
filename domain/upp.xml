@@ -52,6 +52,7 @@
     <concept name="upp-casher">
         
         <select owner="dbo" sql-name="cashclients" />
+        <save owner="dbo" sql-name="cashclients" />
         
         <property name="id" key="true" type="int"/>
         <property name="name" label="Название"/>
