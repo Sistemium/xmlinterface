@@ -37,6 +37,11 @@
                 <field name="rate" editable="true"/>
             </form>
             
+            <form name="client-cashers" concept="upp-casher" is-set="true">
+                <field name="id" />
+                <field name="name" />
+            </form>
+            
             <form name="deal-blank" concept="upp-deal" new-only="true" build-blank="true" parent-sql-name="partner">
                 
                 <field name="xid"/>
@@ -63,6 +68,11 @@
                 
                 <field name="pay-request-comment" editable="true" label="Комментарий"/>
                 
+                <form name="upp-casher" choise="client-cashers" role="upp-casher" label="Получатель">
+                    <field name="id"/>
+                    <field name="name"/>
+                </form>
+                
             </form>
             
             <form name="month-balance" concept="upp-client-balance" is-set="true" page-size="5">
@@ -72,7 +82,7 @@
                 
             </form>
             
-            <form name="open-deals" concept="upp-deal" is-set="true" page-size="5" refreshable="true">
+            <form name="open-deals" concept="upp-deal" is-set="true" page-size="5" refreshable="true" deletable="true">
                 
                 <field name="id"/>
                 
@@ -162,6 +172,7 @@
 				<print form="client" field="name"/>
 				<!--input form="deal-blank-type" label="Тип сделки"/-->
                 <input form="client-rate" field="rate" label="Комиссия"/>
+                <input form="upp-casher"/>
 				<input form="deal-blank" field="usumm"/>
                 <print form="deal-blank" field="summ"/>
                 <input form="deal-blank" field="pay-request-comment"/>
@@ -182,6 +193,7 @@
 				<print form="deal-blank-client" field="name"/>
 				<!--print form="deal-blank-type" field="name" label="Тип сделки"/-->
 				<print form="deal-blank" field="*"/>
+                <print form="upp-casher" field="name" label="Получатель"/>
 			</display>
 			<choise>
 				<option label="Сохранить" reuse="confirm-deal-create"/>

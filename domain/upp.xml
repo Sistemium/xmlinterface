@@ -31,6 +31,7 @@
         <property name="ts" type="datetime" sql-name="ts" label="Дата обновления"/>
         
         <property name="pay-request-comment" sql-name="pay_request_comment" sql-compute="NULL"/>
+        <property name="upp-casher" sql-name="pay_request_cashclient" sql-compute="NULL"/>
         
         <role name="upp-client" actor="upp-client" sql-name="partner"/>
         <role name="upp-type" actor="upp-type" sql-name="type"/>
@@ -44,6 +45,18 @@
         
         <property name="id" key="true" type="int"/>
         <property name="name" label="Название"/>
+        
+    </concept>
+    
+    
+    <concept name="upp-casher">
+        
+        <select owner="dbo" sql-name="cashclients" />
+        
+        <property name="id" key="true" type="int"/>
+        <property name="name" label="Название"/>
+        
+        <role name="upp-client" actor="upp-client" sql-name="partner"/>
         
     </concept>
     
@@ -101,5 +114,23 @@
         
     </concept>
     
+    <concept name="upp-pay-request">
+        
+        <select owner="dbo" sql-name="pay_request"/>
+        <save owner="dbo" sql-name="pay_request"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid" sql-name="xid"/>
+        
+        <property name="date" type="datetime" sql-name="ddate" label="Дата"/>
+        <property name="summ" type="decimal" label="Сумма"/>
+        <property name="is-committed" type="boolean" sql-name="isaccepted" label="Утверждено?"/>
+        <property name="acceptor" label="Утвердил"/>        
+        <property name="info" label="Комментарий"/>
+        
+        <role name="upp-client" actor="upp-client" sql-name="partner"/>
+        <role name="upp-casher" actor="upp-casher" sql-name="cclient"/>
+        
+    </concept>
     
 </domain>
