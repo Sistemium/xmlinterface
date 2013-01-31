@@ -196,8 +196,6 @@
 
     <user name="sasha" admin="true" password-="1">
         <role ref="*"/>
-        <role ref="sales">1</role>
-        <role ref="it"><director of="department"/></role>
     </user>
     
     <user name="lesha" >
