@@ -29,6 +29,26 @@
 			
 		</form>
 		
+		<form name="deal" concept="upp-deal" deletable="true">
+			
+			<parameter name="deal-id" property="id" modifiable="true"/>
+			
+			<field name="xid" key="true"/>
+			
+			<form name="deal-type" concept="upp-type">
+				<field name="id"/>
+				<field name="name" label="Тип"/>
+			</form>
+			
+			<form name="deal-client" concept="upp-client" role="upp-client">
+				<field name="id"/>
+				<field name="name" label="Клиент"/>
+			</form>
+			
+			<add-labeled-fields/>
+			
+		</form>
+		
 		<form name="deals" concept="upp-deal" is-set="true" page-size="20">
 			
 			<field name="id"/>
@@ -46,24 +66,6 @@
 			</form>
 			
 			<order-by name="ts" dir="desc"/>
-			
-		</form>
-		
-		<form name="deal" concept="upp-deal">
-			
-			<parameter name="deal-id" property="id" modifiable="true"/>
-			
-			<form name="deal-type" concept="upp-type">
-				<field name="id"/>
-				<field name="name" label="Тип"/>
-			</form>
-			
-			<form name="deal-client" concept="upp-client" role="upp-client">
-				<field name="id"/>
-				<field name="name" label="Клиент"/>
-			</form>
-			
-			<add-labeled-fields/>
 			
 		</form>
 		
@@ -125,6 +127,7 @@
 			</display>
 			<choise>
 				<option reuse="to-deal-list"/>
+				<option reuse="delete-deal"/>
 			</choise>
 		</step>
 		
@@ -195,6 +198,12 @@
 				<command name="set-of-deals">refresh</command>
 				<command name="deal-blank">save</command>
 				<command name="upp-dealing">deal-list</command>
+			</option>
+			
+			<option name="delete-deal" label="Удалить">
+				<command name="set-of-deals">refresh</command>
+				<command name="deal">delete</command>
+				<command name="deal">save</command>
 			</option>
 			
 		</reusables>
