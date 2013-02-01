@@ -115,6 +115,34 @@
         
     </concept>
     
+    
+    <concept name="upp-tariff">
+        
+        <select owner="upp" sql-name="tariff" type="procedure">
+            <parameter name="date" type="date" sql-name="@date" />
+            <parameter name="upp-client" type="int" sql-name="@client" required="true"/>
+        </select>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        
+        <property name="ddateb" type="date" sql-name="ddateb"/>
+        <property name="ddatee" type="date" sql-name="ddatee"/>
+        
+        <property name="deal-rate" type="decimal" sql-name="dealrate" label="Ставка премии"/>
+        <property name="income-rate" type="decimal" sql-name="incomerate" label="От оборота"/>
+        <property name="terminal-rate" type="decimal" sql-name="terminalrate" label="За терминал"/>
+        
+        <property name="is-fullservice" type="boolean" sql-name="isfullservice" label="На полном обслуживании"/>
+        <property name="is-deal-rate-fixed" type="boolean" sql-name="isFixDealrate" label="Фиксированная ставка"/>
+        
+        <property name="ts" type="datetime" sql-name="ts"/>
+        
+        <role name="upp-client" actor="upp-client"/>
+        
+    </concept>
+    
+    
     <concept name="upp-pay-request">
         
         <select owner="dbo" sql-name="pay_request"/>
@@ -123,7 +151,7 @@
         <property name="id" type="int" key="true"/>
         <property name="xid" sql-name="xid"/>
         
-        <property name="date" type="datetime" sql-name="ddate" label="Дата"/>
+        <property name="date" type="date" sql-name="ddate" label="Дата"/>
         <property name="summ" type="decimal" label="Сумма"/>
         <property name="is-committed" type="boolean" sql-name="isaccepted" label="Утверждено?"/>
         <property name="acceptor" label="Утвердил"/>        
@@ -133,5 +161,6 @@
         <role name="upp-casher" actor="upp-casher" sql-name="cclient"/>
         
     </concept>
+    
     
 </domain>
