@@ -2,6 +2,8 @@
 
 <view-definition xmlns="http://unact.net/xml/xi" name="upp-dealing" label="Сделки">
 	
+	<access role="it"/>
+	
     <view-schema> <form name="sysuser"> 
 		
 		<parameter name="name">

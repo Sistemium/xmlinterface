@@ -61,7 +61,7 @@
                 </field>
                 
                 <field name="usumm" editable="true"/>
-                <field name="summ" modifiable="true">
+                <field name="summ" modifiable="true" sql-compute="0.0">
                     <xpath-compute>
                         xi:isnull(../xi:datum[@name='usumm'],0) * (
                             ancestor::*[@name='client']
@@ -173,8 +173,10 @@
                                 <columns>
                                     <column field="isumm"/>
                                     <column field="rsumm"/>
-                                    <column field="i1"/>
-                                    <column field="i2"/>
+                                    <column label="Основание">
+                                        <print field="i1"/>
+                                        <print field="i2"/>
+                                    </column>
                                 </columns>
                             </grid>
                             
