@@ -18,6 +18,21 @@
 			<field name="name" label="Клиент"/>
 			<add-labeled-fields/>
 			
+			<form name="detailed-requests-to-commit" concept="upp-pay-request" is-set="true" autosave="true">
+				
+				<field name="id"/>
+				
+				<field name="date"/>
+				<field name="is-committed" editable="true" autosave="true"/>
+				
+				<add-labeled-fields/>
+				
+				<where name="is-committed">0</where>
+				
+				<order-by name="date" dir="desc"/>
+				
+			</form>
+			
             <form name="month-balance" concept="upp-client-balance" is-set="true" page-size="10">
                 
                 <add-labeled-fields/>
@@ -27,27 +42,25 @@
 			
 		</form>
 		
-		<form name="requests-to-commit" concept="upp-pay-request" is-set="true" page-size="15">
+		<form name="client" concept="upp-client" is-set="true">
 			
 			<field name="id"/>
+			<field name="name" label="Клиент"/>
 			
-			<form name="client" concept="upp-client" constrain-parent="true">
+			<form name="requests-to-commit" concept="upp-pay-request" is-set="true" constrain-parent="true">
+				
 				<field name="id"/>
-				<field name="name" label="Клиент"/>
+				
+				<field name="date"/>
+				<field name="is-committed" editable="true"/>
+				
+				<add-labeled-fields/>
+				
+				<where name="is-committed">0</where>
+				
+				<order-by name="date" dir="desc"/>
+				
 			</form>
-			
-			<!--form name="casher" concept="upp-casher" >
-				<field name="id"/>
-				<field name="name" label="Получатель"/>
-			</form-->
-			
-			<field name="is-committed" editable="true"/>
-			
-			<add-labeled-fields/>
-			
-			<where name="is-committed">0</where>
-			
-			<order-by name="date" dir="desc"/>
 			
 		</form>
 		
@@ -60,6 +73,10 @@
 				
 				<grid form="requests-to-commit" hide-empty="true">
 					
+					<group>
+						<by form="client" field="name"/>
+					</group>
+					
 					<option reuse="detail-client"/>
 					
 				</grid>
@@ -67,11 +84,12 @@
 			</display>
 		</step>
 		
-		<step name="client-details" label="Детализация по клиенту">
-			<when form="detailed-client" field="-"/>
+		<step name="client-details" label="Детализация по клиенту" hidden="true">
 			<display>
 				
 				<print form="detailed-client" field="*"/>
+				
+				<grid form="detailed-requests-to-commit" label="На утверждении"/>
 				
 				<grid form="month-balance" label="Баланс">
 					<group>
@@ -88,13 +106,22 @@
 				</grid>
 				
 			</display>
+			<choise>
+				<option reuse="back-to-requests"/>
+			</choise>
 		</step>
 		
 		<reusables>
 			
 			<option name="detail-client" label="...">
-				<command name="client-to-detail-id" xpath-compute="xi:data[@name='client']/xi:datum[@name='id']" />
+				<command name="client-to-detail-id" xpath-compute="ancestor::xi:data[@name='client']/xi:datum[@name='id']" />
 				<command name="upp-commitment">client-details</command>
+				<command name="set-of-client">refresh</command>
+			</option>
+			
+			<option name="back-to-requests" label="К списку всех заявок">
+				<command name="upp-commitment">request-list</command>
+				<command name="set-of-client">refresh</command>
 			</option>
 			
 		</reusables>
