@@ -139,6 +139,7 @@
                 
                 <xsl:apply-templates select="$context/*">
                     <xsl:with-param name="data" select="current()"/>
+                    <xsl:with-param name="option-value" select="current()/@id"/>
                 </xsl:apply-templates>
                 
             </td>
@@ -281,6 +282,7 @@
                     
                     <xsl:apply-templates select="*[not($datum)]">
                         <xsl:with-param name="data" select="$data"/>
+                        <xsl:with-param name="option-value" select="$data/@id"/>
                     </xsl:apply-templates>
                     
                 </td>
