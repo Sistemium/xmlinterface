@@ -137,7 +137,7 @@
                     </span>
                 </xsl:if>
                 
-                <xsl:apply-templates select="$context/xi:print">
+                <xsl:apply-templates select="$context/*">
                     <xsl:with-param name="data" select="current()"/>
                 </xsl:apply-templates>
                 

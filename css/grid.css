@@ -49,3 +49,8 @@ td .editable input {position:relative; left:-3px;}
 tr.group div {
 	display: inline;
 }
+
+tr.group td .option {
+	position:relative;
+	top: -4px;
+}
