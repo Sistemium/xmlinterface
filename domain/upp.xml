@@ -146,7 +146,7 @@
     <concept name="upp-pay-request">
         
         <select owner="dbo" sql-name="pay_request"/>
-        <save owner="dbo" sql-name="pay_request"/>
+        <save owner="upp" sql-name="pay_request"/>
         
         <property name="id" type="int" key="true"/>
         <property name="xid" sql-name="xid"/>
