@@ -260,7 +260,7 @@
 		
 		<reusables>
 			
-            <option name="to-deal-creation" label="Заявка на выплату">
+            <option name="to-deal-creation" label="Новая заявка на выплату">
                 <command name="upp-clients">deal-creation</command>
             </option>
             
