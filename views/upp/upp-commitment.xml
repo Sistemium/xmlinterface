@@ -24,27 +24,6 @@
                 <order-by name="date" dir="desc"/>
                 
             </form>
-            
-            <form name="open-deals" concept="upp-deal" is-set="true" page-size="10" refreshable="true" deletable="true">
-                
-                <field name="id"/>
-                
-                <field name="rem-summ" totals="sum"/>
-                <field name="rem-usumm" totals="sum"/>
-                
-                <add-labeled-fields/>
-                
-                <form name="open-deal-type" concept="upp-type">
-                    <field name="id"/>
-                    <field name="name" label="Тип"/>
-                </form>
-                
-                <order-by name="date" dir="desc"/>
-                
-                <where name="is-final">0</where>
-                <where name="rem"><not>0</not></where>
-                
-            </form>
 			
 		</form>
 		
@@ -107,8 +86,6 @@
 						<column field="i2"/>
 					</columns>
 				</grid>
-				
-				<grid form="open-deals" label="Незавершенные сделки"/>
 				
 			</display>
 		</step>
