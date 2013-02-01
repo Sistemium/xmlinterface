@@ -9,7 +9,7 @@ create global temporary table if not exists xmlgate.query (
     id int default autoincrement,
     
     request text,
-    response text,
+    response xml,
     username varchar (32),
     conn varchar (32),
     ip varchar (25),
@@ -23,6 +23,21 @@ create global temporary table if not exists xmlgate.query (
     primary key (id)
     
 ) not transactional share by all;
+
+
+
+create or replace procedure xmlgate.stats ()
+begin
+
+    select hour (ts) h, count(*) cnt, count(distinct username) username_cnt
+    from xmlgate.query
+    where ts > dateadd(hour, -24, now())
+    group by h
+    order by h desc
+
+end;
+
+
 
 create or replace function dba.xml_query (in @request xml default null)
 returns xml
@@ -51,7 +66,7 @@ begin
         
         select query_name, if show_sql is not null then 1 endif, sql_raw, username, ip, path, async
             into @query_name, @show_sql, @sql, @username, @ip, @path, @async
-            from openxml(@request, '/*') with (
+            from openxml(@request, '/ *') with (
                 query_name varchar(128) '@name',
                 show_sql text '@show-sql',
                 sql_raw text '*:sql',
@@ -85,13 +100,24 @@ begin
         end if;
         
         -- async responses
-        set @result = xmlconcat(@result,
-                                (select xmlagg(xmlelement('result',
-                                        xmlattributes(q.xid as "of", if q.response is null then  'true' else null endif as "not-ready" ),
-                                        cast(q.response as xml)))
-                                   from xmlgate.query q join (select xid
-                                                                from openxml(@request, '/*/*:getResult')
-                                                                     with(xid uniqueidentifier '@of'))  as t on q.xid = t.xid));
+        set @result = xmlconcat(
+            @result,
+            (select
+                xmlagg(xmlelement(
+                    'result',
+                    xmlattributes(
+                        q.xid as "of",
+                        if q.response is null then  'true' else null endif as "not-ready"
+                    ),
+                    cast(q.response as xml)
+                ))
+                from xmlgate.query q join (
+                    select xid
+                    from openxml(@request, '/ */ *:getResult')
+                        with(xid uniqueidentifier '@of')
+                )  as t on q.xid = t.xid
+            )
+        );
         
         
         
