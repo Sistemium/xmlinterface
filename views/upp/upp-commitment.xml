@@ -18,12 +18,15 @@
 			<field name="name" label="Клиент"/>
 			<add-labeled-fields/>
 			
-			<form name="detailed-requests-to-commit" concept="upp-pay-request" is-set="true" autosave="true">
+			<form name="detailed-requests-to-commit" concept="upp-pay-request"
+				is-set="true" deletable="true"
+			>
 				
 				<field name="id"/>
 				
 				<field name="date"/>
 				<field name="is-committed" editable="true" autosave="true"/>
+				<field name="summ" editable="true" autosave="true"/>
 				
 				<add-labeled-fields/>
 				
