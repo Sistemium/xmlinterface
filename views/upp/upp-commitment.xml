@@ -77,10 +77,10 @@
 				<grid form="requests-to-commit" hide-empty="true">
 					
 					<group>
-						<by form="client" field="name"/>
+						<by form="client" field="name">
+							<option reuse="detail-client"/>
+						</by>
 					</group>
-					
-					<option reuse="detail-client"/>
 					
 				</grid>
 				
@@ -119,7 +119,6 @@
 			<option name="detail-client" label="...">
 				<command name="client-to-detail-id" xpath-compute="ancestor::xi:data[@name='client']/xi:datum[@name='id']" />
 				<command name="upp-commitment">client-details</command>
-				<command name="set-of-client">refresh</command>
 			</option>
 			
 			<option name="back-to-requests" label="К списку всех заявок">
