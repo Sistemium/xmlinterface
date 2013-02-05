@@ -87,6 +87,26 @@
 			
 		</form>
 		
+		<form name="committed-requests" concept="upp-pay-request" is-set="true" page-size="10">
+			
+			<field name="id"/>
+			
+			<form name="committed-request-client" concept="upp-client" role="upp-client">
+				<field name="name" label="client"/>
+				<field name="id"/>
+			</form>
+			
+			<field name="date"/>
+			<field name="is-committed" editable="true"/>
+			
+			<add-labeled-fields/>
+			
+			<!--where name="is-committed">1</where!-->
+			
+			<order-by name="date" dir="desc"/>
+			
+		</form>
+		
     </form> </view-schema>
 	
 	<workflow>
@@ -100,6 +120,20 @@
 						<by form="client" field="name">
 							<option reuse="detail-client"/>
 						</by>
+					</group>
+					
+				</grid>
+				
+			</display>
+		</step>
+		
+		<step name="committed-request-list" label="Утвержденные заявки">
+			<display>
+				
+				<grid form="committed-requests" hide-empty="true">
+					
+					<group>
+						<by form="committed-requests" field="date"/>
 					</group>
 					
 				</grid>
