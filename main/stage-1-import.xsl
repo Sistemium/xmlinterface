@@ -212,6 +212,10 @@
             </xsl:for-each>
         </xsl:if>
         
+        <xsl:if test="@chosen and $command[text()='unchoose']">
+           <xsl:attribute name="unchoose-this">true</xsl:attribute>
+        </xsl:if>
+        
     </xsl:template>
     
     <xsl:template match="
