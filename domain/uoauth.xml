@@ -107,7 +107,7 @@
         
         <property name="xid"/>
         
-        <property name="data" label="Идентификатор" sql-name="data"/>
+        <property name="data" label="Параметр" sql-name="data"/>
         
         <property name="ts" type="datetime" label="Последнее изменение"/>
         

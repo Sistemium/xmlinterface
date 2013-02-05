@@ -48,7 +48,7 @@
                     </tr>
                 </xsl:for-each>
                 <tr class="header">
-                    <xsl:if test="xi:rows//xi:option | @deletable">
+                    <xsl:if test="xi:rows/xi:when/xi:option | xi:rows/xi:option | @deletable[.='true']">
                         <th class="options">
                             <xsl:apply-templates select="xi:option"/>
                         </th>
