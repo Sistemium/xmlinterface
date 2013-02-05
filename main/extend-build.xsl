@@ -154,6 +154,8 @@
 		</set>
 	</xsl:template>
 
+	<xsl:template match="xi:datum[key('id',@ref)/@local-data]" mode="build-set"/>
+	
 	<xsl:template match="xi:datum" mode="build-set">
         <xsl:param name="name" select="@name"/>
         <xsl:param name="sql-name" select="@sql-name"/>
