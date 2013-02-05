@@ -60,6 +60,15 @@
         
     </xsl:template>
     
+    <xsl:template mode="build-target" match="
+        xi:when [not(
+            ancestor::xi:view/xi:view-data
+            //xi:datum [@ref=current()/@ref]
+            /text() [not(.='0' and key('id',../@ref)/@type='boolean')]
+        )]
+    ">
+        <xsl:comment>xi:when removed</xsl:comment>
+    </xsl:template>
 
     <xsl:template mode="build-target" match="xi:command [@ref = ancestor::xi:view/xi:view-data//xi:data[@choise]/@ref]">
         
@@ -70,7 +79,7 @@
             key('id', $command)
             , self::*[not(xi:xpath-compute)]/@xpath-compute
             | xi:xpath-compute
-        )"/>
+        ) | self::*[not(xi:xpath-compute|@xpath-compute)]"/>
         <xsl:call-template name="build-target">
                 <xsl:with-param name="target-id" select="ancestor::xi:view/xi:view-data//xi:data[@choise][@ref=current()/@ref]/@id"/>
                 <xsl:with-param name="payload" select="$payload"/>
