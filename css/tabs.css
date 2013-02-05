@@ -55,3 +55,11 @@
 .ui-tabs .ui-tabs-panel.grid {
 	padding: 0;
 }
+
+.tabs .ui-tabs-nav li.empty a{
+	color: silver;
+}
+
+.tabs .ui-tabs-nav li.empty.ui-state-active a {
+	color: #404040;
+}

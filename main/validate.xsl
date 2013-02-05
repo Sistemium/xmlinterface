@@ -6,7 +6,21 @@
 >
 
     <xsl:template match="xi:when[@ref]" mode="validate">
-        <xsl:if test="ancestor::xi:view/xi:view-data//xi:datum[@ref=current()/@ref]/text()">
+        <xsl:if test="
+            ancestor::xi:view/xi:view-data
+            //xi:datum [@ref=current()/@ref]
+            /text() [not(.='0' and key('id',../@ref)/@type='boolean')]
+        ">
+            <xsl:apply-templates select="*" mode="validate"/>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="xi:not-when[@ref]" mode="validate">
+        <xsl:if test="not(
+            ancestor::xi:view/xi:view-data
+            //xi:datum [@ref=current()/@ref]
+            [text() [key('id',../@ref)/@type='boolean' and . = '1'] or (not(text()) and key('id',@ref)/@type='boolean')]
+        )">
             <xsl:apply-templates select="*" mode="validate"/>
         </xsl:if>
     </xsl:template>
