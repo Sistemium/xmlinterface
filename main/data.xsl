@@ -74,7 +74,7 @@
     <!-- пришел ответ на запрос, но данных нет -->
     <xsl:template match="
         xi:view-data//*[xi:response/xi:result-set[not(*[*])]]
-        | xi:view-data//*[@refresh-this][xi:response/xi:exception/xi:not-found]
+        | xi:view-data//*[@refresh-this='true'][xi:response/xi:exception/xi:not-found]
     ">
         <xsl:copy>
             <xsl:apply-templates select="@*|xi:response/@ts"/>
