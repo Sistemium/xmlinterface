@@ -179,6 +179,7 @@
         <property name="xid" />
         
         <role name="upp-client" actor="upp-client" sql-name="profitpartner"/>
+        <role name="catterminal" actor="catterminal" sql-name="pps_terminal"/>
         
     </concept>
     

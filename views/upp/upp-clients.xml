@@ -105,6 +105,10 @@
                 <order-by name="ts" dir="desc"/>
                 <field name="summ" totals="sum"/>
                 
+                <form name="catterminal">
+                    <field name="name" label="Терминал"/>
+                </form>
+                
             </form>
             
             <form name="month-balance" concept="upp-client-balance" is-set="true" page-size="5">
