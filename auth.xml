@@ -48,6 +48,7 @@
             <role name="terminal-technik"/>
             <role name="ucc"/>
             <role name="upp"/>
+            <role name="upp.commitment"/>
         </role>
     </roles>
 

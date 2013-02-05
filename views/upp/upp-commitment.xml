@@ -2,6 +2,8 @@
 
 <view-definition xmlns="http://unact.net/xml/xi" name="upp-commitment" label="Утверждение заявок">
 	
+	<access role="upp.commitment"/>
+	
     <view-schema> <form name="sysuser"> 
 		
 		<parameter name="name">
@@ -16,7 +18,12 @@
 			
 			<field name="id"/>
 			<field name="name" label="Клиент"/>
-			<add-labeled-fields/>
+            <field name="total-available" type="decimal" sql-compute="0.0" label="Доступный остаток">
+                <xpath-compute>
+                    ../xi:data [@name='client-balance'] /xi:datum [@name='balance']
+                    - sum(../xi:set-of /xi:data [@name='client-suspicious'] /xi:datum [@name='summ'])
+                </xpath-compute>
+            </field>
 			
 			<form name="detailed-requests-to-commit" concept="upp-pay-request"
 				is-set="true" deletable="true"
@@ -36,11 +43,24 @@
 				
 			</form>
 			
+            <form name="client-balance" concept="upp-client-balance" page-size="1">
+                
+                <field name="balance"/>
+                <order-by name="date" dir="desc"/>
+                
+            </form>
+			
             <form name="month-balance" concept="upp-client-balance" is-set="true" page-size="10">
                 
                 <add-labeled-fields/>
                 <order-by name="date" dir="desc"/>
                 
+            </form>
+			
+            <form name="client-suspicious" concept="upp-suspicious-encashment">
+                
+                <field name="summ" aggregate="sum" label="Подозрительные инкассации"/>
+				
             </form>
 			
 		</form>
@@ -88,9 +108,13 @@
 		</step>
 		
 		<step name="client-details" label="Детализация по клиенту" hidden="true">
+			
 			<display>
 				
-				<print form="detailed-client" field="*"/>
+				<print form="detailed-client" field="name"/>
+				<print form="client-balance" field="*"/>
+				<print form="client-suspicious" field="*"/>
+				<print form="detailed-client" field="total-available"/>
 				
 				<grid form="detailed-requests-to-commit" label="На утверждении"/>
 				
@@ -109,9 +133,11 @@
 				</grid>
 				
 			</display>
+			
 			<choise>
 				<option reuse="back-to-requests"/>
 			</choise>
+			
 		</step>
 		
 		<reusables>
