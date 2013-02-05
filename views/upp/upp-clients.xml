@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 
-<view-definition xmlns="http://unact.net/xml/xi" name="upp-clients" label="Заявки за выплаты">
+<view-definition xmlns="http://unact.net/xml/xi" name="upp-clients" label="Заявки на выплаты">
 	
     <view-schema> <form name="sysuser"> 
 		
@@ -260,6 +260,7 @@
                 <region class="hbox">
                     <region>
                         <print form="client" field="name" class="title"/>
+                        <print form="client-balance" field="balance"/>
                         <print form="client" field="total-available"/>
                         <input form="deal-blank" field="is-delivery"/>
                         <not-when field="is-delivery">
