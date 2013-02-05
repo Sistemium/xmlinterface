@@ -291,7 +291,10 @@
 				<print form="deal-blank-client" field="name"/>
 				<!--print form="deal-blank-type" field="name" label="Тип сделки"/-->
 				<print form="deal-blank" field="*"/>
-                <print form="upp-casher" field="name" label="Получатель"/>
+                <print form="deal-blank" field="is-delivery"/>
+                <not-when field="is-delivery">
+                    <print form="upp-casher" field="name" label="Получатель"/>
+                </not-when>
 			</display>
 			<choise>
 				<option label="Сохранить" reuse="confirm-deal-create"/>
@@ -324,6 +327,9 @@
 				<command name="set-of-client-pay-requests">refresh</command>
 				<command name="deal-blank">save</command>
 				<command name="upp-clients">client-details</command>
+                <when field="is-delivery">
+                    <command form="upp-casher">unchoose</command>
+                </when>
 			</option>
 			
 		</reusables>
