@@ -161,11 +161,16 @@
                 </xsl:copy>
             </xsl:when>
             
-            <xsl:when test="key('id',@ref)/@label">
-                <text>
-                   <xsl:apply-templates select="key('id',@ref)" mode="label"/>
-                   <xsl:text> отcутствуют</xsl:text>
-                </text>
+            <xsl:when test="@label | key('id',@ref)/@label">
+                <region id="{@id}" class="empty">
+                    <xsl:attribute name="label">
+                        <xsl:value-of select="@label | key('id',self::*[not(@label)]/@ref)" />
+                    </xsl:attribute>
+                    <text>
+                        <xsl:value-of select="@label | key('id',self::*[not(@label)]/@ref)" />
+                        <xsl:text> отcутствуют</xsl:text>
+                    </text>
+                </region>
             </xsl:when>
             
             <xsl:otherwise>
@@ -249,11 +254,36 @@
     </xsl:template>
 
     <xsl:template match="xi:display//xi:when[@ref]" mode="build-dialogue">
-        <xsl:if test="ancestor::xi:view/xi:view-data//xi:datum[@ref=current()/@ref]/text()">
+        <xsl:apply-templates mode="display-when" select="
+            ancestor::xi:view/xi:view-data//xi:datum[@ref=current()/@ref]
+        ">
+            <xsl:with-param name="context" select="."/>
+        </xsl:apply-templates>
+    </xsl:template>
+    
+    <xsl:template mode="display-when" match="*">
+        <xsl:comment>display-when: no match</xsl:comment>
+    </xsl:template>
+    
+    <xsl:template mode="display-when" match="*[text()]">
+        <xsl:param name="context" />
+        <xsl:apply-templates select="$context/*" mode="build-dialogue"/>
+    </xsl:template>
+
+    <xsl:template mode="display-when" match="*[key('id',@ref)/@type='boolean'][text()='0']">
+        <xsl:comment>display-when: matches 0 bool</xsl:comment>
+    </xsl:template>
+
+    <xsl:template match="xi:display//xi:not-when[@ref]" mode="build-dialogue">
+        <xsl:if test="not(
+            ancestor::xi:view/xi:view-data
+            //xi:datum [@ref=current()/@ref]
+            [text() [key('id',../@ref)/@type='boolean' and . = '1'] or (not(text()) and key('id',@ref)/@type='boolean')]
+        )">
             <xsl:apply-templates select="*" mode="build-dialogue"/>
         </xsl:if>
     </xsl:template>
-
+    
     <xsl:template match="xi:display//* | xi:navigate" mode="build-dialogue">
         
         <xsl:param name="top" select="ancestor::xi:view/xi:view-data/xi:data/@id"/>

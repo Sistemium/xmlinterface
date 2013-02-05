@@ -54,6 +54,7 @@
         <ul>
             <xsl:for-each select="*[@id]">
                 <li>
+                    <xsl:copy-of select="@class"/>
                     <a href="#{@id}">
                         <xsl:choose>
                             <xsl:when test="@label">
