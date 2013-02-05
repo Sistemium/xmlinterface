@@ -163,4 +163,23 @@
     </concept>
     
     
+    <concept name="upp-suspicious-encashment">
+        
+        <select owner="upp" sql-name="suspicious_encashment"/>
+        
+        <property name="id" key="true" type="int" sql-name="incassid"/>
+        
+        <property name="date" type="date" sql-name="ddate" label="Дата"/>
+        <property name="info" type="string" sql-name="info" label="Пояснение"/>
+        <property name="status" type="boolean" sql-name="status" label="Закрыто"/>
+        <property name="summ" type="decimal" sql-name="summ" label="Сумма"/>
+        <property name="termsumm" type="int" sql-name="termsumm"/>
+        
+        <property name="ts" type="datetime" />
+        <property name="xid" />
+        
+        <role name="upp-client" actor="upp-client" sql-name="profitpartner"/>
+        
+    </concept>
+    
 </domain>
