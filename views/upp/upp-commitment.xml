@@ -31,9 +31,10 @@
 				
 				<field name="id"/>
 				
-				<field name="date"/>
-				<field name="is-committed" editable="true" autosave="true"/>
-				<field name="summ" editable="true" autosave="true"/>
+				<field name="date" editable="true"/>
+				<field name="is-committed" editable="true"/>
+				<field name="summ" editable="true"/>
+				<field name="info" editable="true"/>
 				
 				<add-labeled-fields/>
 				
@@ -70,12 +71,12 @@
 			<field name="id"/>
 			<field name="name" label="Клиент"/>
 			
-			<form name="requests-to-commit" concept="upp-pay-request" is-set="true" constrain-parent="true">
+			<form name="requests-to-commit" concept="upp-pay-request"
+				toggle-edit-off="true" is-set="true" constrain-parent="true">
 				
 				<field name="id"/>
 				
 				<field name="date"/>
-				<field name="is-committed" editable="true"/>
 				
 				<add-labeled-fields/>
 				
@@ -87,17 +88,20 @@
 			
 		</form>
 		
-		<form name="committed-requests" concept="upp-pay-request" is-set="true" page-size="10">
+		<form name="pay-requests" concept="upp-pay-request"
+			toggle-edit-off="true"
+			is-set="true" page-size="10" preload-="true">
 			
 			<field name="id"/>
 			
-			<form name="committed-request-client" concept="upp-client" role="upp-client">
-				<field name="name" label="client"/>
+			<form name="pay-requests-client" concept="upp-client" role="upp-client">
+				<field name="name" label="Клиент"/>
 				<field name="id"/>
 			</form>
 			
-			<field name="date"/>
+			<field name="date" editable="true"/>
 			<field name="is-committed" editable="true"/>
+			<field name="info" editable="true"/>
 			
 			<add-labeled-fields/>
 			
@@ -111,7 +115,7 @@
 	
 	<workflow>
 		
-		<step name="request-list" label="Заявки на утверждение">
+		<step name="request-list" label="Заявки на утверждении" to-label="К заявкам на утверждении">
 			<display>
 				
 				<grid form="requests-to-commit" hide-empty="true">
@@ -127,13 +131,20 @@
 			</display>
 		</step>
 		
-		<step name="committed-request-list" label="Утвержденные заявки">
+		<step name="committed-request-list" label="Все заявки" to-label="К списку всех заявок">
+			
+			<on>
+				<activation>
+					<command name="set-of-pay-requests">refresh</command>
+				</activation>
+			</on>
+			
 			<display>
 				
-				<grid form="committed-requests" hide-empty="true">
+				<grid form="pay-requests" hide-empty="true" label="Заявки на выплаты">
 					
 					<group>
-						<by form="committed-requests" field="date"/>
+						<by form="pay-requests-client" field="name"/>
 					</group>
 					
 				</grid>
@@ -181,7 +192,7 @@
 				<command name="upp-commitment">client-details</command>
 			</option>
 			
-			<option name="back-to-requests" label="К списку всех заявок">
+			<option name="back-to-requests" label="Ко всем заявкам на утверждении">
 				<command name="upp-commitment">request-list</command>
 				<command name="set-of-client">refresh</command>
 			</option>
