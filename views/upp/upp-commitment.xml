@@ -156,26 +156,30 @@
 			
 			<display>
 				
-				<print form="detailed-client" field="name"/>
-				<print form="client-balance" field="*"/>
-				<print form="client-suspicious" field="*"/>
-				<print form="detailed-client" field="total-available"/>
+				<region class="block">
+					<print form="detailed-client" field="name"/>
+					<print form="client-balance" field="*"/>
+					<print form="client-suspicious" field="*"/>
+					<print form="detailed-client" field="total-available"/>
+					
+					<grid form="detailed-requests-to-commit" label="На утверждении"/>
+				</region>
 				
-				<grid form="detailed-requests-to-commit" label="На утверждении"/>
-				
-				<grid form="month-balance" label="Баланс">
-					<group>
-						<by field="date" form="month-balance">
-							<print field="balance" form="month-balance"/>
-						</by>
-					</group>
-					<columns>
-						<column field="isumm"/>
-						<column field="rsumm"/>
-						<column field="i1"/>
-						<column field="i2"/>
-					</columns>
-				</grid>
+				<region class="block">
+					<grid form="month-balance" label="Баланс">
+						<group>
+							<by field="date" form="month-balance">
+								<print field="balance" form="month-balance"/>
+							</by>
+						</group>
+						<columns>
+							<column field="isumm"/>
+							<column field="rsumm"/>
+							<column field="i1"/>
+							<column field="i2"/>
+						</columns>
+					</grid>
+				</region>
 				
 			</display>
 			
