@@ -8,9 +8,7 @@
 			<init with="username"/>
 		</parameter>
 		
-		<parameter name="date">
-			<init with="today"/>
-		</parameter>
+		<field name="date" editable="true" type="date" label="Дата" sql-compute="today()" local-data-="true"/>
         
 		<field name="id"/>
 		
@@ -76,6 +74,8 @@
                     <field name="id"/>
                     <field name="name"/>
                 </form>
+                
+                <join name="sysuser" field="date" sql-name="ddate"/>
                 
             </form>
             
@@ -268,7 +268,7 @@
                         </not-when>
                     </region>
                     <region>
-                        <!--input form="deal-blank-type" label="Тип сделки"/-->
+                        <input form="sysuser" field="date"/>
                         <input form="client-rate" field="rate" label="Комиссия"/>
                         <input form="deal-blank" field="usumm" label="Сумма к выдаче"/>
                         <print form="deal-blank" field="summ"/>
