@@ -78,8 +78,13 @@
           mode="build-update"
 		  name="data-build-update"
     >
-		<xsl:variable name="delete-null" select="xi:datum[(@modified='erase' or (key('id',@ref)/@type='int' and text()='0')) and key('id',@ref)/@when-null-then-delete]"/>
-						
+		<xsl:variable name="delete-null" select="
+			xi:datum [
+				(@modified='erase' or (key('id',@ref)/@type='int' and text()='0'))
+				and key('id',@ref)/@when-null-then-delete
+			]
+		"/>
+		
 		<data-update>
 			<xsl:variable name="this" select="."/>
 			<xsl:variable name="concept" select="key('id',current()/@ref)/@concept"/>
@@ -119,10 +124,14 @@
 				"/>
 				
 				<xsl:for-each select="key('id',self::*[@is-new]/@ref)/xi:join">
-					<xsl:apply-templates select="$this/ancestor::xi:data[@name=current()/@name][not(current()/@field)]
-						|$this/ancestor::xi:data[@name=current()/@name]
-						/xi:datum[@name=current()/@field][not(following-sibling::xi:datum[@name=current()/@field])]
-						" mode="build-set">
+					<xsl:apply-templates mode="build-set" select="
+						$this/ancestor::xi:data
+							[@name=current()/@name] [not(current()/@field)]
+						| $this/ancestor::xi:data
+							[@name=current()/@name]
+							/xi:datum [@name=current()/@field]
+								[not(following-sibling::xi:datum[@name=current()/@field])]
+					">
 						<xsl:with-param name="sql-name" select="@sql-name"/>
 					</xsl:apply-templates>
 				</xsl:for-each>
