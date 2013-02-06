@@ -47,7 +47,7 @@
     <xsl:template match="xi:response[not(@ts) and not(xi:sql)]"/>
     <xsl:template match="@unchoose-this"/>
 
-    <xsl:template match="xi:datum[key('id',@ref)/@local-data]/@modified"/>
+    <xsl:template match="xi:datum[key('id',@ref)[@local-data|@do-not-persist]]/@modified"/>
     
     <xsl:template match="xi:view-data//*[@toggle-edit-on]/xi:datum/@editable-off">
       <xsl:attribute name="editable">on</xsl:attribute>
