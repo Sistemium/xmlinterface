@@ -8,7 +8,9 @@
 			<init with="username"/>
 		</parameter>
 		
-		<field name="date" editable="true" type="date" label="Дата" sql-compute="today()" local-data-="true"/>
+		<field name="date" editable="true" type="date" label="Дата" sql-compute="null" do-not-persist="true">
+            <init with="today"/>
+        </field>
         
 		<field name="id"/>
 		
