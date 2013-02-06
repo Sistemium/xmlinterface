@@ -134,7 +134,7 @@
     </xsl:template>
 
     <xsl:template match="xi:step" mode="build-option">
-        <xsl:param name="label" select="@label"/>
+        <xsl:param name="label" select="@label[not(../@to-label)]|@to-label"/>
         <option name="{@name}" label="{$label}"/>
     </xsl:template>
 
