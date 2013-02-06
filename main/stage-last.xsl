@@ -46,6 +46,8 @@
     <xsl:template match="xi:data[descendant::xi:datum[@modified]]/xi:response[not(@ts)]"/>
     <xsl:template match="xi:response[not(@ts) and not(xi:sql)]"/>
     <xsl:template match="@unchoose-this"/>
+
+    <xsl:template match="xi:datum[key('id',@ref)/@local-data]/@modified"/>
     
     <xsl:template match="xi:view-data//*[@toggle-edit-on]/xi:datum/@editable-off">
       <xsl:attribute name="editable">on</xsl:attribute>
@@ -118,7 +120,9 @@
         <xsl:for-each select="ancestor::xi:view">
             <xsl:if test="
                 xi:workflow [descendant::xi:command[@name='save']]
-                | key('id',xi:dialogue/@current-step)/xi:choise/xi:option[xi:command='save']
+                | xi:workflow [descendant::xi:command[text()='save']]
+                    [key('id',current()/xi:dialogue/@current-step)/xi:validate]
+                | key('id',xi:dialogue/@current-step) [descendant::xi:command[text()='save']]
             ">
                 <xsl:attribute name="disabled">true</xsl:attribute>
             </xsl:if>
