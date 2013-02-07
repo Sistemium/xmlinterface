@@ -38,6 +38,45 @@
             
             <add-labeled-fields/>
             
+            <form name="ucc-account-expense-blank" concept="ucc-expense" label="Новый расход"
+                parent-sql-name="client" new-only="true" build-blank="true"
+            >
+                
+                <field name="xid"/>
+                
+                <field name="date" editable="true">
+                    <init with="today"/>
+                </field>
+                
+                <field name="summ" editable="true"/>
+                
+                <form name="ucc-account-expense-bank-account"
+                      concept="ucc-bank-account"
+                      choise="ucc-account-bank-account"
+                      choise-label="account-number"
+                      role="ucc-bank-account">
+                    <field name="id"/>
+                    <field name="name"/>
+                </form>
+                
+            </form>
+            
+            <form name="ucc-account-blocked" concept="ucc-expense">
+                
+                <field name="summ" aggregate="sum" label="Заблокировано средств"/>
+                <where name="isFinal">
+                    <not>1</not>
+                </where>
+                
+            </form>
+            
+            <field name="funds-available" type="decimal" sql-compute="0.0" label="Доступно средств">
+                <xpath-compute>
+                    - xi:isnull(../xi:data[@name='ucc-account-blocked']/xi:datum[@name='summ'],0)
+                    + ../xi:datum[@name='funds']
+                </xpath-compute>
+            </field>
+            
             <form name="ucc-account-income-blank" concept="ucc-income" label="Новый приход на счет"
                 parent-sql-name="client" new-only="true" build-blank="true"
             >
@@ -105,6 +144,7 @@
                 deletable="true"
             >
                 <add-labeled-fields/>
+                <field name="id"/>
                 <field name="xid"/>
                 <order-by name="ts" dir="desc"/>
                 <form name="ucc-bank-account-agent" concept="ucc-agent">
@@ -163,6 +203,7 @@
                         
                         <region>
                             <print form="ucc-account-details" field="*"/>
+                            <print form="ucc-account-blocked" field="*"/>
                         </region>
                         
                         <region class="tabs">
@@ -195,6 +236,7 @@
                 <option reuse="to-index"/>
                 <option reuse="create-bank-account"/>
                 <option reuse="create-income"/>
+                <option reuse="create-expense"/>
             </choise>
             
         </step>
@@ -264,6 +306,29 @@
             
         </step>
         
+        <step name="create-expense-page" hidden="true" label="Новый расход">
+            
+            <display>
+                <region>
+                    <print form="ucc-account-details" field="name" label="На счет" class="label"/>
+                    <input form="ucc-account-expense-bank-account" label="Реквизиты"/>
+                    <input form="ucc-account-expense-blank" field="*"/>
+                </region>
+            </display>
+            
+            <choise>
+                <option label="Сохранить" reuse="to-detail">
+                    <command name="ucc-account-expense-blank">save</command>
+                    <command name="set-of-ucc-account-expense">refresh</command>
+                    <command name="ucc-account-blocked">refresh</command>
+                </option>
+                <option reuse="to-detail">
+                    <command name="ucc-account-expense-blank">refresh</command>
+                </option>
+            </choise>
+            
+        </step>
+        
         <reusables>
             
             <option name="create-account" label="Добавить счет">
@@ -279,6 +344,11 @@
             <option name="create-income" label="Новый приход">
                 <command name="ucc-accounting">create-income-page</command>
                 <command name="ucc-account-income-blank">refresh</command>
+            </option>
+            
+            <option name="create-expense" label="Новый расход">
+                <command name="ucc-accounting">create-expense-page</command>
+                <command name="ucc-account-expense-blank">refresh</command>
             </option>
             
             <option name="to-index" label="К таблице счетов">
