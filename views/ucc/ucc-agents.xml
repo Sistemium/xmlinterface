@@ -45,14 +45,6 @@
                 <order-by name="date" dir="desc"/>
             </form>
             
-            <!--form name="ucc-agent-expense" concept="ucc-expense" label="Расходы" is-set="true" page-size="5" >
-                <add-labeled-fields/>
-                <form name="ucc-expense-account" concept="ucc-account">
-                    <field name="name" label="Получатель"/>
-                </form>
-                <order-by name="date" dir="desc"/>
-            </form-->
-            
         </form>
         
         <!--form name="ucc-account-cache" concept="ucc-account" is-set="true">
