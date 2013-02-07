@@ -39,14 +39,15 @@
 
     <xsl:template match="@just-ignored"/>
 	
-    <xsl:template match=
-     " xi:view[xi:menu[xi:option[@chosen][@name='refresh']]]/xi:view-data/xi:data[not(@is-new) or xi:datum[@type='parameter']]
-     | xi:view-data//xi:data[xi:datum[@type='parameter' and
-									  @modified and
-									  (not(@editable) or ancestor::xi:view/xi:dialogue//*/@ref = ancestor::xi:data/@ref|@id|@ref)
-									 ]
-							 or ancestor::xi:data[@just-ignored]]
-							[not(xi:datum[@type='parameter' and not(key('id',@ref)/@optional)][not(text()) or text()=''])]
+    <xsl:template match="
+		xi:view[xi:menu[xi:option[@chosen][@name='refresh']]]/xi:view-data/xi:data[not(@is-new) or xi:datum[@type='parameter']]
+		| xi:view-data//xi:data
+			[xi:datum[@type='parameter' and
+					  @modified and
+					  (not(@editable) or ancestor::xi:view/xi:dialogue//*/@ref = ancestor::xi:data/@ref|@id|@ref)
+					 ]
+				or ancestor::xi:data[@just-ignored]
+			] [not(xi:datum[@type='parameter' and not(key('id',@ref)/@optional)][not(text()) or text()=''])]
      ">
 		<xsl:call-template name="needrefresh"/>
     </xsl:template>

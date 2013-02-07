@@ -11,6 +11,7 @@
 
     <xsl:template match="xi:form[@new-only or xi:parameter[not(@optional) and not(xi:init)]]" mode="build-subrequest"/>
 
+	
     <xsl:template match="xi:form[@expect-choise]/xi:form[not(@no-preload)]
 						|xi:form[@pipeline][not(@pipeline=/*/@pipeline-name)]
 						|xi:form[@preload]"
@@ -19,6 +20,7 @@
             <xsl:copy-of select="@name|@pipeline|@preload"/>
         </preload>
     </xsl:template>
+	
 	
 	<xsl:template mode="build-subrequest" priority="1000" match="
 		xi:form[
@@ -31,6 +33,7 @@
 		)]
 	"/>
 
+	
     <xsl:template match="xi:form" mode="build-subrequest">
         <xsl:variable name="concept" select="$model/xi:concept[@name=current()/@concept]"/>
         <data-request>
