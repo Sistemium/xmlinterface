@@ -104,7 +104,7 @@
         <property name="error" type="int" label="Код ошибки" />
         
         <role name="ucc-account" actor="ucc-account" sql-name="client"/>
-        <role name="ucc-agent" actor="ucc-agent" sql-name="counteragent"/>
+        <role name="ucc-bank-account" actor="ucc-bank-account" sql-name="clientAccount"/>
         
         <property name="xid"/>
         <property name="id" key="true" type="int"/>
