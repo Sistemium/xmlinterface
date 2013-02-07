@@ -157,6 +157,10 @@
         
         <xsl:apply-templates select="xi:sql-compute|xi:xpath-compute" mode="as-attribute"/>
         
+        <xsl:if test="@choise and not(@choise-label)">
+            <xsl:attribute name="choise-label">name</xsl:attribute>
+        </xsl:if>
+        
         <xsl:apply-templates select="@*|self::xi:field[@editable]/parent::xi:form/@autosave"/>
         
         <xsl:apply-templates select=".|@*" mode="extend"/>
