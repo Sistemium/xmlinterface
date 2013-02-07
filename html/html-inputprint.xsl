@@ -340,7 +340,7 @@
                                             <xsl:attribute name="selected">selected</xsl:attribute>
                                         </xsl:if>
                                         
-                                        <xsl:value-of select="@label|self::*[not(@label)]/xi:datum[@name='name']"/>
+                                        <xsl:value-of select="@label|self::*[not(@label)]/xi:datum[@name=$def/@choise-label]"/>
                                         
                                    </option>
                                 </xsl:for-each>

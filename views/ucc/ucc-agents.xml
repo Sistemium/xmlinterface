@@ -13,7 +13,7 @@
         
         <parameter name="searcher" label="Поиск" editable="true" optional="true"/>
         
-        <form name="ucc-agent" is-set="true" page-size="15" toggle-edit-off-="true" deletable-="true">
+        <form name="ucc-agent" is-set="true" page-size="15" deletable-="true">
             
             <add-labeled-fields/>
             <field name="id"/>
@@ -27,11 +27,13 @@
             
         </form>
         
-        <form name="ucc-agent-details" concept="ucc-agent">
+        <form name="ucc-agent-details" concept="ucc-agent" toggle-edit-off="true" deletable="true">
             
             <parameter name="agent-to-detail-id" type="int" modifiable="true" property="id"/>
             
             <field name="id"/>
+            <field name="name" editable="true"/>
+            <field name="code" editable="true"/>
             
             <add-labeled-fields/>
             
@@ -81,6 +83,7 @@
             
             <display>
                 <region class="hbox">
+                    
                     <region class="sidebar">
                         <input form="UCC" field="searcher"/>
                         <grid form="ucc-agent" deletable="false">
@@ -94,20 +97,29 @@
                             </columns>
                         </grid>
                     </region>
+                    
                     <region class="flex">
                         <region>
-                            <print form="ucc-agent-details" field="*"/>
+                            <input form="ucc-agent-details" field="*"/>
                         </region>
                         <region class="tabs">
                             <grid form="ucc-agent-income" label="Недавние приходы"/>
                             <grid form="ucc-agent-expense" label="Недавние расходы" hide-empty="true"/>
                         </region>
                     </region>
+                    
                 </region>
             </display>
             
             <choise>
                 <option reuse="to-index"/>
+                <option name="toggle-edit" label="Р">
+                    <command name="ucc-agent-details">toggle-edit</command>
+                </option>
+                <option label="Удалить" reuse="to-index">
+                    <command name="ucc-agent-details">delete</command>
+                    <command name="ucc-agent-details">save</command>
+                </option>
             </choise>
             
         </step>
