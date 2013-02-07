@@ -69,6 +69,7 @@
     ">
         <xsl:comment>xi:when removed</xsl:comment>
     </xsl:template>
+    
 
     <xsl:template mode="build-target" match="xi:command [@ref = ancestor::xi:view/xi:view-data//xi:data[@choise]/@ref]">
         
@@ -76,10 +77,12 @@
         <xsl:param name="this" select="."/>
         
         <xsl:variable name="payload" select="xi:map(
-            key('id', $command)
-            , self::*[not(xi:xpath-compute)]/@xpath-compute
-            | xi:xpath-compute
-        ) | self::*[not(xi:xpath-compute|@xpath-compute)]"/>
+                key('id', $command)
+                , self::*[not(xi:xpath-compute)]/@xpath-compute
+                | xi:xpath-compute
+            ) | self::*[not(xi:xpath-compute|@xpath-compute)]
+        "/>
+        
         <xsl:call-template name="build-target">
                 <xsl:with-param name="target-id" select="ancestor::xi:view/xi:view-data//xi:data[@choise][@ref=current()/@ref]/@id"/>
                 <xsl:with-param name="payload" select="$payload"/>
@@ -88,6 +91,64 @@
     </xsl:template>
     
     
+    <xsl:template mode="build-target" match="
+        xi:on/*/xi:command
+            [ @name = ancestor::xi:view/xi:view-data//xi:set-of/@name ]
+    ">
+        
+        <xsl:call-template name="build-target">
+                <xsl:with-param name="target-id" select="ancestor::xi:view/xi:view-data//xi:set-of [@name=current()/@name]/@id"/>
+                <xsl:with-param name="payload" select="current()"/>
+        </xsl:call-template>
+        
+    </xsl:template>
+    
+    
+    <xsl:template mode="build-target" match="
+        xi:on/*/xi:command
+            [ @name = ancestor::xi:view/xi:view-data//xi:preload/@name ]
+    ">
+        
+        <xsl:call-template name="build-target">
+                <xsl:with-param name="target-id" select="ancestor::xi:view/xi:view-data//xi:preload [@name=current()/@name]/@id"/>
+                <xsl:with-param name="payload" select="current()"/>
+        </xsl:call-template>
+        
+    </xsl:template>
+    
+    
+    <xsl:template mode="build-target" match="
+        xi:command [@name = ancestor::xi:workflow/@name or @name = ancestor::xi:view/@name]
+            [text()= ancestor::xi:view/xi:step/@name]
+    ">
+        
+        <xsl:param name="command"/>
+        
+        <xsl:apply-templates mode="build-target" select="
+            ancestor::xi:workflow
+            /xi:step [@name=current()/text()]
+            /xi:on/xi:activation/*
+        ">
+                <xsl:with-param name="command" select="$command"/>
+        </xsl:apply-templates>
+        
+    </xsl:template>
+
+
+    <xsl:template mode="build-target" match="
+        xi:command [@name = /*/xi:views/xi:view[1]/@name]
+    ">
+        
+        <xsl:param name="command"/>
+        <xsl:variable name="target" select="/*/xi:views/xi:view[1]/xi:workflow/xi:step[@name=current()/text()]"/>
+        
+        <xsl:apply-templates mode="build-target" select="$target/xi:on/xi:activation/*">
+                <xsl:with-param name="command" select="$command"/>
+        </xsl:apply-templates>
+        
+    </xsl:template>
+
+
     <!-- build-target helper -->
     
     
@@ -110,9 +171,9 @@
     
     <xsl:template mode="build-target-value" match="*[*]">
         <xsl:param name="target" select="xi:null"/>
-        <xsl:comment>
+        <!--xsl:comment>
             <xsl:value-of select="local-name()"/>
-        </xsl:comment>
+        </xsl:comment-->
         <xsl:apply-templates mode="build-target-value" select="*">
             <xsl:with-param name="target" select="$target"/>
         </xsl:apply-templates>
@@ -121,19 +182,19 @@
     
     <xsl:template mode="build-target-value" match="xi:xpath-compute[text()]">
         <xsl:param name="target" select="."/>
-        <xsl:comment>1</xsl:comment>
+        <!--xsl:comment>1</xsl:comment-->
         <xsl:value-of select="xi:map($target, text())"/>
     </xsl:template>
     
     
     <xsl:template mode="build-target-value" match="*[text()][not(*)]">
-        <xsl:comment>text of <xsl:value-of select="local-name()"/></xsl:comment>
+        <!--xsl:comment>text of <xsl:value-of select="local-name()"/></xsl:comment-->
         <xsl:copy-of select="text()"/>
     </xsl:template>
     
     
     <xsl:template mode="build-target-value" match="*[not(*|text())]">
-        <xsl:comment>*</xsl:comment>
+        <!--xsl:comment>*</xsl:comment-->
         <xsl:copy-of select="."/>
     </xsl:template>
     

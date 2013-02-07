@@ -110,7 +110,7 @@
     </xsl:template>
 
 
-    <xsl:template match="xi:preload[@id = /*/xi:userinput/xi:targets/*/@ref]" priority="1000">
+    <xsl:template match="* [self::xi:preload|self::xi:set-of] [@id = /*/xi:userinput/xi:targets/*/@ref]" priority="1000">
         <xsl:param name="target" select="/*/xi:userinput/xi:targets/*[@ref=current()/@id]"/>
         
         <xsl:call-template name="import-command">
