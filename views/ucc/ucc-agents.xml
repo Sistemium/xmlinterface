@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<view-definition xmlns="http://unact.net/xml/xi" name="ucc-agents" label="Агенты UCC">
+<view-definition xmlns="http://unact.net/xml/xi" name="ucc-agenting" label="Агенты UCC">
     
     <view-schema><form name="UCC">
         
@@ -9,22 +9,6 @@
             <field name="xid"/>
             <field name="name" editable="true"/>
             <field name="code" editable="true"/>
-        </form>
-        
-        <parameter name="searcher" label="Поиск" editable="true" optional="true"/>
-        
-        <form name="ucc-agent" is-set="true" page-size="15" deletable-="true">
-            
-            <add-labeled-fields/>
-            <field name="id"/>
-            
-            <!--form name="ucc-account-income-agg" concept="ucc-income" label="Сводка приходов">
-                <field name="id" aggregate="count" label="Кол-во приходов"/>
-                <field name="summ" aggregate="sum" label="Сумма приходов"/>
-            </form-->
-            
-            <join name="UCC" field="searcher"/>
-            
         </form>
         
         <form name="ucc-agent-details" concept="ucc-agent" toggle-edit-off="true" deletable="true">
@@ -47,6 +31,23 @@
             
         </form>
         
+        <parameter name="searcher" label="Поиск" editable="true" optional="true"/>
+        
+        <form name="ucc-agents" concept="ucc-agent" is-set="true" page-size="15">
+            
+            <field name="id"/>
+            
+            <add-labeled-fields/>
+            
+            <!--form name="ucc-account-income-agg" concept="ucc-income" label="Сводка приходов">
+                <field name="id" aggregate="count" label="Кол-во приходов"/>
+                <field name="summ" aggregate="sum" label="Сумма приходов"/>
+            </form-->
+            
+            <join name="UCC" field="searcher"/>
+            
+        </form>
+        
         <!--form name="ucc-account-cache" concept="ucc-account" is-set="true">
             <field name="id"/>
             <field name="name"/>
@@ -60,7 +61,7 @@
             
             <display>
                 <input form="UCC" field="searcher"/>
-                <grid form="ucc-agent" label="Агенты" deletable="false">
+                <grid form="ucc-agents" label="Агенты" deletable="false">
                     <option reuse="detail-agent"/>
                 </grid>
             </display>
@@ -78,7 +79,7 @@
                     
                     <region class="sidebar">
                         <input form="UCC" field="searcher"/>
-                        <grid form="ucc-agent" deletable="false">
+                        <grid form="ucc-agents" deletable="false">
                             <option name="change-detailed-agent" label="Выбрать">
                                 <command name="agent-to-detail-id" xpath-compute="
                                     xi:datum[@name='id']
@@ -105,12 +106,13 @@
             
             <choise>
                 <option reuse="to-index"/>
-                <option name="toggle-edit" label="Р">
-                    <command name="ucc-agent-details">toggle-edit</command>
-                </option>
                 <option label="Удалить" reuse="to-index">
                     <command name="ucc-agent-details">delete</command>
                     <command name="ucc-agent-details">save</command>
+                    <command name="set-of-ucc-agents">refresh</command>
+                </option>
+                <option name="toggle-edit" label="Редактор">
+                    <command name="ucc-agent-details">toggle-edit</command>
                 </option>
             </choise>
             
@@ -127,12 +129,12 @@
             <choise>
                 <option name="commit-agent-creation" label="Сохранить">
                     <command name="ucc-agent-blank">save</command>
-                    <command name="set-of-ucc-agent">refresh</command>
-                    <command name="ucc-agents">index-page</command>
+                    <command name="set-of-ucc-agents">refresh</command>
+                    <command name="ucc-agenting">index-page</command>
                 </option>
                 <option name="cancel-agent-creation" label="Отменить">
                     <command name="ucc-agent-create">refresh</command>
-                    <command name="ucc-agents">index-page</command>
+                    <command name="ucc-agenting">index-page</command>
                 </option>
             </choise>
             
@@ -141,19 +143,19 @@
         <reusables>
             
             <option name="create-agent" label="Добавить агента">
-                <command name="ucc-agents">create-agent-page</command>
+                <command name="ucc-agenting">create-agent-page</command>
                 <command name="ucc-agent-create">refresh</command>
             </option>
             
             <option name="to-index" label="К таблице агентов">
-                <command name="ucc-agents">index-page</command>
+                <command name="ucc-agenting">index-page</command>
             </option>
             
             <option name="detail-agent" label="...">
                 <command name="agent-to-detail-id" xpath-compute="
                     xi:datum[@name='id']
                 "/>
-                <command name="ucc-agents">agent-details-page</command>
+                <command name="ucc-agenting">agent-details-page</command>
             </option>
             
         </reusables>
