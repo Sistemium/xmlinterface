@@ -104,7 +104,10 @@
                 <order-by name="date" dir="desc"/>
             </form>
             
-            <form name="ucc-account-expense" concept="ucc-expense" label="Расходы" is-set="true" page-size="5" >
+            <form name="ucc-account-expense" concept="ucc-expense" label="Расходы"
+                is-set="true" page-size="5" deletable="true"
+            >
+                <field name="id"/>
                 <add-labeled-fields/>
                 <order-by name="date" dir="desc"/>
             </form>
