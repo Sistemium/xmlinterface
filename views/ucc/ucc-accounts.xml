@@ -61,7 +61,7 @@
                 
             </form>
             
-            <form name="ucc-account-blocked" concept="ucc-expense">
+            <form name="ucc-account-blocked" concept="ucc-expense" build-blank="true">
                 
                 <field name="summ" aggregate="sum" label="Заблокировано средств"/>
                 <where name="isFinal">
