@@ -148,8 +148,12 @@
     
     <xsl:template match="xi:data/@ts [ancestor::*[xi:response[not(xi:result-set) and xi:rows-affected]]]"/>
 
-    <xsl:template match="xi:data[xi:response[@ts][not(xi:result-set) and xi:rows-affected] and @delete-this]" priority="500"/>
-
+    <xsl:template match="xi:data[xi:response[@ts][not(xi:result-set) and xi:rows-affected] and @delete-this]" priority="500">
+        <xsl:if test="key('id',@ref)[@build-blank or xi:parameter]">
+            <xsl:apply-templates select="key('id',@ref)" mode="build-data"/>
+        </xsl:if>
+    </xsl:template>
+    
     <xsl:template match="xi:data[xi:response[@ts][not(xi:result-set) and xi:rows-affected]]">
         
         <xsl:copy>
