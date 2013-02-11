@@ -95,7 +95,7 @@
                     //xi:option[@id=$userinput/@name]/xi:command
                     "/>
         <events>
-            <xsl:for-each select="$ui[current()/../xi:menu/xi:option/@name=text()]">
+            <xsl:for-each select="$ui[@name=current()/../@name][current()/../xi:menu/xi:option/@name=text()]">
                 <xsl:element name="{text()}"/>
             </xsl:for-each>
             <xsl:for-each select="$ui[not(text())]">
