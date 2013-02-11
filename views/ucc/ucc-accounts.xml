@@ -194,6 +194,7 @@
                                 <command name="account-to-detail-id" xpath-compute="
                                     xi:datum[@name='id']
                                 "/>
+                                <command name="ucc-account-details">refresh</command>
                             </option>
                             <columns>
                                 <column field="name" label="Счет"/>
