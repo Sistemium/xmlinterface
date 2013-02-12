@@ -44,7 +44,8 @@
                 <field name="data" editable="true"/>
             </form>
             
-            <form name="ua-account-provider" is-set="true">
+            <form name="ua-account-provider" is-set="true" deletable="true">
+                <field name="xid"/>
                 <form name="ua-account-provider-name" concept="ua-provider">
                     <field name="name" label="Провайдер"/>
                 </form>
