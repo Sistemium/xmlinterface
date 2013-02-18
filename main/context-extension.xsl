@@ -8,6 +8,10 @@
     xmlns:php="http://php.net/xsl"
 >
 
+    <xsl:template match="xi:import[@href]">
+        <xsl:apply-templates select="document(@href)"/>
+    </xsl:template>
+    
     <xsl:template match="xi:context-extension">
         <xsl:apply-templates select="*"/>
     </xsl:template>
