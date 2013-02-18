@@ -96,7 +96,9 @@
                 
             </form>
             
-            <form name="ucc-account-income" concept="ucc-income" label="Приходы" is-set="true" page-size="5" >
+            <form name="ucc-account-income" concept="ucc-income" label="Приходы"
+                is-set="true" page-size="5" refreshable="true"
+            >
                 <add-labeled-fields/>
                 <form name="ucc-income-agent" concept="ucc-agent">
                     <field name="name" label="Источник"/>
@@ -105,7 +107,7 @@
             </form>
             
             <form name="ucc-account-expense" concept="ucc-expense" label="Расходы"
-                is-set="true" page-size="5" deletable="true"
+                is-set="true" page-size="5" deletable="true" refreshable="true"
             >
                 <field name="id"/>
                 <add-labeled-fields/>
@@ -144,7 +146,7 @@
             
             <form name="ucc-account-bank-account" concept="ucc-bank-account"
                 label="Реквизиты" is-set="true" page-size="5"
-                deletable="true"
+                deletable="true" refreshable="true"
             >
                 <add-labeled-fields/>
                 <field name="id"/>
