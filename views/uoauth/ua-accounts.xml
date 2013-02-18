@@ -9,9 +9,12 @@
         
         <form name="ua-account" is-set="true" page-size="10" deletable-="true" toggle-edit-off="true">
             
+            <field name="name" editable="true"/>
+            <field name="email" editable="true"/>
+            <field name="code" editable="true"/>
+            
             <add-labeled-fields/>
             
-            <field name="code" editable="true"/>
             
             <order-by name="ts" dir="desc"/>
             
