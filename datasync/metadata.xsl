@@ -9,7 +9,7 @@
     <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
     <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
-    <xsl:param name="model" select="document('../domain.xml')/xi:domain/xi:concept"/>
+    <xsl:param name="model" select="document(/*/xi:session/xi:domains/xi:domain/@href)/xi:domain/xi:concept"/>
     
     <xsl:template match="node()"/>
 
