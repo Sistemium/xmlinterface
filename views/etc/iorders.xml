@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.976" expect-megabytes="15" >
+    <view-schema version="1.977" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -522,6 +522,7 @@
                                 <print form="Stock" field="factor"/>
                                 <print form="Product" field="package"/>
                                 <print form="Product" field="extraLabel"/>
+                                <print form="Product" field="cost" alias="selfCost"/>
                                 
                                 <print form="BonusProgram" field="tag" alias="BonusProgram_tag"/>
                                 <print form="BonusProgram" field="tagColor" alias="BonusProgram_tagColor"/>
@@ -554,6 +555,7 @@
                    s.factor,
                    g.package,
                    g.extraLabel,
+                   g.cost as selfCost,
                    (select group_concat(bp.tag)
                       from BonusProgramProduct bpp join BonusProgram bp on bp.id = bpp.bonusProgram
                      where product = g.id and (
