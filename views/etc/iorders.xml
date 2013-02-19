@@ -275,7 +275,7 @@
                                 <field name="sales-gap-reason" alias="gapReason" modifiable="true"/>
                                 
                                 <where name="date">
-                                    <more-than>today() - 2</more-than>
+                                    <more-than>today() - 1</more-than>
                                 </where>
                                 
                             </form>
