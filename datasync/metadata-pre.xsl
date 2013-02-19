@@ -5,7 +5,7 @@
     xmlns:xi="http://unact.net/xml/xi"
     exclude-result-prefixes="xi">
 
-    <xsl:param name="model" select="document('../domain.xml')/xi:domain/xi:concept"/>
+    <xsl:param name="model" select="document(/*/xi:session/xi:domains/xi:domain/@href)/xi:domain/xi:concept"/>
 
     <xsl:include href="../id.xsl"/>
     <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>

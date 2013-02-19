@@ -70,7 +70,7 @@
     
     <xsl:template match="/*[xi:userinput/xi:import]">
         <uploads>
-            <xsl:apply-templates select="xi:userinput/xi:import|xi:views" mode="build-upload"/>
+            <xsl:apply-templates select="xi:userinput/xi:import|xi:views|xi:session" mode="build-upload"/>
         </uploads>
     </xsl:template>
     
@@ -78,7 +78,7 @@
         <xsl:apply-templates select="*" mode="build-upload"/>
     </xsl:template>
     
-    <xsl:template match="xi:views|xi:view|*[ancestor-or-self::xi:view-schema]" mode="build-upload">
+    <xsl:template match="xi:views|xi:view|*[ancestor-or-self::xi:session|ancestor-or-self::xi:view-schema]" mode="build-upload">
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:apply-templates select="*" mode="build-upload"/>
