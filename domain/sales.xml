@@ -4,6 +4,40 @@
     xmlns="http://unact.net/xml/xi"
 >
 
+    <concept name="sales-merch-visit">
+        
+        <select owner="sales" sql-name="MerchVisit"/>
+        <save owner="sales" sql-name="MerchVisit"/>
+        
+        <property name="id" type="int" sql-name="merchvisit_id" key="true"/>
+        
+        <property name="xid"/>
+        
+        <role name="cat-buyer" actor="cat-buyer" sql-name="client_id"/>
+        <role name="cat-salesman" actor="cat-salesman" sql-name="salesman_id"/>
+        
+        <property name="deviceCts" type="datetime" sql-name="ddate" label="Дата"/>
+        <property name="is-in-route" type="boolean" sql-name="isinroute"/>
+        
+        <role name="sales-gap-reason" actor="sales-gap-reason" sql-name="gap_reason_id"/>
+        
+    </concept>
+
+    <concept name="sales-gap-reason">
+        
+        <select owner="dbo" sql-name="palm_MerchGapReason"/>
+        
+        <property name="id" type="int" sql-name="reason_id" key="true"/>
+        
+        <property name="name" type="string" sql-name="name"/>
+        <property name="is-active" type="boolean" sql-name="isactive"/>
+        <property name="count_as_visit" type="int" sql-name="count_as_visit"/>
+        
+        <property name="xid" sql-name="xid"/>
+        <property name="ts" type="date" sql-name="ts"/>
+        
+    </concept>
+
     <concept name="partner-pricelist">
         
         <select owner="dbo" sql-name="partner_plist" />
@@ -250,12 +284,16 @@
     </concept>
     
     <concept name="sales-stock">
-        <select owner="cache" sql-name="OrdGoodsInStockMulti"/>
+        
+        <select owner="sales" sql-name="stock"/>
         
         <property name="id" type="string" sql-compute="string(stock_id,'-',goods_id)"/>
         <property name="level" type="int" sql-compute="2 - isVollow" label="Уровень запаса"/>
+        <property name="factor" type="int" label="Кратность"/>
+        
         <role name="article" actor="article" sql-name="goods_id"/>
         <role name="sales-warehouse" actor="sales-warehouse" sql-name="stock_id"/>
+        
     </concept>
 
     <concept name="sales-sms">

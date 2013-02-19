@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.977" expect-megabytes="15" >
+    <view-schema version="1.982" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -60,6 +60,13 @@
                         <field name="id"/>
                         <field name="name"/>
                         <field name="ord"/>
+                    </form>
+                    
+                    <form name="GapReason" concept="sales-gap-reason" is-set="true" pipeline="download"
+                          label="Причина непосещения" set-label="Причины непосещения">
+                        <field name="id"/>
+                        <field name="name"/>
+                        <where name="is-active">1</where>
                     </form>
                     
                     <form name="Category" concept="category" expect-choise="true"
@@ -246,6 +253,26 @@
                                 <field name="comment" editable="true"/>
                                 
                                 <field name="status" />
+                                
+                                <where name="date">
+                                    <more-than>today() - 2</more-than>
+                                </where>
+                                
+                            </form>
+                            
+                            <form name="MerchVisit" concept="sales-merch-visit"
+                                  is-set="true" extendable="true"
+                                  parent-sql-name="client_id" deletable="new-only"
+                                  label="Прочая активность" set-label="Прочие активности"
+                            >
+                                
+                                <field name="id" type="string"/>
+                                <field name="xid"/>
+                                
+                                <field name="deviceCts" modifiable="true"/>
+                                
+                                <join name="cat-salesman"/>
+                                <field name="sales-gap-reason" alias="gapReason" modifiable="true"/>
                                 
                                 <where name="date">
                                     <more-than>today() - 2</more-than>
