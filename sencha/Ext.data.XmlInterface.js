@@ -625,8 +625,4 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         } else store.toUploadRecord.store.failureCb.call (xi, store, 'No response found')
     }
     
-})    
-        } else store.toUploadRecord.store.failureCb.call (xi, store, 'No response found')
-    }
-    
 })
