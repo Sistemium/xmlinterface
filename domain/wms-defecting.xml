@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<domain version="1.0"
+    xmlns:xi="http://unact.net/xml/xi"
+    xmlns="http://unact.net/xml/xi"
+>
+    
+    
+    
+    <concept name="goods-condition">
+        <select owner="wms" sql-name="goods_condition"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="name" type="string" label="Качество товара"/>
+        
+    </concept>
+
+    <concept name="defect-cause">
+        <select owner="wms" sql-name="defect_cause"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="name" type="string" label="Причина брака"/>
+        
+    </concept>
+    
+    <concept name="wms-defect-sorted">
+        <select owner="wms" sql-name="defect_sorted"/>
+        <save owner="wms" sql-name="defect_sorted"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="xid"/>
+        
+        <property name="volume" type="int" label="Кол-во"/>
+        
+        <role name="goods" actor="goods"/>
+        <role name="wms-picking-box" actor="wms-picking-box" sql-name="picking_box"/>
+        
+    </concept>
+    
+    <concept name="wms-picking-box">
+        <select owner="wms" sql-name="picking_box"/>
+        <select owner="wms" type="procedure" sql-name="picking_box">
+            <parameter name="barcode" type="string" sql-name="@barcode" required="true"/>
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+            <parameter name="warehouse" type="int" sql-name="@warehouse"/>
+        </select>
+        <save owner="wms" sql-name="picking_box"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="ts" type="datetime" label="Когда обновлено"/>
+        <property name="isWritten-off" type="boolean" sql-name="written_off" label="Резерв"/>
+        
+        <property name="barcode" type="string" label="Штрих-код"/>
+        
+        <role name="defect-cause" actor="defect-cause" sql-name="defect_cause"/>
+        <role name="goods-condition" actor="goods-condition" sql-name="goods_condition"/>
+        <role name="sysuser" actor="sysuser" sql-name="agent"/>
+        <role name="warehouse" actor="warehouse"/>
+        
+    </concept>
+    
+    <concept name="wms-consignment-accept">
+        <select owner="wms" sql-name="consignment_accepted"/>
+        <select owner="wms" type="procedure" sql-name="consignment_accept">
+            <parameter name="wms-picking-box" type="int" sql-name="@picking_box"/>
+            <parameter name="sysuser" type="int" sql-name="@agent"/>
+            <parameter name="warehouse" type="int" sql-name="@warehouse" required="true"/>
+        </select>
+        <save owner="wms" sql-name="consignment_accepted"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="xid"/>
+        <property name="ts" type="datetime" label="Когда обновлено"/>
+        <property name="isFinished" type="boolean" label="Приемка завершена"/>
+        
+        <role name="wms-picking-box" actor="wms-picking-box" sql-name="picking_box"/>
+        <role name="sysuser" actor="sysuser" sql-name="agent"/>
+        <role name="warehouse" actor="warehouse"/>
+        
+    </concept>
+
+    <concept name="wms-consignment-expected">
+        
+        <select owner="wms" type="procedure" sql-name="consignment_expected">
+            <parameter name="wms-picking-box" type="int" sql-name="@picking_box"/>
+        </select>
+        
+        <property name="volume" type="int" label="Кол-во"/>
+        <property name="ts" type="datetime" label="Обновлено"/>
+        
+        <role name="goods" actor="goods"/>
+        <role name="wms-picking-box" actor="wms-picking-box" sql-name="picking_box"/>
+        
+    </concept>
+   
+    <concept name="wms-consignment-accept-goods">
+        
+        <select owner="wms" sql-name="consignment_accepted_goods"/>
+        <save owner="wms" sql-name="consignment_accepted_goods"/>
+        
+        <property name="id" type="string" key="true"/>
+        <property name="xid"/>
+        
+        <property name="volume" type="int" label="Кол-во"/>
+        
+        <role name="wms-consignment-accept" actor="wms-consignment-accept" sql-name="consignment_accepted"/>
+        <role name="goods" actor="goods"/>
+        
+    </concept>
+    
+</domain>
