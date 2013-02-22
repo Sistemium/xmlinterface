@@ -11,6 +11,10 @@
     
     <xsl:template match="/">
         
+        <xsl:processing-instruction name="xml-stylesheet">
+            <xsl:text>type="text/xsl" href="xsl/html-metadata.xsl"</xsl:text>
+        </xsl:processing-instruction>
+        
         <!--xsl:processing-instruction name="xml-stylesheet-">
             <xsl:text>type="text/xsl" href="html-xsl.xsl"</xsl:text>
         </xsl:processing-instruction-->

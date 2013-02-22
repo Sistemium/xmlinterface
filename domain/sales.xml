@@ -29,7 +29,7 @@
         
         <property name="id" type="int" sql-name="reason_id" key="true"/>
         
-        <property name="name" type="string" sql-name="name"/>
+        <property name="name" type="string" sql-name="name" label="Название"/>
         <property name="is-active" type="boolean" sql-name="isactive"/>
         <property name="count_as_visit" type="int" sql-name="count_as_visit"/>
         

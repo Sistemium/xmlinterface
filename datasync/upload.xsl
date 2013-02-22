@@ -55,7 +55,7 @@
             <xsl:attribute name="alias">
                 <xsl:value-of select="
                     concat(
-                        translate(@name,1,1),$ucletters,$lcletters)
+                        translate(substring(@name,1,1),$ucletters,$lcletters)
                         , substring(@name,2)
                     )
                 "/>
