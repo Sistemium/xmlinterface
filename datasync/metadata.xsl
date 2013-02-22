@@ -127,7 +127,12 @@
                     </xsl:variable>
                     
                     <xsl:for-each select="key('id',@ref)">
-                        <xsl:variable name="formAlias" select="translate(self::xi:form/@name,$ucletters,$lcletters)"/>
+                        <xsl:variable name="formAlias" select="
+                            concat(
+                                translate(substring(self::xi:form/@name,1,1),$ucletters,$lcletters)
+                                , substring(self::xi:form/@name,2)
+                            )
+                        "/>
                         
                         <column id="{$view/@name}{$alias}{$formAlias}" name="{$alias}{$formAlias}" >
                             <xsl:attribute name="type">

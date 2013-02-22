@@ -24,7 +24,12 @@
                              /xi:role[not(@name = current()/xi:field/@name) and @actor=current()/parent::xi:form/@concept]">
             <field name="{@actor}">
                 <xsl:attribute name="alias">
-                    <xsl:value-of select="translate($form/../@name,$ucletters,$lcletters)"/>
+                    <xsl:value-of select="
+                        concat(
+                            translate(substring($form/../@name,1,1),$ucletters,$lcletters)
+                            , substring($form/../@name,2)
+                        )
+                    "/>
                 </xsl:attribute>
                 <xsl:apply-templates select="$form/../xi:field[@name='id']/@type"/>
                 <xsl:if test="not($form/xi:field[@name='id'])">

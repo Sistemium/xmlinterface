@@ -53,7 +53,12 @@
     <xsl:template match="xi:form[not(@hidden)]" mode="prepare">
         <field id="{@id}">
             <xsl:attribute name="alias">
-                <xsl:value-of select="translate(@name,$ucletters,$lcletters)"/>
+                <xsl:value-of select="
+                    concat(
+                        translate(@name,1,1),$ucletters,$lcletters)
+                        , substring(@name,2)
+                    )
+                "/>
             </xsl:attribute>
         </field>
     </xsl:template>
