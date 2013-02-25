@@ -67,7 +67,12 @@
                     </a>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="@label"/>
+                    <span>
+                        <xsl:value-of select="@label"/>
+                    </span>
+                    <span class="datatype">
+                        <xsl:value-of select="concat('(',@type,')')"/>
+                    </span>
                 </xsl:otherwise>
             </xsl:choose>
         </li>
