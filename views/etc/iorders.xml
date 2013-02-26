@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders" >
     
-    <view-schema version="1.983" expect-megabytes="15" >
+    <view-schema version="1.985" expect-megabytes="15" >
         
         <form name="sysuser" hidden="true">
             
@@ -154,7 +154,7 @@
                         
                         <form name="BonusProgramProduct" concept="bonus-program-article" is-set="true"
                               label="Товар бонусной программы" set-label="Товары бонусной программы">
-                            <field name="article" alias="product"/>
+                            <field name="article" alias="product" key="true"/>
                             <add-labeled-fields/>
                         </form>
                         
@@ -375,6 +375,7 @@
                               label="Позиция отгрузки" set-label="Позиции отгрузки"
                         >
                             <field name="xid" key="true"/>
+                            <field name="subid" key="true"/>
                             
                             <field name="article" alias="product" no-inwards="true" key-="true"/>
                             

@@ -276,7 +276,7 @@
             <parameter name="cat-salesman" type="int" sql-name="@id"/>
         </select>
         
-        <property name="id" type="int"/>
+        <property name="id" type="int" key="true"/>
         <property name="name" type="string" label="Название"/>
         
         <role name="cat-salesman" actor="cat-salesman"/>
@@ -427,6 +427,7 @@
         <select owner="sales" sql-name="shipment_position"/>
         
         <property name="xid" key="true" />
+        <property name="subid" type="int"/>
         
         <property name="summ" type="decimal" label="Стоимость" />
         <property name="vol" type="int" label="Кол-во штук" />
