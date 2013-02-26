@@ -106,8 +106,8 @@
                                     , '(не указан)'
                                 )
                             </sql-compute></field>
-
-                            <field name="package" />
+                            
+                            <field name="package" type="int"/>
                             
                             <where name="isRemoved">0</where>
                             
@@ -309,7 +309,7 @@
                                       parent-sql-name="pre_order" deletable="new-only"
                                       label="Позиция заказа" set-label="Позиции заказа">
                                     <field name="volume" editable="true"/>
-                                    <field name="package" editable="true"/>
+                                    <field name="package" editable="true" type="int"/>
                                     <field name="cost"  editable="compute"/>
                                     <field name="selfCost" type="decimal" sql-compute="null" />
                                     <field name="xid"/>
