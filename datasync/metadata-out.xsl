@@ -11,9 +11,13 @@
     
     <xsl:template match="/">
         
-        <xsl:processing-instruction name="xml-stylesheet">
-            <xsl:text>type="text/xsl" href="xsl/html-metadata.xsl"</xsl:text>
-        </xsl:processing-instruction>
+        <xsl:for-each select="*/@style">
+            <xsl:processing-instruction name="xml-stylesheet">
+                <xsl:text>type="text/xsl" href="xsl/</xsl:text>
+                <xsl:value-of select="."/>
+                <xsl:text>-metadata.xsl"</xsl:text>
+            </xsl:processing-instruction>
+        </xsl:for-each>
         
         <!--xsl:processing-instruction name="xml-stylesheet-">
             <xsl:text>type="text/xsl" href="html-xsl.xsl"</xsl:text>
