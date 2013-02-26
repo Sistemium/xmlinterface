@@ -48,13 +48,26 @@
     
     
     <xsl:template match="xi:columns" mode="sql-metadata">
-        <xsl:apply-templates mode="sql-metadata" select="xi:column[not(@parent)]"/>
+        
+        <xsl:apply-templates mode="sql-metadata" select="xi:column[@name='id']"/>
+        <xsl:apply-templates mode="sql-metadata" select="xi:column[not(@parent or @name='id' or @name='xid')]"/>
+        
         <xsl:apply-templates mode="sql-metadata" select="xi:column[@parent]"/>
+        
         <primary-key>
             <xsl:for-each select="xi:column[@key]">
                 <part name="{@name}"/>
             </xsl:for-each>
         </primary-key>
+        
+        <column name="xid" datatype="GUID"/>
+        <column name="ts" datatype="TS"/>
+        <column name="cts" datatype="CTS"/>
+        
+        <unique>
+            <part name="xid"/>
+        </unique>
+        
     </xsl:template>
     
     
@@ -69,6 +82,12 @@
         <column>
             <xsl:copy-of select="@name"/>
             <xsl:apply-templates select="@type" mode="sql-translate"/>
+            <xsl:if test="@name='id'">
+                <xsl:attribute name="datatype">ID</xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@name='xid'">
+                <xsl:attribute name="datatype">GUID</xsl:attribute>
+            </xsl:if>
         </column>
     </xsl:template>
     
