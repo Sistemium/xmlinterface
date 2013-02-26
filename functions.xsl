@@ -6,8 +6,9 @@
     xmlns:php="http://php.net/xsl"
     xmlns:func="http://exslt.org/functions"
     xmlns:dyn="http://exslt.org/dynamic"
-    extension-element-prefixes="func e dyn"
-    exclude-result-prefixes="php func e dyn"
+    xmlns:str="http://exslt.org/strings"
+    extension-element-prefixes="func e dyn str"
+    exclude-result-prefixes="php func e dyn str"
 >
     
     <xsl:template name="as-attribute" mode="as-attribute" match="*">
@@ -18,6 +19,19 @@
     </xsl:template>
 
 
+    <func:function name="xi:padtab" >
+        <xsl:param name="count" select="1"/>
+        <xsl:param name="symbol" select="'&#x9;'"/>
+        <func:result select="str:padding($count,$symbol)"/>
+    </func:function>
+
+    <func:function name="xi:crlf" >
+        <xsl:param name="count" select="1"/>
+        <xsl:param name="symbol" select="'&#xD;'"/>
+        <func:result select="str:padding($count, $symbol)"/>
+    </func:function>
+
+    
     <func:function name="xi:directoryList">
         <xsl:param name="path" select="xi:null"/>
         <func:result select="php:function('directoryList',string($path))"/>
