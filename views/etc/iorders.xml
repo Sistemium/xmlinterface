@@ -274,7 +274,7 @@
                                 <join name="cat-salesman"/>
                                 <field name="sales-gap-reason" alias="gapReason" modifiable="true"/>
                                 
-                                <where name="date">
+                                <where name="deviceCts">
                                     <more-than>today() - 1</more-than>
                                 </where>
                                 
