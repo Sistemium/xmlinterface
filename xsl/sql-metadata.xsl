@@ -60,6 +60,7 @@
             </xsl:for-each>
         </primary-key>
         
+        <column name="isPhantom" datatype="BOOL"/>
         <column name="xid" datatype="GUID"/>
         <column name="ts" datatype="TS"/>
         <column name="cts" datatype="CTS"/>
@@ -67,6 +68,70 @@
         <unique>
             <part name="xid"/>
         </unique>
+        
+        <xsl:if test="xi:column[@parent] | ../xi:deps">
+            <trigger>
+                
+                <before>
+                    <insert/>
+                    <update/>
+                </before>
+                
+                <sql>
+                    <xsl:text>if UPDATING then</xsl:text>
+                    <sql>set inserted.isPhantom=0;</sql>
+                    <xsl:text>end if;</xsl:text>
+                </sql>
+                
+                <xsl:for-each select="xi:column[@parent]">
+                    <sql>
+                        
+                        <xsl:text>if inserted.</xsl:text>
+                        <xsl:value-of select="@name"/>
+                        <xsl:text> is not null and not exists (select * from </xsl:text>
+                        <xsl:value-of select="@parent"/>
+                        <xsl:text> where id = inserted.</xsl:text>
+                        <xsl:value-of select="@name"/>
+                        <xsl:text> and isPhantom = 0) then</xsl:text>
+                        
+                        <sql>set inserted.isPhantom = 1;</sql>
+                        <sql>
+                            <xsl:value-of select="concat(
+                                'insert into '
+                                ,@parent
+                                , ' (id) select inserted.'
+                                , @name
+                                , ' where not exists (select * from '
+                                , @parent
+                                , ' where id = inserted.'
+                                , @name
+                                , ')'
+                            )"/>
+                        </sql>
+                        
+                        <xsl:text>end if;</xsl:text>
+                        
+                    </sql>
+                </xsl:for-each>
+                
+                <xsl:for-each select="../xi:deps/xi:dep">
+                    <sql>
+                        <xsl:text>if UPDATING and inserted.isPhantom = 0 then</xsl:text>
+                        <sql>
+                            <xsl:value-of select="concat(
+                                'update '
+                                , @table_id
+                                , ' set isPhantom = 0 where '
+                                , ancestor::xi:table/@id
+                                , ' = inserted.id;'
+                            )"/>
+                        </sql>
+                        <xsl:text>end if;</xsl:text>
+                    </sql>
+                </xsl:for-each>
+                
+            </trigger>
+        </xsl:if>
         
     </xsl:template>
     

@@ -27,7 +27,7 @@ begin
         ) select
             string (creator, '.[', table_name, ']') as @name
             , list (string('[',column_name,']') order by column_id) as @columns
-            , list (string('''',value, '''') order by column_id) as @values
+            , list (string('''', replace(value,'''', ''''''), '''') order by column_id) as @values
             , (select max(table_name) from xmlcoldata) as @table_name
             , (select value from xmlcoldata where column_name = 'id') as @id
         from (
@@ -62,11 +62,11 @@ begin
             , ')'
         );
         
-        --execute immediate with result set off @sql;
+        execute immediate with result set off @sql;
         
         set @result = xmlconcat (@result, xmlelement (@table_name));
         
-        message 'xml_bulk: ', @sql to client;
+        //message 'xml_bulk: ', @sql to client;
         
         if @id is not null then
             set @parent_id = @id;
