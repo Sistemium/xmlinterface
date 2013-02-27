@@ -11,6 +11,9 @@
     exclude-result-prefixes="php func e dyn str"
 >
     
+    <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
+    <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
+    
     <xsl:template name="as-attribute" mode="as-attribute" match="*">
         <xsl:param name="node" select="."/>
         <xsl:attribute name="{local-name($node)}">
@@ -19,10 +22,17 @@
     </xsl:template>
 
 
+    <func:function name="xi:upper" >
+        <xsl:param name="string" select="."/>
+        <func:result select="translate($string,$lcletters,$ucletters)"/>
+    </func:function>
+    
+    
     <func:function name="xi:padtab" >
         <xsl:param name="count" select="1"/>
-        <xsl:param name="symbol" select="'&#x9;'"/>
-        <func:result select="str:padding($count,$symbol)"/>
+        <xsl:param name="symbol" select="'&#x20;'"/>
+        
+        <func:result select="str:padding($count*4,$symbol)"/>
     </func:function>
 
     <func:function name="xi:crlf" >

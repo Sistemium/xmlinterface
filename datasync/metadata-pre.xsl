@@ -8,8 +8,6 @@
     <xsl:param name="model" select="document(/*/xi:session/xi:domains/xi:domain/@href)/xi:domain/xi:concept"/>
 
     <xsl:include href="../id.xsl"/>
-    <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
-    <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
     
     <xsl:template match="xi:view-data | xi:display"/>
 
