@@ -430,7 +430,7 @@
         <property name="subid" type="int"/>
         
         <property name="summ" type="decimal" label="Стоимость" />
-        <property name="vol" type="int" label="Кол-во штук" />
+        <property name="vol" type="decimal" label="Кол-во штук" />
         <property name="price" type="decimal" label="Цена" />
         
         <role name="article" actor="article" sql-name="goods" />
