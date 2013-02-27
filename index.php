@@ -70,6 +70,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     
     $command='';
     $quitstage='';
+    $persistOutput = false;
     
     $ui = $context_part =  $Context->userinput[0];    
     
@@ -332,6 +333,14 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                 else {
                      $_SESSION['redirect']=$result;
                      $_SESSION['redirected-content']=$contentType;
+                }
+                
+                if ($persistOutput) {
+                    $ts = microtime(true);
+                    file_put_contents (
+                        'data/output/' . $ts . '.xml'
+                        , $result
+                    );
                 }
                 
                 $dontPrint=true;
