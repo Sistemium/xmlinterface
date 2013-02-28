@@ -6,8 +6,6 @@
     exclude-result-prefixes="xi">
 
     <xsl:key name="id" match="*" use="@id"/>
-    <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
-    <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
    
     <xsl:template match="/*">
         <xsl:copy>
