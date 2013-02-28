@@ -40,7 +40,7 @@
     
     
     <xsl:template match="xi:table" mode="domain-metadata">
-        <concept name="{@id}">
+        <concept name="{@id}" server="demo">
             <select owner="iorders" sql-name="{@id}"/> 
             <save owner="iorders" sql-name="{@id}"/> 
             <xsl:apply-templates mode="domain-metadata" select="xi:columns"/>
@@ -61,7 +61,11 @@
     
     
     <xsl:template match="xi:column[@parent]" mode="domain-metadata">
-        <role name="{@name}" actor="{@parent}"/>
+        <role name="{@name}" actor="{@parent}">
+            <xsl:if test="ancestor::xi:table[1]/@belongs = @parent">
+                <xsl:attribute name="type">belongs</xsl:attribute>
+            </xsl:if>
+        </role>
     </xsl:template>
     
     

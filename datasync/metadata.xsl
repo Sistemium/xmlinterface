@@ -94,7 +94,10 @@
                 
                 <deps set-of="dep"><xsl:for-each select="$model/xi:role[@actor=current()/@concept]">
                     <xsl:variable name="role" select="."/>
-                    <xsl:for-each select="$forms[@concept=current()/../@name][not(@no-inwards)]/xi:field[@name=current()/@name][not(@no-inwards)]">
+                    <!--xsl:comment>
+                        <xsl:value-of select="concat(local-name(),':',@name,':',@actor,':',../@name)"/>
+                    </xsl:comment-->
+                    <xsl:for-each select="$forms[@concept=current()/../@name][not(@no-inwards)]/xi:field[@name=current()/@actor][not(@no-inwards)]">
                         <dep table_id="{../@name}" id="{../@name}{@alias}">
                             <xsl:if test="$role/@type='belongs'">
                                 <xsl:attribute name="contains">true</xsl:attribute>
