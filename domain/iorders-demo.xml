@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<domain xmlns="http://unact.net/xml/xi" xmlns:xi="http://unact.net/xml/xi" server="demo">
+    <concept name="Uncashment">
+        <select owner="iorders" sql-name="Uncashment"/>
+        
+        <save owner="iorders" sql-name="Uncashment"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="datetime" type="datetime" label="Дата"/>
+        <property name="totalSumm" type="decimal" label="Выручка всего"/>
+        <property name="totalSummWhite" type="decimal" label="Выручка по ККМ"/>
+    </concept>
+
+    <concept name="PricelistSet">
+        <select owner="iorders" sql-name="PricelistSet"/>
+        
+        <save owner="iorders" sql-name="PricelistSet"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Название"/>
+    </concept>
+
+    <concept name="Pricelist">
+        <select owner="iorders" sql-name="Pricelist"/>
+        
+        <save owner="iorders" sql-name="Pricelist"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Название"/>
+    </concept>
+
+    <concept name="ShopDepartment">
+        <select owner="iorders" sql-name="ShopDepartment"/>
+        
+        <save owner="iorders" sql-name="ShopDepartment"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="ord" type="int"/>
+    </concept>
+
+    <concept name="GapReason">
+        <select owner="iorders" sql-name="GapReason"/>
+        
+        <save owner="iorders" sql-name="GapReason"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Название"/>
+    </concept>
+
+    <concept name="Category">
+        <select owner="iorders" sql-name="Category"/>
+        
+        <save owner="iorders" sql-name="Category"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="ord" type="int"/>
+        
+        <role name="shopDepartment" actor="ShopDepartment"/>
+    </concept>
+
+    <concept name="Product">
+        <select owner="iorders" sql-name="Product"/>
+        
+        <save owner="iorders" sql-name="Product"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Наименование"/>
+        <property name="extraLabel" type="string" label="Подсказка"/>
+        <property name="firstName" type="string" label="Преднаименование"/>
+        <property name="rel" type="int" label="Шт. в упаковке"/>
+        <property name="cost" type="decimal" label="Себестоимость"/>
+        <property name="lastName" type="string" label="Производитель"/>
+        <property name="package" type="int"/>
+        
+        <role name="category" actor="Category"/>
+    </concept>
+
+    <concept name="Price">
+        <select owner="iorders" sql-name="Price"/>
+        
+        <save owner="iorders" sql-name="Price"/>
+        
+        <property name="xid"/>
+        <property name="price" type="decimal" label="Цена"/>
+        
+        <role name="category" actor="Category"/>
+        <role name="pricelistSet" actor="PricelistSet"/>
+        <role name="pricelist" actor="Pricelist"/>
+        <role name="product" actor="Product"/>
+    </concept>
+
+    <concept name="BonusProgram">
+        <select owner="iorders" sql-name="BonusProgram"/>
+        
+        <save owner="iorders" sql-name="BonusProgram"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="goal" type="string" label="Выполни"/>
+        <property name="gain" type="string" label="Получи"/>
+        <property name="dateStart" type="date"/>
+        <property name="dateEnd" type="date"/>
+        <property name="tag" type="string"/>
+        <property name="tagColor" type="string"/>
+        <property name="isFocused" type="boolean"/>
+        <property name="isFirstScreen" type="boolean"/>
+        <property name="isNonHidable" type="boolean"/>
+        <property name="isPopAtStart" type="boolean"/>
+        <property name="isCustomerTargeted" type="boolean"/>
+    </concept>
+
+    <concept name="BonusProgramProduct">
+        <select owner="iorders" sql-name="BonusProgramProduct"/>
+        
+        <save owner="iorders" sql-name="BonusProgramProduct"/>
+        
+        <property name="xid"/>
+        <property name="dateStart" type="date" label="Дата начала"/>
+        <property name="dateEnd" type="date" label="Дата окончания"/>
+        
+        <role name="bonusProgram" actor="BonusProgram"/>
+        <role name="product" actor="Product"/>
+    </concept>
+
+    <concept name="Warehouse">
+        <select owner="iorders" sql-name="Warehouse"/>
+        
+        <save owner="iorders" sql-name="Warehouse"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Название"/>
+    </concept>
+
+    <concept name="Stock">
+        <select owner="iorders" sql-name="Stock"/>
+        
+        <save owner="iorders" sql-name="Stock"/>
+        
+        <property name="xid"/>
+        <property name="stockLevel" type="int" label="Уровень запаса"/>
+        <property name="factor" type="int" label="Кратность"/>
+        
+        <role name="warehouse" actor="Warehouse"/>
+        <role name="product" actor="Product"/>
+    </concept>
+
+    <concept name="Partner">
+        <select owner="iorders" sql-name="Partner"/>
+        
+        <save owner="iorders" sql-name="Partner"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="isBlockedPlong" type="boolean" label="Заблокирован по просрочке"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="plong" type="int" label="Отсрочка оплаты"/>
+        <property name="maxdebt" type="decimal" label="Лимит задолженности"/>
+        <property name="maxord" type="decimal" label="Лимит заказа"/>
+        <property name="orderinfo" type="string" label="Комментарий к отгрузкам"/>
+        <property name="code" type="string" label="Код"/>
+        <property name="info" type="string" label="Прочая информация"/>
+    </concept>
+
+    <concept name="PartnerPriceList">
+        <select owner="iorders" sql-name="PartnerPriceList"/>
+        
+        <save owner="iorders" sql-name="PartnerPriceList"/>
+        
+        <property name="xid"/>
+        <property name="discount" type="decimal" label="% скидки"/>
+        
+        <role name="partner" actor="Partner"/>
+        <role name="pricelistSet" actor="PricelistSet"/>
+        <role name="pricelist" actor="Pricelist"/>
+    </concept>
+
+    <concept name="PartnerPrice">
+        <select owner="iorders" sql-name="PartnerPrice"/>
+        
+        <save owner="iorders" sql-name="PartnerPrice"/>
+        
+        <property name="xid"/>
+        <property name="price" type="decimal" label="Цена"/>
+        
+        <role name="partner" actor="Partner"/>
+        <role name="product" actor="Product"/>
+    </concept>
+
+    <concept name="Debt">
+        <select owner="iorders" sql-name="Debt"/>
+        
+        <save owner="iorders" sql-name="Debt"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="ddate" type="date" label="Дата"/>
+        <property name="ndoc" type="string" label="Документ№"/>
+        <property name="fullSumm" type="decimal" label="Сумма"/>
+        <property name="isWhite" type="boolean" label="Нужен чек"/>
+        <property name="remSumm" type="decimal" label="Задолженность"/>
+        <property name="dateUntil" type="date" label="Оплата до"/>
+        <property name="isOverdue" type="boolean" label="Просрочено"/>
+        
+        <role name="partner" actor="Partner"/>
+    </concept>
+
+    <concept name="Customer">
+        <select owner="iorders" sql-name="Customer"/>
+        
+        <save owner="iorders" sql-name="Customer"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="isBlockedPlong" type="boolean" label="Заблокирован по просрочке"/>
+        <property name="address" type="string" label="Адрес"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="phone" type="string" label="Телефон"/>
+        <property name="info" type="string" label="Комментарии"/>
+        <property name="bonusCost" type="decimal" label="Товарный бонус"/>
+        <property name="bonusForecast" type="decimal" label="Прогноз бонуса"/>
+        
+        <role name="partner" actor="Partner"/>
+        <role name="warehouse" actor="Warehouse"/>
+    </concept>
+
+    <concept name="CustomerBonusProgram">
+        <select owner="iorders" sql-name="CustomerBonusProgram"/>
+        
+        <save owner="iorders" sql-name="CustomerBonusProgram"/>
+        
+        <property name="xid"/>
+        
+        <role name="customer" actor="Customer"/>
+        <role name="bonusProgram" actor="BonusProgram"/>
+    </concept>
+
+    <concept name="EncashmentRequest">
+        <select owner="iorders" sql-name="EncashmentRequest"/>
+        
+        <save owner="iorders" sql-name="EncashmentRequest"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="date" type="date" label="Дата"/>
+        <property name="comment" type="string" label="Комментарий"/>
+        <property name="status" type="string" label="Статус"/>
+        
+        <role name="customer" actor="Customer"/>
+    </concept>
+
+    <concept name="MerchVisit">
+        <select owner="iorders" sql-name="MerchVisit"/>
+        
+        <save owner="iorders" sql-name="MerchVisit"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="deviceCts" type="datetime" label="Дата"/>
+        
+        <role name="customer" actor="Customer"/>
+        <role name="gapReason" actor="GapReason"/>
+    </concept>
+
+    <concept name="SaleOrder">
+        <select owner="iorders" sql-name="SaleOrder"/>
+        
+        <save owner="iorders" sql-name="SaleOrder"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="deviceCts" type="datetime"/>
+        <property name="processing" type="string" label="Статус"/>
+        <property name="isBonus" type="boolean" label="Бонусный"/>
+        <property name="incassNeeded" type="boolean" label="Требуется инкассация"/>
+        <property name="isWhite" type="boolean" label="Нужен счет-фактура"/>
+        <property name="date" type="date" label="Дата доставки"/>
+        <property name="totalCost" type="decimal" label="Стоимость"/>
+        <property name="totalSelfCost" type="decimal" label="Себестоимость"/>
+        <property name="comment" type="string" label="Комментарий"/>
+        
+        <role name="customer" actor="Customer"/>
+    </concept>
+
+    <concept name="SaleOrderPosition">
+        <select owner="iorders" sql-name="SaleOrderPosition"/>
+        
+        <save owner="iorders" sql-name="SaleOrderPosition"/>
+        
+        <property name="xid"/>
+        <property name="volume" type="int" label="Кол-во"/>
+        <property name="package" type="int"/>
+        <property name="cost" type="decimal" label="Стоимость"/>
+        <property name="selfCost" type="decimal"/>
+        
+        <role name="saleOrder" actor="SaleOrder"/>
+        <role name="product" actor="Product"/>
+    </concept>
+
+    <concept name="Encashment">
+        <select owner="iorders" sql-name="Encashment"/>
+        
+        <save owner="iorders" sql-name="Encashment"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="isWhite" type="boolean" label="Выдан чек"/>
+        <property name="datetime" type="datetime" label="Дата"/>
+        <property name="summ" type="decimal" label="Получено"/>
+        
+        <role name="customer" actor="Customer"/>
+        <role name="debt" actor="Debt"/>
+        <role name="uncashment" actor="Uncashment"/>
+    </concept>
+
+    <concept name="CustomerBonusProgramMessage">
+        <select owner="iorders" sql-name="CustomerBonusProgramMessage"/>
+        
+        <save owner="iorders" sql-name="CustomerBonusProgramMessage"/>
+        
+        <property name="xid"/>
+        <property name="msg" type="string" label="Сообщение"/>
+        
+        <role name="customer" actor="Customer"/>
+        <role name="bonusProgram" actor="BonusProgram"/>
+    </concept>
+
+    <concept name="Shipment">
+        <select owner="iorders" sql-name="Shipment"/>
+        
+        <save owner="iorders" sql-name="Shipment"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="ndoc" type="string" label="№"/>
+        <property name="date" type="date" label="Дата отгрузки"/>
+        <property name="status" type="string" label="Статус"/>
+        <property name="comment" type="string" label="Примечание"/>
+        <property name="debtSumm" type="decimal" label="Задолженность"/>
+        <property name="summ" type="decimal" label="Стоимость"/>
+        <property name="lastActive" type="int"/>
+        
+        <role name="customer" actor="Customer"/>
+    </concept>
+
+    <concept name="ShipmentPosition">
+        <select owner="iorders" sql-name="ShipmentPosition"/>
+        
+        <save owner="iorders" sql-name="ShipmentPosition"/>
+        
+        <property name="xid"/>
+        <property name="subid" type="int" key="true"/>
+        <property name="summ" type="decimal" label="Стоимость"/>
+        <property name="vol" type="decimal" label="Кол-во штук"/>
+        <property name="price" type="decimal" label="Цена"/>
+        
+        <role name="shipment" actor="Shipment"/>
+        <role name="product" actor="Product"/>
+    </concept>
+
+    <concept name="Route">
+        <select owner="iorders" sql-name="Route"/>
+        
+        <save owner="iorders" sql-name="Route"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="name" type="string" label="Название"/>
+        <property name="ord" type="int"/>
+    </concept>
+
+    <concept name="RoutePoint">
+        <select owner="iorders" sql-name="RoutePoint"/>
+        
+        <save owner="iorders" sql-name="RoutePoint"/>
+        
+        <property name="xid"/>
+        <property name="ord" type="int" label="Очередность"/>
+        
+        <role name="route" actor="Route"/>
+        <role name="customer" actor="Customer"/>
+    </concept>
+
+    <concept name="Geolocation">
+        <select owner="iorders" sql-name="Geolocation"/>
+        
+        <save owner="iorders" sql-name="Geolocation"/>
+        
+        <property name="id" type="int" key="true"/>
+        <property name="xid"/>
+        <property name="latitude" type="decimal"/>
+        <property name="longitude" type="decimal"/>
+        <property name="accuracy" type="decimal"/>
+        <property name="speed" type="decimal"/>
+        <property name="deviceCts" type="datetime"/>
+        <property name="errorCode" type="int"/>
+    </concept>
+
+    <concept name="Eventlog">
+        <select owner="iorders" sql-name="Eventlog"/>
+        
+        <save owner="iorders" sql-name="Eventlog"/>
+        
+        <property name="xid"/>
+        <property name="module" type="string"/>
+        <property name="action" type="string"/>
+        <property name="data" type="string"/>
+        <property name="deviceCts" type="datetime"/>
+    </concept>
+</domain>
+

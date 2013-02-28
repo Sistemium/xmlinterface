@@ -4,8 +4,7 @@
     <context-extension>
         <views>
             <menu>
-                <option href="views/etc/iorders.xml"/>
-                <option href="views/etc/iexp.xml"/>
+                <option href="views/iorders-demo.xml"/>
             </menu>
         </views>
     </context-extension>
