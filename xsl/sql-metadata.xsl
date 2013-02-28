@@ -99,9 +99,9 @@
                             <xsl:value-of select="concat(
                                 'insert into '
                                 ,@parent
-                                , ' (id) select inserted.'
+                                , ' (id, isPhantom) select inserted.'
                                 , @name
-                                , ' where not exists (select * from '
+                                , ', 1 where not exists (select * from '
                                 , @parent
                                 , ' where id = inserted.'
                                 , @name
