@@ -42,6 +42,25 @@
         
     </concept>
 
+    <concept name="iorders-user" server="demo">
+        
+        <select owner="xmlgate" sql-name="agent"/>
+        
+        <select owner="xmlgate" type="procedure" sql-name="agent">
+            <parameter name="name" type="string" sql-name="@name"/>
+            <parameter name="device-name" type="string" sql-name="@deviceName"/>
+        </select>
+        
+        <save owner="xmlgate" sql-name="agent" />
+        
+        <property name="id" type="int" key="true"/>
+        <property name="name" type="string" label="Имя"/>
+        <property name="device-name" type="string" label="Последнее использованное устройство"/>
+        <property name="ts" type="datetime" label="Активность"/>
+        <property name="xid"/>
+        
+    </concept>
+    
     <concept name="cat">
         <select owner="sys" sql-name="dummy"/>
     </concept>

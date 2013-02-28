@@ -20,6 +20,21 @@
         | comment()
     "/>
     
+    <xsl:template match="@parent-sql-name">
+        <xsl:variable name="role" select="
+            $domain/xi:concept
+                [@name = current()/../@name]
+            /xi:role[@actor = current()/../../@name]
+        "/>
+        <xsl:choose>
+            <xsl:when test="$role">
+                <xsl:attribute name="{local-name()}">
+                    <xsl:value-of select="$role/@name"/>
+                </xsl:attribute>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    
     <xsl:template match="xi:form|xi:join">
         <xsl:choose>
             <xsl:when test="not($domain/xi:concept/@name = @name)">

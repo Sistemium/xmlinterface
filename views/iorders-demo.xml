@@ -19,7 +19,7 @@
                 <init with="today"/>
             </parameter>
             
-            <form name="Uncashment" is-set="true" pipeline="download" extendable="true" parent-sql-name="salesman" label="Сданная выручка" set-label="Сданная выручка">
+            <form name="Uncashment" is-set="true" pipeline="download" extendable="true" label="Сданная выручка" set-label="Сданная выручка">
                 <field name="id"/>
                 <field name="datetime" modifiable="upload"/>
                 <field name="totalSumm" modifiable="upload"/>
@@ -153,7 +153,7 @@
                         <field name="bonusProgram"/>
                     </form>
                 
-                    <form name="EncashmentRequest" is-set="true" extendable="true" parent-sql-name="client" deletable="new-only" label="Заявка на инкассацию" set-label="Заявки на инкассацию" mainMenu="true">
+                    <form name="EncashmentRequest" is-set="true" extendable="true" parent-sql-name="customer" deletable="new-only" label="Заявка на инкассацию" set-label="Заявки на инкассацию" mainMenu="true">
                         <field name="id" type="string"/>
                         <field name="xid"/>
                         <field name="date" editable="true"/>
@@ -165,7 +165,7 @@
                         </where>
                     </form>
                 
-                    <form name="MerchVisit" is-set="true" extendable="true" parent-sql-name="client_id" deletable="new-only" label="Прочая активность" set-label="Прочие активности">
+                    <form name="MerchVisit" is-set="true" extendable="true" parent-sql-name="customer" deletable="new-only" label="Прочая активность" set-label="Прочие активности">
                         <field name="id" type="string"/>
                         <field name="xid"/>
                         <field name="deviceCts" modifiable="true"/>
@@ -176,7 +176,7 @@
                         </where>
                     </form>
                 
-                    <form name="SaleOrder" is-set="true" extendable="true" parent-sql-name="client" deletable="new-only" label="Заказ" set-label="Заказы">
+                    <form name="SaleOrder" is-set="true" extendable="true" parent-sql-name="customer" deletable="new-only" label="Заказ" set-label="Заказы">
                         <field name="id" type="string"/>
                         <field name="xid"/>
                         <field name="deviceCts" editable="new-only"/>
@@ -193,7 +193,7 @@
                             <more-than>today() - 1</more-than>
                         </where>
                         
-                        <form name="SaleOrderPosition" is-set="true" extendable="true" parent-sql-name="pre_order" deletable="new-only" label="Позиция заказа" set-label="Позиции заказа">
+                        <form name="SaleOrderPosition" is-set="true" extendable="true" parent-sql-name="saleOrder" deletable="new-only" label="Позиция заказа" set-label="Позиции заказа">
                             <field name="volume" editable="true"/>
                             <field name="package" editable="true" type="int"/>
                             <field name="cost" editable="compute"/>
@@ -203,7 +203,7 @@
                         </form>
                     </form>
                 
-                    <form name="Encashment" is-set="true" extendable="true" deletable="new-only" parent-sql-name="client" label="Инкассация" set-label="Инкассации">
+                    <form name="Encashment" is-set="true" extendable="true" deletable="new-only" parent-sql-name="customer" label="Инкассация" set-label="Инкассации">
                         <field name="id" type="string"/>
                         <field name="xid"/>
                         <field name="isWhite" editable="true"/>

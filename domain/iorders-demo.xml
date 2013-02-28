@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <domain xmlns="http://unact.net/xml/xi" xmlns:xi="http://unact.net/xml/xi" server="demo">
-    <concept name="Uncashment">
+    <concept name="Uncashment" server="demo">
         <select owner="iorders" sql-name="Uncashment"/>
         
         <save owner="iorders" sql-name="Uncashment"/>
@@ -13,7 +13,7 @@
         <property name="totalSummWhite" type="decimal" label="Выручка по ККМ"/>
     </concept>
 
-    <concept name="PricelistSet">
+    <concept name="PricelistSet" server="demo">
         <select owner="iorders" sql-name="PricelistSet"/>
         
         <save owner="iorders" sql-name="PricelistSet"/>
@@ -23,7 +23,7 @@
         <property name="name" type="string" label="Название"/>
     </concept>
 
-    <concept name="Pricelist">
+    <concept name="Pricelist" server="demo">
         <select owner="iorders" sql-name="Pricelist"/>
         
         <save owner="iorders" sql-name="Pricelist"/>
@@ -33,7 +33,7 @@
         <property name="name" type="string" label="Название"/>
     </concept>
 
-    <concept name="ShopDepartment">
+    <concept name="ShopDepartment" server="demo">
         <select owner="iorders" sql-name="ShopDepartment"/>
         
         <save owner="iorders" sql-name="ShopDepartment"/>
@@ -44,7 +44,7 @@
         <property name="ord" type="int"/>
     </concept>
 
-    <concept name="GapReason">
+    <concept name="GapReason" server="demo">
         <select owner="iorders" sql-name="GapReason"/>
         
         <save owner="iorders" sql-name="GapReason"/>
@@ -54,7 +54,7 @@
         <property name="name" type="string" label="Название"/>
     </concept>
 
-    <concept name="Category">
+    <concept name="Category" server="demo">
         <select owner="iorders" sql-name="Category"/>
         
         <save owner="iorders" sql-name="Category"/>
@@ -67,7 +67,7 @@
         <role name="shopDepartment" actor="ShopDepartment"/>
     </concept>
 
-    <concept name="Product">
+    <concept name="Product" server="demo">
         <select owner="iorders" sql-name="Product"/>
         
         <save owner="iorders" sql-name="Product"/>
@@ -85,7 +85,7 @@
         <role name="category" actor="Category"/>
     </concept>
 
-    <concept name="Price">
+    <concept name="Price" server="demo">
         <select owner="iorders" sql-name="Price"/>
         
         <save owner="iorders" sql-name="Price"/>
@@ -99,7 +99,7 @@
         <role name="product" actor="Product"/>
     </concept>
 
-    <concept name="BonusProgram">
+    <concept name="BonusProgram" server="demo">
         <select owner="iorders" sql-name="BonusProgram"/>
         
         <save owner="iorders" sql-name="BonusProgram"/>
@@ -120,7 +120,7 @@
         <property name="isCustomerTargeted" type="boolean"/>
     </concept>
 
-    <concept name="BonusProgramProduct">
+    <concept name="BonusProgramProduct" server="demo">
         <select owner="iorders" sql-name="BonusProgramProduct"/>
         
         <save owner="iorders" sql-name="BonusProgramProduct"/>
@@ -133,7 +133,7 @@
         <role name="product" actor="Product"/>
     </concept>
 
-    <concept name="Warehouse">
+    <concept name="Warehouse" server="demo">
         <select owner="iorders" sql-name="Warehouse"/>
         
         <save owner="iorders" sql-name="Warehouse"/>
@@ -143,7 +143,7 @@
         <property name="name" type="string" label="Название"/>
     </concept>
 
-    <concept name="Stock">
+    <concept name="Stock" server="demo">
         <select owner="iorders" sql-name="Stock"/>
         
         <save owner="iorders" sql-name="Stock"/>
@@ -156,7 +156,7 @@
         <role name="product" actor="Product"/>
     </concept>
 
-    <concept name="Partner">
+    <concept name="Partner" server="demo">
         <select owner="iorders" sql-name="Partner"/>
         
         <save owner="iorders" sql-name="Partner"/>
@@ -173,7 +173,7 @@
         <property name="info" type="string" label="Прочая информация"/>
     </concept>
 
-    <concept name="PartnerPriceList">
+    <concept name="PartnerPriceList" server="demo">
         <select owner="iorders" sql-name="PartnerPriceList"/>
         
         <save owner="iorders" sql-name="PartnerPriceList"/>
@@ -186,7 +186,7 @@
         <role name="pricelist" actor="Pricelist"/>
     </concept>
 
-    <concept name="PartnerPrice">
+    <concept name="PartnerPrice" server="demo">
         <select owner="iorders" sql-name="PartnerPrice"/>
         
         <save owner="iorders" sql-name="PartnerPrice"/>
@@ -198,7 +198,7 @@
         <role name="product" actor="Product"/>
     </concept>
 
-    <concept name="Debt">
+    <concept name="Debt" server="demo">
         <select owner="iorders" sql-name="Debt"/>
         
         <save owner="iorders" sql-name="Debt"/>
@@ -216,7 +216,7 @@
         <role name="partner" actor="Partner"/>
     </concept>
 
-    <concept name="Customer">
+    <concept name="Customer" server="demo">
         <select owner="iorders" sql-name="Customer"/>
         
         <save owner="iorders" sql-name="Customer"/>
@@ -235,7 +235,7 @@
         <role name="warehouse" actor="Warehouse"/>
     </concept>
 
-    <concept name="CustomerBonusProgram">
+    <concept name="CustomerBonusProgram" server="demo">
         <select owner="iorders" sql-name="CustomerBonusProgram"/>
         
         <save owner="iorders" sql-name="CustomerBonusProgram"/>
@@ -246,7 +246,7 @@
         <role name="bonusProgram" actor="BonusProgram"/>
     </concept>
 
-    <concept name="EncashmentRequest">
+    <concept name="EncashmentRequest" server="demo">
         <select owner="iorders" sql-name="EncashmentRequest"/>
         
         <save owner="iorders" sql-name="EncashmentRequest"/>
@@ -260,7 +260,7 @@
         <role name="customer" actor="Customer"/>
     </concept>
 
-    <concept name="MerchVisit">
+    <concept name="MerchVisit" server="demo">
         <select owner="iorders" sql-name="MerchVisit"/>
         
         <save owner="iorders" sql-name="MerchVisit"/>
@@ -273,7 +273,7 @@
         <role name="gapReason" actor="GapReason"/>
     </concept>
 
-    <concept name="SaleOrder">
+    <concept name="SaleOrder" server="demo">
         <select owner="iorders" sql-name="SaleOrder"/>
         
         <save owner="iorders" sql-name="SaleOrder"/>
@@ -293,7 +293,7 @@
         <role name="customer" actor="Customer"/>
     </concept>
 
-    <concept name="SaleOrderPosition">
+    <concept name="SaleOrderPosition" server="demo">
         <select owner="iorders" sql-name="SaleOrderPosition"/>
         
         <save owner="iorders" sql-name="SaleOrderPosition"/>
@@ -304,11 +304,11 @@
         <property name="cost" type="decimal" label="Стоимость"/>
         <property name="selfCost" type="decimal"/>
         
-        <role name="saleOrder" actor="SaleOrder"/>
+        <role name="saleOrder" actor="SaleOrder" type="belongs"/>
         <role name="product" actor="Product"/>
     </concept>
 
-    <concept name="Encashment">
+    <concept name="Encashment" server="demo">
         <select owner="iorders" sql-name="Encashment"/>
         
         <save owner="iorders" sql-name="Encashment"/>
@@ -324,7 +324,7 @@
         <role name="uncashment" actor="Uncashment"/>
     </concept>
 
-    <concept name="CustomerBonusProgramMessage">
+    <concept name="CustomerBonusProgramMessage" server="demo">
         <select owner="iorders" sql-name="CustomerBonusProgramMessage"/>
         
         <save owner="iorders" sql-name="CustomerBonusProgramMessage"/>
@@ -336,7 +336,7 @@
         <role name="bonusProgram" actor="BonusProgram"/>
     </concept>
 
-    <concept name="Shipment">
+    <concept name="Shipment" server="demo">
         <select owner="iorders" sql-name="Shipment"/>
         
         <save owner="iorders" sql-name="Shipment"/>
@@ -354,7 +354,7 @@
         <role name="customer" actor="Customer"/>
     </concept>
 
-    <concept name="ShipmentPosition">
+    <concept name="ShipmentPosition" server="demo">
         <select owner="iorders" sql-name="ShipmentPosition"/>
         
         <save owner="iorders" sql-name="ShipmentPosition"/>
@@ -369,7 +369,7 @@
         <role name="product" actor="Product"/>
     </concept>
 
-    <concept name="Route">
+    <concept name="Route" server="demo">
         <select owner="iorders" sql-name="Route"/>
         
         <save owner="iorders" sql-name="Route"/>
@@ -380,7 +380,7 @@
         <property name="ord" type="int"/>
     </concept>
 
-    <concept name="RoutePoint">
+    <concept name="RoutePoint" server="demo">
         <select owner="iorders" sql-name="RoutePoint"/>
         
         <save owner="iorders" sql-name="RoutePoint"/>
@@ -392,7 +392,7 @@
         <role name="customer" actor="Customer"/>
     </concept>
 
-    <concept name="Geolocation">
+    <concept name="Geolocation" server="demo">
         <select owner="iorders" sql-name="Geolocation"/>
         
         <save owner="iorders" sql-name="Geolocation"/>
@@ -407,7 +407,7 @@
         <property name="errorCode" type="int"/>
     </concept>
 
-    <concept name="Eventlog">
+    <concept name="Eventlog" server="demo">
         <select owner="iorders" sql-name="Eventlog"/>
         
         <save owner="iorders" sql-name="Eventlog"/>
