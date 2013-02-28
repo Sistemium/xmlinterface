@@ -42,7 +42,7 @@
         
     </concept>
 
-    <concept name="iorders-user" server="demo">
+    <concept name="demo" server="demo">
         
         <select owner="xmlgate" sql-name="agent"/>
         

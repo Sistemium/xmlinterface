@@ -2,7 +2,7 @@
 
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders">
     <view-schema version="1.985" expect-megabytes="15">
-        <form name="sysuser" hidden="true">
+        <form name="demo" hidden="true">
             <parameter name="name">
                 <init with="username"/>
             </parameter>
