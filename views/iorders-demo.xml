@@ -200,7 +200,7 @@
                             <field name="volume" editable="true"/>
                             <field name="package" editable="true" type="int"/>
                             <field name="cost" editable="compute"/>
-                            <field name="selfCost" type="decimal"/>
+                            <field name="selfCost" type="decimal" modifiable="compute"/>
                             <field name="xid"/>
                             <field name="product" no-inwards="true" editable="new-only" key="true"/>
                         </form>
