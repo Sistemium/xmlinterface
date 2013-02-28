@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders">
-    <view-schema version="1.986" expect-megabytes="15">
+    <view-schema version="1.987" expect-megabytes="15">
         <form name="demo" hidden="true">
             
             <field name="id"/>
@@ -272,6 +272,7 @@
                 <field name="deviceCts" editable="new-only"/>
                 <field name="xid"/>
             </form>
+            
         </form>
     </view-schema>
     
@@ -284,7 +285,7 @@
                             <print form="Price" field="price"/>
                             
                             <input form="Product">
-                                <print form="Product" field="first-name"/>
+                                <print form="Product" field="firstName"/>
                                 <print form="Product" field="lastName"/>
                                 <print form="Product" field="name"/>
                                 <print form="Product" field="rel"/>
@@ -379,7 +380,7 @@
                             <print form="Price" field="price"/>
                             
                             <input form="Product">
-                                <print form="Product" field="first-name"/>
+                                <print form="Product" field="firstName"/>
                                 <print form="Product" field="lastName"/>
                                 <print form="Product" field="name"/>
                                 <print form="Product" field="rel"/>
@@ -470,7 +471,7 @@
                 <input form="Category">
                     <print form="Category" field="name"/>
                     <print form="SaleOrder" field="totalCost"/>
-                    <print form="Category" field="shop-department"/>
+                    <print form="Category" field="shopDepartment"/>
                     <print form="ShopDepartment" field="name" alias="ShopDepartment_name"/>
                     <print form="ShopDepartment" field="ord" alias="ShopDepartment_ord"/>
                     <print form="Shipment" field="lastActive"/>
