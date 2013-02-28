@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <view-definition xmlns="http://unact.net/xml/xi" name="iorders">
-    <view-schema version="1.985" expect-megabytes="15">
+    <view-schema version="1.986" expect-megabytes="15">
         <form name="demo" hidden="true">
+            
+            <field name="id"/>
+            
             <parameter name="name">
                 <init with="username"/>
             </parameter>
