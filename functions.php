@@ -127,7 +127,7 @@ set_time_limit (180);
             } else
                 $source_http = $private->mssqlServer;
             
-            if (developerMode()) $request[0]->ownerDocument->save('data/lastrequest.xml');
+            //if (developerMode()) $request[0]->ownerDocument->save('data/lastrequest.xml');
             
             if($http->post($source_http,
                 $http->make_query_string(array(
@@ -136,6 +136,7 @@ set_time_limit (180);
                         "pwd"=>(string)$private->password,
                         "db"=>$db, "server"=>$server))
                 )) try {
+                    //if (developerMode()) file_put_contents('data/lastresponse.xml', $http->response);
                     $doc->loadXML($http->response);
                 } catch (Exception $loadError) {
                     throw new ErrorException($http->response); 

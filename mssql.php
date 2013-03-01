@@ -36,7 +36,7 @@
         
         $query = mssql_query('SET ANSI_NULLS ON');
         $query = mssql_query('SET ANSI_WARNINGS ON');
-        $query = mssql_query('SET TEXTSIZE 20480000');
+        $query = mssql_query('SET TEXTSIZE 40480000');
         $query = mssql_query($sql);
         
         if (!$query) throw new Exception(mssql_get_last_message());
