@@ -3,8 +3,11 @@ call sa_make_object ('service', 'xmlb');
 alter service xmlb
  type 'RAW'
  authorization on
-as call util.xml_for_http(dba.xml_bulk(csconvert(http_body(),'os_charset','utf-8')))
-;
+as call util.xml_for_http(dba.xml_bulk(
+    --csconvert(
+    http_body()
+    --,'os_charset','utf-8')
+));
 
 create or replace function dba.xml_bulk_row (
     @xmlrow xml default null
