@@ -250,10 +250,5 @@
         <execute name="id" href="id.xsl" />
     </pipeline>
 
-    <pipeline name="refactor">
-        <execute name="preview" href="id.xsl">
-            <include href="refactor.xsl"/>
-        </execute>
-    </pipeline>
 
 </configuration>
