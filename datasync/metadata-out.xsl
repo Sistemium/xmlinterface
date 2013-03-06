@@ -31,6 +31,8 @@
         <xsl:attribute name="type">string</xsl:attribute>
     </xsl:template>
 
+    <xsl:template match="comment()"/>
+    
     <xsl:template match="/*/@stage"/>
     
     <xsl:template match="@*[normalize-space() = '']"/>
