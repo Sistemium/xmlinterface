@@ -273,7 +273,7 @@ set_time_limit (180);
     
         if (developerMode()) {
             $doc = new DOMDocument;
-            $doc->load('auth.xml');   
+            $doc->load('config/auth.xml');   
             $xpath = new DOMXPath($doc);
             $xpath -> registerNamespace('xi','http://unact.net/xml/xi');
             $xpathRes = $xpath->query('/*/xi:user[@password and @name="'.$login.'"]');
