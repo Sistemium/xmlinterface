@@ -18,7 +18,7 @@
     
     <context-extension>
         
-        <views href="menu.xml"/>
+        <views href="config/menu.xml"/>
         
     </context-extension>
 
