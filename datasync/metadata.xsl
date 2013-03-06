@@ -78,7 +78,12 @@
                             </xsl:choose>
                         </xsl:attribute>
                         
-                        <xsl:for-each select="$forms[@concept = $model[@name=current()/../@concept]/xi:role[@name=current()/@alias]/@actor]">
+                        <xsl:for-each select="$forms[
+                            @concept
+                                = $model [@name=current()/../@concept]
+                                    /xi:role [@name=current()/@alias or @name=current()/@role or @name = current()[not(@role)]/@name]
+                                    /@actor
+                        ]">
                             <xsl:attribute name="parent"><xsl:value-of select="@name"/></xsl:attribute>
                             <xsl:copy-of select="@label"/>
                             <xsl:if test="$form/@extendable">
@@ -98,7 +103,7 @@
                         <xsl:value-of select="concat(local-name(),':',@name,':',@actor,':',../@name)"/>
                     </xsl:comment>
                     <xsl:for-each select="$forms[@concept=current()/../@name][not(@no-inwards)]
-                        /xi:field[@alias=current()/@name or @role=current()/@name][not(@no-inwards)]
+                        /xi:field[@alias=current()/@name or @role=current()/@name or self::*[not(@role)]/@name=current()/@name][not(@no-inwards)]
                     ">
                         <dep table_id="{../@name}" id="{../@name}{@alias}">
                             <xsl:if test="$role/@type='belongs'">
