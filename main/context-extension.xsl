@@ -23,13 +23,15 @@
     />
     
     <xsl:template match="xi:context-extension//*/@directory">
-        <xsl:apply-templates select="php:function('directoryList',string(.))" mode="import-directory">
+        <xsl:apply-templates select="php:function('directoryList',concat('config/',string(.)))" mode="import-directory">
             <xsl:with-param name="this" select=".."/>
         </xsl:apply-templates>
     </xsl:template>
 
     <xsl:template match="xi:context-extension//*/@href">
-        <xsl:copy/>
+        <xsl:attribute name="href">
+            <xsl:value-of select="concat('config/',.)"/>
+        </xsl:attribute>
         <xsl:apply-templates select=".." mode="import-file"/>
     </xsl:template>
     
@@ -51,13 +53,13 @@
     </xsl:template>
     
     <xsl:template match="xi:option" mode="import-file">
-        <xsl:apply-templates select="document(@href)/*" mode="build-option"/>
+        <xsl:apply-templates select="document(concat('../config/',@href))/*" mode="build-option"/>
     </xsl:template>
     
     <xsl:template match="xi:menu" mode="import-file">
         <xsl:param name="href" select="@href"/>
-        <option href="{$href}">
-            <xsl:apply-templates select="@*|document(concat('../',$href))/*|*" mode="build-option"/>
+        <option href="config/{$href}">
+            <xsl:apply-templates select="@*|document(concat('../config/',$href))/*|*" mode="build-option"/>
         </option>
     </xsl:template>
  
@@ -70,6 +72,11 @@
         <xsl:copy/>
     </xsl:template>
     
+    <!--xsl:template match="@href" mode="build-option">
+        <xsl:attribute name="href">
+            <xsl:value-of select="concat('config/',.)"/>
+        </xsl:attribute>
+    </xsl:template-->
     
     <xsl:template match="xi:context-extension[count(xi:views)&gt;1]//xi:views[not(@name)]" mode="extend">
         
