@@ -275,6 +275,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         $_SESSION['id-counter']=0;
     
     $dir='init';
+    $xslCnt = 0;
     
     if ($tracing) {
         foreach (array('stats', 'dump') as $name) {
@@ -353,12 +354,13 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             do {
                 $xslt->setParameter('', 'counter', ++$_SESSION['id-counter']);
                 $uncommitted = $xslt->transformToDoc($uncommitted);
+                $xslCnt++;
                 
                 $command=$uncommitted->documentElement->getAttribute('pipeline');            
                 $command=($command=='' && $stagename==$quitstage)?'quit':$command;
                 
                 if ($tracing)
-                    $uncommitted->save('data/dump/'.$initName.'/'.$pipelineName.'/'.$stagename.($repeatCount?"($repeatCount)":'').'.xml');
+                    $uncommitted->save('data/dump/'.$initName.'/'.$pipelineName.'/'.$xslCnt.'.'.$stagename.($repeatCount?"($repeatCount)":'').'.xml');
                 
                 switch ($command) {
                     case 'quit':
