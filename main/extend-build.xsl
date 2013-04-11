@@ -239,36 +239,41 @@
     </xsl:template> 
 
     <xsl:template match="xi:role" mode="join-on">
+		
         <xsl:param name="join-itself"/>
         <xsl:param name="form" select="$join-itself/.."/>
         <xsl:param name="joined" select="$form/.."/>
-        <join type="role">
-            <on concept="{@name}" property="id">
-                <xsl:attribute name="name">
-                    <xsl:value-of select="($joined|$form)[@concept=current()/@actor][1]/@name"/>
-                </xsl:attribute>
-                <xsl:apply-templates select="$model/xi:concept[@name=current()/@actor]/*[@name='id']/@type"/>
-            </on>
-            <on>
-                <xsl:attribute name="concept">
-                    <xsl:if test="$form">
-                        <xsl:value-of select="parent::*[not(@name=$form/@concept)]/@name | $form[@concept=current()/../@name]/@concept"/>
-                    </xsl:if>
-                    <xsl:if test="not($form)">
-                        <xsl:value-of select="../@name"/>
-                    </xsl:if>
-                </xsl:attribute>
-                <xsl:attribute name="property">
-                    <xsl:value-of select="@name"/> 
-                </xsl:attribute>
-                <xsl:attribute name="name">
-                    <xsl:if test="$form">
-                        <xsl:value-of select="($joined|$form)[@concept=current()/../@name][last()]/@name"/> 
-                    </xsl:if>
-                </xsl:attribute>
-            </on>
-            <!--on concept="{../@name}" property="{@name}"/-->
-        </join>
+		
+		<xsl:if test="not($form/@parent-role) or $form/@parent-role=@name">
+			<join type="role">
+				<on concept="{@name}" property="id">
+					<xsl:attribute name="name">
+						<xsl:value-of select="($joined|$form)[@concept=current()/@actor][1]/@name"/>
+					</xsl:attribute>
+					<xsl:apply-templates select="$model/xi:concept[@name=current()/@actor]/*[@name='id']/@type"/>
+				</on>
+				<on>
+					<xsl:attribute name="concept">
+						<xsl:if test="$form">
+							<xsl:value-of select="parent::*[not(@name=$form/@concept)]/@name | $form[@concept=current()/../@name]/@concept"/>
+						</xsl:if>
+						<xsl:if test="not($form)">
+							<xsl:value-of select="../@name"/>
+						</xsl:if>
+					</xsl:attribute>
+					<xsl:attribute name="property">
+						<xsl:value-of select="@name"/> 
+					</xsl:attribute>
+					<xsl:attribute name="name">
+						<xsl:if test="$form">
+							<xsl:value-of select="($joined|$form)[@concept=current()/../@name][last()]/@name"/> 
+						</xsl:if>
+					</xsl:attribute>
+				</on>
+				<!--on concept="{../@name}" property="{@name}"/-->
+			</join>
+		</xsl:if>
+		
     </xsl:template>
       
     <xsl:template match="xi:role[@composite]" mode="join-on">
