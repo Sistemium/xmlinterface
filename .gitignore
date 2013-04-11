@@ -2,3 +2,7 @@ HTTPRetriever.php
 jquery
 data/*
 .DS_Store
+domain/*
+views/*
+config/*
+config

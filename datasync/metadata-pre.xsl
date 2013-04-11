@@ -8,8 +8,6 @@
     <xsl:param name="model" select="document(/*/xi:session/xi:domains/xi:domain/@href)/xi:domain/xi:concept"/>
 
     <xsl:include href="../id.xsl"/>
-    <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
-    <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
     
     <xsl:template match="xi:view-data | xi:display"/>
 
@@ -24,7 +22,12 @@
                              /xi:role[not(@name = current()/xi:field/@name) and @actor=current()/parent::xi:form/@concept]">
             <field name="{@actor}">
                 <xsl:attribute name="alias">
-                    <xsl:value-of select="translate($form/../@name,$ucletters,$lcletters)"/>
+                    <xsl:value-of select="
+                        concat(
+                            translate(substring($form/../@name,1,1),$ucletters,$lcletters)
+                            , substring($form/../@name,2)
+                        )
+                    "/>
                 </xsl:attribute>
                 <xsl:apply-templates select="$form/../xi:field[@name='id']/@type"/>
                 <xsl:if test="not($form/xi:field[@name='id'])">

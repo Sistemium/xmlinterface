@@ -391,7 +391,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                             if (!datum) {
                                 var parent=downloadData[i].parentNode;
                                 
-                                if (parent.tagName.toLowerCase()==column.name)
+                                if (lowercaseFirstLetter(parent.tagName) == column.name)
                                     datum=parent.getAttribute('id');
                             }
                             

@@ -19,6 +19,12 @@
 
     <xsl:template match="/">
         <metadata>
+            <xsl:variable name="style" select="*/xi:userinput/xi:command[@name='style']"/>
+            <xsl:if test="$style">
+                <xsl:attribute name="style">
+                    <xsl:value-of select="$style"/>
+                </xsl:attribute>
+            </xsl:if>
             <xsl:apply-templates/>
         </metadata>
     </xsl:template>
@@ -72,7 +78,12 @@
                             </xsl:choose>
                         </xsl:attribute>
                         
-                        <xsl:for-each select="$forms[@concept = $model[@name=current()/../@concept]/xi:role[@name=current()/@name]/@actor]">
+                        <xsl:for-each select="$forms[
+                            @concept
+                                = $model [@name=current()/../@concept]
+                                    /xi:role [@name=current()/@alias or @name=current()/@role or @name = current()[not(@role)]/@name]
+                                    /@actor
+                        ]">
                             <xsl:attribute name="parent"><xsl:value-of select="@name"/></xsl:attribute>
                             <xsl:copy-of select="@label"/>
                             <xsl:if test="$form/@extendable">
@@ -88,7 +99,12 @@
                 
                 <deps set-of="dep"><xsl:for-each select="$model/xi:role[@actor=current()/@concept]">
                     <xsl:variable name="role" select="."/>
-                    <xsl:for-each select="$forms[@concept=current()/../@name][not(@no-inwards)]/xi:field[@name=current()/@name][not(@no-inwards)]">
+                    <xsl:comment>
+                        <xsl:value-of select="concat(local-name(),':',@name,':',@actor,':',../@name)"/>
+                    </xsl:comment>
+                    <xsl:for-each select="$forms[@concept=current()/../@name][not(@no-inwards)]
+                        /xi:field[@alias=current()/@name or @role=current()/@name or self::*[not(@role)]/@name=current()/@name][not(@no-inwards)]
+                    ">
                         <dep table_id="{../@name}" id="{../@name}{@alias}">
                             <xsl:if test="$role/@type='belongs'">
                                 <xsl:attribute name="contains">true</xsl:attribute>
@@ -127,7 +143,12 @@
                     </xsl:variable>
                     
                     <xsl:for-each select="key('id',@ref)">
-                        <xsl:variable name="formAlias" select="translate(self::xi:form/@name,$ucletters,$lcletters)"/>
+                        <xsl:variable name="formAlias" select="
+                            concat(
+                                translate(substring(self::xi:form/@name,1,1),$ucletters,$lcletters)
+                                , substring(self::xi:form/@name,2)
+                            )
+                        "/>
                         
                         <column id="{$view/@name}{$alias}{$formAlias}" name="{$alias}{$formAlias}" >
                             <xsl:attribute name="type">

@@ -515,7 +515,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     metaField = metadata.columnsStore.getById(store.model.modelName+field.name)
                 ;
                 
-                if (field.name[0] == field.name[0].toLowerCase()){
+                if (field.name[0] == lowercaseFirstLetter(field.name[0])){
                     switch (field.type.type) {
                         case 'bool':
                             rv = rv ? 1: 0;

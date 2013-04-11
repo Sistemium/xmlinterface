@@ -70,6 +70,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     
     $command='';
     $quitstage='';
+    $persistOutput = false;
     
     $ui = $context_part =  $Context->userinput[0];    
     
@@ -234,7 +235,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         }
     }
 
-    $tracing = (strpos($host,'mac')!==false || strpos($host,'192.168')!==false || isset($Context['debug']));
+    $tracing = (strpos($host,'local')!==false || strpos($host,'192.168')!==false || isset($Context['debug']));
 
     $xslt = new XSLTProcessor(); 
     $xslt->registerPHPFunctions();
@@ -274,6 +275,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         $_SESSION['id-counter']=0;
     
     $dir='init';
+    $xslCnt = 0;
     
     if ($tracing) {
         foreach (array('stats', 'dump') as $name) {
@@ -334,6 +336,14 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                      $_SESSION['redirected-content']=$contentType;
                 }
                 
+                if ($persistOutput) {
+                    $ts = microtime(true);
+                    file_put_contents (
+                        'data/output/' . $ts . '.xml'
+                        , $result
+                    );
+                }
+                
                 $dontPrint=true;
                 break;
             }
@@ -344,12 +354,13 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             do {
                 $xslt->setParameter('', 'counter', ++$_SESSION['id-counter']);
                 $uncommitted = $xslt->transformToDoc($uncommitted);
+                $xslCnt++;
                 
                 $command=$uncommitted->documentElement->getAttribute('pipeline');            
                 $command=($command=='' && $stagename==$quitstage)?'quit':$command;
                 
                 if ($tracing)
-                    $uncommitted->save('data/dump/'.$initName.'/'.$pipelineName.'/'.$stagename.($repeatCount?"($repeatCount)":'').'.xml');
+                    $uncommitted->save('data/dump/'.$initName.'/'.$pipelineName.'/'.$xslCnt.'.'.$stagename.($repeatCount?"($repeatCount)":'').'.xml');
                 
                 switch ($command) {
                     case 'quit':

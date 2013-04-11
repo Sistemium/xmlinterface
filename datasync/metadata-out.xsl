@@ -11,6 +11,14 @@
     
     <xsl:template match="/">
         
+        <xsl:for-each select="*/@style">
+            <xsl:processing-instruction name="xml-stylesheet">
+                <xsl:text>type="text/xsl" href="xsl/</xsl:text>
+                <xsl:value-of select="."/>
+                <xsl:text>-metadata.xsl"</xsl:text>
+            </xsl:processing-instruction>
+        </xsl:for-each>
+        
         <!--xsl:processing-instruction name="xml-stylesheet-">
             <xsl:text>type="text/xsl" href="html-xsl.xsl"</xsl:text>
         </xsl:processing-instruction-->
@@ -23,6 +31,8 @@
         <xsl:attribute name="type">string</xsl:attribute>
     </xsl:template>
 
+    <xsl:template match="comment()"/>
+    
     <xsl:template match="/*/@stage"/>
     
     <xsl:template match="@*[normalize-space() = '']"/>

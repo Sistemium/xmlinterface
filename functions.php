@@ -136,7 +136,7 @@ set_time_limit (180);
                         "pwd"=>(string)$private->password,
                         "db"=>$db, "server"=>$server))
                 )) try {
-                    //if (developerMode()) file_put_contents('data/lastresponse.xml', $http->response);
+                    if (developerMode()) file_put_contents('data/last.response.http.xml',$http->response);
                     $doc->loadXML($http->response);
                 } catch (Exception $loadError) {
                     throw new ErrorException($http->response); 
@@ -274,7 +274,7 @@ set_time_limit (180);
     
         if (developerMode()) {
             $doc = new DOMDocument;
-            $doc->load('auth.xml');   
+            $doc->load('config/auth.xml');   
             $xpath = new DOMXPath($doc);
             $xpath -> registerNamespace('xi','http://unact.net/xml/xi');
             $xpathRes = $xpath->query('/*/xi:user[@password and @name="'.$login.'"]');

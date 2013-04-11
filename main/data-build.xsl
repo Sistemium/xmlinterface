@@ -190,6 +190,7 @@
                 <xsl:apply-templates select="$metadata" mode="build-data">
                     <xsl:with-param name="data" select="."/>
                     <xsl:with-param name="set-thrshld" select="1"/>
+                    <xsl:with-param name="type" select="1"/>
                 </xsl:apply-templates>
                 
             </xsl:for-each>
@@ -197,6 +198,7 @@
             <xsl:if test="not($data-set) and $metadata/@extendable">
                 <xsl:apply-templates select="$metadata" mode="build-data">
                     <xsl:with-param name="set-thrshld" select="1"/>
+                    <xsl:with-param name="type" select="1"/>
                 </xsl:apply-templates>
             </xsl:if>
             
@@ -208,8 +210,9 @@
 
     <xsl:template match="xi:form" mode="build-data">
         
-        <xsl:param name="data" select="xi:null" />
-        <xsl:param name="type" />
+        <xsl:param name="data" select="/.." />
+        <xsl:param name="type" select="/.."/>
+        <xsl:param name="no-choise" select="/.."/>
         <xsl:param name="choose-for" />
         <xsl:param name="set-thrshld" select="1 - count(@is-set)"/>
         <!-- не доделано @expect-choise[.='forced']) -->
@@ -259,7 +262,7 @@
                     
                     <xsl:apply-templates select="$data/xi:response/@ts" />
                     
-                    <xsl:if test="$choosing">
+                    <xsl:if test="$choosing and not($no-choise)">
                         
                         <xsl:attribute name="chosen">
                             <xsl:value-of select="$data/@id"/>
@@ -367,6 +370,7 @@
                                                             [@name=current()/@name]
                                                     "
                                     />
+                                    <xsl:with-param name="no-choise" select="1"/>
                                 </xsl:apply-templates>
                                 
                             </xsl:for-each>

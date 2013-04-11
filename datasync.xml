@@ -2,12 +2,7 @@
 <configuration xmlns="http://unact.net/xml/xi" name="datasync" gzip="true">
     
     <context-extension>
-        <views>
-            <menu>
-                <option href="views/etc/iorders.xml"/>
-                <option href="views/etc/iexp.xml"/>
-            </menu>
-        </views>
+        <views href="config/datasync-menu.xml"/>
     </context-extension>
     
     <pipeline name="main">

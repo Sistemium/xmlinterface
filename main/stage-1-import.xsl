@@ -184,6 +184,10 @@
         
         <xsl:param name="command"/>
         
+        <xsl:if test="@chosen and $command[text()='unchoose']">
+           <xsl:attribute name="unchoose-this">true</xsl:attribute>
+        </xsl:if>
+        
         <xsl:for-each select="$command[(
             text()=current()/xi:set-of[@is-choise]/xi:data/@id
                        or text()=current()/ancestor::xi:view-data//xi:data[@name=current()/@choise]/@id
@@ -210,10 +214,6 @@
             <xsl:for-each select="set-of[@is-choise]/xi:data[xi:datum[@name='id']=$dyn]">
                 <chosen ref="{@id}"/>
             </xsl:for-each>
-        </xsl:if>
-        
-        <xsl:if test="@chosen and $command[text()='unchoose']">
-           <xsl:attribute name="unchoose-this">true</xsl:attribute>
         </xsl:if>
         
     </xsl:template>
