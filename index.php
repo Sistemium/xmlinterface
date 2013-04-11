@@ -235,7 +235,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         }
     }
 
-    $tracing = (strpos($host,'mac')!==false || strpos($host,'192.168')!==false || isset($Context['debug']));
+    $tracing = (strpos($host,'local')!==false || strpos($host,'192.168')!==false || isset($Context['debug']));
 
     $xslt = new XSLTProcessor(); 
     $xslt->registerPHPFunctions();
