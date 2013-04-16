@@ -214,13 +214,13 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             me.executeDDL(t, 'DROP TABLE IF EXISTS '+table.id+';');
             
-            var columnsDDL='', fkDDL='', pkDDL='';
+            var columnsDDL='', fkDDL='', pkDDL='', hasId;
             
             Ext.each (table.columns, function (column, idx, columns) {
                 
                 columnsDDL += column.name + ' ' + (column.type || 'string') + ', ';
                 //if (column.parent) fkDDL += ', foreign key ('+column.name+') references '+ column.parent;
-                if (column.name == 'id' && !table.extendable ) pkDDL = 'primary key (id)';
+                if (column.name == 'id') hasId = true;
                 if (column.name == 'xid' && table.extendable) pkDDL = 'primary key (xid)';
                 
             });
@@ -230,7 +230,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             if (!pkDDL) {
                 Ext.each (table.columns, function (column, idx, columns) {
-                    if (column.parent) pkDDL += column.name + ',';
+                    if ((column.parent && !hasId) || column.key) pkDDL += column.name + ',';
                 });
                 if (pkDDL) pkDDL = 'primary key (' + pkDDL.slice(0,pkDDL.length - 1) + ')'
             }

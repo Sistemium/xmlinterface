@@ -59,7 +59,7 @@
             
             <table id="{@name}" name="{@label}" nameSet="{@set-label}" level="{count(ancestor::xi:form[not(@hidden)])}">
                 
-                <xsl:copy-of select="@extendable | @deletable | */@editable | @mainMenu"/>
+                <xsl:copy-of select="@extendable | @deletable | */@editable | @mainMenu | @clsColumn"/>
                 
                 <xsl:if test="$model[@name=current()/@concept]/xi:role[@actor=current()/../@concept][@type='belongs']">
                     <xsl:attribute name="belongs">
@@ -91,7 +91,10 @@
                             </xsl:if>
                         </xsl:for-each>
                         
-                        <xsl:copy-of select="@label|@editable|@aggregable|@title|@init|self::*[not(@name='xid')]/@key"/>
+                        <xsl:copy-of select="
+                            @label|@editable|@aggregable|@title|@init
+                            | self::*[not(@name='xid')]/@key
+                        "/>
                         
                     </column>
                     
