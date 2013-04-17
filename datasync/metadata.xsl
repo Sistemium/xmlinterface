@@ -91,7 +91,11 @@
                             </xsl:if>
                         </xsl:for-each>
                         
-                        <xsl:copy-of select="@label|@editable|@aggregable|@title|@init|self::*[not(@name='xid')]/@key"/>
+                        <xsl:copy-of select="
+                            @label|@editable|@aggregable|@title|@init
+                            | @importFields
+                            | self::*[not(@name='xid')]/@key
+                        "/>
                         
                     </column>
                     
