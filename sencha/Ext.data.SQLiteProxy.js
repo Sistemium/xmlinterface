@@ -101,7 +101,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                 
                 if (field.type.type=='bool') {
                     rv = rv ? 1: 0;
-                } else if (field.type.type=='date') {
+                } else if (rv && field.type.type=='date') {
                     rv = rv.format('Y/m/d')
                 }
                 
