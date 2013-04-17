@@ -30,7 +30,7 @@
                     "/>
                 </xsl:attribute>
                 <xsl:apply-templates select="$form/../xi:field[@name='id']/@type"/>
-                <xsl:if test="not($form/xi:field[@name='id'])">
+                <xsl:if test="not($form/xi:field[@name='id']) or @type='belongs'">
                     <xsl:attribute name="key">true</xsl:attribute>
                 </xsl:if>
             </field>
