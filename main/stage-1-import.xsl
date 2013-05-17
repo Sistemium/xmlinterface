@@ -12,7 +12,12 @@
         <xsl:attribute name="pipeline">
             <xsl:value-of select="/*/xi:userinput/xi:command[@name='stage1']"/>
         </xsl:attribute>
-       <!--xsl:apply-templates select="document('init.xml')/*/xi:context-extension[xi:session]/*"/-->
+        <!--xsl:apply-templates select="document('init.xml')/*/xi:context-extension[xi:session]/*"/-->
+        <xsl:if test="not(@label)">
+            <xsl:attribute name="label">
+                <xsl:value-of select="document('../config/menu.xml')/*/@label"/>
+            </xsl:attribute>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="xi:userinput">

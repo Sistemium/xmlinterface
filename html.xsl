@@ -56,7 +56,7 @@
         <head>
             <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
             <meta http-equiv="X-UA-Compatible" content="IE=100" />
-            <title>Система Юнэкт</title>
+            <title><xsl:value-of select="/*/@label"/></title>
             <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
             <link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
             
