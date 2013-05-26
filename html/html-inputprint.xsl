@@ -506,7 +506,7 @@
             <xsl:when test="@pipeline">
                 <a href="?pipeline={@pipeline}&amp;datum={$value/@id}&amp;file-name={$value/../xi:datum[@name='name']}">Скачать файл</a>
             </xsl:when>
-            <xsl:when test="@type='int' and not(@editable) and string-length($value)>0">
+            <xsl:when test="@type='int' and @format='#' and not(@editable) and string-length($value)>0">
                 <xsl:if test="not($value='0')">
                     <xsl:value-of select="format-number($value,'#')"/>
                 </xsl:if>
