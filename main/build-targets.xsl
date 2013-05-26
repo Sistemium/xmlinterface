@@ -106,11 +106,17 @@
     
     <xsl:template mode="build-target" match="
         xi:on/*/xi:command
-            [ @name = ancestor::xi:view/xi:view-data//xi:preload/@name ]
+            [ @name = ancestor::xi:view/xi:view-data
+                //* [self::xi:preload|self::xi:data] /@name
+            ]
     ">
         
         <xsl:call-template name="build-target">
-                <xsl:with-param name="target-id" select="ancestor::xi:view/xi:view-data//xi:preload [@name=current()/@name]/@id"/>
+                <xsl:with-param name="target-id" select="
+                    ancestor::xi:view/xi:view-data
+                        //* [self::xi:preload|self::xi:data]
+                            [@name=current()/@name]/@id
+                "/>
                 <xsl:with-param name="payload" select="current()"/>
         </xsl:call-template>
         
