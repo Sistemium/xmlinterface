@@ -87,13 +87,18 @@
 
     <!-- пришел ответ на запрос, но данных нет -->
 
-    <xsl:template match="xi:view-data//xi:preload[not(xi:datum[@type='parameter'])][xi:response[xi:exception[xi:not-found]]]"/>
+    <xsl:template match="
+        xi:view-data//xi:preload
+            [not(xi:datum[@type='parameter'])]
+            [xi:response[xi:exception[xi:not-found]]]
+    "/>
 
     <xsl:template match="xi:view-data//xi:preload[xi:response/xi:exception]" name="build-not-found-data">
-        <data>
+        <preload>
             <xsl:apply-templates select="@*"/>
             <xsl:apply-templates select="key('id',@ref)/@name"/>
-        </data>
+            <xsl:apply-templates select="xi:response"/>
+        </preload>
     </xsl:template>
 
     <xsl:template match="xi:view-data//xi:preload[xi:response/xi:exception][key('id',@ref)/@is-set]">
