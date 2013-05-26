@@ -403,7 +403,7 @@
                 </xsl:if>
             </div>
         </xsl:if>
-        <xsl:apply-templates select="ancestor::xi:view/xi:view-data//xi:exception[key('id',(parent::xi:response/parent::xi:data|parent::xi:data)/@ref)[(ancestor::*/@id|descendant-or-self::*/@id)=current()//*/@ref]]"/>
+        <xsl:apply-templates select="ancestor::xi:view/xi:view-data//xi:exception[key('id',(parent::xi:response/parent::*[self::xi:data|self::xi:preload]|parent::xi:data)/@ref)[(ancestor::*/@id|descendant-or-self::*/@id)=current()//*/@ref]]"/>
         <xsl:variable name="rows-affected" select="sum(ancestor::xi:view/xi:view-data//xi:response/xi:rows-affected)"/>
         <xsl:if test="$rows-affected != 0">
             <div class="success message">
