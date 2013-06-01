@@ -269,7 +269,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             sqlWhere = '', filters = operation.filters, hostVars =[]
         ;
         
-        if (scope.isStore && !scope.remoteFilter) filters = false;
+        if (!operation.remoteFilter && scope.isStore && !scope.remoteFilter) filters = false;
         
         if (filters)
             for (i = 0; i < filters.length; i++) if (!fieldNames || fieldNames[filters[i].property]) {
