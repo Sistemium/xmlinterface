@@ -321,14 +321,27 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             xi = opts.xi,
             p = function (t) {
                 me.persistTableData (t, xml, xi, response)
-            }
+            },
+            noData = Ext.DomQuery.select ('no-data', xml)
         ;
         
-//        if ( xi.noServer && opts.params.filter )
-//            p (this.metadata.tables[opts.params.filter]);
-//        else        
+        if ( noData.length ) {
+            
+            var request = response,
+                table = noData[0].getAttribute('name')
+            ;
+            
+            console.log ('Ext.data.Engine.processDowloadData no-data: ' + table);
+            
+            request.willContinue = false;
+            
+            //xi.cleanDownloadSession (request);
+            xi.fireEvent ('tableload', table, false );
+            //xi.fireEvent ('tableloadfull', table);
+            
+        } else {
             Ext.each (this.metadata.tables, p)
-        ;
+        }
         
     },
     
