@@ -309,52 +309,56 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
 
     download: function( engine ) {
         
-        var me = this,
-            processSuccessfullResponse = function(response, opts) {
-                var nextRequestParams = me.downloadSession.requestsParams.pop();
-                
-                engine.processDowloadData (response, opts);
-                
-                if (nextRequestParams)
-                    me.request(nextRequestParams);
-                else console.log ('Ext.data.XmlInterface processSuccessfullResponse error')
-            },
+        var me = this;
+        
+        var processSuccessfullResponse = function(response, opts) {
             
-            requestsQueue = function() {
-                
-                var res = [],
-                    params = {
-                        command: 'download' ,
-                        timeout: 120000,
-                        scope: engine,
-                        success: processSuccessfullResponse,
-                        xi: me
+            var nextRequestParams = me.downloadSession.requestsParams.pop();
+            
+            engine.processDowloadData (response, opts);
+            
+            if (nextRequestParams)
+                me.request(nextRequestParams);
+            else
+                console.log ('Ext.data.XmlInterface processSuccessfullResponse error')
+            ;
+            
+        }
+        
+        var requestsQueue = ( function() {
+            
+            var res = [],
+                params = {
+                    command: 'download' ,
+                    timeout: 120000,
+                    scope: engine,
+                    success: processSuccessfullResponse,
+                    xi: me
+                }
+            ;
+            
+            if ( !me.noServer && Ext.ModelMgr.getModel('Table').prototype.fields.get('level') )
+                Ext.each (engine.tables, function(t) {
+                    if ( t.level == 0 ) {
+                        me.fireEvent ('beforetableload', t.id);
+                        
+                        params.params = {filter: t.id};
+                        params.params[t.id] = 'unchoose';
+                        
+                        res.splice (0, 0, Ext.apply({},params));
                     }
-                ;
-                
-                if ( !me.noServer && Ext.ModelMgr.getModel('Table').prototype.fields.get('level') )
-                    Ext.each (engine.tables, function(t) {
-                        if ( t.level == 0 ) {
-                            me.fireEvent ('beforetableload', t.id);
-                            
-                            params.params = {filter: t.id};
-                            params.params[t.id] = 'unchoose';
-                            
-                            res.splice (0, 0, Ext.apply({},params));
-                        }
-                    })
-                ;
-                
-                if ( res.length == 0 )
-                    res.push (
-                        params
-                    )
-                ;
-                
-                return res;
-                
-            }()
-        ;
+                })
+            ;
+            
+            if ( res.length == 0 )
+                res.push (
+                    params
+                )
+            ;
+            
+            return res;
+            
+        }) ();
         
         me.downloadSession = {
             
