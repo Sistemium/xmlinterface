@@ -337,7 +337,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             //xi.cleanDownloadSession (request);
             xi.fireEvent ('tableload', table, false );
-            //xi.fireEvent ('tableloadfull', table);
+            xi.fireEvent ('tableloadfull', table);
             
         } else {
             Ext.each (this.metadata.tables, p)
