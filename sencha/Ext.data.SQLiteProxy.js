@@ -92,6 +92,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         
         Ext.each (record.fields.items, function (field) {
             if ((!meta || fields.map[field.name]) && !(field.name == 'ts' || field.name == updateKey)) {
+                if (field.compute || field.template) return;
                 sql += field.name
                     + (updateKey ? '=?' : '')
                     + ','
@@ -257,6 +258,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     tableName = meta.viewName
                 ;
                 Ext.each (fields, function (field) {
+                    if (field.compute || field.template) return;
                     if (field.name == 'serverPhantom')
                         sqlSelectList += '(select 1 from toUpload where hasPhantom = \'true\' and id = ' + tableName + '.xid) as '
                     ;

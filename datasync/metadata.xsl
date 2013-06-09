@@ -51,6 +51,13 @@
 
     <xsl:template match="xi:menu|xi:dialogue" mode="metadata"/>
 
+    <xsl:template match="xi:sencha-template//node()" mode="metadata">
+        <xsl:copy>
+            <xsl:copy-of select="@class|@if"/>
+            <xsl:apply-templates select="node()" mode="metadata"/>
+        </xsl:copy>
+    </xsl:template>
+    
     <xsl:template match="xi:view-schema" mode="metadata">
         <xsl:variable name="forms" select="descendant::xi:form[not(@hidden)]"/> 
         <tables set-of="table"><xsl:for-each select="$forms">
@@ -95,7 +102,20 @@
                             @label|@editable|@aggregable|@title|@init
                             | @importFields
                             | self::*[not(@name='xid')]/@key
+                            | @sencha-compute
                         "/>
+                        
+                        <xsl:for-each select="xi:sencha-compute">
+                            <xsl:attribute name="compute">
+                                <xsl:value-of select="."/>
+                            </xsl:attribute>
+                        </xsl:for-each>
+                        
+                        <xsl:for-each select="xi:sencha-template">
+                            <tpl>
+                                <xsl:apply-templates select="*" mode="metadata"/>
+                            </tpl>
+                        </xsl:for-each>
                         
                     </column>
                     

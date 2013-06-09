@@ -287,6 +287,12 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         Ext.each ( inputNode.childNodes, function(node,idx,nodes) {
             var o = node.nodeValue || true;
             
+            if (node.nodeName=='tpl') {
+                result['template'] = new XMLSerializer().serializeToString(node);
+                result['template'] = result['template'].replace(/( xmlns="[^"]*")/,'');
+                return;
+            }
+            
             if (node.childNodes.length > 0 || node.attributes)
                 o = me.xml2obj(node);
             

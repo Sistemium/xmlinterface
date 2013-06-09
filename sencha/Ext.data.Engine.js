@@ -218,6 +218,8 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             Ext.each (table.columns, function (column, idx, columns) {
                 
+                if (column.template || column.compute) return;
+                
                 columnsDDL += column.name + ' ' + (column.type || 'string') + ', ';
                 //if (column.parent) fkDDL += ', foreign key ('+column.name+') references '+ column.parent;
                 if (column.name == 'id') hasId = true;
@@ -250,6 +252,8 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             Ext.each (table.columns, function (column, idx, columns) {
                 
+                if (column.compute || column.template) return;
+                
                 var idxDDL = '', viewDDLplus = '';
                 
                 if (column.parent || column.name == 'id') 
@@ -267,6 +271,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                 
                 if (column.parent)
                     tables[column.parent].columns.forEach ( function (pcol, idx) {
+                        if (pcol.compute || pcol.template) return;
                         viewDDLplus += ', '+column.parent+'.'+pcol.name+ ' as '+column.parent+'_'+pcol.name;
                     })
                 ;
