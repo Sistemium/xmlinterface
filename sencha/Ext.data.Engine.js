@@ -154,7 +154,8 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
     executeDDL: function (t, ddl) {
         
         t.debug && console.log('Ext.data.Engine.executeDDL: '+ ddl);
-        return t.executeSql (ddl, [], this.nullDataHandler, this.errorHandler)
+        t.ddl = ddl;
+        return t.executeSql (ddl, [], this.nullDataHandler, this.errorHandler);
         
     },
     
@@ -219,6 +220,12 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             Ext.each (table.columns, function (column, idx, columns) {
                 
                 if (column.template || column.compute) return;
+                
+                if(column.parent){
+                    tables[column.parent] && tables[column.parent].columns.map['id'] && (
+                        column.type = tables[column.parent].columns.map['id'].type
+                    )
+                };
                 
                 columnsDDL += column.name + ' ' + (column.type || 'string') + ', ';
                 //if (column.parent) fkDDL += ', foreign key ('+column.name+') references '+ column.parent;
