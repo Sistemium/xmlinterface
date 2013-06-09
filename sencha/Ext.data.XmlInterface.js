@@ -312,6 +312,27 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         
         return result;
     },
+    
+    requestDownload: function (table, engine) {
+        
+        var r = {
+            
+            command: 'download',
+            scope: engine,
+            timeout: 120000,
+            xi: this,
+            params: {filter: table},
+            
+            success: function (response, opts) {
+                engine.processDowloadData (response, opts);
+            }
+        };
+        
+        r.params[table] = 'unchoose';
+        
+        this.request (r);
+        
+    },
 
     download: function( engine ) {
         

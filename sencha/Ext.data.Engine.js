@@ -118,6 +118,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             t.columns.map = {};
             Ext.each (t.columns, function(c) {
                 t.columns.map[c.name] = c;
+                (c.template || c.compute) && (c.virtual = true);
             })
         });
         

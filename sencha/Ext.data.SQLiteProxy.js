@@ -301,7 +301,12 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (scope.isStore && !scope.remoteSort) sorters = false;
         
         if (sorters) for (i = 0; i < sorters.length; i++) {
-            sqlOrderBy += sorters[i].property +' '+ sorters[i].direction +  ((i < sorters.length-1) ? ',' : '')
+            var f = fieldNames[sorters[i].property];
+            f && !f.compute && (
+                sqlOrderBy += sorters[i].property
+                    +' '+ sorters[i].direction
+                    +  ((i < sorters.length-1) ? ',' : '')
+            )
         }
         
         if ( sqlOrderBy.length > 0 ) sql += ' ORDER BY '+sqlOrderBy;
