@@ -293,7 +293,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             })
             
             if (table.extendable)
-                viewDDL += ', (select 1 from toUpload where id = ' + table.id + '.xid ) as needUpload ';
+                viewDDL += ', (select max(1) from toUpload where id = ' + table.id + '.xid ) as needUpload ';
                 
             me.executeDDL(t, viewDDL + fromDDL);
             

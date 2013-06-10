@@ -438,8 +438,20 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                 xi.login ({
                     success: function(){
                         xi.uploadData (store)
+                    },
+                    failure: function () {
+                        
+                        var e = 'Обратитесь в теходдержку по инциденту SUP-99061';
+                        
+                        if (typeof store.failureCb == 'function')
+                            store.failureCb.call (xi, store,e)
+                        else
+                            Ext.Msg.alert('Загрузка не удалась', e,
+                                function() {options.btn.enable();
+                            })
+                        ;
                     }
-                })
+                });
                 
             } else {
                 console.log ('Upload failure');
@@ -499,8 +511,20 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             listeners: {
                 load: function (store1, records, success) {
                     
-                    if (success)
-                        me.uploadRecord (store1);
+                    if (success) try {
+                            me.uploadRecord (store1);
+                        } catch (e) {
+                            
+                            Ext.Msg.alert(
+                                'Инцидент SUP-99061',
+                                e.message || 'Обратитесь в техподдержку',
+                                function() {
+                                    options.btn.enable();
+                                }
+                            );
+                            
+                            me.forwardUploadUponError (store1, e.message);
+                        }
                     else
                         console.log ('Upload get data failure')
                     ;
@@ -521,8 +545,14 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             
         }
     },
-    
 
+    forwardUploadUponError: function (store, exception) {
+        if ( ++ store.toUploadRecord.store.position >= store.toUploadRecord.store.getCount() )
+            store.toUploadRecord.store.failureCb.call (this, store, exception)
+        else
+            this.uploadData (store.toUploadRecord.store);
+    },
+    
     uploadRecord: function (store) {
         
         var xi = this, record = store.getAt(0),
