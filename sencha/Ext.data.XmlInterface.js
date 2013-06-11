@@ -562,7 +562,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             metadata = Ext.getStore('tables').getById(store.model.modelName)
         ;
         
-        if (record) {
+        if (record && metadata && store.model && store.model.modelName) {
             var uploadXML = document.implementation.createDocument("http://unact.net/xml/xi", "upload", null),
                 dataElement = uploadXML.createElement('data')
             ;
@@ -576,13 +576,13 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     metaField = metadata.columnsStore.getById(store.model.modelName+field.name)
                 ;
                 
-                if (field.name[0] == lowercaseFirstLetter(field.name[0])){
+                if (metaField && field.name[0] == lowercaseFirstLetter(field.name[0])){
                     switch (field.type.type) {
                         case 'bool':
                             rv = rv ? 1: 0;
                             break;
                         case 'date':
-                            rv = rv.format('d.m.Y')
+                            rv && (typeof rv.format == 'function') && (rv = rv.format('d.m.Y'))
                             break;
                     }
                     
