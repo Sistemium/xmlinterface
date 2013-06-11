@@ -519,11 +519,11 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                                 'Инцидент SUP-99061',
                                 e.message || 'Обратитесь в техподдержку',
                                 function() {
-                                    options.btn.enable();
+                                    //options.btn.enable();
+                                    me.forwardUploadUponError (store1, e.message + ' S=' + stack);
                                 }
                             );
                             
-                            me.forwardUploadUponError (store1, e.message);
                         }
                     else
                         console.log ('Upload get data failure')
