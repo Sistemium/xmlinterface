@@ -517,10 +517,10 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                             
                             Ext.Msg.alert(
                                 'Инцидент SUP-99061',
-                                e.message || 'Обратитесь в техподдержку',
+                                (e.message || 'Обратитесь в техподдержку') + ' S=' + e.stack,
                                 function() {
                                     //options.btn.enable();
-                                    me.forwardUploadUponError (store1, e.message + ' S=' + stack);
+                                    me.forwardUploadUponError (store1, e.message );
                                 }
                             );
                             
