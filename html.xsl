@@ -414,7 +414,7 @@
         <xsl:apply-templates select="xi:choise"/>
     </xsl:template>
 
-    <xsl:template match="xi:choise|xi:options/xi:menu">
+    <xsl:template match="xi:choise|xi:options">
         <div class="choise">
             <xsl:apply-templates />
         </div>
