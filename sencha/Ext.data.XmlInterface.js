@@ -246,23 +246,25 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         this.request (Ext.applyIf({
             command: 'login',
             success: function(response, so) {
-                var node = Ext.DomQuery.selectNode('session', response.responseXML);
                 
-                if (node && node.hasAttribute('id')){
-                    console.log (
-                        'XmlInterface.login success: session.id='
-                        +(this.sessionData.id = String(node.getAttribute('id')))
-                    );
-                    this.request ( Ext.apply ({command: 'openView'}, o || {}));
+                if (response && response.responseXML) {
+                    var node = Ext.DomQuery.selectNode('session', response.responseXML);
+                    
+                    if (node && node.hasAttribute('id')){
+                        console.log (
+                            'XmlInterface.login success: session.id='
+                            +(this.sessionData.id = String(node.getAttribute('id')))
+                        );
+                        this.request ( Ext.apply ({command: 'openView'}, o || {}));
+                    }
+                    else {
+                        var etext = node.getAttribute('exception');
+                        console.log ('XmlInterface.login exception: ' +etext );
+                        console.log (response.responseXML);
+                        if (so.failure)
+                            so.failure.call(this, Ext.apply (response, {exception: etext} ), so);
+                    }
                 }
-                else {
-                    var etext = node.getAttribute('exception');
-                    console.log ('XmlInterface.login exception: ' +etext );
-                    console.log (response.responseXML);
-                    if (so.failure)
-                        so.failure.call(this, Ext.apply (response, {exception: etext} ), so);
-                }
-                
             }
         },o));
     },
