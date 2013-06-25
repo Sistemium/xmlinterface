@@ -440,8 +440,20 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                 xi.login ({
                     success: function(){
                         xi.uploadData (store)
+                    },
+                    failure: function () {
+                        
+                        var e = 'Обратитесь в теходдержку по инциденту SUP-99061';
+                        
+                        if (typeof store.failureCb == 'function')
+                            store.failureCb.call (xi, store,e)
+                        else
+                            Ext.Msg.alert('Загрузка не удалась', e,
+                                function() {options.btn.enable();
+                            })
+                        ;
                     }
-                })
+                });
                 
             } else {
                 console.log ('Upload failure');
@@ -501,8 +513,20 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             listeners: {
                 load: function (store1, records, success) {
                     
-                    if (success)
-                        me.uploadRecord (store1);
+                    if (success) try {
+                            me.uploadRecord (store1);
+                        } catch (e) {
+                            
+                            Ext.Msg.alert(
+                                'Инцидент SUP-99061',
+                                (e.message || 'Обратитесь в техподдержку') + ' S=' + e.stack,
+                                function() {
+                                    //options.btn.enable();
+                                    me.forwardUploadUponError (store1, e.message );
+                                }
+                            );
+                            
+                        }
                     else
                         console.log ('Upload get data failure')
                     ;
@@ -523,8 +547,14 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             
         }
     },
-    
 
+    forwardUploadUponError: function (store, exception) {
+        if ( ++ store.toUploadRecord.store.position >= store.toUploadRecord.store.getCount() )
+            store.toUploadRecord.store.failureCb.call (this, store, exception)
+        else
+            this.uploadData (store.toUploadRecord.store);
+    },
+    
     uploadRecord: function (store) {
         
         var xi = this, record = store.getAt(0),
@@ -534,7 +564,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             metadata = Ext.getStore('tables').getById(store.model.modelName)
         ;
         
-        if (record) {
+        if (record && metadata && store.model && store.model.modelName) {
             var uploadXML = document.implementation.createDocument("http://unact.net/xml/xi", "upload", null),
                 dataElement = uploadXML.createElement('data')
             ;
@@ -548,13 +578,13 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     metaField = metadata.columnsStore.getById(store.model.modelName+field.name)
                 ;
                 
-                if (field.name[0] == lowercaseFirstLetter(field.name[0])){
+                if (metaField && field.name[0] == lowercaseFirstLetter(field.name[0])){
                     switch (field.type.type) {
                         case 'bool':
                             rv = rv ? 1: 0;
                             break;
                         case 'date':
-                            rv = rv.format('d.m.Y')
+                            rv && (typeof rv.format == 'function') && (rv = rv.format('d.m.Y'))
                             break;
                     }
                     

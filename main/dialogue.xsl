@@ -39,6 +39,15 @@
         
     </xsl:template>
 
+    <xsl:template match="xi:step//xi:options" mode="build-dialogue">
+        <xsl:copy>
+            <xsl:apply-templates mode="build-dialogue" select="@*|*"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="xi:options//xi:option" mode="build-dialogue">
+        <xsl:copy-of select="."/>
+    </xsl:template>
 
     <xsl:template match="xi:display//xi:export" mode="build-dialogue">
         <xsl:if test="ancestor::xi:view/xi:view-data//*[@ref=current()/@ref][not(@is-new)]">
@@ -253,12 +262,24 @@
         
     </xsl:template>
 
-    <xsl:template match="xi:display//xi:when[@ref]" mode="build-dialogue">
+    <xsl:template match="xi:step//xi:when[@ref][not(@not-equals)]" mode="build-dialogue">
         <xsl:apply-templates mode="display-when" select="
-            ancestor::xi:view/xi:view-data//xi:datum[@ref=current()/@ref]
+            ancestor::xi:view/xi:view-data//xi:datum
+               [@ref=current()/@ref]
+               [not(current()/@equals) or . = current()/@equals]
         ">
             <xsl:with-param name="context" select="."/>
         </xsl:apply-templates>
+    </xsl:template>
+    
+    <xsl:template match="xi:step//xi:when[@ref][@not-equals]" mode="build-dialogue">
+        <xsl:if test="not(
+            ancestor::xi:view/xi:view-data//xi:datum
+               [@ref=current()/@ref]
+               [. = current()/@not-equals]
+        )">
+            <xsl:apply-templates select="*" mode="build-dialogue"/>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template mode="display-when" match="*">
