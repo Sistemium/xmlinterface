@@ -348,7 +348,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             request.willContinue = false;
             
-            //xi.cleanDownloadSession (request);
+            xi.cleanDownloadSession (request);
             xi.fireEvent ('tableload', table, false );
             xi.fireEvent ('tableloadfull', table);
             
