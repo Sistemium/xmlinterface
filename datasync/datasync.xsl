@@ -54,11 +54,11 @@
     <xsl:template match="
         xi:userinput/*
         [@name='filter'][not(@synthetic)]
-        [not( /*/xi:views/xi:view[not(@hidden)]/xi:view-data//xi:data/@name= . )]
+        [not( /*/xi:views/xi:view[not(@hidden)]/xi:view-data//*[self::xi:data|self::xi:preload]/@name= . )]
     ">
         <no-data name="{.}">
             <xsl:for-each select="/*/xi:views/xi:view[not(@hidden)]/xi:view-schema//xi:form[@name=current()/text()]/ancestor::xi:form[not(@is-set)]">
-                <xsl:for-each select="ancestor::xi:view/xi:view-data//xi:data[@ref=current()/@id][@choise and not(@chosen)]">
+                <xsl:for-each select="ancestor::xi:view/xi:view-data//*[self::xi:data|self::xi:preload][@ref=current()/@id][@choise and not(@chosen)]">
                     <choose name="{@name}" ref="{@choise}"/>
                 </xsl:for-each>
             </xsl:for-each>
@@ -118,7 +118,7 @@
 
     <xsl:template match="xi:data[@remove-this|@is-new]" priority="1000"/>
     
-    <xsl:template match="xi:data[
+    <xsl:template match="*[self::xi:data|self::xi:preload][
         not(/*/xi:userinput/*[@name='filter'])
          or /*/xi:userinput/*[@name='filter']=(
             @name
