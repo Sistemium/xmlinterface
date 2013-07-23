@@ -19,7 +19,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         
         var params = {
             
-            login: { command: 'authenticate', username: this.username, password: this.password },
+            login: { command: 'authenticate' },
             logoff: { command: 'logoff' },
             openView: { views: this.view },
             metadata: { pipeline: 'metadata', metadata: 'view' },
@@ -27,6 +27,15 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             upload: { pipeline: 'rawpost' }
             
         }[c.command];
+        
+        if (c.command=='login') {
+            if (this.accessToken) {
+                params['access_token'] = this.accessToken;
+            } else {
+                params.username=this.username;
+                params.password=this.password;
+            }
+        }
         
         var options = {
             params: Ext.apply (c.params || {}, params)
@@ -184,7 +193,10 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             },
             Ext.apply( options || {}, this.remoteParams( options ) || {} ),
             { url: this.connection.url
-                + '&username=' + this.username
+                + (this.username
+                   ? '&username=' + this.username
+                   : ''
+                )
                 + ((this.downloadSession && this.downloadSession.requestsParams)
                     ? ('&ql=' + (this.downloadSession.requestsParams.length ? this.downloadSession.requestsParams.length : 0))
                     : ''
@@ -243,6 +255,9 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
     },
     
     login: function(o) {
+        
+        var me=this;
+        
         this.request (Ext.applyIf({
             command: 'login',
             success: function(response, so) {
@@ -255,6 +270,13 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                             'XmlInterface.login success: session.id='
                             +(this.sessionData.id = String(node.getAttribute('id')))
                         );
+                        
+                        if (node.hasAttribute('username')) {
+                            me.username=node.getAttribute('username');
+                        } else {
+                            console.log ('XmlInterface.login no-username');
+                        }
+                        
                         this.request ( Ext.apply ({command: 'openView'}, o || {}));
                     }
                     else {

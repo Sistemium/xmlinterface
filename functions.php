@@ -240,8 +240,11 @@ set_time_limit (180);
     }
     
     function authenticateGeneric ($credentials,&$extraData) {
-        if (isset($credentials['username'])) return authenticate ($credentials['username'], $credentials['password'], $extraData);
-        else return uoauth ($credentials['access_token'], $extraData);
+        if (isset($credentials['username'])){
+            return authenticate ($credentials['username'], $credentials['password'], $extraData);
+        } else {
+            return uoauth ($credentials['access_token'], $extraData);
+        }
     }
 
     function uoauth ($access_token, &$extraData) {

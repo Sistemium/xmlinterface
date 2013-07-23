@@ -35,10 +35,23 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     if ($qrs != '') $uri = str_replace ('?'.$qrs, '', $uri);
 
     $initName=isset($_GET['config'])?$_GET['config']:$config;
+    $command='';
+
+    foreach (explode('/', $_SERVER['SCRIPT_NAME']) as $urlPart)
+        switch($urlPart) {
+            case 'authenticate':
+                $command = 'authenticate';
+            break;
+            case 'datasync':
+                $initName = 'datasync';
+            break;
+        }
+    ;
+    
     $initFile = $initName . '.xml';
     $config=simplexml_load_file($initFile);
     $appname=$config['name'];
-
+    
     session_name($appname);
     session_set_cookie_params (28800, $uri);
 
@@ -68,7 +81,6 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     
     if (isset ($_SERVER['CONTENT_TYPE'])) $Context->userinput['Content-type'] = $_SERVER['CONTENT_TYPE'];
     
-    $command='';
     $quitstage='';
     $persistOutput = false;
     
@@ -194,11 +206,11 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     $host = strlen($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:$_SERVER['SERVER_NAME'];
 
     if (
-            ($initFile=='init.xml' && $pipelineName == 'main' && $requestMethod=='POST'
-             && $_SERVER["CONTENT_TYPE"] == 'application/x-www-form-urlencoded' && $authenticated
-            )
-            || $command=='logoff' || $command=='cleanUrl' || ($command == 'authenticate' && isset($access_token))
-       ) {
+        ($initFile=='init.xml' && $pipelineName == 'main' && $requestMethod=='POST'
+         && $_SERVER["CONTENT_TYPE"] == 'application/x-www-form-urlencoded' && $authenticated
+        )
+        || $command=='logoff' || $command=='cleanUrl'
+    ){
         $schema = $_SERVER['SERVER_PORT']=='443'?'https':'http';
         $querylen = strlen($_SERVER["QUERY_STRING"]);
         $querylen += $querylen ? 1 : (strpos ($_SERVER["REQUEST_URI"], '?') ? 1 : 0);
@@ -210,10 +222,11 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         header('Location: '.$schema.'://'.$host.$location);
         
         if ($command=='authenticate' && $authenticated)
-            $_SESSION['context'] = $Context->asXML();
+            $_SESSION['context'] = $Context->asXML()
+        ;
         if ($command=='authenticate' || $command=='logoff') {
             return;
-        };
+        }
     } elseif (isset($_SESSION['redirect'])) {
         header ($_SESSION['redirected-content']);
         print $_SESSION['redirect'];
