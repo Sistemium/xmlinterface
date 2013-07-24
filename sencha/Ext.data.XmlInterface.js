@@ -277,6 +277,10 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                             console.log ('XmlInterface.login no-username');
                         }
                         
+                        if (node.hasAttribute('user-label')) {
+                            me.userLabel=node.getAttribute('user-label');
+                        }
+                        
                         this.request ( Ext.apply ({command: 'openView'}, o || {}));
                     }
                     else {
