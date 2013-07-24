@@ -415,10 +415,6 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                             qList += '?,';
                             var datum = downloadData[i].getAttribute(column.name);
                             
-                            if (datum && datum == 'Ред')
-                                console.log ('54 found in: ' + table.id +'.'+ column.name)
-                            ;
-                            
                             if (!datum) {
                                 var parent=downloadData[i].parentNode;
                                 
