@@ -228,7 +228,8 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                     )
                 };
                 
-                columnsDDL += column.name + ' ' + (column.type || 'string') + ', ';
+                columnsDDL += column.name + ' '
+                    + ((column.type == 'string') ? 'text' : (column.type || 'text')) + ', ';
                 //if (column.parent) fkDDL += ', foreign key ('+column.name+') references '+ column.parent;
                 if (column.name == 'id') hasId = true;
                 if (column.name == 'xid' && table.extendable) pkDDL = 'primary key (xid)';
@@ -413,6 +414,10 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                             columnsList += column.name + ', ';
                             qList += '?,';
                             var datum = downloadData[i].getAttribute(column.name);
+                            
+                            if (datum && datum == 'Ред')
+                                console.log ('54 found in: ' + table.id +'.'+ column.name)
+                            ;
                             
                             if (!datum) {
                                 var parent=downloadData[i].parentNode;
