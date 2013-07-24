@@ -106,7 +106,7 @@
     </xsl:template>
 
     <xsl:template match="xi:data|xi:set-of">
-        <xsl:apply-templates select="xi:data|xi:set-of[not(@is-choise)]"/>
+        <xsl:apply-templates select="xi:data|xi:preload[xi:response]|xi:set-of[not(@is-choise)]"/>
     </xsl:template>
 
     <xsl:template match="xi:set-of[@page-size]">
@@ -118,7 +118,7 @@
 
     <xsl:template match="xi:data[@remove-this|@is-new]" priority="1000"/>
     
-    <xsl:template match="*[self::xi:data|self::xi:preload][
+    <xsl:template match="*[self::xi:data][
         not(/*/xi:userinput/*[@name='filter'])
          or /*/xi:userinput/*[@name='filter']=(
             @name
@@ -131,6 +131,12 @@
         </xsl:element>
     </xsl:template>
 
+    <xsl:template match="xi:preload[xi:response]">
+        <xsl:element name="{@name}">
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    
     <xsl:template match="xi:response">
         <not-found ts="{@ts}"/>
     </xsl:template>
