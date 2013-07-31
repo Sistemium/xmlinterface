@@ -173,10 +173,10 @@
             <xsl:when test="@label | key('id',@ref)/@label">
                 <region id="{@id}" class="empty">
                     <xsl:attribute name="label">
-                        <xsl:value-of select="@label | key('id',self::*[not(@label)]/@ref)" />
+                        <xsl:value-of select="@label | key('id',self::*[not(@label)]/@ref)/@label" />
                     </xsl:attribute>
                     <text>
-                        <xsl:value-of select="@label | key('id',self::*[not(@label)]/@ref)" />
+                        <xsl:value-of select="@label | key('id',self::*[not(@label)]/@ref)/@label" />
                         <xsl:text> отcутствуют</xsl:text>
                     </text>
                 </region>
