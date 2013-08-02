@@ -1,0 +1,11 @@
+@media print {
+    
+    a.button, button {
+        display: none !important;
+    }
+    
+    .desktop .view, input.text {
+        -webkit-box-shadow: none !important;
+    }
+    
+}
