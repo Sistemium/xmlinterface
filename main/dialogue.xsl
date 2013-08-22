@@ -267,6 +267,7 @@
             ancestor::xi:view/xi:view-data//xi:datum
                [@ref=current()/@ref]
                [not(current()/@equals) or . = current()/@equals]
+               [not(current()/@not-modified and @modified)]
         ">
             <xsl:with-param name="context" select="."/>
         </xsl:apply-templates>
@@ -292,7 +293,15 @@
     </xsl:template>
 
     <xsl:template mode="display-when" match="*[key('id',@ref)/@type='boolean'][text()='0']">
-        <xsl:comment>display-when: matches 0 bool</xsl:comment>
+        <xsl:param name="context" />
+        <xsl:choose>
+            <xsl:when test="$context/@equals='0'">
+                <xsl:apply-templates select="$context/*" mode="build-dialogue"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:comment>display-when: matches 0 bool</xsl:comment>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="xi:display//xi:not-when[@ref]" mode="build-dialogue">
