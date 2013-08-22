@@ -216,6 +216,8 @@
         </xsl:if>
         
     </xsl:template>
+    
+    <xsl:template match="xi:form/xi:sql-compute"/>
 
     <xsl:template match="xi:view-definition/xi:view-schema">
         <xsl:call-template name="id"/>
