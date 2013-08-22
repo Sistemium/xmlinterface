@@ -99,7 +99,7 @@
                         </xsl:for-each>
                         
                         <xsl:copy-of select="
-                            @label|@editable|@aggregable|@title|@init
+                            @label|@editable|@aggregable|@title|@init|@optional
                             | @importFields
                             | self::*[not(@name='xid')]/@key
                             | @sencha-compute
