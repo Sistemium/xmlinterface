@@ -900,6 +900,11 @@
         <xsl:value-of select="."/>
     </xsl:template>
 
+    <xsl:template match="*[xi:less-than]" mode="value" priority="1000">
+        <xsl:text>&lt;</xsl:text>
+        <xsl:apply-templates select="xi:less-than/text()" mode="value"/>        
+    </xsl:template>
+        
     <xsl:template match="*[xi:more-than]" mode="value" priority="1000">
         <xsl:text>&gt;</xsl:text>
         <xsl:apply-templates select="xi:more-than/text()" mode="value"/>        
