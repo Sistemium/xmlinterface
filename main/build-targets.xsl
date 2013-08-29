@@ -8,6 +8,8 @@
     
 >
 
+    <xsl:key match="xi:datum" name="ref" use="@ref"/>
+
     <xsl:template match="xi:userinput">
         
         <targets>
@@ -38,6 +40,26 @@
         ">
             <xsl:with-param name="command" select="."/>
         </xsl:apply-templates>
+        
+    </xsl:template>
+
+
+    <xsl:template mode="build-target" match="xi:field[@autofill-for]">
+        
+        <xsl:param name="command" select="/.."/>
+        
+        <xsl:if test="$command='mass-autofill'">
+            <xsl:for-each select="key('ref',current()/@autofill-for)">
+                <xsl:call-template name="build-target">
+                    <xsl:with-param name="target-id" select="@id"/>
+                    <xsl:with-param name="payload" select="
+                        (descendant::xi:data|ancestor-or-self::xi:data)
+                        [@name=key('id',current()/@ref)/@autofill-form]
+                        /xi:datum[@name=key('id',current()/@ref)/@autofill]
+                    "/>
+                </xsl:call-template>
+            </xsl:for-each>
+        </xsl:if>
         
     </xsl:template>
 
@@ -112,12 +134,12 @@
     ">
         
         <xsl:call-template name="build-target">
-                <xsl:with-param name="target-id" select="
-                    ancestor::xi:view/xi:view-data
-                        //* [self::xi:preload|self::xi:data]
-                            [@name=current()/@name]/@id
-                "/>
-                <xsl:with-param name="payload" select="current()"/>
+            <xsl:with-param name="target-id" select="
+                ancestor::xi:view/xi:view-data
+                    //* [self::xi:preload|self::xi:data]
+                        [@name=current()/@name]/@id
+            "/>
+            <xsl:with-param name="payload" select="current()"/>
         </xsl:call-template>
         
     </xsl:template>
@@ -135,7 +157,7 @@
             /xi:step [@name=current()/text()]
             /xi:on/xi:activation/*
         ">
-                <xsl:with-param name="command" select="$command"/>
+            <xsl:with-param name="command" select="$command"/>
         </xsl:apply-templates>
         
     </xsl:template>
@@ -149,7 +171,7 @@
         <xsl:variable name="target" select="/*/xi:views/xi:view[1]/xi:workflow/xi:step[@name=current()/text()]"/>
         
         <xsl:apply-templates mode="build-target" select="$target/xi:on/xi:activation/*">
-                <xsl:with-param name="command" select="$command"/>
+            <xsl:with-param name="command" select="$command"/>
         </xsl:apply-templates>
         
     </xsl:template>

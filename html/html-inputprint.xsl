@@ -383,7 +383,11 @@
                                 </xsl:if>
                                 
                                 <xsl:if test="not(/*/xi:userinput/@spb-agent)">
-                                    <xsl:for-each select="($this/descendant::xi:data|$this/ancestor-or-self::xi:data)[@name=key('id',current()/@ref)/@autofill-form]/xi:datum[@name=key('id',current()/@ref)/@autofill]">
+                                    <xsl:for-each select="
+                                        ($this/descendant::xi:data|$this/ancestor-or-self::xi:data)
+                                        [@name=key('id',current()/@ref)/@autofill-form]
+                                        /xi:datum [@name=key('id',current()/@ref)/@autofill]
+                                    ">
                                         <xsl:attribute name="xi:autofill">
                                             <xsl:value-of select="."/>
                                         </xsl:attribute>

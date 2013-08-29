@@ -314,8 +314,12 @@
         "/>
         
         <xsl:variable name="newValue" select="
-            $ui[not(@xpath-compute)]
-            |dyn:map(key('id',$userinput[@name=$ui/../@id]/text())|self::*[$userinput[@name=$ui/../@id and not(text())]],$ui/@xpath-compute)
+            $ui [not(@xpath-compute)]
+            |dyn:map(
+                key ('id',$userinput[@name=$ui/../@id]/text())
+                |self::* [$userinput[@name=$ui/../@id and not(text())]]
+                ,$ui/@xpath-compute
+            )
         "/>
         
         <!--xsl:if test="@name='details-xid'">
