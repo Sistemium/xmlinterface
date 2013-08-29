@@ -64,6 +64,18 @@
     </xsl:template>
 
 
+    <xsl:template mode="build-target" match="xi:command [key('id',@ref)/self::xi:field] [text()='mass-autofill']">
+        
+        <xsl:param name="command"/>
+        <xsl:param name="this" select="."/>
+        
+        <xsl:apply-templates mode="build-target" select="key('id',@ref)">
+            <xsl:with-param name="command" select="."/>
+        </xsl:apply-templates>
+        
+    </xsl:template>
+    
+    
     <xsl:template mode="build-target" match="xi:command [not(@name)] [@xpath-compute|xi:xpath-compute]">
         
         <xsl:param name="command"/>
