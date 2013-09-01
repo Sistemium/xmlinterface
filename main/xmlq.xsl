@@ -115,13 +115,19 @@
             <xsl:value-of select="@db"/>
         </xsl:variable>
         
+        <xsl:variable name="program">
+            <xsl:value-of select="@program"/>
+        </xsl:variable>
+        
         <xsl:if test="$thisdoc/*[@debug]">
             <xsl:document href="data/requests/{@id}.sql" method="text">
                <xsl:value-of select="$sql"/>
             </xsl:document>
         </xsl:if>
         
-        <xsl:variable name="resp" select="php:function('sqlRequest',$sql,$storage,$server,$db)"/>
+        <xsl:variable name="resp" select="php:function(
+            'sqlRequest', $sql, $storage, $server, $db, $program
+        )"/>
         
         <xsl:apply-templates select="$resp"/>
         

@@ -1,6 +1,6 @@
 if user_id ('xmlgate') is null then
     grant connect to xmlgate;
-    // don't forget to set pasword
+    // do not forget to set pasword
 end if;
 
 drop table if exists xmlgate.query;
@@ -14,6 +14,7 @@ create global temporary table if not exists xmlgate.query (
     conn varchar (32),
     ip varchar (25),
     path varchar (32),
+    program varchar(128),
 
     ts datetime default timestamp,
     cts datetime default current timestamp,
@@ -59,13 +60,15 @@ begin
     declare @log_id int;
     declare @xid uniqueidentifier;
     declare @async varchar(64);
+    declare @program varchar(128);
  
     body: begin
         
         set @request=csconvert(@request,'os_charset','utf-8');
         
-        select query_name, if show_sql is not null then 1 endif, sql_raw, username, ip, path, async
-            into @query_name, @show_sql, @sql, @username, @ip, @path, @async
+        select query_name, if show_sql is not null then 1 endif,
+                sql_raw, username, ip, path, program, async
+            into @query_name, @show_sql, @sql, @username, @ip, @path, @program, @async
             from openxml(@request, '/ *') with (
                 query_name varchar(128) '@name',
                 show_sql text '@show-sql',
@@ -74,6 +77,7 @@ begin
                 username varchar(128) '@username',
                 ip varchar(128) '@ip',
                 path varchar(128) '@path',
+                program varchar(128) '@program',
                 async varchar(64) '@async'
             )
         ;
@@ -87,7 +91,7 @@ begin
         
         insert into xmlgate.query with auto name
             select @sql as request, @username as username, connection_property ('number') as conn,
-                @ip as ip, @path as path, @xid as xid
+                @ip as ip, @path as path, @xid as xid, @program as program
         ;
         set @log_id = @@identity;
         

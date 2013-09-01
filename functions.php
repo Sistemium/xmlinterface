@@ -153,8 +153,9 @@ set_time_limit (180);
     
     
     function sqlRequest(
-        $request, $storage = 'cat', $server='', $db = '', $expect = 'resultset', $username = false
-        ){
+        $request, $storage = 'cat', $server='', $db = '',
+        $program = '', $expect = 'resultset', $username = false
+    ){
         
         $username = isset($_SESSION['username'])?$_SESSION['username']:false;
         $uri = $_SERVER["REQUEST_URI"];
@@ -170,6 +171,7 @@ set_time_limit (180);
         $doc -> documentElement -> setAttribute('server',$server);
         $doc -> documentElement -> setAttribute('ip',$_SERVER['REMOTE_ADDR']);
         $doc -> documentElement -> setAttribute('path',$uri);
+        $doc -> documentElement -> setAttribute('program',$program);
         
         if ($db != '')  $doc -> documentElement -> setAttribute('db',$db);
         

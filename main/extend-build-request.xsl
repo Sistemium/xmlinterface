@@ -13,7 +13,7 @@
 		
         <xsl:param name="head"/>
 		
-        <data-request show-sql="true">
+        <data-request show-sql="true" program="{ancestor::xi:view/@name}">
 			
             <xsl:variable name="this" select="."/>
             <xsl:variable name="form" select="key('id',@ref)"/>
