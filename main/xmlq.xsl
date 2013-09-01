@@ -168,7 +168,13 @@
             </xsl:document>
         </xsl:if>
         
-        <xsl:apply-templates select="php:function('sqlRequest',$sql,$storage,$server,$db,'rowcount')"/>
+        <xsl:variable name="program">
+            <xsl:value-of select="@program"/>
+        </xsl:variable>
+        
+        <xsl:apply-templates select="php:function(
+            'sqlRequest', $sql, $storage, $server, $db, $program, 'rowcount'
+        )"/>
         
         <!--xsl:if test="$thisdoc/*/xi:userinput[contains(@host,'mac')]">
             <dummy>
