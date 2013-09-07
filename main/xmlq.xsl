@@ -1,22 +1,22 @@
 <?xml version="1.0" ?>
 <xsl:transform version="1.0"
-   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-   xmlns="http://unact.net/xml/xi"
-   xmlns:xi="http://unact.net/xml/xi"
-   xmlns:php="http://php.net/xsl"
-   xmlns:str="http://exslt.org/strings"
-   xmlns:e="http://exslt.org/common"
-   exclude-result-prefixes="php mda str e"
-   extension-element-prefixes="str e"
-   xmlns:mda="urn:schemas-microsoft-com:xml-analysis:mddataset"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://unact.net/xml/xi"
+    xmlns:xi="http://unact.net/xml/xi"
+    xmlns:php="http://php.net/xsl"
+    xmlns:str="http://exslt.org/strings"
+    xmlns:e="http://exslt.org/common"
+    exclude-result-prefixes="php mda str e"
+    extension-element-prefixes="str e"
+    xmlns:mda="urn:schemas-microsoft-com:xml-analysis:mddataset"
 >
-   <xsl:decimal-format name="mdx" decimal-separator="." grouping-separator="" NaN="" zero-digit="0" />
+    <xsl:decimal-format name="mdx" decimal-separator="." grouping-separator="" NaN="" zero-digit="0" />
 
-   <xsl:param name="model" select="document('domain.xml')/xi:domain"/>
+    <xsl:param name="model" select="document('domain.xml')/xi:domain"/>
 
-   <xsl:include href="xmlq-mdx.xsl"/>
+    <xsl:include href="xmlq-mdx.xsl"/>
    
-   <!-- Не хочется процедуры писать
+    <!-- Не хочется процедуры писать
    
        Метаданные или управляющие данные можно возвращать из бд в подчиненных элементах специального неймспейса
    
@@ -302,12 +302,12 @@
         
         <xsl:if test="parent::xi:data-request">
             <xsl:choose>
-               <xsl:when test="@constrain-parent">
-                  <xsl:text> cross</xsl:text>
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:text> cross</xsl:text>
-               </xsl:otherwise>
+                <xsl:when test="@constrain-parent">
+                   <xsl:text> cross</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                   <xsl:text> cross</xsl:text>
+                </xsl:otherwise>
             </xsl:choose>
             <xsl:text> apply </xsl:text>
         </xsl:if>
