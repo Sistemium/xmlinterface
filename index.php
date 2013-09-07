@@ -155,6 +155,8 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                         $_SESSION ['access_token'] = $access_token
                     ;
                     
+                    @$userid = (string) ($extraData -> account[0] -> id [0]);
+                    
                     if ($extraData) {
                         
                         $Context->session[0]='';
@@ -178,6 +180,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     $Context->session['user-label']=$_SESSION['user-label'];
                     $Context->session['username']=$_SESSION['username'];
                     $Context->session['validator']=$_SESSION['validator'];
+                    if ($userid) $Context->session['user-id'] = $userid;
                     
                 } else {
                     $Context->session['username'] = isset($username) ? $username : '';
