@@ -143,7 +143,7 @@ set_time_limit (180);
             } else throw new ErrorException('http error: '.$http->get_error());
             
         } catch (Exception $e) {
-            $doc->loadXML('<exception xmlns="http://unact.net/xml/xi"><![CDATA['.$e->getMessage().']]></exception>');
+            $doc->loadXML('<response xmlns="http://unact.net/xml/xi"><exception><ErrorText><![CDATA['.$e->getMessage().']]></ErrorText></exception></response>');
         }
         
         $doc->documentElement->setAttribute('ts',dateAdd('+ 0 days'));
