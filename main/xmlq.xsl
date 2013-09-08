@@ -15,6 +15,8 @@
     <xsl:param name="model" select="document('domain.xml')/xi:domain"/>
 
     <xsl:include href="xmlq-mdx.xsl"/>
+    <xsl:include href="xmlq-value.xsl"/>
+    <xsl:include href="xmlq-name.xsl"/>
    
     <!-- Не хочется процедуры писать
    
@@ -463,10 +465,15 @@
         </xsl:if>
         
         <xsl:if test="$agg-wrapper">
-            <!--xsl:call-template name="build-order-by"/-->
-            <xsl:text>) as </xsl:text>
+            <xsl:if test="parent::xi:data-request">
+                <xsl:text>)</xsl:text>
+            </xsl:if>
+            <xsl:text> as </xsl:text>
             <xsl:apply-templates select="@name" mode="doublequoted"/>
             <xsl:text> ([data]) </xsl:text>
+            <xsl:if test="not(parent::xi:data-request)">
+                <xsl:text>)</xsl:text>
+            </xsl:if>
         </xsl:if>
         
     </xsl:template>
@@ -537,11 +544,15 @@
         <xsl:param name="this" select ="."/>
         <xsl:param name="concept" select="$model/xi:concept[@name=$this/@concept]"/>
         
-        <xsl:variable name="parameters"
-                      select="xi:parameter
-                             |(ancestor::xi:data-request|xi:etc/xi:data)[@name=$this/xi:use/@concept]
-                             /xi:parameter[@name=$this/xi:use/@parameter and ../@name=$this/xi:use/@concept]
+        <xsl:variable name="parameters" select="
+            xi:parameter
+            |(ancestor::xi:data-request|ancestor-or-self::xi:data-request/xi:etc/xi:data)
+                [@name=$this/xi:use/@concept]
+                /xi:parameter
+                    [@name=$this/xi:use/@parameter and ../@name=$this/xi:use/@concept]
         "/>
+        
+        <!--xsl:text>/*</xsl:text><xsl:value-of select="$parameters"/><xsl:text>*/</xsl:text-->
         
         <xsl:variable name="parmnams"
                       select="xi:parameter[not(@property)]/@name
@@ -807,8 +818,8 @@
 
     <xsl:template match="xi:concept" mode="from-name">
         
-        <xsl:param name="parameters" select="self::xi:null"/>
-        <xsl:param name="joins" select="self::xi:null"/>
+        <xsl:param name="parameters" select="/.."/>
+        <xsl:param name="joins" select="/.."/>
         <xsl:param name="request"/>
         <xsl:param name="this" select="."/>
         <xsl:param name="select" select="xi:select[1]"/>
@@ -831,13 +842,16 @@
                 
                 <xsl:for-each select="
                     xi:parameter[$this/@storage='mssql'
-                        or $parmnams=@name or @sql-name=($parm-for-top/@sql-name|$parm-for-start-at/@sql-name)
+                        or $parmnams=@name
+                        or @sql-name=($parm-for-top/@sql-name|$parm-for-start-at/@sql-name)
                     ]
                 ">
                     <xsl:variable name="datum" select="
                         $parmnams [.=current()/@name] /parent::*
                     "/>
-                
+                    
+                    <xsl:text>/*</xsl:text><xsl:value-of select="local-name($datum)"/><xsl:text>*/</xsl:text>
+                    
                     <xsl:if test="not($this/@storage='mssql')">
                         <xsl:apply-templates select="." mode="sql-name"/>
                         <xsl:text>=</xsl:text>
@@ -884,212 +898,5 @@
         
     </xsl:template>
 
-
-
-<!--  Templates for building strings of values  -->
-
-    <xsl:template match="*[not(*)][not(text()) or text()='']" mode="value" priority="1000">
-        <xsl:text>NULL</xsl:text>
-    </xsl:template>
-    
-    <xsl:template match="*[@type='xml']" mode="value">
-        <xsl:text>'</xsl:text>
-        <xsl:copy-of select="*"/>
-        <xsl:text>'</xsl:text>
-    </xsl:template>
-
-    <xsl:template match="*[@type='number' or @type='int' or @type='decimal']" mode="value">
-        <xsl:value-of select="."/>
-    </xsl:template>
-    
-    <xsl:template match="*[@type='boolean']" mode="value">
-        <xsl:value-of select="."/>
-    </xsl:template>
-
-    <xsl:template match="*[xi:less-than]" mode="value" priority="1000">
-        <xsl:text>&lt;</xsl:text>
-        <xsl:apply-templates select="xi:less-than/text()" mode="value"/>        
-    </xsl:template>
-        
-    <xsl:template match="*[xi:more-than]" mode="value" priority="1000">
-        <xsl:text>&gt;</xsl:text>
-        <xsl:apply-templates select="xi:more-than/text()" mode="value"/>        
-    </xsl:template>
-        
-    <xsl:template match="xi:use" mode="value" priority="1001">
-        <xsl:param name="datum" select="
-            (ancestor::xi:data-request|parent::*/xi:etc/xi:data)[@name=current()/@concept]
-            /xi:parameter[@name=current()/@parameter]
-        "/>
-        <xsl:apply-templates select="$datum" mode="value"/>
-        <xsl:if test="not($datum/text())">
-            <xsl:text>null</xsl:text>
-        </xsl:if>
-    </xsl:template>
-    
-    <xsl:template match="*" mode="value">
-        <xsl:apply-templates select="." mode="quoted">
-            <xsl:with-param name="value">
-                <xsl:apply-templates select="." mode="sqlvalue"/>
-            </xsl:with-param>
-        </xsl:apply-templates>
-    </xsl:template>
-
-    <xsl:template match="xi:datum" mode="value">
-        <xsl:apply-templates select="." mode="quoted">
-            <xsl:with-param name="value">
-                <xsl:apply-templates select="key('id',@ref)" mode="sqlvalue">
-                    <xsl:with-param name="datum" select="."/>
-                </xsl:apply-templates>
-            </xsl:with-param>
-        </xsl:apply-templates>
-    </xsl:template>
-
-    <xsl:template match="*[@type='file']" mode="value">
-      <xsl:variable name="path">
-         <xsl:value-of select="."/>
-      </xsl:variable>
-      <xsl:text>base64_decode('</xsl:text>
-      <xsl:copy-of select="php:function('getFileContents',$path)"/>
-      <xsl:text>')</xsl:text>
-    </xsl:template>
-
-    <xsl:template match="xi:data" mode="value">
-        <xsl:apply-templates select="*[@key][1]" mode="value"/>
-    </xsl:template>
-
-    <xsl:template match="*" mode="sqlvalue">
-        <xsl:param name="datum" select="."/>
-        <xsl:variable name="q">'</xsl:variable>
-        <xsl:value-of select="translate($datum,$q,' ')"/>
-    </xsl:template>
-    
-    <xsl:template match="*[@use-like]" mode="sqlvalue">
-        <xsl:param name="datum" select="."/>
-        <xsl:value-of select="translate($datum,'*','%')"/>
-    </xsl:template>
-
-    <xsl:template match="*[@type='date']" mode="sqlvalue">
-        <xsl:param name="datum" select="."/>
-        <xsl:variable name="numbers" select="translate($datum,'./-','')"/>
-        <xsl:value-of select="concat(substring($numbers,5),substring($numbers,3,2),substring($numbers,1,2))"/>
-    </xsl:template>
-
-
-<!--  Templates for building strings of sql column names  -->
-
-    <xsl:template match="@*" mode="sql-name">
-        <xsl:apply-templates select="." mode="doublequoted"/>
-    </xsl:template>
-
-    <xsl:template match="*[@sql-compute]" mode="sql-name" name="compute-sql-name">
-        <xsl:value-of select="@sql-compute"/>
-    </xsl:template>
-
-    <xsl:template match="xi:column[@type='date' and not(@sql-compute)]" mode="sql-name" priority="1000">
-        <xsl:text>convert(char(10),</xsl:text>
-        <xsl:apply-templates select="../@name" mode="doublequoted"/>
-        <xsl:text>.</xsl:text>
-        <xsl:apply-templates select="@sql-name|self::*[not(@sql-name)]/@name" mode="doublequoted"/>
-        <xsl:text>,104)</xsl:text>
-    </xsl:template>
-
-    <xsl:template match="xi:data-request//xi:column[@type='datetime' and not(@sql-compute)]" mode="sql-name" priority="1000">
-        <xsl:text>convert(varchar(19),</xsl:text>
-        <xsl:apply-templates select="../@name" mode="doublequoted"/>
-        <xsl:text>.</xsl:text>
-        <xsl:apply-templates select="@sql-name|self::*[not(@sql-name)]/@name" mode="doublequoted"/>
-        <xsl:text>,10</xsl:text>
-        <xsl:choose>
-         <xsl:when test="@aggregate">2</xsl:when>
-         <xsl:otherwise>4</xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>)+' '+convert(varchar(8),</xsl:text>
-        <xsl:apply-templates select="../@name" mode="doublequoted"/>
-        <xsl:text>.</xsl:text>
-        <xsl:apply-templates select="@sql-name|self::*[not(@sql-name)]/@name" mode="doublequoted"/>
-        <xsl:text>,8)</xsl:text>
-    </xsl:template>
-
-    <xsl:template match="xi:join/xi:on" mode="sql-name">
-        <xsl:param name="value"
-            select="ancestor::xi:data-request/xi:etc/xi:parameter[@name=current()[@property='id']/@name]
-                | ancestor::xi:data-request/xi:etc/xi:data[@name=current()/@name]/xi:set-of-parameters
-            "
-        />
-        <xsl:choose>
-            <xsl:when test="$value/self::xi:set-of-parameters">
-                <xsl:for-each select="$value/*">
-                    <xsl:apply-templates select="." mode="value"/>
-                    <xsl:if test="last() > position()">
-                        <xsl:text>, </xsl:text>
-                    </xsl:if>
-                </xsl:for-each>
-            </xsl:when>
-            <xsl:when test="$value">
-                <xsl:apply-templates select="$value" mode="value"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:apply-templates select="self::*[@name]/@name|self::*[not(@name)]/@concept" mode="doublequoted"/>
-                <xsl:text>.</xsl:text>
-                <xsl:variable name="property" select="$model/xi:concept[@name=current()/@concept]/*[@name=current()/@property]"/>
-                <xsl:apply-templates select="$property" mode="sql-name"/>
-                <xsl:if test="not($property)">
-                    <xsl:apply-templates select="@property" mode="sql-name"/>
-                </xsl:if>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
-
-    <xsl:template match="xi:column[@type='file']" mode="sql-name">
-        <xsl:text>base64_encode(</xsl:text>
-        <xsl:apply-templates select="@sql-name|self::*[not(@sql-name)]/@name" mode="doublequoted"/>
-        <xsl:text>)</xsl:text>
-    </xsl:template>
-
-    <xsl:template match="xi:column[@type='xml']" mode="sql-name">
-        <xsl:if test="not(ancestor::xi:data-request[@storage='mssql' or @page-size-])">
-            <xsl:text>xmlelement(</xsl:text>
-            <xsl:apply-templates select="@name" mode="quoted"/>
-            <xsl:text>, </xsl:text>
-        </xsl:if>
-        <xsl:text>xmlelement(</xsl:text>
-        <xsl:apply-templates select="@name" mode="quoted"/>
-        <xsl:text>, xmlattributes ('xml' as "type"), cast( </xsl:text>
-        <xsl:apply-templates select="@sql-name|self::*[not(@sql-name)]/@name" mode="doublequoted"/>
-        <xsl:text> as xml))</xsl:text>
-        <xsl:if test="not(ancestor::xi:data-request[@storage='mssql' or @page-size-])">
-            <xsl:text>)</xsl:text>
-        </xsl:if>
-    </xsl:template>
-
-    <xsl:template match="xi:parameter[@sql-name]" mode="sql-name">
-        <xsl:value-of select="@sql-name"/>
-    </xsl:template>
-
-    <xsl:template match="*[@sql-name]" mode="sql-name">
-        <xsl:if test="self::xi:column">
-            <xsl:apply-templates select="../@name" mode="doublequoted"/>
-            <xsl:text>.</xsl:text>
-        </xsl:if>
-        <xsl:apply-templates select="@sql-name" mode="doublequoted"/>
-    </xsl:template>
-
-    <xsl:template match="*[@name]" mode="sql-name" priority="-100">
-        <xsl:if test="self::xi:column">
-            <xsl:apply-templates select="../@name" mode="doublequoted"/>
-            <xsl:text>.</xsl:text>
-        </xsl:if>
-        <xsl:apply-templates select="@name" mode="doublequoted"/>
-    </xsl:template>
-
-    <xsl:template match="*[not(@name)]" mode="sql-name" priority="-100">
-        <xsl:apply-templates select="../@name" mode="doublequoted"/>
-    </xsl:template>
-    
-    <xsl:template match="@*" mode="prefix">
-        <xsl:apply-templates select="." mode="doublequoted"/>
-        <xsl:text>.</xsl:text>
-    </xsl:template>
  
 </xsl:transform>
