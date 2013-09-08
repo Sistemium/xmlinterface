@@ -1,17 +1,17 @@
 <?xml version="1.0" ?>
 <xsl:transform version="1.0"
- xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
- xmlns="http://unact.net/xml/xi"
- xmlns:xi="http://unact.net/xml/xi"
- >
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://unact.net/xml/xi"
+    xmlns:xi="http://unact.net/xml/xi"
+>
 
-   <xsl:template match="
+    <xsl:template match="
         xi:set-of[@choise]//xi:datum/@xpath-compute
         |
         xi:set-of[@choise]//xi:datum/@modifiable
         |
         @close-siblings   
-   "/>
+    "/>
    
     <xsl:template match="*[xi:set-of/@close-siblings]/xi:set-of[not(@close-siblings) and @name=../*[@close-siblings]/@name]/*" priority="1001">
         <xsl:comment>removed by close-siblings</xsl:comment>
