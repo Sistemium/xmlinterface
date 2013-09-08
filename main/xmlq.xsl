@@ -850,7 +850,7 @@
                         $parmnams [.=current()/@name] /parent::*
                     "/>
                     
-                    <xsl:text>/*</xsl:text><xsl:value-of select="local-name($datum)"/><xsl:text>*/</xsl:text>
+                    <!--xsl:text>/*</xsl:text><xsl:value-of select="local-name($datum)"/><xsl:text>*/</xsl:text-->
                     
                     <xsl:if test="not($this/@storage='mssql')">
                         <xsl:apply-templates select="." mode="sql-name"/>
