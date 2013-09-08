@@ -61,7 +61,14 @@
     <!-- пришли свежие данные -->
     <xsl:template priority="1001" match="
         xi:view-data
-        //* [xi:response [xi:result-set[*] or ((xi:exception/xi:not-found or xi:result-set[not(*)]) and key('id',../@ref)/@build-blank)]]
+        //* [xi:response
+                [xi:result-set[*]
+                    or (
+                        (xi:exception/xi:not-found or xi:result-set[not(*)])
+                        and key('id',../@ref)[@build-blank|@extendable]
+                    )
+                ]
+            ]
     ">
         <xsl:comment>1001</xsl:comment>
         

@@ -381,7 +381,7 @@
                         
                         <xsl:otherwise>
                             <xsl:apply-templates mode="build-data" select="
-                                self::* [not($type or @choise)] [@build-blank or @new-only or @extendable] /*
+                                self::* [not($type or @choise) or @extendable] [@build-blank or @new-only or @extendable] /*
                                 |xi:parameter
                                 |self::* [not(@choise)] /xi:form [xi:parameter or @new-only]
                             "/>
