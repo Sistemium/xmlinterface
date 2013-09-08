@@ -312,10 +312,6 @@
             <xsl:text> apply </xsl:text>
         </xsl:if>
         
-        <xsl:value-of select="concat('(&#xD;',str:padding(count(ancestor::xi:data-request),'&#x9;'),'')"/>
-        
-        <xsl:text>SELECT </xsl:text>
-        
         <xsl:variable name="no-xmlagg-style"
             select="self::xi:data-request[@name- or @storage='mssql' or @page-size-]"
         />
@@ -324,7 +320,23 @@
             $model/xi:concept [@name=current()/@name] /xi:select [$select-id=generate-id()]
         "/>
         
-        <xsl:if test="1=2 and $no-xmlagg-style and $select/xi:parameter[xi:top|@top]">
+        <xsl:variable name="agg-wrapper" select="
+            @page-size and 'xmlagg'='xmlagg' and not($select/xi:parameter[xi:top|@top])
+        "/>
+        
+        <xsl:if test="$agg-wrapper">
+            
+            <xsl:text> ( select xmlagg( </xsl:text>
+            <xsl:apply-templates select="@name" mode="doublequoted"/>
+            <xsl:text>.[data]) from </xsl:text>
+            
+        </xsl:if>
+        
+        <xsl:value-of select="concat('(&#xD;',str:padding(count(ancestor::xi:data-request),'&#x9;'),'')"/>
+        
+        <xsl:text>SELECT </xsl:text>
+        
+        <xsl:if test="not($select/xi:parameter[xi:top|@top])">
             <xsl:for-each select="@page-size">
                 <xsl:text> TOP </xsl:text>
                 <xsl:value-of select="."/>
@@ -338,8 +350,10 @@
             </xsl:if>
         </xsl:if>
         
+        <xsl:variable name="dont-xmlagg" select="xi:column[@aggregate] or (@page-size and not($select/xi:parameter[xi:top|@top]))"/>
+        
         <xsl:if test="not($no-xmlagg-style)">
-            <xsl:if test="not(xi:column[@aggregate])">
+            <xsl:if test="not($dont-xmlagg)">
                 <xsl:text>xmlagg(</xsl:text>
             </xsl:if>
             <xsl:text>xmlelement(</xsl:text>
@@ -406,12 +420,12 @@
         </xsl:for-each>
         
         <xsl:if test="not($no-xmlagg-style)">
-            <xsl:if test="not(xi:column[@aggregate])">
+            <xsl:if test="not($dont-xmlagg)">
                <xsl:text>&#xD;</xsl:text>
                <xsl:value-of select="str:padding(count(ancestor::xi:data-request)+1,'&#x9;')"/>
                <xsl:text>)</xsl:text>
+                <xsl:value-of select="$order-by"/>
             </xsl:if>
-            <xsl:value-of select="$order-by"/>
             <xsl:text>&#xD;</xsl:text>
             <xsl:value-of select="str:padding(count(ancestor::xi:data-request),'&#x9;')"/>
             <xsl:text>)</xsl:text>
@@ -431,9 +445,11 @@
             </xsl:for-each>
         </xsl:if-->
         
-        <xsl:if test="$no-xmlagg-style">
+        <xsl:if test="$no-xmlagg-style or $dont-xmlagg">
             <xsl:value-of select="$order-by"/>
-            <xsl:text> for xml auto, elements</xsl:text>
+            <xsl:if test="$no-xmlagg-style">
+                <xsl:text> for xml auto, elements</xsl:text>
+            </xsl:if>
         </xsl:if>
         
         <!--xsl:if test="parent::xi:data-request"-->
@@ -444,6 +460,13 @@
         
         <xsl:if test="parent::xi:data-request">
             <xsl:value-of select="concat(' as [',@name,'] ([data])')"/>
+        </xsl:if>
+        
+        <xsl:if test="$agg-wrapper">
+            <!--xsl:call-template name="build-order-by"/-->
+            <xsl:text>) as </xsl:text>
+            <xsl:apply-templates select="@name" mode="doublequoted"/>
+            <xsl:text> ([data]) </xsl:text>
         </xsl:if>
         
     </xsl:template>
@@ -549,28 +572,6 @@
             <xsl:text> cross apply </xsl:text>
         </xsl:for-each>
         
-        <xsl:if test="@page-size">
-            
-            <xsl:text> ( select</xsl:text>
-            
-            <xsl:if test="not($select/xi:parameter[xi:top|@top])">
-                <xsl:for-each select="@page-size">
-                    <xsl:text> TOP </xsl:text>
-                    <xsl:value-of select="."/>
-                    <xsl:text> </xsl:text>
-                </xsl:for-each>
-                
-                <xsl:if test="@page-start > 0">
-                    <xsl:text> START AT </xsl:text>
-                    <xsl:value-of select="@page-start * @page-size + 1"/>
-                    <xsl:text> </xsl:text>
-                </xsl:if>
-            </xsl:if>
-            
-            <xsl:text> * from </xsl:text>
-            
-        </xsl:if>
-        
         <xsl:apply-templates select="$concept" mode="from-name">
             <xsl:with-param name="parameters" select="$parameters"/>
             <xsl:with-param name="joins" select="xi:join"/>
@@ -579,7 +580,7 @@
             <xsl:with-param name="parmnams" select="$parmnams"/>
         </xsl:apply-templates>
         
-        <xsl:if test="not(@page-size)">
+        <xsl:if test="not(@page-size-)">
             <xsl:apply-templates select="xi:data-request" mode="select-list"/>
         </xsl:if>
         
@@ -658,19 +659,12 @@
             
         </xsl:if>
         
-        <xsl:if test="@page-size">
-            <xsl:call-template name="build-order-by"/>
-            <xsl:text>) as </xsl:text>
-            <xsl:apply-templates select="@name" mode="doublequoted"/>
-            <xsl:apply-templates select="xi:data-request" mode="select-list"/>
-        </xsl:if>
-        
         <xsl:if test="xi:data-request[@constrain-parent]">
-            <xsl:if test="@page-size or normalize-space($where)=''">
+            <xsl:if test="@page-size- or normalize-space($where)=''">
                 <xsl:text> where </xsl:text>
             </xsl:if>
             
-            <xsl:if test="not (@page-size) and normalize-space($where)!=''">
+            <xsl:if test="not (@page-size-) and normalize-space($where)!=''">
                 <xsl:text> and </xsl:text>
             </xsl:if>
             
