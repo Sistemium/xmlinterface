@@ -157,7 +157,8 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     
                     if ($extraData) {
                         
-                        @$userid = (string) ($extraData -> account[0] -> id [0]);
+                        if (isset($extraData -> account[0]))
+                            $userid = (string) ($extraData -> account[0] -> id [0]);
                         
                         $Context->session[0]='';
                         
