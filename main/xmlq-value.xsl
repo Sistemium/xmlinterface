@@ -4,6 +4,8 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://unact.net/xml/xi"
     xmlns:xi="http://unact.net/xml/xi"
+    xmlns:php="http://php.net/xsl"
+    exclude-result-prefixes="php"
 >
     <!--  Templates for building strings of values  -->
 
