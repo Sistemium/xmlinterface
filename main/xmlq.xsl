@@ -633,7 +633,7 @@
             
             <xsl:variable name="where-for-parms">
                 
-                <xsl:for-each select="xi:parameter | xi:use">
+                <xsl:for-each select="xi:parameter | xi:use | xi:exists">
                     
                     <xsl:variable name="where-part">
                         <xsl:apply-templates select="." mode="build-where">
@@ -690,6 +690,42 @@
     </xsl:template>
     
 
+    <xsl:template match="xi:exists" mode="build-where">
+        
+        <xsl:param name="request" select="parent::xi:data-request" />
+        
+        <xsl:variable name="concept" select="$model/*[@name=current()/@concept]"/>
+        
+        <xsl:text> exists (select * from </xsl:text>
+        
+        <xsl:apply-templates select="$concept" mode="from-name">
+            <xsl:with-param name="parameters" select="xi:parameter|xi:use"/>
+            <xsl:with-param name="joins" select="xi:join"/>
+            <xsl:with-param name="request" select="$concept"/>
+            <xsl:with-param name="select" select="$concept/xi:select[1]"/>
+            <xsl:with-param name="parmnams" select="xi:parameter/@name|xi:use/@name"/>
+        </xsl:apply-templates>
+        
+        <xsl:text> where </xsl:text>
+        
+        <xsl:for-each select="*">
+            
+            <xsl:apply-templates select="." mode="build-where">
+                <xsl:with-param name="select" select="$concept/xi:select[1]"/>
+                <xsl:with-param name="request" select=".."/>
+            </xsl:apply-templates>
+            
+            <xsl:if test="position() &lt; last()">
+                <xsl:text> and </xsl:text>
+            </xsl:if>
+            
+        </xsl:for-each>
+        
+        <xsl:text> ) </xsl:text>
+        
+    </xsl:template>
+    
+    
     <xsl:template match="*" mode="build-where">
         
         <xsl:param name="request" select="parent::xi:data-request" />        
@@ -722,8 +758,10 @@
                         <xsl:text> ( </xsl:text>
                     </xsl:if>
                     
-                    <xsl:apply-templates select="$request/@name" mode="doublequoted"/>
-                    <xsl:text>.</xsl:text>
+                    <xsl:for-each select="$request/@name">
+                        <xsl:apply-templates select="." mode="doublequoted"/>
+                        <xsl:text>.</xsl:text>
+                    </xsl:for-each>
                     <xsl:apply-templates select="$property" mode="sql-name"/>
                     
                     <xsl:choose>
