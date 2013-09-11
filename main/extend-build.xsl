@@ -265,9 +265,14 @@
 						<xsl:value-of select="@name"/> 
 					</xsl:attribute>
 					<xsl:attribute name="name">
-						<xsl:if test="$form">
-							<xsl:value-of select="($joined|$form)[@concept=current()/../@name][last()]/@name"/> 
-						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="$form/self::xi:form">
+								<xsl:value-of select="($joined|$form)[@concept=current()/../@name][last()]/@name"/> 
+							</xsl:when>
+							<xsl:when test="$form/self::xi:exists">
+								<xsl:value-of select="$form/@concept"/> 
+							</xsl:when>
+						</xsl:choose>
 					</xsl:attribute>
 				</on>
 				<!--on concept="{../@name}" property="{@name}"/-->

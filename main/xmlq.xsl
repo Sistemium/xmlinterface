@@ -539,7 +539,7 @@
         
     </xsl:template>
 
-    <xsl:template match="xi:data-request" mode="from">
+    <xsl:template match="xi:data-request|xi:exists" mode="from">
         
         <xsl:param name="this" select ="."/>
         <xsl:param name="concept" select="$model/xi:concept[@name=$this/@concept]"/>
@@ -692,35 +692,8 @@
 
     <xsl:template match="xi:exists" mode="build-where">
         
-        <xsl:param name="request" select="parent::xi:data-request" />
-        
-        <xsl:variable name="concept" select="$model/*[@name=current()/@concept]"/>
-        
         <xsl:text> exists (select * from </xsl:text>
-        
-        <xsl:apply-templates select="$concept" mode="from-name">
-            <xsl:with-param name="parameters" select="xi:parameter|xi:use"/>
-            <xsl:with-param name="joins" select="xi:join"/>
-            <xsl:with-param name="request" select="$concept"/>
-            <xsl:with-param name="select" select="$concept/xi:select[1]"/>
-            <xsl:with-param name="parmnams" select="xi:parameter/@name|xi:use/@name"/>
-        </xsl:apply-templates>
-        
-        <xsl:text> where </xsl:text>
-        
-        <xsl:for-each select="*">
-            
-            <xsl:apply-templates select="." mode="build-where">
-                <xsl:with-param name="select" select="$concept/xi:select[1]"/>
-                <xsl:with-param name="request" select=".."/>
-            </xsl:apply-templates>
-            
-            <xsl:if test="position() &lt; last()">
-                <xsl:text> and </xsl:text>
-            </xsl:if>
-            
-        </xsl:for-each>
-        
+        <xsl:apply-templates select="." mode="from"/>
         <xsl:text> ) </xsl:text>
         
     </xsl:template>
@@ -923,8 +896,10 @@
                 <xsl:text>)</xsl:text>
             </xsl:if>
             
-            <xsl:text> as </xsl:text>
-            <xsl:apply-templates select="$request/@name" mode="doublequoted"/>
+            <xsl:for-each select="$request/@name">
+                <xsl:text> as </xsl:text>
+                <xsl:apply-templates select="." mode="doublequoted"/>
+            </xsl:for-each>
             
             <xsl:for-each select="$this[current()[not(@type='procedure')]]/*[@name=$request/xi:order-by[1][@use-sql-index]/@name]/@sql-index">
                 <xsl:text>force index(</xsl:text>

@@ -61,9 +61,20 @@
 
     <xsl:template match="xi:parameter | xi:field[xi:compute]" mode="build-subrequest"/>
 
+    <xsl:template match="@*" mode="build-subrequest">
+		<xsl:copy/>
+	</xsl:template>
+	
+    <xsl:template match="xi:exists[not(@name)]/@concept" mode="build-subrequest">
+		<xsl:attribute name="name">
+			<xsl:value-of select="."/>
+		</xsl:attribute>
+		<xsl:copy/>
+	</xsl:template>
+	
     <xsl:template match="*" mode="build-subrequest">
 		<xsl:copy>
-			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="@*" mode="build-subrequest"/>
 			<xsl:apply-templates select="node()" mode="build-subrequest"/>
 		</xsl:copy>
     </xsl:template>
