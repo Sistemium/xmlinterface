@@ -287,7 +287,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                 
                 if (viewDDLplus){
                     viewDDL += viewDDLplus;
-                    fromDDL += (column.editable ? ' left' : '') +
+                    fromDDL += (column.editable || column.optional ? ' left' : '') +
                             ' join ' + column.parent + ' on ' + column.parent + '.id = ' + table.id + '.' + column.name;
                 }
                 
