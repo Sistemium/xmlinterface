@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    ns="http://unact.net/xml/xi"
+>
+    
+    <start>
+        <element name="domain">
+            
+            <optional>
+                <attribute name="version"/>
+            </optional>
+            
+            <oneOrMore>
+                <element name="concept">
+                    
+                    <attribute name="name"/>
+                    
+                    <ref name="label-attr"/>
+                    
+                    <optional>
+                        <attribute name="storage"/>
+                        <attribute name="server"/>
+                        <attribute name="db"/>
+                    </optional>
+                    
+                    <oneOrMore>
+                        <element name="select">
+                            <ref name="storage-connector-elem-content"/>
+                        </element>
+                    </oneOrMore>
+                    
+                    <zeroOrMore>
+                        <element name="save">
+                            <ref name="storage-connector-elem-content"/>
+                        </element>
+                    </zeroOrMore>
+                    
+                    <interleave>
+                        <zeroOrMore>
+                            <ref name="property-elem"/>
+                        </zeroOrMore>
+                        <zeroOrMore>
+                            <ref name="role-elem"/>
+                        </zeroOrMore>
+                    </interleave>
+                    
+                </element>
+            </oneOrMore>
+        </element>
+    </start>
+    
+    <define name="storage-connector-elem-content">
+        
+        <attribute name="owner"/>
+        
+        <optional>
+            <attribute name="type">
+                <choice>
+                    <value>procedure</value>
+                    <value>mdx</value>
+                </choice>
+            </attribute>
+        </optional>
+        
+        <ref name="storage-name"/>
+        
+        <zeroOrMore>
+            <element name="parameter">
+                
+                <choice>
+                    
+                    <attribute name="name"/>
+                    
+                    <choice>
+                        <element name="start-at">
+                            <empty/>
+                        </element>
+                        <attribute name="start-at">
+                            <choice>
+                                <value>true</value>
+                            </choice>
+                        </attribute>
+                    </choice>
+                    
+                    <choice>
+                        <element name="top">
+                            <empty/>
+                        </element>
+                        <attribute name="top">
+                            <choice>
+                                <value>true</value>
+                            </choice>
+                        </attribute>
+                    </choice>
+                    
+                </choice>
+                
+                <ref name="type-attr"/>
+                
+                <ref name="storage-name"/>
+                
+                <optional>
+                    <attribute name="required">
+                        <choice>
+                            <value>true</value>
+                        </choice>
+                    </attribute>
+                </optional>
+                
+            </element>
+        </zeroOrMore>
+        
+    </define>
+    
+    <define name="storage-name">
+        <optional>
+            <choice>
+                <attribute name="sql-name"/>
+                <attribute name="mdx-name"/>
+            </choice>
+        </optional>
+    </define>
+    
+    <define name="property-elem">
+        <element name="property">
+            
+            <attribute name="name"/>
+            
+            <optional>
+                <attribute name="key">
+                    <choice>
+                        <value>true</value>
+                    </choice>
+                </attribute>
+            </optional>
+            
+            <ref name="type-attr"/>
+            <ref name="storage-name"/>
+            <ref name="sql-compute-attr"/>
+            <ref name="label-attr"/>
+            
+        </element>
+    </define>
+    
+    <define name="role-elem">
+        <element name="role">
+            <attribute name="name"/>
+            <attribute name="actor"/>
+            <ref name="storage-name"/>
+            <ref name="sql-compute-attr"/>
+            <optional>
+                <attribute name="type">
+                    <choice>
+                        <value>belongs</value>
+                        <value>contains</value>
+                    </choice>
+                </attribute>
+            </optional>
+            <ref name="label-attr"/>
+        </element>
+    </define>
+    
+    <define name="sql-compute-attr">
+        <optional>
+            <attribute name="sql-compute"/>
+        </optional>
+    </define>
+    
+    <define name="label-attr">
+        <optional>
+            <attribute name="label"/>
+        </optional>
+    </define>
+    
+    <define name="type-attr">
+        <optional>
+            <attribute name="type">
+                <choice>
+                    <value>string</value>
+                    <value>date</value>
+                    <value>int</value>
+                    <value>decimal</value>
+                    <value>boolean</value>
+                    <value>datetime</value>
+                </choice>
+            </attribute>
+        </optional>
+    </define>
+    
+</grammar>
