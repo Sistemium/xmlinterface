@@ -51,6 +51,8 @@
         </element>
     </start>
     
+    <include href="xi.rng"/>
+    
     <define name="storage-connector-elem-content">
         
         <attribute name="owner"/>
@@ -78,9 +80,7 @@
                             <empty/>
                         </element>
                         <attribute name="start-at">
-                            <choice>
-                                <value>true</value>
-                            </choice>
+                            <ref name="BOOL-val"/>
                         </attribute>
                     </choice>
                     
@@ -89,9 +89,7 @@
                             <empty/>
                         </element>
                         <attribute name="top">
-                            <choice>
-                                <value>true</value>
-                            </choice>
+                            <ref name="BOOL-val"/>
                         </attribute>
                     </choice>
                     
@@ -103,24 +101,13 @@
                 
                 <optional>
                     <attribute name="required">
-                        <choice>
-                            <value>true</value>
-                        </choice>
+                        <ref name="BOOL-val"/>
                     </attribute>
                 </optional>
                 
             </element>
         </zeroOrMore>
         
-    </define>
-    
-    <define name="storage-name">
-        <optional>
-            <choice>
-                <attribute name="sql-name"/>
-                <attribute name="mdx-name"/>
-            </choice>
-        </optional>
     </define>
     
     <define name="property-elem">
@@ -130,9 +117,7 @@
             
             <optional>
                 <attribute name="key">
-                    <choice>
-                        <value>true</value>
-                    </choice>
+                    <ref name="BOOL-val"/>
                 </attribute>
             </optional>
             
@@ -162,31 +147,5 @@
         </element>
     </define>
     
-    <define name="sql-compute-attr">
-        <optional>
-            <attribute name="sql-compute"/>
-        </optional>
-    </define>
-    
-    <define name="label-attr">
-        <optional>
-            <attribute name="label"/>
-        </optional>
-    </define>
-    
-    <define name="type-attr">
-        <optional>
-            <attribute name="type">
-                <choice>
-                    <value>string</value>
-                    <value>date</value>
-                    <value>int</value>
-                    <value>decimal</value>
-                    <value>boolean</value>
-                    <value>datetime</value>
-                </choice>
-            </attribute>
-        </optional>
-    </define>
     
 </grammar>

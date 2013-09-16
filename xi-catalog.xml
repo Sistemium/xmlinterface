@@ -3,5 +3,6 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
 
   <uri name="http://unact.net/xml/xi" uri="rng/domain.rng"/>
+  <uri name="http://unact.net/xml/xi" uri="rng/view-definition.rng"/>
 
 </catalog>
