@@ -252,18 +252,9 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             me.executeDDL(t, ddl);
             
-            var 
-                viewDDL = 'create view '+table.id+'_browse as select ' + table.id +'.*',
-                fromDDL =' from '+table.id
-            ;
-            
-            me.executeDDL(t, 'DROP VIEW IF EXISTS '+table.id+'_browse;');    
-            
             Ext.each (table.columns, function (column, idx, columns) {
                 
-                if (column.compute || column.template) return;
-                
-                var idxDDL = '', viewDDLplus = '';
+                var idxDDL = '';
                 
                 if (column.parent || column.name == 'id') 
                     idxDDL = 'create index '+table.id+'_'+column.name+' on '+ table.id + '('+column.name+')';
@@ -277,6 +268,41 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         +' begin update ' + table.id +' set '+column.name
                         +' = new.id where ' + column.name + ' = old.id; end')
                 ;
+            });
+            
+            Ext.each (table.deps, function (dep, idx, deps) {
+                if (dep.contains)
+                    me.executeDDL (t,
+                        'create trigger td_'+table.id+'_cascade_'+dep.table_id
+                        +' before delete on '+table.id
+                        +' begin delete from ' + dep.table_id 
+                        +' where ' + table.id + ' = old.id; end')
+            });
+            
+            if (table.extendable) me.executeDDL (t,
+                'create trigger td_'+table.id+'_cascade_Phantom'
+                +' before delete on '+table.id
+                +' begin delete from Phantom' 
+                +' where row_id = old.xid; end')
+            ;
+        });
+        
+        /* create views */
+        
+        Ext.each( dbSchema.tables, function (table, idx, tables) {
+            
+            var 
+                viewDDL = 'create view '+table.id+'_browse as select ' + table.id +'.*',
+                fromDDL =' from '+table.id
+            ;
+            
+            me.executeDDL(t, 'DROP VIEW IF EXISTS '+table.id+'_browse;');    
+            
+            Ext.each (table.columns, function (column, idx, columns) {
+                
+                if (column.compute || column.template) return;
+                
+                var viewDDLplus = '';
                 
                 if (column.parent)
                     tables[column.parent].columns.forEach ( function (pcol, idx) {
@@ -298,21 +324,6 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                 
             me.executeDDL(t, viewDDL + fromDDL);
             
-            Ext.each (table.deps, function (dep, idx, deps) {
-                if (dep.contains)
-                    me.executeDDL (t,
-                        'create trigger td_'+table.id+'_cascade_'+dep.table_id
-                        +' before delete on '+table.id
-                        +' begin delete from ' + dep.table_id 
-                        +' where ' + table.id + ' = old.id; end')
-            });
-            
-            if (table.extendable) me.executeDDL (t,
-                'create trigger td_'+table.id+'_cascade_Phantom'
-                +' before delete on '+table.id
-                +' begin delete from Phantom' 
-                +' where row_id = old.xid; end')
-            ;
         });
         
         Ext.each ( dbSchema.views, function (table, idx) {
