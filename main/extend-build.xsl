@@ -91,8 +91,11 @@
             
 			<xsl:attribute name="id"><xsl:value-of select="php:function('uuidSecure','')"/></xsl:attribute>
 			
-			<xsl:apply-templates select="$model/xi:concept[@name=$concept]/@*"/>
-				
+			<xsl:for-each select="$model/xi:concept[@name=$concept]">
+				<xsl:apply-templates select="parent::xi:domain/@server"/>
+				<xsl:apply-templates select="@*"/>
+			</xsl:for-each>
+			
 			<xsl:attribute name="type">
 				<xsl:choose>
 					<xsl:when test="@delete-this or $delete-null">

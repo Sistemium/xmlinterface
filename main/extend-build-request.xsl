@@ -23,6 +23,7 @@
                 <xsl:value-of select="php:function('uuidSecure','')"/>
             </xsl:attribute>
             
+			<xsl:apply-templates select="$concept/../@server"/>
             <xsl:apply-templates select="$concept/@*" />
             <xsl:apply-templates select="$form/@*" mode="build-request"/>
             
@@ -122,7 +123,7 @@
 	<xsl:template match="@*" mode="build-request"/>
 
 	
-    <xsl:template match="@concept|@name|@page-size" mode="build-request">
+    <xsl:template match="@concept|@name|@page-size|@server" mode="build-request">
 		<xsl:copy-of select="."/>
 	</xsl:template>
     

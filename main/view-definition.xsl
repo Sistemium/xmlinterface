@@ -133,6 +133,7 @@
         <xsl:variable name="form-concept" select="$form/@concept|$form[not(@concept)]/@name"/>
         <xsl:variable name="role" select="@role|self::*[not(@role)]/@name"/>
         <xsl:variable name="concept" select="self::xi:form[not(@concept)]/@name|self::xi:form/@concept"/>
+        <xsl:variable name="domain-concept" select="$model/xi:concept[@name=$form-concept]"/>
         
         <xsl:apply-templates select="." mode="build-id"/>
         
@@ -144,6 +145,9 @@
                 </xsl:attribute>
             </xsl:for-each>
         </xsl:if>
+        
+        <!--xsl:copy-of select="$domain-concept/parent::xi:domain/@server"/>
+        <xsl:copy-of select="$domain-concept/@server"/-->
         
         <xsl:apply-templates select="$model/xi:concept[@name=$form-concept]/*[@name=$role]" mode="build-schema"/>
         <xsl:apply-templates select="$model/xi:concept[@name=$model/xi:concept[@name=current()/../../@name]/xi:role[@name=current()/../@name]/@actor]/*[@name=current()/@name]" mode="build-schema"/>
