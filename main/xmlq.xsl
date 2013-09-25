@@ -319,7 +319,7 @@
         />
         
         <xsl:variable name="select" select="
-            $model/xi:concept [@name=current()/@name] /xi:select [$select-id=generate-id()]
+            $model/xi:concept [@name=current()/@concept] /xi:select [$select-id=generate-id()]
         "/>
         
         <xsl:variable name="agg-wrapper" select="
@@ -339,6 +339,7 @@
         <xsl:text>SELECT </xsl:text>
         
         <xsl:if test="not($select/xi:parameter[xi:top|@top])">
+            
             <xsl:for-each select="@page-size">
                 <xsl:text> TOP </xsl:text>
                 <xsl:value-of select="."/>
