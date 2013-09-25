@@ -117,7 +117,7 @@
             
             <optional>
                 <attribute name="key">
-                    <ref name="BOOL-val"/>
+                    <value>true</value>
                 </attribute>
             </optional>
             

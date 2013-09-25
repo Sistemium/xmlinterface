@@ -33,9 +33,7 @@
     </define>
     
     <define name="BOOL-val">
-        <choice>
-            <value>true</value>
-        </choice>
+        <value>true</value>
     </define>
     
     <define name="storage-name">
@@ -56,4 +54,14 @@
         </choice>
     </define>
     
+    <define name="sql-compute">
+        <choice>
+            <element name="sql-compute">
+                <text/>
+            </element>
+            <attribute name="sql-compute"/>
+        </choice>
+    </define>
+    
+   
 </grammar>
