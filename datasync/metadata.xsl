@@ -178,6 +178,7 @@
                             <xsl:attribute name="type">
                                 <xsl:choose>
                                     <xsl:when test="@type='decimal'">float</xsl:when>
+                                    <xsl:when test="self::xi:form">int</xsl:when>
                                     <xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
                                 </xsl:choose>
                             </xsl:attribute>
