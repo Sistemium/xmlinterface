@@ -36,7 +36,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         console.log('Database error: ' + msg);
         return true;
     },
-
+    
     startDatabase: function (metadata, forceRebuild){
         var targetVersion = metadata.version,
             name = metadata.name,
