@@ -126,7 +126,7 @@
                                     <xsl:attribute name="name">
                                         <xsl:value-of select="@concept"/>
                                     </xsl:attribute>
-                                    <xsl:attribute name="editable">new-only</xsl:attribute>
+                                    <xsl:attribute name="editable">true</xsl:attribute>
                                     <xsl:attribute name="sql-name">
                                         <xsl:value-of select="$form/@parent-sql-name"/>
                                     </xsl:attribute>
@@ -164,7 +164,12 @@
     
     <xsl:template match="xi:datum[@editable or @modifiable][/*[@stage='set-modified']]" mode="extend">
         
-        <xsl:variable name="old" select="../preceding-sibling::xi:preload/descendant::xi:data[@name=current()/../@name]/xi:datum[@name=current()/@name]"/>
+        <xsl:variable name="old" select="
+            ../preceding-sibling::xi:preload
+            /descendant::xi:data[@name=current()/../@name]
+            /xi:datum[@name=current()/@name]
+        "/>
+        
         <xsl:if test="$old/text() != text() or (text() and not ($old/text()))">
             <xsl:if test="not(@editable='new-only' or ../preceding-sibling::xi:preload[descendant::xi:not-found])">
                 <xsl:attribute name="modified">true</xsl:attribute>
