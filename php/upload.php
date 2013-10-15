@@ -10,6 +10,11 @@
     $headers = apache_request_headers ();
     $authToken = $headers ['Authorization'];
     
+    if (!$authToken) {
+        header ('System-error: 401',1,401);
+        die ('Unauthorized'."\n");
+    }
+    
     if ($_SERVER['CONTENT_TYPE'] != 'text/xml') {
         header ('System-error: 400',1,400);
         die ("'Content-type' must be text/xml\n");

@@ -36,7 +36,7 @@
                 $roles = array();
                 $rolesXML = new SimpleXMLElement ($result);
                 
-                foreach ( $rolesXML->roles->role as $role) {
+                if ($rolesXML->roles) foreach ( $rolesXML->roles->role as $role) {
                     $roles [(string) $role->code] = $role->data ? (string) $role->data : null;
                 }
                 
