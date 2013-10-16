@@ -311,6 +311,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         foreach ($pipeline->execute as $xsl_task){
             $xsl->load($xsl_task['href']);
             $stagename=$xsl_task['name'];
+            $xsl->documentURI = dirname($_SERVER['SCRIPT_FILENAME']).'/'.$xsl_task['href'];
             
             foreach ($xsl_task->include as $include) {
                 $newElement = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform','xsl:include');
@@ -322,6 +323,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             if ($tracing) $xslt->setProfiling('data/stats/'.$initName.'/'.$pipelineName.'/'.$stagename.'.txt');
             
             $uncommitted->documentElement->setAttribute('stage',$stagename);
+            $uncommitted->documentURI = dirname($_SERVER['SCRIPT_FILENAME']).'/context.xml';
             
             if ($xsl_task['output']){
                 $contentType='Content-Type: text/'.$xsl_task['output'];
@@ -371,6 +373,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             do {
                 $xslt->setParameter('', 'counter', ++$_SESSION['id-counter']);
                 $uncommitted = $xslt->transformToDoc($uncommitted);
+                $uncommitted->documentURI = dirname($_SERVER['SCRIPT_FILENAME']).'/context.xml';
                 $xslCnt++;
                 
                 $command=$uncommitted->documentElement->getAttribute('pipeline');            

@@ -3,8 +3,9 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://unact.net/xml/xi"
     xmlns:xi="http://unact.net/xml/xi"
- >
+>
 
+    <xsl:param name="config">../config/</xsl:param>
     <xsl:include href="security.xsl"/>
     <xsl:include href="view-definition.xsl"/>
     <xsl:include href="context-extension.xsl"/>

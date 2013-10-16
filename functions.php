@@ -110,7 +110,7 @@ set_time_limit (180);
         try {
             $http = new HTTPRetriever();
             $http->stream_timeout = 120;
-            $private=simplexml_load_file('../secure.xml');
+            $private=simplexml_load_file(localPath('../secure.xml'));
         
             $src=$request[0]->ownerDocument->documentElement->getAttribute('storage');
             $db=$request[0]->ownerDocument->documentElement->getAttribute('db');
@@ -235,7 +235,7 @@ set_time_limit (180);
 
     function developerMode() {
         $doc = new DOMDocument;
-        $doc -> load('../secure.xml');
+        $doc -> load(localPath('../secure.xml'));
         if ($doc -> documentElement -> getAttribute ('environment') == 'developer') return true;
         
         return false;
@@ -279,7 +279,7 @@ set_time_limit (180);
     
         if (developerMode()) {
             $doc = new DOMDocument;
-            $doc->load('config/auth.xml');   
+            $doc->load(localPath('../config/auth.xml'));
             $xpath = new DOMXPath($doc);
             $xpath -> registerNamespace('xi','http://unact.net/xml/xi');
             $xpathRes = $xpath->query('/*/xi:user[@password and @name="'.$login.'"]');
@@ -392,9 +392,30 @@ set_time_limit (180);
         
     }
     
-    function directoryList( $name, $path = '.' ) {
+    function localPath ($name) {
+        return changeDirectory (dirname($_SERVER['SCRIPT_FILENAME']), $name);
+    }
+    
+    function changeDirectory($from, $to) {
         
-        $path = $path.'/'.$name;
+        $result = '';
+        
+        foreach(explode('/',$to) as $pathPart) {
+            if ($pathPart == '..')
+                $from = dirname($from);
+            else
+                $result .= '/'.$pathPart;
+        }
+        return $from . $result;
+    }
+    
+    function directoryList( $name, $path = false) {
+        
+        if (!$path) {
+            $path = changeDirectory (dirname($_SERVER['SCRIPT_FILENAME']), $name);
+        } else {
+            $path = $path.'/'.$name;
+        }
         
         if ( $handle = opendir( $path ) ) {
             
@@ -435,7 +456,7 @@ set_time_limit (180);
     
     function secureParm ($name = false) {
         
-        $private=simplexml_load_file('../secure.xml');
+        $private=simplexml_load_file(localPath('../secure.xml'));
         
         if ($name)
             return $private [0] [$name];

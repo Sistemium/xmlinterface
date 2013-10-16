@@ -5,7 +5,9 @@
     xmlns="http://unact.net/xml/xi"
 >
 
-    <xsl:param name="auth" select="document('../config/auth.xml')/*"/>
+    <xsl:param name="config">../config/</xsl:param>
+    
+    <xsl:param name="auth" select="document(concat('../',$config,'auth.xml'))/*"/>
     
     <xsl:template match="xi:session[@authenticated][not(xi:role)]">
         
@@ -39,11 +41,11 @@
         </xsl:for-each>
         
         <domains verify-this="true">
-            <domain href="config/domain.xml"
-                concepts-count="{count(document('../config/domain.xml')/*/xi:concept)}"
+            <domain href="{$config}domain.xml"
+                concepts-count="{count(document(concat('../',$config,'domain.xml'))/*/xi:concept)}"
             />
             <xsl:apply-templates mode="import-domain" select="
-                xi:directoryList('config/domain')/*
+                xi:directoryList(concat($config,'domain'))/*
             "/>
         </domains>
         
