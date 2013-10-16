@@ -2,7 +2,7 @@
 <configuration xmlns="http://unact.net/xml/xi" name="datasync" gzip="true">
     
     <context-extension>
-        <views href="config/datasync-menu.xml"/>
+        <views href="../config/datasync-menu.xml"/>
     </context-extension>
     
     <pipeline name="main">
