@@ -180,6 +180,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
                     $Context->session['authenticated']=date('Y/m/d G:i:s',$_SESSION['authenticated']);
                     $Context->session['user-label']=$_SESSION['user-label'];
                     $Context->session['username']=$_SESSION['username'];
+                    $Context->session['user-login']=$_SESSION['username'];
                     $Context->session['validator']=$_SESSION['validator'];
                     if (isset($userid)) $Context->session['user-id'] = $userid;
                     
@@ -240,7 +241,7 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
     }
 
     if (!$authenticated) {
-        $private=simplexml_load_file('../secure.xml');
+        $private=simplexml_load_file(localPath('../secure.xml'));
         if (isset ($private -> oauth ['login-page'])) {
             $notAuthentocatedHeader = $private -> oauth ['login-page'];
             

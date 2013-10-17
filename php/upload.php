@@ -2,6 +2,7 @@
 
     require_once ('XSLTWhatMatrix.php');
     require_once ('UOAuthClient.php');
+    require_once ('../functions.php');
 
     set_time_limit(180);
     
@@ -45,7 +46,7 @@
     
     $matrix = new XSLTWhatMatrix (
         $xml,
-        DOMDocument::load ('../config/xsl/upload.instructions.xsl'),
+        DOMDocument::load (localPath('../../config/xsl/upload.instructions.xsl')),
         array("org" => $org)
     );
     $matrix->auth = $authToken;

@@ -1,6 +1,6 @@
 <?php
 
-require_once('../libs/HTTPRetriever.php');
+require_once(dirname(dirname(__FILE__)).'/libs/HTTPRetriever.php');
 
 date_default_timezone_set('Europe/Moscow');
 set_time_limit (180);

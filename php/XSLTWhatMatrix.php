@@ -1,5 +1,7 @@
 <?php
 
+    require_once ('../functions.php');
+
     class XSLTWhatMatrix extends XSLTProcessor {
         
         public $instructions;
@@ -63,7 +65,7 @@
                 
                 if ($xsl = $task['xsl']){
                     
-                    $xsl = DOMDocument::load ($xsl);
+                    $xsl = DOMDocument::load (changeDirectory(dirname($_SERVER['SCRIPT_FILENAME']),$xsl));
                     
                     foreach ($task->include as $param) {
                         $newElement = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform','xsl:include');
