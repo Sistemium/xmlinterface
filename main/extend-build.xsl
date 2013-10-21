@@ -71,7 +71,7 @@
 				)
                 or xi:datum[@type='field'][@modified]
                 or xi:data[((@modified or @ts) and @role)]
-		or (@persist-this and (xi:datum[@type='field'][@editable or @modifiable] or xi:data[@role][@ts]))
+		or (@persist-this and (xi:datum[@type='field'][@editable or @modifiable][@modified] or xi:data[@role][@ts]))
 		or (@is-new and xi:datum[@type='field' and @editable] and key('id',descendant::xi:data[@persist-this]/@ref)/xi:join/@name=@name)
 		][not(xi:data[@role and @required and not(*[key('id',@ref)/@key])]) and not(key('id',@ref)/@read-only)]
 		"
