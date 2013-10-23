@@ -13,6 +13,9 @@
     
     if (!$authToken) {
         header ('System-error: 401',1,401);
+        $path = localPath('../data/upload/' . uniqid('err.401-') . '.headers.txt');
+        $headersString = var_export($headers,true);
+        file_put_contents ($path, $headersString);
         die ('Unauthorized'."\n");
     }
     
