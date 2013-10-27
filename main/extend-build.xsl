@@ -85,7 +85,7 @@
 			]
 		"/>
 		
-		<data-update program="{ancestor::xi:view/@name}">
+		<data-update program="{(ancestor::xi:view/@name|ancestor-or-self::*/@program)[1]}">
 			<xsl:variable name="this" select="."/>
 			<xsl:variable name="concept" select="key('id',current()/@ref)/@concept"/>
             
