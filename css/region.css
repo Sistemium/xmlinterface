@@ -58,3 +58,8 @@
 	display: block;
 	max-width: 40%;
 }
+
+
+.desktop .region.block {
+	display: block;
+}

@@ -2,6 +2,7 @@
 
     require_once ('XSLTWhatMatrix.php');
     require_once ('UOAuthClient.php');
+    require_once ('../functions.php');
 
     set_time_limit(180);
     
@@ -12,6 +13,9 @@
     
     if (!$authToken) {
         header ('System-error: 401',1,401);
+        $path = localPath('../data/upload/' . uniqid('err.401-') . '.headers.txt');
+        $headersString = var_export($headers,true);
+        file_put_contents ($path, $headersString);
         die ('Unauthorized'."\n");
     }
     
@@ -45,7 +49,7 @@
     
     $matrix = new XSLTWhatMatrix (
         $xml,
-        DOMDocument::load ('../config/xsl/upload.instructions.xsl'),
+        DOMDocument::load (localPath('../../config/xsl/upload.instructions.xsl')),
         array("org" => $org)
     );
     $matrix->auth = $authToken;

@@ -8,6 +8,8 @@
     xmlns:php="http://php.net/xsl"
 >
 
+    <xsl:param name="config">../config/</xsl:param>
+    
     <xsl:template match="xi:import[@href]">
         <xsl:apply-templates select="document(@href)"/>
     </xsl:template>
@@ -23,14 +25,14 @@
     />
     
     <xsl:template match="xi:context-extension//*/@directory">
-        <xsl:apply-templates select="php:function('directoryList',concat('config/',string(.)))" mode="import-directory">
+        <xsl:apply-templates select="php:function('directoryList',concat($config,string(.)))" mode="import-directory">
             <xsl:with-param name="this" select=".."/>
         </xsl:apply-templates>
     </xsl:template>
 
     <xsl:template match="xi:context-extension//*/@href">
         <xsl:attribute name="href">
-            <xsl:value-of select="concat('config/',.)"/>
+            <xsl:value-of select="concat($config,.)"/>
         </xsl:attribute>
         <xsl:apply-templates select=".." mode="import-file"/>
     </xsl:template>
@@ -53,13 +55,13 @@
     </xsl:template>
     
     <xsl:template match="xi:option" mode="import-file">
-        <xsl:apply-templates select="document(concat('../config/',@href))/*" mode="build-option"/>
+        <xsl:apply-templates select="document(concat('../',$config,@href))/*" mode="build-option"/>
     </xsl:template>
     
     <xsl:template match="xi:menu" mode="import-file">
         <xsl:param name="href" select="@href"/>
-        <option href="config/{$href}">
-            <xsl:apply-templates select="@*|document(concat('../config/',$href))/*|*" mode="build-option"/>
+        <option href="{$config}{$href}">
+            <xsl:apply-templates select="@*|document(concat('../',$config,$href))/*|*" mode="build-option"/>
         </option>
     </xsl:template>
  
@@ -74,7 +76,7 @@
     
     <!--xsl:template match="@href" mode="build-option">
         <xsl:attribute name="href">
-            <xsl:value-of select="concat('config/',.)"/>
+            <xsl:value-of select="concat($config,.)"/>
         </xsl:attribute>
     </xsl:template-->
     

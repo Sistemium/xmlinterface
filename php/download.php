@@ -2,6 +2,7 @@
 
     require_once ('XSLTWhatMatrix.php');
     require_once ('UOAuthClient.php');
+    require_once ('../functions.php');
 
     $headers = apache_request_headers ();
     
@@ -38,8 +39,8 @@
     $matrix = new XSLTWhatMatrix ();
     
     $matrix = new XSLTWhatMatrix (
-        DOMDocument :: load('../../secure.xml'),
-        DOMDocument::load ('../config/xsl/download.instructions.xsl'),
+        DOMDocument::load (localPath('../../secure.xml')),
+        DOMDocument::load (localPath('../../config/xsl/download.instructions.xsl')),
         array("org" => $org)
     );
     $matrix->auth = $auth;

@@ -3,7 +3,9 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://unact.net/xml/xi"
     xmlns:xi="http://unact.net/xml/xi"
-    exclude-result-prefixes="xi">
+    xmlns:php="http://php.net/xsl"
+    exclude-result-prefixes="xi"
+>
 
     <xsl:key name="id" match="*" use="@id"/>
     <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
@@ -27,6 +29,12 @@
             </xsl:if>
             <xsl:apply-templates/>
         </metadata>
+    </xsl:template>
+    
+    <xsl:template match="xi:session-control[not(following-sibling::xi:session)]">
+        <xsl:comment>
+            <xsl:value-of select="php:function('header', 'XI-Metadata: not authorized',1,401)"/>
+        </xsl:comment>
     </xsl:template>
 
     <xsl:template match="xi:command[@name='metadata']">

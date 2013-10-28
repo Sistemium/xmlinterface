@@ -15,6 +15,10 @@
             )"
         />
         
+        <xsl:comment>
+            datum:<xsl:value-of select="$datum/@id"/>
+        </xsl:comment>
+        
         <xsl:apply-templates select="self::xi:input | self::xi:print[$datum/node()]" mode="render">
             <xsl:with-param name="datum" select="$datum"/>
             <xsl:with-param name="elem">
@@ -30,7 +34,7 @@
     
     <xsl:template match="xi:input|xi:print" mode="render">
         
-        <xsl:param name="datum" select="xi:null"/>
+        <xsl:param name="datum" select="key('id',self::xi:input/@ref)"/>
         <xsl:param name="elem">div</xsl:param>
         
         <xsl:element name="{$elem}">
@@ -67,7 +71,7 @@
                     </div>
                 </xsl:when>
                 
-                <xsl:otherwise>
+                <xsl:otherwise> <xsl:if test="not(@label='')">
                     <label for="{@ref}">
                         <span><xsl:apply-templates select="self::*[@label] | $datum[not(current()/@label)][1]" mode="label"/></span>
                         <span class="colon">
@@ -77,7 +81,7 @@
                             </xsl:if>
                         </span>               
                     </label>
-                </xsl:otherwise>
+                </xsl:if> </xsl:otherwise>
                 
             </xsl:choose>
             
@@ -127,7 +131,7 @@
                 </xsl:when>
                 
                 <xsl:otherwise>
-                    <xsl:apply-templates select="key('id',self::xi:input/@ref)" mode="render"/>
+                    <xsl:apply-templates select="$datum[current()/self::xi:input]" mode="render"/>
                 </xsl:otherwise>
                 
             </xsl:choose>
@@ -154,6 +158,9 @@
         
         <xsl:param name="element">
             <xsl:choose>
+                <xsl:when test="self::xi:datum[key('id',@ref)/@format='href']">
+                    <xsl:text>a</xsl:text>
+                </xsl:when>
                 <xsl:when test="self::xi:datum[key('id',@ref)/@type='xml']">
                     <xsl:text>div</xsl:text>
                 </xsl:when>
@@ -178,6 +185,12 @@
                    <xsl:attribute name="id">
                       <xsl:value-of select="@id"/>
                    </xsl:attribute>
+                </xsl:if>
+                
+                <xsl:if test="$element='a'">
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="$value"/>
+                    </xsl:attribute>
                 </xsl:if>
                 
                 <xsl:apply-templates select="." mode="class"/>

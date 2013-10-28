@@ -100,13 +100,13 @@
                 
                 <xsl:variable name="form" select="."/>
                 
-                <preload ref="{@id}" name="{@name}" retrieve="true">
+                <preload ref="{@id}" name="{@name}" retrieve="true" program="{ancestor::xi:view/@name}">
                     <datum type="parameter" name="xid">
                         <xsl:value-of select="$xid"/>
                     </datum>
                 </preload>
                 
-                <data ref="{@id}" name="{@name}">
+                <data ref="{@id}" name="{@name}" program="{ancestor::xi:view/@name}">
                     
                     <xsl:for-each select="xi:join|xi:parent-join[not(@name = parent::*/parent::*[not(@hidden)]/@name)]">
                         <xsl:variable name="parent" select="ancestor::xi:form[@name=current()/@name]/xi:field[@name='id']"/>
@@ -138,7 +138,7 @@
                     
                 </data>
                 
-                <response-preload ref="{@id}" name="{@name}">
+                <response-preload ref="{@id}" name="{@name}" program="{ancestor::xi:view/@name}">
                     <datum type="parameter" name="xid">
                         <xsl:value-of select="$xid"/>
                     </datum>

@@ -78,7 +78,7 @@ function domready () {
         function(e) {return onClick(e.target)}
     );
     
-    $('div.view').delegate('input.text, input.file','change',
+    $('div.view').delegate('input.text, input.file, textarea','change',
         function(e) {return itemChanged(e.target)}
     );
     
