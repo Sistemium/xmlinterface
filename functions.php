@@ -116,14 +116,25 @@ set_time_limit (180);
             $db=$request[0]->ownerDocument->documentElement->getAttribute('db');
             $server=$request[0]->ownerDocument->documentElement->getAttribute('server');
             
+            $auth_username = (string) $private->username;
+            $auth_password = (string) $private->password;
+            
             if ($src!='mssql'){
-                $http->auth_username = $private->username;
-                $http->auth_password = $private->password;
-                
-                $httphost = isset($private->{$server}) ? $private->{$server} : ($server?'https://'.$server:$private->server[0]);
+                $httphost = isset($private->{$server})
+                    ? $private->{$server}
+                    : ($server?'https://'.$server:$private->server[0])
+                ;
                 
                 $source_http=$httphost;
                 if (!strpos( $httphost , '?')) $source_http .= '/xmlq';
+                
+                if (isset ($httphost['password']))
+                    $auth_password = (string) $httphost ['password']
+                ;
+                
+                $http->auth_username = $auth_username;
+                $http->auth_password = $auth_password;
+                
             } else
                 $source_http = $private->mssqlServer;
             
@@ -132,8 +143,8 @@ set_time_limit (180);
             if($http->post($source_http,
                 $http->make_query_string(array(
                         "request"=>$request[0]->ownerDocument->saveXML(),
-                        "login"=>(string)$private->username,
-                        "pwd"=>(string)$private->password,
+                        "login"=>$auth_username,
+                        "pwd"=>$auth_password,
                         "db"=>$db, "server"=>$server))
                 )) try {
                     if (developerMode()) file_put_contents('data/last.response.http.xml',$http->response);
