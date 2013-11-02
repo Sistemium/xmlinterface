@@ -40,5 +40,13 @@
     <xsl:template match="*[not(*|@*|text())]"/>
 
     <xsl:template match="*[@set-of][not(*[local-name()=../@set-of])]"/>
+    
+    <xsl:template match="xi:column/xi:predicate"/>
+    
+    <xsl:template match="xi:column/xi:predicate[1]">
+        <predicates set-of="predicate">
+            <xsl:copy-of select=".|following-sibling::xi:predicate"/>
+        </predicates>
+    </xsl:template>
 
 </xsl:transform>
