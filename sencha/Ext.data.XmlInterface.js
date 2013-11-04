@@ -469,7 +469,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     },
                     failure: function () {
                         
-                        var e = 'Обратитесь в теходдержку по инциденту SUP-99061';
+                        var e = 'Не удалось подключиться к серверу. Проверьте подключение к интернет.';
                         
                         if (typeof store.failureCb == 'function')
                             store.failureCb.call (xi, store,e)
@@ -544,7 +544,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                         } catch (e) {
                             
                             Ext.Msg.alert(
-                                'Инцидент SUP-99061',
+                                'Загрузка не удалась',
                                 (e.message || 'Обратитесь в техподдержку') + ' S=' + e.stack,
                                 function() {
                                     //options.btn.enable();
