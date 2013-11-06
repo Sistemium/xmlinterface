@@ -74,7 +74,14 @@
             
             <table id="{@name}" name="{@label}" nameSet="{@set-label}" level="{count(ancestor::xi:form[not(@hidden)])}">
                 
-                <xsl:copy-of select="@extendable | @deletable | */@editable | @mainMenu | @clsColumn"/>
+                <xsl:copy-of select="
+                    @extendable
+                    | @deletable
+                    | */@editable
+                    | @mainMenu
+                    | @clsColumn
+                    | @grouperColumn
+                "/>
                 
                 <xsl:if test="$model[@name=current()/@concept]/xi:role[@actor=current()/../@concept][@type='belongs']">
                     <xsl:attribute name="belongs">
@@ -104,6 +111,8 @@
                         </dep>
                     </xsl:for-each>
                 </xsl:for-each></deps>
+                
+                <xsl:apply-templates mode="metadata" select="xi:sencha-template"/>
                 
             </table>
             
@@ -186,9 +195,15 @@
         
         <views set-of="view"><xsl:for-each select="$steps">
             
-            <xsl:copy-of select="@extendable | @deletable | @mainMenu"/>
-            
             <view id="{@name}" name="{@label}" nameSet="{@set-label}">
+                
+                <xsl:copy-of select="
+                    @extendable
+                    | @deletable
+                    | @mainMenu
+                    | @grouperColumn
+                "/>
+                
                 <xsl:variable name="view" select="."/>
                 
                 <columns set-of="column"><xsl:for-each select="descendant::*[self::xi:input|self::xi:print]">
@@ -203,6 +218,8 @@
                             </xsl:when>
                         </xsl:choose>
                     </xsl:variable>
+                    
+                    <xsl:variable name="column" select="."/>
                     
                     <xsl:for-each select="key('id',@ref)">
                         <xsl:variable name="formAlias" select="
@@ -220,7 +237,10 @@
                                     <xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
                                 </xsl:choose>
                             </xsl:attribute>
-                            <xsl:copy-of select="@label"/>
+                            <xsl:if test="not($column/@hidden)">
+                                <xsl:copy-of select="@label"/>
+                                <xsl:copy-of select="$column/@label"/>
+                            </xsl:if>
                         </column>
                     </xsl:for-each>
                     
@@ -231,6 +251,8 @@
                         <xsl:value-of select="."/>
                     </xsl:copy>
                 </xsl:for-each>
+                
+                <xsl:apply-templates mode="metadata" select="xi:sencha-template"/>
                 
             </view>
             
