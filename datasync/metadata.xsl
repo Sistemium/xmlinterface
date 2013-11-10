@@ -81,6 +81,7 @@
                     | @mainMenu
                     | @clsColumn
                     | @grouperColumn
+                    | @sorterColumn
                 "/>
                 
                 <xsl:if test="$model[@name=current()/@concept]/xi:role[@actor=current()/../@concept][@type='belongs']">
