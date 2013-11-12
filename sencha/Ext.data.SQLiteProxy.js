@@ -9,6 +9,8 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             throw "No database reference was provided to the SQLite storage proxy. See Ext.data.SQLiteProxy documentation for details";
         };
         
+        this.logging = config.logging;
+        
     },
 
     update: function (operation, callback, scope) {
@@ -39,7 +41,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             },
             
             ecb = function(e){
-                console.log('Ext.data.SQLiteProxy.setRecord error: ' +e.message);
+                this.logging && console.log('Ext.data.SQLiteProxy.setRecord error: ' +e.message);
                 operation.setException(e);
                 cb();
             }
@@ -124,25 +126,25 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (updateKey)
             hostVars.push (record.get(updateKey))
         
-        //console.log('Ext.data.SQLiteProxy.setRecord prepare: ' + sql);
+        //this.logging && console.log('Ext.data.SQLiteProxy.setRecord prepare: ' + sql);
         
         t.executeSql(
             sql, hostVars,
             function(){
-                console.log('Ext.data.SQLiteProxy.setRecord success: ' +sql);
+                this.logging && console.log('Ext.data.SQLiteProxy.setRecord success: ' +sql);
                 var xid = record.get('xid');
                 
                 if (!t.operation.uploadStamp && xid) {
                     var phantomSql = 'insert into Phantom (row_id, table_name, wasPhantom) values (?,?,?)'
                         phantomSqlValues= [xid, tableName, record.phantom];
                     t.executeSql( phantomSql, phantomSqlValues, function() {
-                        //console.log ('Ext.data.SQLiteProxy.setRecord phantom added: ' + tableName + ' xid = ' +xid);
+                        //this.logging && console.log ('Ext.data.SQLiteProxy.setRecord phantom added: ' + tableName + ' xid = ' +xid);
                     })
                 }                
                 
             } /*,
             function(t,e){
-                console.log('Ext.data.SQLiteProxy.setRecord error: ' +e+'; sql = ' + sql);
+                this.logging && console.log('Ext.data.SQLiteProxy.setRecord error: ' +e+'; sql = ' + sql);
                 ecb(e);
             }*/
         );
@@ -199,7 +201,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             
             if ( sqlWhere.length > 0 ) sql += ' WHERE '+sqlWhere;
             
-            console.log(sql);
+            this.logging && console.log(sql);
             
             me.engine.db.transaction(
                 function(t){
@@ -314,7 +316,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (operation.limit) sql += ' LIMIT '+operation.limit;
         if (operation.start) sql += ' OFFSET '+operation.start;
         
-        console.log(sql);
+        this.logging && console.log(sql);
         
         this.engine.db.transaction(
             function(t){
@@ -344,7 +346,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
     dataReady: function(t, result){
         var rows = result.rows, records = [], recData={};
         
-        //console.log ('Ext.data.SQLiteProxy.dataReady: '+result.rows.length);
+        //this.logging && console.log ('Ext.data.SQLiteProxy.dataReady: '+result.rows.length);
         
         if (t.operation) {
             
@@ -352,7 +354,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             if (result) {
                 var cnt = result.rows.length;
                 t.proxy.lastRowCount = cnt;
-                //console.log ('SQLite rowcount: ' + cnt);
+                //this.logging && console.log ('SQLite rowcount: ' + cnt);
             }
             
             switch (t.operation.action) {
@@ -381,13 +383,13 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                 case 'destroy':
                     break;
                 default:
-                    console.log ('Ext.data.SQLiteProxy.dataReady: unknown action');
+                    this.logging && console.log ('Ext.data.SQLiteProxy.dataReady: unknown action');
             }
             
             t.operation.setSuccessful();
             
         } else {
-            console.log ('Ext.data.SQLiteProxy.dataReady: undefined operation');
+            this.logging && console.log ('Ext.data.SQLiteProxy.dataReady: undefined operation');
             t.operation = new Ext.data.Operation ();
             t.operation.setException(t.exception ? t.exception : 'Unknown exception');
         }
@@ -397,14 +399,14 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (typeof t.callback == "function") {
             t.callback.call(t.scope || t.proxy, t.operation, true);
         } else
-            console.log ('Ext.data.SQLiteProxy.dataReady: undefined callback')
+            this.logging && console.log ('Ext.data.SQLiteProxy.dataReady: undefined callback')
     },
     
     dataError: function(t, e){
         t.operation.setException(e);
         t.operation.setCompleted();
         
-        console.log ('Ext.data.SQLiteProxy.dataError:'+e.message);
+        this.logging && console.log ('Ext.data.SQLiteProxy.dataError:'+e.message);
         
         t.operation.resultSet = new Ext.data.ResultSet({
             "records": [],
@@ -415,7 +417,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (typeof t.callback == "function") {
             t.callback.call(t.scope || t.proxy, t.operation, false);
         } else
-            console.log ('Unknown dataError')
+            this.logging && console.log ('Unknown dataError')
     },
     
     count: function (operation, callback, scope) {
