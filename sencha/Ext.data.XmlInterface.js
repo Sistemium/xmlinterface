@@ -318,8 +318,26 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             if (node.nodeName=='tpl') {
                 result['template'] = new XMLSerializer().serializeToString(node);
                 result['template'] = result['template'].replace(/( xmlns="[^"]*")/,'');
+            } else if (node.nodeName=='xtpl') {
+                result['template'] = new XMLSerializer().serializeToString(node.childNodes[0]);
+                if (node.childNodes.length > 1)
+                    result['templateConfig'] = node.childNodes[1].textContent;
+                ;
+            }
+            
+            if (result['template']) {
+                
+                result['template'] = result['template']
+                    .replace(/ xmlns="[^"]*"/g,'')
+                    .replace(/<nbsp\/>/g,'&nbsp;')
+                    .replace(/\{\[[^\]\}]*\]\}/g,function(s) { return s.replace(/&gt;/g,'>') })                  
+                    .replace(/&amp;/g,'&')
+                    .replace(/(')/g,'"')
+                ;
+                
                 return;
             }
+
             
             if (node.childNodes.length > 0 || node.attributes)
                 o = me.xml2obj(node);

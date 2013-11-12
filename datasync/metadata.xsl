@@ -189,6 +189,19 @@
         </tpl>
     </xsl:template>
     
+    <xsl:template mode="metadata" match="*[*]/text()">
+        <xsl:value-of select="normalize-space(.)"/>
+    </xsl:template>
+    
+    <xsl:template mode="metadata" match="xi:xtemplate">
+        <xtpl>
+            <xsl:apply-templates select="*" mode="metadata"/>
+        </xtpl>
+    </xsl:template>
+    
+    <xsl:template mode="metadata" match="xi:sencha-template[@href]">
+        <xsl:apply-templates select="document(concat('../../config/views/',@href))" mode="metadata"/>
+    </xsl:template>
 
     <xsl:template match="xi:workflow" mode="metadata">
         
