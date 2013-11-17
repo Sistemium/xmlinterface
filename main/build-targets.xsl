@@ -64,7 +64,21 @@
     </xsl:template>
 
 
-    <xsl:template mode="build-target" match="xi:command [key('id',@ref)/self::xi:field] [text()='mass-autofill']">
+    <xsl:template mode="build-target" match="xi:field">
+        
+        <xsl:param name="command" select="/.."/>
+        
+        <xsl:for-each select="key('ref',@id)/self::xi:datum">
+            <xsl:call-template name="build-target">
+                <xsl:with-param name="target-id" select="@id"/>
+                <xsl:with-param name="payload" select="$command"/>
+            </xsl:call-template>
+        </xsl:for-each>
+        
+    </xsl:template>
+
+
+    <xsl:template mode="build-target" match="xi:command [key('id',@ref)/self::xi:field] [@xpath-compute or text()='mass-autofill']">
         
         <xsl:param name="command"/>
         <xsl:param name="this" select="."/>
@@ -75,8 +89,9 @@
         
     </xsl:template>
     
+    <xsl:template mode="build-target" match="xi:step//xi:options//xi:command"/>
     
-    <xsl:template mode="build-target" match="xi:command [not(@name)] [@xpath-compute|xi:xpath-compute]">
+    <xsl:template mode="build-target" match="xi:command [not(@name|@ref)] [@xpath-compute|xi:xpath-compute]">
         
         <xsl:param name="command"/>
         <xsl:param name="this" select="."/>
@@ -226,16 +241,21 @@
         <xsl:value-of select="xi:map($target, text())"/>
     </xsl:template>
     
-    
     <xsl:template mode="build-target-value" match="*[text()][not(*)]">
         <!--xsl:comment>text of <xsl:value-of select="local-name()"/></xsl:comment-->
         <xsl:copy-of select="text()"/>
     </xsl:template>
     
     
-    <xsl:template mode="build-target-value" match="*[not(*|text())]">
+    <xsl:template mode="build-target-value" match="*[not(*|text()|@xpath-compute)]">
         <!--xsl:comment>*</xsl:comment-->
         <xsl:copy-of select="."/>
+    </xsl:template>
+    
+    <xsl:template mode="build-target-value" match="*[@xpath-compute]">
+        <xsl:param name="target" select="."/>
+        <!--xsl:comment>1</xsl:comment-->
+        <xsl:value-of select="xi:map($target, @xpath-compute)"/>
     </xsl:template>
     
     
