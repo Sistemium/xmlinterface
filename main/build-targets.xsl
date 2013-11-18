@@ -89,7 +89,7 @@
         
     </xsl:template>
     
-    <xsl:template mode="build-target" match="xi:step//xi:options//xi:command"/>
+    <xsl:template mode="build-target" match="xi:step//xi:options//xi:command" priority="1000"/>
     
     <xsl:template mode="build-target" match="xi:command [not(@name|@ref)] [@xpath-compute|xi:xpath-compute]">
         
@@ -97,7 +97,7 @@
         <xsl:param name="this" select="."/>
         
         <xsl:for-each select="xi:map(
-            key('id', $command)
+            (key('id', $command) | $this)[1]
             , self::*[not(xi:xpath-compute)]/@xpath-compute
             | xi:xpath-compute
         )">
@@ -252,7 +252,7 @@
         <xsl:copy-of select="."/>
     </xsl:template>
     
-    <xsl:template mode="build-target-value" match="*[@xpath-compute]">
+    <xsl:template mode="build-target-value" match="*[@name|@ref][@xpath-compute]">
         <xsl:param name="target" select="."/>
         <!--xsl:comment>1</xsl:comment-->
         <xsl:value-of select="xi:map($target, @xpath-compute)"/>
