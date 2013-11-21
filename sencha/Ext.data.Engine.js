@@ -126,7 +126,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             t.columns.map = {};
             Ext.each (t.columns, function(c) {
                 t.columns.map[c.name] = c;
-                (c.template || c.compute) && (c.virtual = true);
+                ((c.template && !c.type) || c.compute) && (c.virtual = true);
             })
         });
         
@@ -229,7 +229,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             Ext.each (table.columns, function (column, idx, columns) {
                 
-                if (column.template || column.compute) return;
+                if ((column.template && !column.type) || column.compute) return;
                 
                 if(column.parent){
                     tables[column.parent] && tables[column.parent].columns.map['id'] && (
@@ -309,13 +309,13 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             Ext.each (table.columns, function (column, idx, columns) {
                 
-                if (column.compute || column.template) return;
+                if (column.compute || (column.template && !column.type)) return;
                 
                 var viewDDLplus = '';
                 
                 if (column.parent)
                     tables[column.parent].columns.forEach ( function (pcol, idx) {
-                        if (pcol.compute || pcol.template) return;
+                        if (pcol.compute || (pcol.template && !pcol.type)) return;
                         viewDDLplus += ', '+column.parent+'.'+pcol.name+ ' as '+column.parent+'_'+pcol.name;
                     })
                 ;
