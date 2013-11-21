@@ -94,7 +94,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         
         Ext.each (record.fields.items, function (field) {
             if ((!meta || fields.map[field.name]) && !(field.name == 'ts' || field.name == updateKey)) {
-                if (field.compute || field.template) return;
+                if (field.compute || (field.template && (!field.type || field.type.type == 'auto'))) return;
                 sql += field.name
                     + (updateKey ? '=?' : '')
                     + ','
@@ -142,11 +142,11 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     })
                 }                
                 
-            } /*,
+            } ,
             function(t,e){
                 this.logging && console.log('Ext.data.SQLiteProxy.setRecord error: ' +e+'; sql = ' + sql);
                 ecb(e);
-            }*/
+            }
         );
         
     },
@@ -260,7 +260,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     tableName = meta.viewName
                 ;
                 Ext.each (fields, function (field) {
-                    if (field.compute || field.template) return;
+                    if (field.compute || (field.template && (!field.type || field.type.type == 'auto'))) return;
                     if (field.name == 'serverPhantom')
                         sqlSelectList += '(select 1 from toUpload where hasPhantom = \'true\' and id = ' + tableName + '.xid) as '
                     ;

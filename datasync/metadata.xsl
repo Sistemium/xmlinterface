@@ -189,6 +189,12 @@
         </tpl>
     </xsl:template>
     
+    <xsl:template mode="metadata" match="xi:sencha-template[xi:xtemplate]">
+        <xtpl>
+            <xsl:apply-templates select="xi:xtemplate/*" mode="metadata"/>
+        </xtpl>
+    </xsl:template>
+    
     <xsl:template mode="metadata" match="*[*]/text()">
         <xsl:value-of select="normalize-space(.)"/>
     </xsl:template>
