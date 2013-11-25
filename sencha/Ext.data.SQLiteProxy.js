@@ -41,7 +41,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             },
             
             ecb = function(e){
-                this.logging && console.log('Ext.data.SQLiteProxy.setRecord error: ' +e.message);
+                console.log('Ext.data.SQLiteProxy.setRecord error: ' +e.message);
                 operation.setException(e);
                 cb();
             }
@@ -126,7 +126,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (updateKey)
             hostVars.push (record.get(updateKey))
         
-        //this.logging && console.log('Ext.data.SQLiteProxy.setRecord prepare: ' + sql);
+        //console.log('Ext.data.SQLiteProxy.setRecord prepare: ' + sql);
         
         t.executeSql(
             sql, hostVars,
@@ -138,13 +138,13 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     var phantomSql = 'insert into Phantom (row_id, table_name, wasPhantom) values (?,?,?)'
                         phantomSqlValues= [xid, tableName, record.phantom];
                     t.executeSql( phantomSql, phantomSqlValues, function() {
-                        //this.logging && console.log ('Ext.data.SQLiteProxy.setRecord phantom added: ' + tableName + ' xid = ' +xid);
+                        //console.log ('Ext.data.SQLiteProxy.setRecord phantom added: ' + tableName + ' xid = ' +xid);
                     })
                 }                
                 
             } ,
             function(t,e){
-                this.logging && console.log('Ext.data.SQLiteProxy.setRecord error: ' +e+'; sql = ' + sql);
+                console.log('Ext.data.SQLiteProxy.setRecord error: ' +e+'; sql = ' + sql);
                 ecb(e);
             }
         );
@@ -277,19 +277,27 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         
         if (filters)
             for (i = 0; i < filters.length; i++) if (!fieldNames || fieldNames[filters[i].property]) {
+            if (filters[i].useLike)
+                operation.postLimits = true;
+            else {
                 
                 sqlWhere += filters[i].property;
                 
                 if (filters[i].value == undefined)
                     sqlWhere += ' is null'
                 else {
-                    sqlWhere += ' = ?';
-                    hostVars.push(filters[i].value);
+                    if (filters[i].useLike){
+                        sqlWhere += " like ?";
+                        hostVars.push('%'+filters[i].value+'%');
+                    } else{
+                        sqlWhere += ' = ?';
+                        hostVars.push(filters[i].value);
+                    }
                 }
                 
                 sqlWhere += (i < filters.length-1) ? ' and ' : ' ';
                 
-            }
+            }}
         
         if (operation.id){
             sqlWhere += 'id = ?'
@@ -313,10 +321,12 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         
         if ( sqlOrderBy.length > 0 ) sql += ' ORDER BY '+sqlOrderBy;
         
-        if (operation.limit) sql += ' LIMIT '+operation.limit;
-        if (operation.start) sql += ' OFFSET '+operation.start;
+        if (!operation.postLimits) {
+            if (operation.limit) sql += ' LIMIT '+operation.limit;
+            if (operation.start) sql += ' OFFSET '+operation.start;
+        }
         
-        this.logging && console.log(sql);
+        //console.log(sql);
         
         this.engine.db.transaction(
             function(t){
@@ -346,7 +356,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
     dataReady: function(t, result){
         var rows = result.rows, records = [], recData={};
         
-        //this.logging && console.log ('Ext.data.SQLiteProxy.dataReady: '+result.rows.length);
+        //console.log ('Ext.data.SQLiteProxy.dataReady: '+result.rows.length);
         
         if (t.operation) {
             
@@ -354,7 +364,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             if (result) {
                 var cnt = result.rows.length;
                 t.proxy.lastRowCount = cnt;
-                //this.logging && console.log ('SQLite rowcount: ' + cnt);
+                //console.log ('SQLite rowcount: ' + cnt);
             }
             
             switch (t.operation.action) {
@@ -362,15 +372,40 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     t.operation.result = 0;
                     if (rows.length) t.operation.result = rows.item(0)['cnt'];
                 case 'read':
+                    
+                    var postFilters = [], op = t.operation;
+                    
+                    
+                    Ext.each (op.filters, function(f) {
+                        if (f.useLike && f.property && f.value) postFilters.push ({
+                            re: new RegExp(f.value,'i'),
+                            property: f.property
+                        });
+                    });
+                    
                     for(var i = 0; i < rows.length; i++) {
                         var data = new t.proxy.model(rows.item(i));
                         data.phantom = false;
-                        records.push(data);
+                        
+                        Ext.each (postFilters, function (f) {
+                            var val = data.get(f.property);
+                            if (!val || !val.match(f.re))
+                                data = undefined;
+                        });
+                        
+                        data && records.push(data);
                     };
+                    
+                    if (op.postLimits && op.limit) {
+                        console.log ('Ext.data.SQLiteProxy.dataReady postLimits: '
+                            + [records.length, op.start, op.limit].join(', ')
+                        );
+                        records = records.slice(op.start, op.start + op.limit)
+                    }
                     
                     t.operation.resultSet = new Ext.data.ResultSet({
                         "records": records,
-                        total  : records.length,
+                        total  : t.proxy.lastRowCount = records.length,
                         loaded : true
                     });
                     
@@ -383,13 +418,13 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                 case 'destroy':
                     break;
                 default:
-                    this.logging && console.log ('Ext.data.SQLiteProxy.dataReady: unknown action');
+                    console.log ('Ext.data.SQLiteProxy.dataReady: unknown action');
             }
             
             t.operation.setSuccessful();
             
         } else {
-            this.logging && console.log ('Ext.data.SQLiteProxy.dataReady: undefined operation');
+            console.log ('Ext.data.SQLiteProxy.dataReady: undefined operation');
             t.operation = new Ext.data.Operation ();
             t.operation.setException(t.exception ? t.exception : 'Unknown exception');
         }
@@ -399,14 +434,14 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (typeof t.callback == "function") {
             t.callback.call(t.scope || t.proxy, t.operation, true);
         } else
-            this.logging && console.log ('Ext.data.SQLiteProxy.dataReady: undefined callback')
+            console.log ('Ext.data.SQLiteProxy.dataReady: undefined callback')
     },
     
     dataError: function(t, e){
         t.operation.setException(e);
         t.operation.setCompleted();
         
-        this.logging && console.log ('Ext.data.SQLiteProxy.dataError:'+e.message);
+        console.log ('Ext.data.SQLiteProxy.dataError:'+e.message);
         
         t.operation.resultSet = new Ext.data.ResultSet({
             "records": [],
@@ -417,7 +452,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (typeof t.callback == "function") {
             t.callback.call(t.scope || t.proxy, t.operation, false);
         } else
-            this.logging && console.log ('Unknown dataError')
+            console.log ('Unknown dataError')
     },
     
     count: function (operation, callback, scope) {
