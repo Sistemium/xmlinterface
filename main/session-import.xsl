@@ -30,7 +30,7 @@
         <xsl:for-each select="
             $auth/xi:roles//xi:role
                 [$userRoles/@ref=@name or $userRoles/@ref='*']
-            /ancestor-or-self::xi:role
+            /descendant-or-self::xi:role
         ">
             <xsl:if test="not(preceding::xi:role[@name=current()/@name])">
                 <xsl:copy>
