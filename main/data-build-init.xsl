@@ -34,7 +34,7 @@
         <xsl:value-of select="/*/xi:userinput/xi:command[@name=current()/parent::*/@name]"/>
     </xsl:template>
     
-    <xsl:template match="xi:init[@with='username']" mode="build-data-init">
+    <xsl:template match="xi:parameter/xi:init[@with='username']" mode="build-data-init">
         <xsl:value-of select="/*/xi:session/@username"/>
     </xsl:template>
 
