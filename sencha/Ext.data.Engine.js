@@ -315,8 +315,13 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                 
                 if (column.parent)
                     tables[column.parent].columns.forEach ( function (pcol, idx) {
+						
                         if (pcol.compute || (pcol.template && !pcol.type)) return;
-                        viewDDLplus += ', '+column.parent+'.'+pcol.name+ ' as '+column.parent+'_'+pcol.name;
+                        
+						viewDDLplus += ', '
+							+ column.parent+'.'+pcol.name
+							+ ' as '+column.parent+'_'+pcol.name
+						;
                     })
                 ;
                 
