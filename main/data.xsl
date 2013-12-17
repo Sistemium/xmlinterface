@@ -66,6 +66,7 @@
                     or (
                         (xi:exception/xi:not-found or xi:result-set[not(*)])
                         and key('id',../@ref)[@build-blank|@extendable]
+                        and not(/*/@pipeline-name='download')
                     )
                 ]
             ]
