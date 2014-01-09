@@ -6,19 +6,26 @@
 >
     <xsl:key name="id" match="*" use="@id"/>
     
+    <xsl:param name="model" select="
+        document(/*/xi:session/xi:domains/xi:domain/@href)/xi:domain
+    "/>
+    
     <xsl:template match="/*/*"/>
 
     <xsl:template match="/*/xi:userinput">
         <download>
             <xsl:copy-of select="/*/@*"/>
+            <xsl:copy-of select="/*/xi:session"/>
             <xsl:for-each select="xi:command[@name='datum']">
                 
-                <xsl:variable name="model" select="document('../domain.xml')/xi:domain"/>
+                <!--xsl:variable name="model" select="document('../domain.xml')/xi:domain"/-->
                 <xsl:variable name="datum" select="key('id',text())"/>
                 <xsl:variable name="form" select="key('id',$datum/../@ref)"/>
                 <xsl:variable name="concept" select="$model/xi:concept[@name=$form/@concept]"/>
                 
-                <data-request name="{$form/@name}" concept="{$concept/@name}">
+                <data-request name="{$form/@name}" concept="{$concept/@name}"
+                    program="{$datum/ancestor::xi:view/@name}"
+                >
                     <xsl:copy-of select="$concept/@*"/>
                     <column name="{$datum/@name}" type="file"/>
                     <parameter name="xid" property="xid"><xsl:value-of select="$datum/../xi:datum[@name='xid']"/></parameter>
@@ -28,6 +35,13 @@
         </download>
     </xsl:template>
 
+    <!--xsl:template match="xi:download">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates select="*"/>
+        </xsl:copy>
+    </xsl:template-->
+    
     <xsl:template match="xi:download[*/xi:result-set]">
         <xsl:value-of select="*/xi:result-set"/>
     </xsl:template>
