@@ -69,7 +69,7 @@ begin
         //set @request=csconvert(@request,'os_charset','utf-8');
         
         select query_name, if show_sql is not null then 1 endif,
-                sql_raw, username, ip, path, program, async
+                sql_raw, username, ip, path, program, host, async
             into @query_name, @show_sql, @sql, @username, @ip, @path, @program, @host, @async
             from openxml(@request, '/ *') with (
                 query_name varchar(128) '@name',
