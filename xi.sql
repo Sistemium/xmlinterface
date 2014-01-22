@@ -15,6 +15,7 @@ create global temporary table if not exists xmlgate.query (
     ip varchar (25),
     path varchar (32),
     program varchar(128),
+    host varchar(64),
 
     ts datetime default timestamp,
     cts datetime default current timestamp,
@@ -61,6 +62,7 @@ begin
     declare @xid uniqueidentifier;
     declare @async varchar(64);
     declare @program varchar(128);
+    declare @host varchar(64);
  
     body: begin
         
@@ -68,7 +70,7 @@ begin
         
         select query_name, if show_sql is not null then 1 endif,
                 sql_raw, username, ip, path, program, async
-            into @query_name, @show_sql, @sql, @username, @ip, @path, @program, @async
+            into @query_name, @show_sql, @sql, @username, @ip, @path, @program, @host, @async
             from openxml(@request, '/ *') with (
                 query_name varchar(128) '@name',
                 show_sql text '@show-sql',
@@ -78,6 +80,7 @@ begin
                 ip varchar(128) '@ip',
                 path varchar(128) '@path',
                 program varchar(128) '@program',
+                host varchar(64) '@host',
                 async varchar(64) '@async'
             )
         ;
@@ -91,7 +94,7 @@ begin
         
         insert into xmlgate.query with auto name
             select @sql as request, @username as username, connection_property ('number') as conn,
-                @ip as ip, @path as path, @xid as xid, @program as program
+                @ip as ip, @path as path, @xid as xid, @program as program, @host as host
         ;
         set @log_id = @@identity;
         

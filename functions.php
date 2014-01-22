@@ -145,7 +145,8 @@ set_time_limit (180);
                         "request"=>$request[0]->ownerDocument->saveXML(),
                         "login"=>$auth_username,
                         "pwd"=>$auth_password,
-                        "db"=>$db, "server"=>$server))
+                        "db"=>$db, "server"=>$server
+                ))
                 )) try {
                     if (developerMode()) file_put_contents('data/last.response.http.xml',$http->response);
                     $doc->loadXML($http->response);
@@ -183,7 +184,8 @@ set_time_limit (180);
         $doc -> documentElement -> setAttribute('ip',$_SERVER['REMOTE_ADDR']);
         $doc -> documentElement -> setAttribute('path',$uri);
         $doc -> documentElement -> setAttribute('program',$program);
-        
+        $doc -> documentElement -> setAttribute('host', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
+
         if ($db != '')  $doc -> documentElement -> setAttribute('db',$db);
         
         return xmlRequest(array(0 => $doc->documentElement));
