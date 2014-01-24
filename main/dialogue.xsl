@@ -5,7 +5,7 @@
     xmlns="http://unact.net/xml/xi"
 >
 
-   <xsl:template match="*" mode="build-dialogue">
+    <xsl:template match="*" mode="build-dialogue">
         <xsl:apply-templates select="*" mode="build-dialogue"/>
     </xsl:template>
 
@@ -353,7 +353,7 @@
                 )
                 or (key('id',$ref)/text() and key('id',$ref)/text()!='')
                 or (key('id',@ref)/@type='xml' and key('id',$ref)/*)
-            )
+            ) or @show-empty
         "/>
         
         <xsl:variable name="elem">
