@@ -205,10 +205,10 @@
                 
                 <xsl:value-of select="concat('data ',local-name(xi:exception),' ',local-name(@is-new), ' ', local-name(@delete-this))"/>
                 
-                <xsl:for-each select="$groups/../xi:class">
+                <xsl:for-each select="$columns/../xi:rows/xi:class">
                     <xsl:variable name="class-datum" select="
                         $data//xi:datum [text()] [@ref=current()/@ref]
-                        | $data/ancestor::xi:data/xi:datum[text()][@ref=current()/@ref]
+                        | $data/ancestor::xi:data/xi:datum [text()] [@ref=current()/@ref]
                     "/>
                     <xsl:if test="$class-datum">
                         <xsl:value-of select="concat(' ', @name | $class-datum[not(current()/@name)])"/>

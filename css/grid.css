@@ -54,3 +54,7 @@ tr.group td .option {
 	position:relative;
 	top: -4px;
 }
+
+tr.data.selected .text {
+	font-weight: bold;
+}
