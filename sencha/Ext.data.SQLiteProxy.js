@@ -289,8 +289,10 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     if (filters[i].useLike){
                         sqlWhere += " like ?";
                         hostVars.push('%'+filters[i].value+'%');
-                    } else{
-                        sqlWhere += ' = ?';
+                    } else {
+                        sqlWhere += ' '
+                        if (filters[i].gte) sqlWhere += '>';
+                        sqlWhere += '= ?';
                         hostVars.push(filters[i].value);
                     }
                 }
