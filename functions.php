@@ -265,13 +265,18 @@ set_time_limit (180);
     function uoauth ($access_token, &$extraData) {
         $address = secureParm () -> oauth ['roles-href'];
         $http = new HTTPRetriever();
+        $params = array (
+            "access_token" => $access_token
+        );
+        
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            $params["user_agent"] = $_SERVER['HTTP_USER_AGENT'];
+        }
         
         try { if ( $http->post (
                     $address,
-                    $http->make_query_string ( array(
-                        "access_token" => $access_token
-                    )
-            ) ) ) {
+                    $http->make_query_string ($params)
+                ) ) {
                 $result = new SimpleXMLElement($http->response);
                 $extraData=$result;
                 //var_dump($result);
