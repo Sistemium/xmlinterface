@@ -261,6 +261,7 @@
                                 <xsl:copy-of select="@label"/>
                                 <xsl:copy-of select="$column/@label"/>
                             </xsl:if>
+                            <xsl:apply-templates mode="metadata" select="$column/self::xi:print/*"/>
                         </column>
                     </xsl:for-each>
                     
