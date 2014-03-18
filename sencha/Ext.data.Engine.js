@@ -64,10 +64,6 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             ok = function (db) {
                 
-                Ext.each (metadata.views, function (view) {
-                    me.tables.push (Ext.apply(view, {type: 'view'}))
-                });
-                
                 Ext.each (me.tables, function(t,i,tables) {
                     t.viewName = t.id+'_browse';
                     
@@ -87,9 +83,9 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         var pname = '';
                         if (c.parent)
                             tables[c.parent].columns.forEach ( function (pcol, idx) {
-                                if (pcol.title || pcol.name == 'name' || pcol.name == 'ord') {
+                                if (pcol.title || pcol.name == 'name' || pcol.name == 'ord' || pcol.parent) {
                                     pname = c.parent+'_'+pcol.name;
-                                    t.columns.push ({
+                                    t.columns.push (t.columns.map[pname] = {
                                         name: pname,
                                         id: t.id+pname,
                                         type: 'string',
@@ -99,6 +95,10 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                             })
                         ;
                     })
+                });
+                
+                Ext.each (metadata.views, function (view) {
+                    me.tables.push (Ext.apply(view, {type: 'view'}))
                 });
                 
                 checkSupports(db);

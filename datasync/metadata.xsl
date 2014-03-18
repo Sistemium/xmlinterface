@@ -208,6 +208,18 @@
     <xsl:template mode="metadata" match="xi:sencha-template[@href]">
         <xsl:apply-templates select="document(concat('../../config/views/',@href))" mode="metadata"/>
     </xsl:template>
+    
+    
+    <xsl:template mode="make-dep" match="xi:dep">
+        
+        <dep table_id="{@form}" id="{@form}{@field}" name="{@field}">
+            <!--xsl:if test="$role/@type='belongs'">
+                <xsl:attribute name="contains">true</xsl:attribute>
+            </xsl:if-->
+        </dep>
+        
+    </xsl:template>
+    
 
     <xsl:template match="xi:workflow" mode="metadata">
         
@@ -222,6 +234,7 @@
                     | @deletable
                     | @mainMenu
                     | @grouperColumn
+                    | @primaryTable
                 "/>
                 
                 <xsl:variable name="view" select="."/>
@@ -261,11 +274,18 @@
                                 <xsl:copy-of select="@label"/>
                                 <xsl:copy-of select="$column/@label"/>
                             </xsl:if>
+                            <xsl:copy-of select="
+                                $column/@parent
+                            "/>
                             <xsl:apply-templates mode="metadata" select="$column/self::xi:print/*"/>
                         </column>
                     </xsl:for-each>
                     
                 </xsl:for-each></columns>
+                
+                <deps set-of="dep">
+                    <xsl:apply-templates select="xi:deps/xi:dep" mode="make-dep"/>
+                </deps>
                 
                 <xsl:for-each select="xi:sql">
                     <xsl:copy>

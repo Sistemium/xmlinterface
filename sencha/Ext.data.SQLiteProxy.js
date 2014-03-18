@@ -93,7 +93,9 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         }
         
         Ext.each (record.fields.items, function (field) {
-            if ((!meta || fields.map[field.name]) && !(field.name == 'ts' || field.name == updateKey)) {
+            if ((!meta || fields.map[field.name] && !fields.map[field.name].virtual)
+                && !(field.name == 'ts' || field.name == updateKey)
+            ){
                 if (field.compute || (field.template && (!field.type || field.type.type == 'auto'))) return;
                 sql += field.name
                     + (updateKey ? '=?' : '')
@@ -276,30 +278,32 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         if (!operation.remoteFilter && scope.isStore && !scope.remoteFilter) filters = false;
         
         if (filters)
-            for (i = 0; i < filters.length; i++) if (!fieldNames || fieldNames[filters[i].property]) {
-            if (filters[i].useLike)
-                operation.postLimits = true;
-            else {
-                
-                sqlWhere += filters[i].property;
-                
-                if (filters[i].value == undefined)
-                    sqlWhere += ' is null'
+            for (i = 0; i < filters.length; i++)
+            if (!fieldNames || fieldNames[filters[i].property]) {
+                if (filters[i].useLike)
+                    operation.postLimits = true;
                 else {
-                    if (filters[i].useLike){
-                        sqlWhere += " like ?";
-                        hostVars.push('%'+filters[i].value+'%');
-                    } else {
-                        sqlWhere += ' '
-                        if (filters[i].gte) sqlWhere += '>';
-                        sqlWhere += '= ?';
-                        hostVars.push(filters[i].value);
+                    
+                    sqlWhere += filters[i].property;
+                    
+                    if (filters[i].value == undefined)
+                        sqlWhere += ' is null'
+                    else {
+                        if (filters[i].useLike){
+                            sqlWhere += " like ?";
+                            hostVars.push('%'+filters[i].value+'%');
+                        } else {
+                            sqlWhere += ' '
+                            if (filters[i].gte) sqlWhere += '>';
+                            sqlWhere += '= ?';
+                            hostVars.push(filters[i].value);
+                        }
                     }
+                    
+                    sqlWhere += (i < filters.length-1) ? ' and ' : ' ';
+                    
                 }
-                
-                sqlWhere += (i < filters.length-1) ? ' and ' : ' ';
-                
-            }}
+            }
         
         if (operation.id){
             sqlWhere += 'id = ?'
