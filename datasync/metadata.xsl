@@ -235,6 +235,8 @@
                     | @mainMenu
                     | @grouperColumn
                     | @primaryTable
+                    | @sorterColumn
+                    | @sorterDir
                 "/>
                 
                 <xsl:variable name="view" select="."/>
