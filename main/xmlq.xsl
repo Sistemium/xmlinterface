@@ -772,6 +772,10 @@
                             <xsl:text> like </xsl:text>
                         </xsl:when>
                         
+                        <xsl:when test="($use|$value)[@use-in]">
+                            <xsl:text> in </xsl:text>
+                        </xsl:when>
+                        
                         <xsl:when test="not($use/*) and $value[not(text()) or text()='']">
                             <xsl:text> is </xsl:text>
                         </xsl:when>

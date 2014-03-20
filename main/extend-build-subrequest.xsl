@@ -81,7 +81,7 @@
 
     <xsl:template match="xi:where|xi:parameter[xi:init]" mode="build-subrequest">
 		<parameter property="{@name}">
-			<xsl:apply-templates select="@name|@type|@use-like|@property"/>
+			<xsl:apply-templates select="@name|@type|@use-like|@use-in|@property"/>
 			<xsl:apply-templates select="*|self::*[not(*)]/text()" mode="build-subrequest"/>
 		</parameter>
     </xsl:template>

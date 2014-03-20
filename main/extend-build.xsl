@@ -207,7 +207,7 @@
     </xsl:template>
 
     <xsl:template match="xi:view-schema//*" mode="parameter">
-		<xsl:apply-templates select="@sql-name | @type | @key | @use-like | @property" mode="parameter"/>
+		<xsl:apply-templates select="@sql-name | @type | @key | @use-like | @use-in | @property" mode="parameter"/>
 	</xsl:template>
 
     <xsl:template match="xi:set-of[@is-choise]" mode="parameter">
