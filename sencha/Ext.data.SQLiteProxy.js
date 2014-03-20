@@ -248,6 +248,10 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         scope || (scope = operation);
         operation.setStarted();
         
+        if (meta && meta.viewName)
+            tableName = meta.viewName
+        ;
+        
         switch (operation.action){
             case 'aggregate':
                 Ext.each (fields, function (field) {
@@ -258,9 +262,6 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                 sqlSelectList += 'count(*) as cnt,';
                 break;
             default:
-                if (meta && meta.viewName)
-                    tableName = meta.viewName
-                ;
                 Ext.each (fields, function (field) {
                     if (field.compute || (field.template && (!field.type || field.type.type == 'auto'))) return;
                     if (field.name == 'serverPhantom')
