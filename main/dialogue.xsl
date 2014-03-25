@@ -266,7 +266,7 @@
         <xsl:apply-templates mode="display-when" select="
             ancestor::xi:view/xi:view-data//xi:datum
                [@ref=current()/@ref]
-               [not(current()/@equals) or . = current()/@equals]
+               [not(current()[@equals|xi:equals]) or . = current()/@equals or . = current()/xi:equals]
                [not(current()/@not-modified and @modified)]
         ">
             <xsl:with-param name="context" select="."/>
@@ -289,6 +289,8 @@
         </xsl:if>
     </xsl:template>
     
+    <xsl:template mode="display-when" match="xi:equals"/>
+    
     <xsl:template mode="display-when" match="*">
         <xsl:comment>display-when: no match</xsl:comment>
     </xsl:template>
@@ -301,7 +303,7 @@
     <xsl:template mode="display-when" match="*[key('id',@ref)/@type='boolean'][text()='0']">
         <xsl:param name="context" />
         <xsl:choose>
-            <xsl:when test="$context/@equals='0'">
+            <xsl:when test="$context[@equals='0' or xi:equals='0'] ">
                 <xsl:apply-templates select="$context/*" mode="build-dialogue"/>
             </xsl:when>
             <xsl:otherwise>
