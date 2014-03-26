@@ -481,7 +481,13 @@
     
 
     <xsl:template match="xi:data/xi:parameter" mode="select-list">
+        <xsl:if test="@use-in">
+            <xsl:text>'</xsl:text>
+        </xsl:if>
         <xsl:apply-templates select="." mode="value"/>
+        <xsl:if test="@use-in">
+            <xsl:text>'</xsl:text>
+        </xsl:if>
         <xsl:text> as </xsl:text>
         <xsl:apply-templates select="." mode="sql-name"/>
         <xsl:if test="position()!=last()">
