@@ -386,7 +386,9 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         
         var processSuccessfullResponse = function(response, opts) {
             
-            var nextRequestParams = me.downloadSession.requestsParams.pop();
+            var nextRequestParams = me.downloadSession && me.downloadSession.requestsParams
+                && me.downloadSession.requestsParams.pop()
+            ;
             
             engine.processDowloadData (response, opts);
             
