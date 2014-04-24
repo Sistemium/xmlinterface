@@ -134,6 +134,7 @@
         <xsl:variable name="role" select="@role|self::*[not(@role)]/@name"/>
         <xsl:variable name="concept" select="self::xi:form[not(@concept)]/@name|self::xi:form/@concept"/>
         <xsl:variable name="domain-concept" select="$model/xi:concept[@name=$form-concept]"/>
+        <xsl:variable name="this" select="."/>
         
         <xsl:apply-templates select="." mode="build-id"/>
         
@@ -214,7 +215,13 @@
                  |$model/xi:concept[@name=$concept]/xi:role[@actor=$form-concept]
                  ">
                 <parent-join name="{$form-concept/../@name}" concept="{$form-concept}" role="{@name}">
+                    <xsl:apply-templates select="." mode="build-id"/>
                     <xsl:copy-of select="@sql-name"/>
+                    <xsl:for-each select="$this/@parent-sql-name">
+                        <xsl:attribute name="sql-name">
+                            <xsl:value-of select="."/>
+                        </xsl:attribute>
+                    </xsl:for-each>
                 </parent-join>
             </xsl:for-each>
         </xsl:if>
