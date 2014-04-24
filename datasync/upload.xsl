@@ -119,9 +119,16 @@
                     
                     <xsl:for-each select="$datum-refs">
                         <xsl:variable name="userDatum" select=".."/>
-                        <xsl:for-each select="key('id',.)[@modifiable or @editable or @name='xid' or self::xi:join or self::xi:form]">
+                        <xsl:for-each select="key('id',.)[@modifiable or @editable or @name='xid' or self::xi:parent-join or self::xi:join or self::xi:form]">
                             <datum ref="{@id}" type="field">
                                 <xsl:copy-of select="@name|@editable|@modifiable"/>
+                                <xsl:if test="self::xi:parent-join">
+                                    <xsl:attribute name="name">
+                                        <xsl:value-of select="@role"/>
+                                    </xsl:attribute>
+                                    <xsl:attribute name="editable">true</xsl:attribute>
+                                    <xsl:copy-of select="@sql-name"/>
+                                </xsl:if>
                                 <xsl:if test="self::xi:form">
                                     <xsl:attribute name="name">
                                         <xsl:value-of select="@concept"/>

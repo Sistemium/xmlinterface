@@ -97,6 +97,9 @@
         <xsl:apply-templates mode="build-ref" select="
             $form/parent::xi:form[@name=current()]
         "/>
+        <xsl:apply-templates mode="build-ref" select="
+            $form/xi:parent-join[@name=current()][@role=current()/../@alias]
+        "/>
     </xsl:template>
     
 </xsl:transform>
