@@ -35,11 +35,11 @@
         <xsl:choose>
             
             <xsl:when test="$isSet">
-                <xsl:text>[&#xD;</xsl:text>
+                <xsl:text>[&#xA;</xsl:text>
                 <xsl:for-each select=". | $isSet">
                     <xsl:call-template name="padding"/>
                     <xsl:apply-templates select="." mode="set-member"/>
-                    <xsl:if test="not(position() = last())">,&#xD;</xsl:if>
+                    <xsl:if test="not(position() = last())">,&#xA;</xsl:if>
                 </xsl:for-each>
                 <xsl:text>]</xsl:text>
             </xsl:when>
@@ -64,11 +64,11 @@
     <xsl:template match="*" mode="set-member" name="set-member">
         <xsl:variable name="textNode" select="text()[not(normalize-space(.)='')]"/>
         
-        <xsl:text>{&#xD;</xsl:text>
+        <xsl:text>{&#xA;</xsl:text>
 
         <xsl:for-each select="@*">
             <xsl:apply-templates select="."/>
-            <xsl:if test="not(position() = last()) or parent::*[*|$textNode]">,&#xD;</xsl:if>
+            <xsl:if test="not(position() = last()) or parent::*[*|$textNode]">,&#xA;</xsl:if>
         </xsl:for-each>
 
         <xsl:apply-templates select="$textNode"/>
@@ -83,11 +83,11 @@
                         </xsl:if>
                     </xsl:for-each>
                 </xsl:variable>
-                <xsl:if test="string-length($hasFollowing) &gt; 0">,&#xD;</xsl:if>
+                <xsl:if test="string-length($hasFollowing) &gt; 0">,&#xA;</xsl:if>
             </xsl:if>
         </xsl:for-each>
         
-        <xsl:text>&#xD;</xsl:text>
+        <xsl:text>&#xA;</xsl:text>
         <xsl:call-template name="padding"/>
         <xsl:text>}</xsl:text>
         
