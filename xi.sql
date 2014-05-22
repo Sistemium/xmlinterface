@@ -211,3 +211,39 @@ begin
      return @result;
 
 end;
+
+
+create table if not exists xmlgate.agent (
+    id ID,
+
+    name varchar(128) not null,
+    deviceName varchar (128) null,
+    
+    [xid] GUID,
+    [ts]  TS,
+    [cts] CTS,
+    
+    primary key (id),
+    unique (xid),
+    unique (name)
+);
+
+
+create or replace procedure xmlgate.agent 
+    (in @name varchar(128) default null, in @deviceName varchar(128) default null)
+begin
+    if @name is not null then
+        insert into agent with auto name
+        select @name as name
+         where not exists (select * from agent where name=@name)
+        ;
+        
+        update agent set deviceName=@deviceName 
+         where @deviceName is not null and name=@name
+        ;
+        
+    end if;
+    
+    select * from agent where name=@name or @name is null;
+    
+end;
