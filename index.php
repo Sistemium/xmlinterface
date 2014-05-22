@@ -310,6 +310,10 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
             $oldval = $xslt->setSecurityPrefs(0);
         }
     }
+    
+    $timeLimit = secureParm () -> PHP ['time_limit'];
+    
+    if ($timeLimit) set_time_limit (ceil($timeLimit));
 
     try { foreach ($config->pipeline as $pipeline) if ($pipeline['name'] == $pipelineName) {
         
