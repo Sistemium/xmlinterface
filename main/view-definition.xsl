@@ -215,7 +215,9 @@
                  |$model/xi:concept[@name=$concept]/xi:role[@actor=$form-concept]
                  ">
                 <parent-join name="{$form-concept/../@name}" concept="{$form-concept}" role="{@name}">
-                    <xsl:apply-templates select="$this" mode="build-id"/>
+                    <xsl:apply-templates select="$this" mode="build-id">
+                        <xsl:with-param name="salt" select="translate(generate-id(),'idm','')"/>
+                    </xsl:apply-templates>
                     <xsl:copy-of select="@sql-name"/>
                     <xsl:for-each select="$this/@parent-sql-name">
                         <xsl:attribute name="sql-name">

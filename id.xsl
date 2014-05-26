@@ -73,14 +73,19 @@
     </xsl:template-->
     
     <xsl:template match="@*|node()" mode="generate-id" >
-        <xsl:value-of select="concat('i',translate(generate-id(),'id',''),'c',$counter)"/>
+        <xsl:param name="salt" select="/.."/>
+        <xsl:value-of select="concat('i',translate(generate-id(),'id',''),$salt,'c',$counter)"/>
     </xsl:template>
     
     <xsl:template match="@*|node()" mode="build-id" name="build-id">
         
         <xsl:param name="name">id</xsl:param>
+        <xsl:param name="salt" select="/.."/>
+        
         <xsl:param name="id-value">
-            <xsl:apply-templates mode="generate-id" select="."/>
+            <xsl:apply-templates mode="generate-id" select=".">
+                <xsl:with-param name="salt" select="$salt"/>
+            </xsl:apply-templates>
         </xsl:param>
         
         <xsl:attribute name="{$name}">
