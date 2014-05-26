@@ -84,6 +84,10 @@
                     | @sorterColumn
                 "/>
                 
+                <xsl:if test="@mainMenu='false'">
+                    <xsl:attribute name="hidden">true</xsl:attribute>
+                </xsl:if>
+                
                 <xsl:if test="$model[@name=current()/@concept]/xi:role[@actor=current()/../@concept][@type='belongs']">
                     <xsl:attribute name="belongs">
                         <xsl:value-of select="parent::*/@name"/>
