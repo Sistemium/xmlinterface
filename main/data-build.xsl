@@ -107,6 +107,7 @@
         <xsl:apply-templates select="key('id',@ref)" mode="build-data">
             <xsl:with-param name="data" select="key('id',xi:chosen/@ref)"/>
             <xsl:with-param name="choose-for" select="@id"/>
+            <xsl:with-param name="set-thrshld" select="1"/>
         </xsl:apply-templates>
         
         <!--xsl:comment>choosing for=<xsl:value-of select="@id"/></xsl:comment-->
@@ -214,7 +215,7 @@
         <xsl:param name="type" select="/.."/>
         <xsl:param name="no-choise" select="/.."/>
         <xsl:param name="choose-for" />
-        <xsl:param name="set-thrshld" select="1 - count(@is-set)"/>
+        <xsl:param name="set-thrshld" select="1 - count(@is-set|@expect-choise)"/>
         <!-- не доделано @expect-choise[.='forced']) -->
         
         <xsl:variable name="metadata" select="."/>
