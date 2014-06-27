@@ -278,26 +278,25 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         
         if (!operation.remoteFilter && scope.isStore && !scope.remoteFilter) filters = false;
         
-        if (filters)
-            for (i = 0; i < filters.length; i++)
-            if (!fieldNames || fieldNames[filters[i].property]) {
-                if (filters[i].useLike)
+        Ext.each (filters, function (filter, i) {
+            if (!fieldNames || fieldNames[filter.property]) {
+                if (filter.useLike)
                     operation.postLimits = true;
                 else {
                     
-                    sqlWhere += filters[i].property;
+                    sqlWhere += filter.property;
                     
-                    if (filters[i].value == undefined)
+                    if (filter.value == undefined)
                         sqlWhere += ' is null'
                     else {
-                        if (filters[i].useLike){
+                        if (filter.useLike){
                             sqlWhere += " like ?";
-                            hostVars.push('%'+filters[i].value+'%');
+                            hostVars.push('%'+filter.value+'%');
                         } else {
                             sqlWhere += ' '
-                            if (filters[i].gte) sqlWhere += '>';
+                            if (filter.gte) sqlWhere += '>';
                             sqlWhere += '= ?';
-                            hostVars.push(filters[i].value);
+                            hostVars.push(filter.value);
                         }
                     }
                     
@@ -305,6 +304,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     
                 }
             }
+        });
         
         if (operation.id){
             sqlWhere += 'id = ?'
