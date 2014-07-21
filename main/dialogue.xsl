@@ -268,6 +268,7 @@
                [@ref=current()/@ref]
                [not(current()[@equals|xi:equals]) or . = current()/@equals or . = current()/xi:equals]
                [not(current()/@not-modified and @modified)]
+               [not(ancestor::xi:set-of/@is-choise)]
         ">
             <xsl:with-param name="context" select="."/>
         </xsl:apply-templates>
@@ -289,7 +290,7 @@
         </xsl:if>
     </xsl:template>
     
-    <xsl:template mode="display-when" match="xi:equals"/>
+    <xsl:template mode="display-when" match="xi:equals|*[@is-choise]"/>
     
     <xsl:template mode="display-when" match="*">
         <xsl:comment>display-when: no match</xsl:comment>
