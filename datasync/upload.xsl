@@ -109,12 +109,25 @@
                 <data ref="{@id}" name="{@name}" program="{ancestor::xi:view/@name}">
                     
                     <xsl:for-each select="xi:join|xi:parent-join[not(@name = parent::*/parent::*[not(@hidden)]/@name)]">
-                        <xsl:variable name="parent" select="ancestor::xi:form[@name=current()/@name]/xi:field[@name='id']"/>
-                        <datum type="field" name="{@role}" editable="new-only">
+                        
+                        <xsl:variable name="parentDatum">
+                            <xsl:value-of select="@field"/>
+                            <xsl:if test="not(@field)">id</xsl:if>
+                        </xsl:variable>
+                        
+                        <xsl:variable name="parent" select="
+                            ancestor::xi:form[@name=current()/@name]
+                                /*[self::xi:field|self::xi:parameter][@name=$parentDatum]
+                        "/>
+                        
+                        <datum type="field" name="{@role|@property}" editable="new-only">
                             <!--xsl:apply-templates select="." mode="build-ref"/-->
                             <xsl:copy-of select="@sql-name"/>
-                            <xsl:value-of select="ancestor::xi:view/xi:view-data//xi:datum[@ref=$parent/@id]/text()"/>
+                            <xsl:value-of select="
+                                ancestor::xi:view/xi:view-data//xi:datum[@ref=$parent/@id]/text()
+                            "/>
                         </datum>
+                        
                     </xsl:for-each>
                     
                     <xsl:for-each select="$datum-refs">
