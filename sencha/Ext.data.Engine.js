@@ -194,6 +194,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         me.executeDDL (t, 'Create table Entity ('
             +'name string primary key'
             +', hidden boolean'
+			+', contains int'
             +', ts datetime default current_timestamp)')
         ;
         
@@ -207,11 +208,14 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         me.executeDDL (t, 'DROP view IF EXISTS ToUpload');
         me.executeDDL (t, 'create view ToUpload as select '
-            + 'p.table_name, p.row_id id, count(*) cnt, min (p.ts) ts, '
-            + ' max(p.wasPhantom) hasPhantom, max(p.id) pid, max(p.cs) cs, '
+            + 'p.table_name, p.row_id id, count(*) cnt, max (p.ts) ts, '
+            + ' case e.contains when 0 then \'false\' else p.wasPhantom end hasPhantom,'
+			+ ' max(p.id) pid, max(p.cs) cs, '
             + ' 1 - e.hidden visibleCnt'
             + ' from Phantom p join Entity e on e.name = p.table_name'
-            + ' where p.cs is null group by p.row_id, p.table_name'
+            + ' where p.cs is null'
+			+ ' group by p.row_id, p.table_name, '
+			+ ' case e.contains when 0 then \'false\' else p.wasPhantom end'
         );
         
         me.executeDDL (t, 'create trigger commitUpload instead of update on ToUpload begin '
@@ -221,9 +225,17 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         Ext.each( dbSchema.tables, function (table, idx, tables) {
             
-            me.executeSQL(t, 'insert into Entity (name, hidden) values (?,?)', [table.id, table.name ? 0: 1]);
+			var contains = table.deps
+				? table.deps.filter(function (dep) { return dep.contains }).length
+				: 0
+			;
+			
+            me.executeSQL (t,
+				'insert into Entity (name, hidden, contains) values (?,?,?)',
+				[table.id, table.name ? 0: 1, contains]
+			);
             
-            me.executeDDL(t, 'DROP TABLE IF EXISTS '+table.id+';');
+            me.executeDDL(t, 'DROP TABLE IF EXISTS ' + table.id + ';');
             
             var columnsDDL='', fkDDL='', pkDDL='', hasId;
             
