@@ -69,6 +69,20 @@
         </xsl:copy>
     </xsl:template>
 
+    <xsl:template match="xi:delete" mode="build-import">
+        <data delete-this="true">
+            <xsl:apply-templates mode="build-ref" select="
+                key('name',@name)/self::xi:form
+            "/>
+            <datum name="xid">
+                <xsl:apply-templates mode="build-ref" select="
+                    key('name','xid')/self::xi:field
+                        [parent::xi:form/@name=current()/@name]
+                "/>
+                <xsl:value-of select="@xid"/>
+            </datum>
+        </data>
+    </xsl:template>
     
     <xsl:template match="xi:data/@name" mode="build-import">
         <xsl:apply-templates mode="build-ref" select="

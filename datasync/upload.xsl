@@ -92,6 +92,7 @@
         <xsl:param name="form-id" select="@ref"/>
         <xsl:param name="datum-refs" select="xi:datum/@ref"/>
         <xsl:param name="xid" select="*[@name='xid']"/>
+        <xsl:param name="deleting" select="@delete-this"/>
         
         <upload xid="{$xid}" debug-="true">
             <xsl:copy-of select="@*"/>
@@ -100,13 +101,19 @@
                 
                 <xsl:variable name="form" select="."/>
                 
-                <preload ref="{@id}" name="{@name}" retrieve="true" program="{ancestor::xi:view/@name}">
-                    <datum type="parameter" name="xid">
-                        <xsl:value-of select="$xid"/>
-                    </datum>
-                </preload>
+                <xsl:if test="not($deleting)">
+                    
+                    <preload ref="{@id}" name="{@name}" retrieve="true" program="{ancestor::xi:view/@name}">
+                        <datum type="parameter" name="xid">
+                            <xsl:value-of select="$xid"/>
+                        </datum>
+                    </preload>
+                    
+                </xsl:if>
                 
                 <data ref="{@id}" name="{@name}" program="{ancestor::xi:view/@name}">
+                    
+                    <xsl:copy-of select="$deleting"/>
                     
                     <xsl:for-each select="xi:join|xi:parent-join[not(@name = parent::*/parent::*[not(@hidden)]/@name)]">
                         
@@ -158,11 +165,13 @@
                     
                 </data>
                 
-                <response-preload ref="{@id}" name="{@name}" program="{ancestor::xi:view/@name}">
-                    <datum type="parameter" name="xid">
-                        <xsl:value-of select="$xid"/>
-                    </datum>
-                </response-preload>
+                <xsl:if test="not($deleting)">
+                    <response-preload ref="{@id}" name="{@name}" program="{ancestor::xi:view/@name}">
+                        <datum type="parameter" name="xid">
+                            <xsl:value-of select="$xid"/>
+                        </datum>
+                    </response-preload>
+                </xsl:if>
                 
             </xsl:for-each>
         </upload>
@@ -199,7 +208,7 @@
     </xsl:template>
 
     
-    <xsl:template match="/*[@stage='build-persist']//xi:data[xi:datum[@modified] or @is-new]">
+    <xsl:template match="/*[@stage='build-persist']//xi:data[xi:datum[@modified] or @is-new or @delete-this]">
         <data>
             <xsl:copy-of select="@*"/>
             <xsl:call-template name="data-build-update"/>
@@ -228,22 +237,39 @@
         <response>
             <xsl:for-each select="xi:upload|self::xi:upload">
                 
-                <xsl:variable name="response" select="xi:preload/xi:response/xi:result-set"/>
+                <xsl:variable name="response" select="
+                    xi:preload/xi:response/xi:result-set
+                    | self::*[@delete-this]/xi:data/xi:response/xi:rows-affected
+                "/>
                 
                 <xsl:choose>
                     
                     <xsl:when test="$response">
-                        <xsl:for-each select="key('id',xi:preload/@ref)">
+                        <xsl:for-each select="key('id',xi:preload/@ref|self::*[@delete-this]/@ref)">
+                            
                             <xsl:variable name="data"
-                                          select="$response/xi:data[@name=current()/@name]"/>
+                                select="$response/xi:data[@name=current()/@name]"
+                            />
+                            
                             <xsl:element name="{@name}">
+                                
                                 <xsl:copy-of select="/*/@xid|$response/../@ts"/>
-                                <xsl:for-each select="xi:field" mode="prepare">
+                                
+                                <xsl:for-each select="xi:field[$data]">
                                     <xsl:element name="{@alias|self::*[not(@alias)]/@name}">
                                         <xsl:value-of select="$data/*[@name=current()/@name]"/>
                                     </xsl:element>
                                 </xsl:for-each>
+                                
+                                <xsl:for-each select="$response/ancestor::xi:upload[@delete-this]">
+                                    <xsl:copy-of select="@delete-this"/>
+                                    <xsl:element name="xid">
+                                        <xsl:value-of select="@xid"/>
+                                    </xsl:element>
+                                </xsl:for-each>
+                                
                             </xsl:element>
+                            
                         </xsl:for-each>
                     </xsl:when>
                     

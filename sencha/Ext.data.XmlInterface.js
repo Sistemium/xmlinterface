@@ -539,7 +539,61 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         var me = this,
             record = store.getAt( store.position );
         
-        if (record) new Ext.data.Store ({
+        if (!record){
+            
+            console.log ('Ext.data.XmlInterface upload end');
+            
+            if (typeof store.successCb == 'function')
+                store.successCb.call (me, store)
+            ;
+            
+            me.fireEvent('upload', store);
+            
+            store.destroyStore();
+            
+            return;
+        }
+        
+        if (record.get('cnt') == 0) {
+            
+            var uploadXML = document.implementation.createDocument("http://unact.net/xml/xi", "upload", null),
+                dataElement = uploadXML.createElement('delete')
+            ;
+            
+            var modelName = record.get('table_name');
+            
+            dataElement.setAttribute ('name', modelName);
+            dataElement.setAttribute ('xid', record.get('id'));
+            uploadXML.documentElement.appendChild(dataElement);
+            
+            me.request({
+                
+                command: 'upload',
+                xmlData: uploadXML,
+                
+                success: function(ur){
+                    console.log ('Delete request success: xid = '+ record.get('id'));
+                    //xi.uploadPut (store, record, ur.responseXML);
+                    var form = Ext.DomQuery.select (modelName, ur.responseXML) [0];
+                    
+                    if (form) {
+                        
+                        var uploadStamp = form.getAttribute('ts'),
+                            deleteThis = form.getAttribute('delete-this'),
+                            xid = Ext.DomQuery.select ('xid',form)
+                        ;
+                        
+                        if (uploadStamp && deleteThis) {
+                            me.commitUpload (Ext.apply (record, {uploadStamp: uploadStamp}));
+                        }
+                        
+                    }
+                    
+                }
+                
+            });
+            
+        } else { new Ext.data.Store ({
             
             proxy: { type: 'sql', engine: store.proxy.engine },
             model: record.get('table_name'),
@@ -580,18 +634,8 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                 }
             }
             
-        }); else {
-            
-            console.log ('Ext.data.XmlInterface upload end');
-            
-            if (typeof store.successCb == 'function')
-                store.successCb.call (me, store);
-                
-            me.fireEvent('upload', store);
-            
-            store.destroyStore();
-            
-        }
+        })}
+        
     },
 
     forwardUploadUponError: function (store, exception) {
@@ -703,7 +747,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     uploadStamp: form.getAttribute('ts'),
                     success: function(r,o) {
                         xi.commitUpload (Ext.apply (store.toUploadRecord, {uploadStamp: o.uploadStamp}));
-                        xi.fireEvent ('uploadrecord', record);                
+                        xi.fireEvent ('uploadrecord', record);
                     },
                     failure: function (r,o) {
                         var e = o.getError();

@@ -206,6 +206,14 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             +', ts datetime default current_timestamp)')
         ;
         
+        me.executeDDL (t, 'DROP table IF EXISTS PhantomDeleted');
+        me.executeDDL (t, 'Create table PhantomDeleted ('
+            +'id integer primary key autoincrement, table_name string, row_id string'
+            +', wasPhantom int'
+            +', cs string'
+            +', ts datetime default current_timestamp)')
+        ;
+        
         me.executeDDL (t, 'DROP view IF EXISTS ToUpload');
         me.executeDDL (t, 'create view ToUpload as select '
             + 'p.table_name, p.row_id id, count(*) cnt, max (p.ts) ts, '
@@ -216,10 +224,16 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             + ' where p.cs is null'
 			+ ' group by p.row_id, p.table_name, '
 			+ ' case e.contains when 0 then \'false\' else p.wasPhantom end'
+			+ ' union all select p.table_name, p.row_id, 0, max(p.ts), '
+			+ ' max(p.wasPhantom), max(p.id), max(p.cs), 1 - e.hidden '
+			+ ' from PhantomDeleted p join Entity e on e.name = p.table_name '
+			+ ' where p.cs is null'
+			+ ' group by p.row_id, p.table_name '
         );
         
         me.executeDDL (t, 'create trigger commitUpload instead of update on ToUpload begin '
             + 'delete from Phantom where row_id = new.id and id <= new.pid; '
+			+ 'delete from PhantomDeleted where row_id = new.id; '
             + 'end'
         );
         
@@ -300,12 +314,22 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         +' where ' + table.id + ' = old.id; end')
             });
             
-            if (table.extendable) me.executeDDL (t,
-                'create trigger td_'+table.id+'_cascade_Phantom'
-                +' before delete on '+table.id
-                +' begin delete from Phantom' 
-                +' where row_id = old.xid; end')
-            ;
+            if (table.deletable) {
+				me.executeDDL (t,
+					'create trigger td_'+table.id+'_cascade_Phantom'
+					+' before delete on '+table.id
+					+' begin '
+					+' insert into PhantomDeleted (row_id, table_name)' 
+					+' select old.xid, \'' + table.id + '\''
+					+' where not exists ('
+					+' select * from Phantom'
+					+' where table_name = \'' + table.id +'\''
+					+' and row_id = old.xid and cs is null and wasPhantom = \'true\''
+					+');'
+					+' delete from Phantom where row_id = old.xid;'
+					+' end')
+				;
+			}
         });
         
         /* create views */
