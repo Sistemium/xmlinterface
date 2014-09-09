@@ -314,19 +314,22 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         +' where ' + table.id + ' = old.id; end')
             });
             
-            if (table.deletable) {
+            if (table.extendable) {
 				me.executeDDL (t,
 					'create trigger td_'+table.id+'_cascade_Phantom'
 					+' before delete on '+table.id
 					+' begin '
-					+' insert into PhantomDeleted (row_id, table_name)' 
-					+' select old.xid, \'' + table.id + '\''
-					+' where not exists ('
-					+' select * from Phantom'
-					+' where table_name = \'' + table.id +'\''
-					+' and row_id = old.xid and cs is null and wasPhantom = \'true\''
-					+');'
-					+' delete from Phantom where row_id = old.xid;'
+					+ (table.deletable
+					    ?
+							' insert into PhantomDeleted (row_id, table_name)' 
+							+' select old.xid, \'' + table.id + '\''
+							+' where not exists ('
+							+' select * from Phantom'
+							+' where table_name = \'' + table.id +'\''
+							+' and row_id = old.xid and cs is null and wasPhantom = \'true\''
+							+');'
+						:	''
+					) + ' delete from Phantom where row_id = old.xid;'
 					+' end')
 				;
 			}
