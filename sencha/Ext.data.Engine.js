@@ -85,7 +85,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                             tables[c.parent].columns.forEach ( function (pcol, idx) {
                                 if (pcol.title || pcol.name == 'name' || pcol.name == 'ord' || pcol.parent) {
                                     pname = c.parent+'_'+pcol.name;
-                                    t.columns.push (t.columns.map[pname] = {
+                                    t.columns.push (t.columns.keyMap[pname] = {
                                         name: pname,
                                         id: t.id+pname,
                                         type: 'string',
@@ -123,9 +123,9 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         Ext.each (me.tables, function(t,i,tables) {
             tables[t.id] = t;
-            t.columns.map = {};
+            t.columns.keyMap = {};
             Ext.each (t.columns, function(c) {
-                t.columns.map[c.name] = c;
+                t.columns.keyMap[c.name] = c;
                 ((c.template && !c.type) || c.compute) && (c.virtual = true);
             })
         });
@@ -258,8 +258,8 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                 if ((column.template && !column.type) || column.compute) return;
                 
                 if(column.parent){
-                    tables[column.parent] && tables[column.parent].columns.map['id'] && (
-                        column.type = tables[column.parent].columns.map['id'].type
+                    tables[column.parent] && tables[column.parent].columns.keyMap['id'] && (
+                        column.type = tables[column.parent].columns.keyMap['id'].type
                     )
                 };
                 

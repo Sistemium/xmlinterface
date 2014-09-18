@@ -93,7 +93,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         }
         
         Ext.each (record.fields.items, function (field) {
-            if ((!meta || fields.map[field.name] && !fields.map[field.name].virtual)
+            if ((!meta || fields.keyMap[field.name] && !fields.keyMap[field.name].virtual)
                 && !(field.name == 'ts' || field.name == updateKey)
             ){
                 if (field.compute || (field.template && (!field.type || field.type.type == 'auto'))) return;
@@ -240,7 +240,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             meta = this.engine.tables[tableName],
             
             fields = (meta)? meta.columns : model.prototype.fields.items,
-            fieldNames = fields.keys ? fields.map : model.prototype.fields.map,
+            fieldNames = fields.keys ? fields.keyMap : model.prototype.fields.keyMap,
             length  = fields.length,
             i, field, name, sqlSelectList=''
         ;
