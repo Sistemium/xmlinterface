@@ -412,6 +412,7 @@
         xi:display//xi:iframe
         | xi:display//xi:link
         | xi:display//xi:by
+        | xi:display//xi:agg
     ">
         <xsl:copy-of select="."/>
     </xsl:template>

@@ -106,7 +106,9 @@
         
         <xsl:param name="context" select="/.."/>
         <xsl:param name="colspan"/>
-        <xsl:param name="cnt"/>
+        <xsl:param name="group"/>
+        <xsl:param name="rows" select="/.."/>
+        <xsl:param name="cnt" select="count($rows)"/>
         <xsl:param name="cnt-show"/>
         
         <tr class="group" name="{@name}">
@@ -128,6 +130,19 @@
                         <xsl:with-param name="value" select="."/>
                     </xsl:apply-templates>
                 </span>
+                
+                <xsl:for-each select="$group/xi:agg">
+                    <span>(
+                        <span>
+                            <xsl:value-of select="key('id',@ref)/@label"/>:
+                        </span>
+                        <span>
+                            <xsl:value-of select="
+                                format-number(sum($rows/xi:datum[@ref=current()/@ref]),'#,##0.00')
+                            "/>
+                        </span>
+                    )</span>
+                </xsl:for-each>
                 
                 <xsl:if test="$cnt-show">
                     <span class="cnt">
@@ -173,6 +188,7 @@
                         $current-value
                         | key( 'id', @ref [not($current-value) and $prev-value] )
                     ">
+                        <xsl:with-param name="group" select="$groups"/>
                         <xsl:with-param name="context" select="current()"/>
                         <xsl:with-param name="colspan" select="
                             count(
@@ -181,7 +197,17 @@
                                 | key('id',$columns/parent::xi:grid/@id) [xi:option]
                             )
                         "/>
-                        <xsl:with-param name="cnt" select="
+                        <xsl:with-param name="rows" select="$data|
+                            $data/following::xi:data
+                                [@ref=$data/@ref
+                                    and ( descendant::xi:datum | ancestor::xi:data/xi:datum )
+                                        [@ref=current()/@ref]
+                                        [text()=($data//xi:datum|$data/ancestor::xi:data/xi:datum)
+                                            [@ref=current()/@ref]
+                                        ]
+                                ]
+                        "/>
+                        <!--xsl:with-param name="cnt" select="
                             count(
                                 $data/following::xi:data
                                     [@ref=$data/@ref
@@ -189,7 +215,7 @@
                                             [@ref=current()/@ref]
                                             [text()=($data//xi:datum|$data/ancestor::xi:data/xi:datum) [@ref=current()/@ref] ]
                                     ])+1
-                        "/>
+                        "/-->
                         <xsl:with-param name="cnt-show" select="
                             $columns/../@accordeon
                         "/>
