@@ -95,7 +95,7 @@
 
 
     <xsl:template match="xi:step[xi:validate or (not(@hidden) and preceding-sibling::*[1][xi:validate])]" mode="build-menu">
-        <menu>
+        <menu type="step2">
             <xsl:for-each select="preceding-sibling::xi:step[1][xi:validate]">
                 <option name="backward" label="Вернуться"/>
             </xsl:for-each>
@@ -110,7 +110,7 @@
     
 
     <xsl:template match="xi:step" mode="build-menu">
-        <menu>
+        <menu type="step">
             <xsl:apply-templates
                 select="(preceding-sibling::xi:step|following-sibling::xi:step)
                         [not(xi:validate or preceding-sibling::xi:step/@hidden)]"

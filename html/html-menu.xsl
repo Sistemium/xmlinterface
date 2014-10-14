@@ -25,7 +25,11 @@
             <xsl:if test="@label">
                 <div class="title"><span><xsl:value-of select="@label"/></span></div>
             </xsl:if>
-            <xsl:apply-templates />
+            <xsl:apply-templates select="
+                key('id',self::*[@type='step2']/following-sibling::xi:dialogue/@current-step)
+                    /xi:choise[@place='menu']/xi:option
+                |*
+            "/>
         </div>
     </xsl:template>
     
