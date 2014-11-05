@@ -336,6 +336,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             if (operation.start) sql += ' OFFSET '+operation.start;
         }
         
+        operation.sql = sql; 
         //console.log(sql);
         
         this.engine.db.transaction(
