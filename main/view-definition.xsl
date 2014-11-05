@@ -103,6 +103,9 @@
         </xsl:copy>
     </xsl:template>
     
+    <xsl:template match="xi:view-definition/xi:view-schema//*[@hide='remove']" mode="build-secure"/>
+    <xsl:template match="xi:view-definition/xi:view-schema//*[@hide='remove']"/>
+    
     <xsl:template match="xi:view-definition/xi:view-schema//*">
         <xsl:copy>
             <xsl:call-template name="view-build-default"/>
