@@ -10,8 +10,11 @@
     <xsl:param name="session" />
     
 
-    <xsl:template match="*[xi:access[not(@authorised)]]">
-        <xsl:if test="not(xi:access[not($session/xi:role/@name = @role)])">
+    <xsl:template match="*[xi:access[not(@authorised)]]" priority="1000">
+        <xsl:if test="not(
+            xi:access[@role][not($session/xi:role/@name = @role)]
+            | xi:access[@not-role][$session/xi:role/@name = @not-role]
+        )">
             <xsl:apply-templates select="." mode="build-secure"/>
         </xsl:if>
     </xsl:template>
