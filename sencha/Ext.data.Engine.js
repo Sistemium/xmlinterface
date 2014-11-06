@@ -41,7 +41,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         var targetVersion = metadata.version,
             name = metadata.name,
             me = this,
-            targetSize = metadata['expect-megabytes'] || 10,
+            targetSize = metadata['expect-megabytes'] || 4,
             
             checkSupports = function(db) {
                 
@@ -105,13 +105,13 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             }
         ;
         
-        var iOS = parseFloat(
+        var iOS = parseInt(
 			('' + (/CPU.*OS ([0-9_]{1,5})|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent) || [0,''])[1])
 			.replace('undefined', '3_2').replace('_', '.').replace('_', '')
 			) || false
 		;
 		
-		if (iOS >= 7) targetSize = 1.0 / 1024.0;
+		if (iOS == 7) targetSize = 1.0 / 1024.0;
         
         me.metadata = metadata;
         me.tables = me.metadata.tables;
