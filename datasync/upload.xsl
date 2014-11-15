@@ -253,12 +253,20 @@
                             
                             <xsl:element name="{@name}">
                                 
-                                <xsl:copy-of select="/*/@xid|$response/../@ts"/>
+                                <xsl:copy-of select="ancestor::xi:upload/@xid|$response/../@ts"/>
                                 
                                 <xsl:for-each select="xi:field[$data]">
                                     <xsl:element name="{@alias|self::*[not(@alias)]/@name}">
                                         <xsl:value-of select="$data/*[@name=current()/@name]"/>
                                     </xsl:element>
+                                </xsl:for-each>
+                                
+                                <xsl:for-each select="xi:form[$data]">
+                                    <xsl:apply-templates mode="build-upload-response"
+                                        select="$data/xi:data[@name=current()/@name]"
+                                    >
+                                        <xsl:with-param name="form" select="."/>
+                                    </xsl:apply-templates>
                                 </xsl:for-each>
                                 
                                 <xsl:for-each select="$response/ancestor::xi:upload[@delete-this]">
@@ -283,5 +291,32 @@
         </response>
         
     </xsl:template>
+    
+    
+    <xsl:template mode="build-upload-response" match="xi:data" name="build-upload-response">
+        
+        <xsl:param name="form" select="/.."/>
+        <xsl:param name="data" select="."/>
+        
+        <xsl:for-each select="$form">
+            <xsl:element name="{@name}">
+                
+                <xsl:for-each select="xi:field[$data]">
+                    <xsl:attribute name="{@alias|self::*[not(@alias)]/@name}">
+                        <xsl:value-of select="$data/*[@name=current()/@name]"/>
+                    </xsl:attribute>
+                </xsl:for-each>
+                
+                <xsl:for-each select="$data/parent::*/*[@name='id']">
+                    <xsl:attribute name="{$form/xi:parent-join/@role}">
+                        <xsl:value-of select="."/>
+                    </xsl:attribute>
+                </xsl:for-each>
+                
+            </xsl:element>
+        </xsl:for-each>
+        
+    </xsl:template>
+    
 
 </xsl:transform>

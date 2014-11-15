@@ -715,7 +715,12 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         ;
         
         if (response){
-            var form = Ext.DomQuery.select (store.model.modelName, response) [0];
+            
+            var modelName = store.model.modelName,
+                form = Ext.DomQuery.select (modelName, response) [0],
+                eng = record.proxy.engine,
+                meta = eng.metadata.tables
+            ;
             
             if (form){
                 console.log ('response received: xid = ' + form.getAttribute('xid') + ', ts = '+form.getAttribute('ts'));
@@ -741,6 +746,17 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                             record.set (f.name, false);
                     }
                 })
+                
+                Ext.each (meta[modelName].deps,
+                    function (dep) {
+                        dep.table_id && eng.persistTableData (
+                            meta [dep.table_id],
+                            form,
+                            xi,
+                            response
+                        )
+                    }
+                );
                 
                 record.save({
                     
