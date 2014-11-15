@@ -228,6 +228,7 @@
     <xsl:template match="/*[@stage='build-persist']//xi:response-preload">
         <preload>
             <xsl:attribute name="retrieve">true</xsl:attribute>
+            <xsl:attribute name="recursive">true</xsl:attribute>
             <xsl:copy-of select="@*|*"/>
         </preload>
     </xsl:template>
