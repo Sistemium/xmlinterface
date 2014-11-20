@@ -309,7 +309,14 @@
                 </xsl:for-each>
                 
                 <xsl:for-each select="$data/parent::*/*[@name='id']">
-                    <xsl:attribute name="{$form/xi:parent-join/@role}">
+                    <xsl:variable name="parent" select="$data/parent::*/@name"/>
+                    <xsl:variable name="parent-role" select="
+                        concat(
+                            translate(substring($parent,1,1),$ucletters,$lcletters)
+                            , substring($parent,2)
+                        )
+                    "/>
+                    <xsl:attribute name="{$parent-role}">
                         <xsl:value-of select="."/>
                     </xsl:attribute>
                 </xsl:for-each>
