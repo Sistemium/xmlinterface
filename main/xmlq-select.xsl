@@ -125,7 +125,11 @@
         </xsl:for-each>
         
         <xsl:for-each select="xi:preload">
-            <xsl:if test="preceding-sibling::xi:column or preceding-sibling::xi:data-request">
+            <xsl:if test="
+                preceding-sibling::xi:column
+                | preceding-sibling::xi:data-request
+                | preceding-sibling::xi:preload
+            ">
                 <xsl:text>, </xsl:text>
             </xsl:if>
             <xsl:text>cast((select '</xsl:text>
