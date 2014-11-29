@@ -228,7 +228,9 @@
     <xsl:template match="/*[@stage='build-persist']//xi:response-preload">
         <preload>
             <xsl:attribute name="retrieve">true</xsl:attribute>
-            <xsl:attribute name="recursive">true</xsl:attribute>
+            <xsl:if test="/*/xi:views/xi:view/xi:view-schema//xi:form[@name=current()/@name]/@extendable">
+                <xsl:attribute name="recursive">true</xsl:attribute>
+            </xsl:if>
             <xsl:copy-of select="@*|*"/>
         </preload>
     </xsl:template>
