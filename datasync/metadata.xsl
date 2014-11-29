@@ -163,6 +163,9 @@
                 | @importFields
                 | self::*[not(@name='xid')]/@key
                 | @sencha-compute
+                | @placeHolder
+                | @validationRe
+                | @validationText
             "/>
             
             <xsl:apply-templates mode="metadata" select="*">
