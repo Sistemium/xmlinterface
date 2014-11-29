@@ -80,7 +80,7 @@
                             <xsl:if test="ancestor-or-self::*[@colon-space]">
                                 <xsl:text> </xsl:text>
                             </xsl:if>
-                        </span>               
+                        </span>
                     </label>
                 </xsl:if> </xsl:otherwise>
                 
