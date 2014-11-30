@@ -84,7 +84,9 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         ;
         
         if (!meta) {
-            var saveTo = Ext.getStore('tables').getById(tableName).get('saveTo');
+            var tableMeta = Ext.getStore('tables').getById(tableName),
+                saveTo = tableMeta && tableMeta.get('saveTo')
+            ;
             
             if (saveTo) {
                 tableName = saveTo;
