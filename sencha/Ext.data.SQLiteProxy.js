@@ -80,8 +80,19 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             me = this,
             model   = me.model,
             tableName = this.tableName || this.model.modelName,
-            meta = this.engine.tables[tableName],
+            meta = this.engine.tables[tableName]
+        ;
+        
+        if (!meta) {
+            var saveTo = Ext.getStore('tables').getById(tableName).get('saveTo');
             
+            if (saveTo) {
+                tableName = saveTo;
+                meta = this.engine.tables[tableName];
+            }
+        }
+        
+        var 
             fields = (meta)? meta.columns : model.prototype.fields.items,
             
             keyMap = fields.keyMap || (typeof fields.map == 'object' && fields.map),

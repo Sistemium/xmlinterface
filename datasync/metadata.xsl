@@ -244,6 +244,7 @@
                     | @primaryTable
                     | @sorterColumn
                     | @sorterDir
+                    | @saveTo
                 "/>
                 
                 <xsl:variable name="view" select="."/>
@@ -284,7 +285,13 @@
                                 <xsl:copy-of select="$column/@label"/>
                             </xsl:if>
                             <xsl:copy-of select="
+                                @placeHolder
+                                | @validationRe
+                                | @validationText"
+                            />
+                            <xsl:copy-of select="
                                 $column/@parent
+                                | $column/@editable
                             "/>
                             <xsl:apply-templates mode="metadata" select="$column/self::xi:print/*"/>
                         </column>
