@@ -203,6 +203,7 @@
                 <xsl:copy-of select="$value"/>
                 
                 <xsl:value-of select="$caller/@show-empty[current()/self::xi:datum[not(node())]]"/>
+                <xsl:value-of select="$caller/@ending"/>
                 
             </xsl:element>
         </xsl:if>
