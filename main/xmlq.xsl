@@ -494,12 +494,14 @@
                     xi:parameter[$request/@page-size and $parm-for-top and (xi:start-at or @start-at)]
                 "/>
                 
-                <xsl:for-each select="
+                <xsl:variable name="select-parameters" select="
                     xi:parameter[$this/@storage='mssql'
                         or $parmnams=@name
                         or @sql-name=($parm-for-top/@sql-name|$parm-for-start-at/@sql-name)
-                    ]
-                ">
+                    ] [not(@required='ignore')]
+                "/>
+                
+                <xsl:for-each select="$select-parameters">
                     <xsl:variable name="datum" select="
                         $parmnams [.=current()/@name] /parent::*
                     "/>
