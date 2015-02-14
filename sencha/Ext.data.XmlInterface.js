@@ -205,6 +205,9 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     ? ('&fv=' + options.params.filter)
                     : ''
                 )
+                + (
+                    '&seed='+String(Math.random()).replace('0.','')
+                )
             }
         ));
         
