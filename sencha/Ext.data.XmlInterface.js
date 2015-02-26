@@ -129,7 +129,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     console.log('XmlInterface.request exception ('+(o.command || '')+'); status: ' + r.status + ' ('+r.statusText+')')
                     me.cleanDownloadSession (r);
                     
-                    if (typeof o.command == 'string')
+                    if (typeof o.command == 'string' && !o.noRetry)
                         setTimeout( function () {
                                 var rr = me.connection.request(
                                     Ext.applyIf({ failure: false }, o)
