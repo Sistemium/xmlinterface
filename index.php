@@ -36,6 +36,10 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
 
     $initName=isset($_GET['config'])?$_GET['config']:$config;
     $command='';
+    
+    if (!preg_match('/^[a-z]{1,8}$/', $initName)) {
+       die('invalid config');
+    }
 
     foreach (explode('/', $_SERVER['SCRIPT_NAME']) as $urlPart)
         switch($urlPart) {
