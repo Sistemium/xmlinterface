@@ -5,7 +5,7 @@
     xmlns="http://unact.net/xml/xi"
 >
 
-   <xsl:template match="*" mode="build-dialogue">
+    <xsl:template match="*" mode="build-dialogue">
         <xsl:apply-templates select="*" mode="build-dialogue"/>
     </xsl:template>
 
@@ -266,8 +266,9 @@
         <xsl:apply-templates mode="display-when" select="
             ancestor::xi:view/xi:view-data//xi:datum
                [@ref=current()/@ref]
-               [not(current()/@equals) or . = current()/@equals]
+               [not(current()[@equals|xi:equals]) or . = current()/@equals or . = current()/xi:equals]
                [not(current()/@not-modified and @modified)]
+               [not(ancestor::xi:set-of/@is-choise)]
         ">
             <xsl:with-param name="context" select="."/>
         </xsl:apply-templates>
@@ -289,6 +290,8 @@
         </xsl:if>
     </xsl:template>
     
+    <xsl:template mode="display-when" match="xi:equals|*[@is-choise]"/>
+    
     <xsl:template mode="display-when" match="*">
         <xsl:comment>display-when: no match</xsl:comment>
     </xsl:template>
@@ -301,7 +304,7 @@
     <xsl:template mode="display-when" match="*[key('id',@ref)/@type='boolean'][text()='0']">
         <xsl:param name="context" />
         <xsl:choose>
-            <xsl:when test="$context/@equals='0'">
+            <xsl:when test="$context[@equals='0' or xi:equals='0'] ">
                 <xsl:apply-templates select="$context/*" mode="build-dialogue"/>
             </xsl:when>
             <xsl:otherwise>
@@ -353,7 +356,7 @@
                 )
                 or (key('id',$ref)/text() and key('id',$ref)/text()!='')
                 or (key('id',@ref)/@type='xml' and key('id',$ref)/*)
-            )
+            ) or @show-empty
         "/>
         
         <xsl:variable name="elem">
@@ -409,6 +412,7 @@
         xi:display//xi:iframe
         | xi:display//xi:link
         | xi:display//xi:by
+        | xi:display//xi:agg
     ">
         <xsl:copy-of select="."/>
     </xsl:template>

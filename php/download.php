@@ -25,7 +25,7 @@
     session_id($auth);
     session_start();
     
-    $uac = new UOAuthClient ('https://uoauth.unact.ru/a/uoauth', $auth);
+    $uac = new UOAuthClient ('https://uoauth.sistemium.com/a/uoauth', $auth);
     
     session_write_close();
     

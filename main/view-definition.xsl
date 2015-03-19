@@ -103,6 +103,9 @@
         </xsl:copy>
     </xsl:template>
     
+    <xsl:template match="xi:view-definition/xi:view-schema//*[@hide='remove']" mode="build-secure"/>
+    <xsl:template match="xi:view-definition/xi:view-schema//*[@hide='remove']"/>
+    
     <xsl:template match="xi:view-definition/xi:view-schema//*">
         <xsl:copy>
             <xsl:call-template name="view-build-default"/>
@@ -134,6 +137,7 @@
         <xsl:variable name="role" select="@role|self::*[not(@role)]/@name"/>
         <xsl:variable name="concept" select="self::xi:form[not(@concept)]/@name|self::xi:form/@concept"/>
         <xsl:variable name="domain-concept" select="$model/xi:concept[@name=$form-concept]"/>
+        <xsl:variable name="this" select="."/>
         
         <xsl:apply-templates select="." mode="build-id"/>
         
@@ -161,7 +165,7 @@
         
         <xsl:apply-templates select="xi:sql-compute|xi:xpath-compute" mode="as-attribute"/>
         
-        <xsl:if test="(@choise or @expect-choise) and not(@choise-label)">
+        <xsl:if test="(@choise or @expect-choise or not(@is-set)) and not(@choise-label)">
             <xsl:attribute name="choise-label">name</xsl:attribute>
         </xsl:if>
         
@@ -214,7 +218,15 @@
                  |$model/xi:concept[@name=$concept]/xi:role[@actor=$form-concept]
                  ">
                 <parent-join name="{$form-concept/../@name}" concept="{$form-concept}" role="{@name}">
+                    <xsl:apply-templates select="$this" mode="build-id">
+                        <xsl:with-param name="salt" select="translate(generate-id(),'idm','')"/>
+                    </xsl:apply-templates>
                     <xsl:copy-of select="@sql-name"/>
+                    <xsl:for-each select="$this/@parent-sql-name">
+                        <xsl:attribute name="sql-name">
+                            <xsl:value-of select="."/>
+                        </xsl:attribute>
+                    </xsl:for-each>
                 </parent-join>
             </xsl:for-each>
         </xsl:if>

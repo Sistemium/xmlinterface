@@ -66,15 +66,27 @@
                     or (
                         (xi:exception/xi:not-found or xi:result-set[not(*)])
                         and key('id',../@ref)[@build-blank|@extendable]
+                        and not(/*/@pipeline-name='download')
                     )
                 ]
             ]
     ">
         <xsl:comment>1001</xsl:comment>
         
-        <xsl:apply-templates select="key('id',@ref)" mode="build-data">
-            <xsl:with-param name="data" select="xi:response/xi:result-set/*"/>
-        </xsl:apply-templates>
+        <xsl:choose>
+            <xsl:when test="self::xi:data">
+                <xsl:comment>1001-1</xsl:comment>
+                <xsl:apply-templates select="key('id',@ref)" mode="build-data">
+                    <xsl:with-param name="data" select="xi:response/xi:result-set/*"/>
+                    <xsl:with-param name="set-thrshld">1</xsl:with-param>
+                </xsl:apply-templates>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="key('id',@ref)" mode="build-data">
+                    <xsl:with-param name="data" select="xi:response/xi:result-set/*"/>
+                </xsl:apply-templates>
+            </xsl:otherwise>
+        </xsl:choose>
         
     </xsl:template>
 

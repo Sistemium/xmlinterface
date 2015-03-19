@@ -15,11 +15,11 @@
             )"
         />
         
-        <xsl:comment>
+        <!--xsl:comment>
             datum:<xsl:value-of select="$datum/@id"/>
-        </xsl:comment>
+        </xsl:comment-->
         
-        <xsl:apply-templates select="self::xi:input | self::xi:print[$datum/node()]" mode="render">
+        <xsl:apply-templates select="self::xi:input | self::xi:print[$datum/node()|@show-empty]" mode="render">
             <xsl:with-param name="datum" select="$datum"/>
             <xsl:with-param name="elem">
                 <xsl:choose>
@@ -36,6 +36,7 @@
         
         <xsl:param name="datum" select="key('id',self::xi:input/@ref)"/>
         <xsl:param name="elem">div</xsl:param>
+        <xsl:param name="this" select="."/>
         
         <xsl:element name="{$elem}">
             <xsl:attribute name="class">
@@ -79,7 +80,7 @@
                             <xsl:if test="ancestor-or-self::*[@colon-space]">
                                 <xsl:text> </xsl:text>
                             </xsl:if>
-                        </span>               
+                        </span>
                     </label>
                 </xsl:if> </xsl:otherwise>
                 
@@ -147,7 +148,9 @@
             </xsl:for-each>
             
             <xsl:for-each select="$datum[current()/self::xi:print/@ref]">
-                <xsl:call-template name="print"/>
+                <xsl:call-template name="print">
+                    <xsl:with-param name="caller" select="$this"/>
+                </xsl:call-template>
             </xsl:for-each>
             
         </xsl:element>
@@ -155,6 +158,8 @@
     </xsl:template>
 
     <xsl:template match="xi:datum | xi:data[@delete-this or @toggle-edit-off]/xi:data[@choise]" mode="render" name="print">
+        
+        <xsl:param name="caller" select="/.."/>
         
         <xsl:param name="element">
             <xsl:choose>
@@ -196,6 +201,9 @@
                 <xsl:apply-templates select="." mode="class"/>
                 
                 <xsl:copy-of select="$value"/>
+                
+                <xsl:value-of select="$caller/@show-empty[current()/self::xi:datum[not(node())]]"/>
+                <xsl:value-of select="$caller/@ending"/>
                 
             </xsl:element>
         </xsl:if>
@@ -439,18 +447,28 @@
                                         <xsl:variable name="size-default">
                                             <xsl:apply-templates select="key('id',@ref)" mode="input-size"/>
                                         </xsl:variable>
+                                        <xsl:variable name="size-calc">
+                                            <xsl:choose>
+                                                <xsl:when test="key('id',@ref)/@autofill">
+                                                    <xsl:value-of select="string-length(ancestor::xi:data/xi:datum[key('id',@ref)/@autofill-for=current()/@ref])+1"/>
+                                                </xsl:when>
+                                                <xsl:when test="string-length(.) = 0">
+                                                    <xsl:value-of select="$size-default"/>
+                                                </xsl:when>
+                                                <xsl:when test="string-length(.) &lt; 12">
+                                                    <xsl:value-of select="12"/>
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                    <xsl:value-of select="string-length(.)+2"/>
+                                                </xsl:otherwise>
+                                            </xsl:choose>
+                                        </xsl:variable>
                                         <xsl:choose>
-                                            <xsl:when test="key('id',@ref)/@autofill">
-                                                <xsl:value-of select="string-length(ancestor::xi:data/xi:datum[key('id',@ref)/@autofill-for=current()/@ref])+1"/>
-                                            </xsl:when>
-                                            <xsl:when test="string-length(.) = 0">
+                                            <xsl:when test="$size-calc &lt; $size-default">
                                                 <xsl:value-of select="$size-default"/>
                                             </xsl:when>
-                                            <xsl:when test="string-length(.) &lt; 12">
-                                                <xsl:value-of select="12"/>
-                                            </xsl:when>
                                             <xsl:otherwise>
-                                                <xsl:value-of select="string-length(.)+2"/>
+                                                <xsl:value-of select="$size-calc"/>
                                             </xsl:otherwise>
                                         </xsl:choose>
                                     </xsl:attribute>

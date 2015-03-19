@@ -15,6 +15,7 @@ create global temporary table if not exists xmlgate.query (
     ip varchar (25),
     path varchar (32),
     program varchar(128),
+    host varchar(64),
 
     ts datetime default timestamp,
     cts datetime default current timestamp,
@@ -61,14 +62,15 @@ begin
     declare @xid uniqueidentifier;
     declare @async varchar(64);
     declare @program varchar(128);
+    declare @host varchar(64);
  
     body: begin
         
-        //set @request=csconvert(@request,'os_charset','utf-8');
+        set @request=csconvert(@request,'db_charset','utf-8');
         
         select query_name, if show_sql is not null then 1 endif,
-                sql_raw, username, ip, path, program, async
-            into @query_name, @show_sql, @sql, @username, @ip, @path, @program, @async
+                sql_raw, username, ip, path, program, host, async
+            into @query_name, @show_sql, @sql, @username, @ip, @path, @program, @host, @async
             from openxml(@request, '/ *') with (
                 query_name varchar(128) '@name',
                 show_sql text '@show-sql',
@@ -78,6 +80,7 @@ begin
                 ip varchar(128) '@ip',
                 path varchar(128) '@path',
                 program varchar(128) '@program',
+                host varchar(64) '@host',
                 async varchar(64) '@async'
             )
         ;
@@ -91,7 +94,7 @@ begin
         
         insert into xmlgate.query with auto name
             select @sql as request, @username as username, connection_property ('number') as conn,
-                @ip as ip, @path as path, @xid as xid, @program as program
+                @ip as ip, @path as path, @xid as xid, @program as program, @host as host
         ;
         set @log_id = @@identity;
         
@@ -207,4 +210,40 @@ begin
         
      return @result;
 
+end;
+
+
+create table if not exists xmlgate.agent (
+    id ID,
+
+    name varchar(128) not null,
+    deviceName varchar (128) null,
+    
+    [xid] GUID,
+    [ts]  TS,
+    [cts] CTS,
+    
+    primary key (id),
+    unique (xid),
+    unique (name)
+);
+
+
+create or replace procedure xmlgate.agent 
+    (in @name varchar(128) default null, in @deviceName varchar(128) default null)
+begin
+    if @name is not null then
+        insert into agent with auto name
+        select @name as name
+         where not exists (select * from agent where name=@name)
+        ;
+        
+        update agent set deviceName=@deviceName 
+         where @deviceName is not null and name=@name
+        ;
+        
+    end if;
+    
+    select * from agent where name=@name or @name is null;
+    
 end;

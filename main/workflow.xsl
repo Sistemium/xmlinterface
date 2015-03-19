@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
- xmlns="http://unact.net/xml/xi" xmlns:xi="http://unact.net/xml/xi"
- xmlns:php="http://php.net/xsl" exclude-result-prefixes="php"
- >
+   xmlns="http://unact.net/xml/xi" xmlns:xi="http://unact.net/xml/xi"
+   xmlns:php="http://php.net/xsl" exclude-result-prefixes="php"
+>
     
     <xsl:include href="dialogue.xsl"/>
     <xsl:include href="validate.xsl"/>
@@ -14,7 +14,7 @@
         Произвести переход:
             Запомнить новое положение
             Отобразить поля ввода и статику
-     -->
+    -->
 
     <xsl:template match="xi:menu[not(*)]"/>
     
@@ -95,7 +95,7 @@
 
 
     <xsl:template match="xi:step[xi:validate or (not(@hidden) and preceding-sibling::*[1][xi:validate])]" mode="build-menu">
-        <menu>
+        <menu type="step2">
             <xsl:for-each select="preceding-sibling::xi:step[1][xi:validate]">
                 <option name="backward" label="Вернуться"/>
             </xsl:for-each>
@@ -110,7 +110,7 @@
     
 
     <xsl:template match="xi:step" mode="build-menu">
-        <menu>
+        <menu type="step">
             <xsl:apply-templates
                 select="(preceding-sibling::xi:step|following-sibling::xi:step)
                         [not(xi:validate or preceding-sibling::xi:step/@hidden)]"

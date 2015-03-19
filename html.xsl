@@ -411,7 +411,7 @@
                 <span><xsl:value-of select="$rows-affected"/></span>
             </div>
         </xsl:if>
-        <xsl:apply-templates select="xi:choise"/>
+        <xsl:apply-templates select="xi:choise[not(@place='menu')]"/>
     </xsl:template>
 
     <xsl:template match="xi:choise|xi:options">

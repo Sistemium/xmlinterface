@@ -116,14 +116,25 @@ set_time_limit (180);
             $db=$request[0]->ownerDocument->documentElement->getAttribute('db');
             $server=$request[0]->ownerDocument->documentElement->getAttribute('server');
             
+            $auth_username = (string) $private->username;
+            $auth_password = (string) $private->password;
+            
             if ($src!='mssql'){
-                $http->auth_username = $private->username;
-                $http->auth_password = $private->password;
-                
-                $httphost = isset($private->{$server}) ? $private->{$server} : ($server?'https://'.$server:$private->server[0]);
+                $httphost = isset($private->{$server})
+                    ? $private->{$server}
+                    : ($server?'https://'.$server:$private->server[0])
+                ;
                 
                 $source_http=$httphost;
                 if (!strpos( $httphost , '?')) $source_http .= '/xmlq';
+                
+                if (isset ($httphost['password']))
+                    $auth_password = (string) $httphost ['password']
+                ;
+                
+                $http->auth_username = $auth_username;
+                $http->auth_password = $auth_password;
+                
             } else
                 $source_http = $private->mssqlServer;
             
@@ -132,9 +143,10 @@ set_time_limit (180);
             if($http->post($source_http,
                 $http->make_query_string(array(
                         "request"=>$request[0]->ownerDocument->saveXML(),
-                        "login"=>(string)$private->username,
-                        "pwd"=>(string)$private->password,
-                        "db"=>$db, "server"=>$server))
+                        "login"=>$auth_username,
+                        "pwd"=>$auth_password,
+                        "db"=>$db, "server"=>$server
+                ))
                 )) try {
                     if (developerMode()) file_put_contents('data/last.response.http.xml',$http->response);
                     $doc->loadXML($http->response);
@@ -172,7 +184,8 @@ set_time_limit (180);
         $doc -> documentElement -> setAttribute('ip',$_SERVER['REMOTE_ADDR']);
         $doc -> documentElement -> setAttribute('path',$uri);
         $doc -> documentElement -> setAttribute('program',$program);
-        
+        $doc -> documentElement -> setAttribute('host', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
+
         if ($db != '')  $doc -> documentElement -> setAttribute('db',$db);
         
         return xmlRequest(array(0 => $doc->documentElement));
@@ -252,13 +265,18 @@ set_time_limit (180);
     function uoauth ($access_token, &$extraData) {
         $address = secureParm () -> oauth ['roles-href'];
         $http = new HTTPRetriever();
+        $params = array (
+            "access_token" => $access_token
+        );
+        
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            $params["user_agent"] = $_SERVER['HTTP_USER_AGENT'];
+        }
         
         try { if ( $http->post (
                     $address,
-                    $http->make_query_string ( array(
-                        "access_token" => $access_token
-                    )
-            ) ) ) {
+                    $http->make_query_string ($params)
+                ) ) {
                 $result = new SimpleXMLElement($http->response);
                 $extraData=$result;
                 //var_dump($result);

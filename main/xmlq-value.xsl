@@ -19,6 +19,11 @@
         <xsl:text>'</xsl:text>
     </xsl:template>
 
+    <xsl:template match="*[@use-in]" mode="value" priority="101">
+        <xsl:param name="datum" select="."/>
+        <xsl:value-of select="concat('(',$datum,')')"/>
+    </xsl:template>
+
     <xsl:template match="*[@type='number' or @type='int' or @type='decimal']" mode="value">
         <xsl:value-of select="."/>
     </xsl:template>

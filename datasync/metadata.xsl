@@ -46,7 +46,7 @@
     <xsl:template match="@id" mode="metadata"/>
     
     <xsl:template match="*|@*" mode="metadata">
-        <xsl:param name="non-recursive"/>
+        <xsl:param name="non-recursive" select="/.."/>
         <xsl:copy>
             <xsl:apply-templates select="@*|node()[not($non-recursive) or not(local-name() = local-name(current()))]" mode="metadata"/>
         </xsl:copy>
@@ -74,7 +74,19 @@
             
             <table id="{@name}" name="{@label}" nameSet="{@set-label}" level="{count(ancestor::xi:form[not(@hidden)])}">
                 
-                <xsl:copy-of select="@extendable | @deletable | */@editable | @mainMenu | @clsColumn"/>
+                <xsl:copy-of select="
+                    @extendable
+                    | @deletable
+                    | */@editable
+                    | @mainMenu
+                    | @clsColumn
+                    | @grouperColumn
+                    | @sorterColumn
+                "/>
+                
+                <xsl:if test="@mainMenu='false'">
+                    <xsl:attribute name="hidden">true</xsl:attribute>
+                </xsl:if>
                 
                 <xsl:if test="$model[@name=current()/@concept]/xi:role[@actor=current()/../@concept][@type='belongs']">
                     <xsl:attribute name="belongs">
@@ -82,52 +94,12 @@
                     </xsl:attribute>
                 </xsl:if>
                 
-                <columns set-of="column"><xsl:for-each select="xi:field">
-                    
-                    <column id="{../@name}{@alias}" name="{@alias}">
-                        
-                        <xsl:attribute name="type">
-                            <xsl:choose>
-                                <xsl:when test="@type='decimal'">float</xsl:when>
-                                <xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
-                            </xsl:choose>
-                        </xsl:attribute>
-                        
-                        <xsl:for-each select="$forms[
-                            @concept
-                                = $model [@name=current()/../@concept]
-                                    /xi:role [@name=current()/@alias or @name=current()/@role or @name = current()[not(@role)]/@name]
-                                    /@actor
-                        ]">
-                            <xsl:attribute name="parent"><xsl:value-of select="@name"/></xsl:attribute>
-                            <xsl:copy-of select="@label"/>
-                            <xsl:if test="$form/@extendable">
-                                <xsl:attribute name="editable">true</xsl:attribute>
-                            </xsl:if>
-                        </xsl:for-each>
-                        
-                        <xsl:copy-of select="
-                            @label|@editable|@aggregable|@title|@init|@optional|@required
-                            | @importFields
-                            | self::*[not(@name='xid')]/@key
-                            | @sencha-compute
-                        "/>
-                        
-                        <xsl:for-each select="xi:sencha-compute">
-                            <xsl:attribute name="compute">
-                                <xsl:value-of select="."/>
-                            </xsl:attribute>
-                        </xsl:for-each>
-                        
-                        <xsl:for-each select="xi:sencha-template">
-                            <tpl>
-                                <xsl:apply-templates select="*" mode="metadata"/>
-                            </tpl>
-                        </xsl:for-each>
-                        
-                    </column>
-                    
-                </xsl:for-each></columns>
+                <columns set-of="column">
+                    <xsl:apply-templates mode="metadata" select="xi:field">
+                        <xsl:with-param name="forms" select="$forms"/>
+                        <xsl:with-param name="form" select="$form"/>
+                    </xsl:apply-templates>
+                </columns>
                 
                 <deps set-of="dep"><xsl:for-each select="$model/xi:role[@actor=current()/@concept]">
                     <xsl:variable name="role" select="."/>
@@ -145,20 +117,136 @@
                     </xsl:for-each>
                 </xsl:for-each></deps>
                 
+                <xsl:apply-templates mode="metadata" select="xi:sencha-template"/>
+                
             </table>
             
         </xsl:for-each></tables>
         
     </xsl:template>
+    
+    
+    <xsl:template mode="metadata" match="xi:field">
+        
+        <xsl:param name="forms"/>
+        <xsl:param name="form"/>
+        
+        <column id="{../@name}{@alias}" name="{@alias}">
+            
+            <xsl:attribute name="type">
+                <xsl:choose>
+                    <xsl:when test="@type='decimal'">float</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+            
+            <xsl:variable name="parent" select="$forms[
+                @concept
+                = $model [@name=current()/../@concept]
+                    /xi:role [
+                        @name=current()/@alias
+                        or @name=current()/@role
+                        or @name = current()[not(@role)]/@name
+                    ] /@actor
+            ]"/>
+            
+            <xsl:for-each select="$parent">
+                <xsl:attribute name="parent"><xsl:value-of select="@name"/></xsl:attribute>
+                <xsl:copy-of select="@label"/>
+                <xsl:if test="$form/@extendable">
+                    <xsl:attribute name="editable">true</xsl:attribute>
+                </xsl:if>
+            </xsl:for-each>
+            
+            <xsl:copy-of select="
+                @label|@editable|@aggregable|@title|@init|@optional|@required
+                | @importFields
+                | self::*[not(@name='xid')]/@key
+                | @sencha-compute
+                | @placeHolder
+                | @validationRe
+                | @validationText
+            "/>
+            
+            <xsl:apply-templates mode="metadata" select="*">
+                <xsl:with-param name="parent" select="$parent"/>
+            </xsl:apply-templates>
+            
+        </column>
+        
+    </xsl:template>
+
+    
+    <xsl:template mode="metadata" match="xi:where">
+        <xsl:param name="parent" select="/.."/>
+        <predicate id="{../../@name}{$parent/@name}{@name}" name="{@name}" init="{text()}"/>
+    </xsl:template>
+    
+    
+    <xsl:template mode="metadata" match="xi:sencha-compute">
+        <xsl:attribute name="compute">
+            <xsl:value-of select="."/>
+        </xsl:attribute>
+    </xsl:template>
+    
+    
+    <xsl:template mode="metadata" match="xi:sencha-template">
+        <tpl>
+            <xsl:apply-templates select="*" mode="metadata"/>
+        </tpl>
+    </xsl:template>
+    
+    <xsl:template mode="metadata" match="xi:sencha-template[xi:xtemplate]">
+        <xtpl>
+            <xsl:apply-templates select="xi:xtemplate/*" mode="metadata"/>
+        </xtpl>
+    </xsl:template>
+    
+    <xsl:template mode="metadata" match="*[*]/text()">
+        <xsl:value-of select="normalize-space(.)"/>
+    </xsl:template>
+    
+    <xsl:template mode="metadata" match="xi:xtemplate">
+        <xtpl>
+            <xsl:apply-templates select="*" mode="metadata"/>
+        </xtpl>
+    </xsl:template>
+    
+    <xsl:template mode="metadata" match="xi:sencha-template[@href]">
+        <xsl:apply-templates select="document(concat('../../config/views/',@href))" mode="metadata"/>
+    </xsl:template>
+    
+    
+    <xsl:template mode="make-dep" match="xi:dep">
+        
+        <dep table_id="{@form}" id="{@form}{@field}" name="{@field}">
+            <!--xsl:if test="$role/@type='belongs'">
+                <xsl:attribute name="contains">true</xsl:attribute>
+            </xsl:if-->
+        </dep>
+        
+    </xsl:template>
+    
 
     <xsl:template match="xi:workflow" mode="metadata">
+        
         <xsl:variable name="steps" select="descendant::xi:step[not(@hidden)]"/>
-
+        
         <views set-of="view"><xsl:for-each select="$steps">
             
-            <xsl:copy-of select="@extendable | @deletable | @mainMenu"/>
-            
             <view id="{@name}" name="{@label}" nameSet="{@set-label}">
+                
+                <xsl:copy-of select="
+                    @extendable
+                    | @deletable
+                    | @mainMenu
+                    | @grouperColumn
+                    | @primaryTable
+                    | @sorterColumn
+                    | @sorterDir
+                    | @saveTo
+                "/>
+                
                 <xsl:variable name="view" select="."/>
                 
                 <columns set-of="column"><xsl:for-each select="descendant::*[self::xi:input|self::xi:print]">
@@ -173,6 +261,8 @@
                             </xsl:when>
                         </xsl:choose>
                     </xsl:variable>
+                    
+                    <xsl:variable name="column" select="."/>
                     
                     <xsl:for-each select="key('id',@ref)">
                         <xsl:variable name="formAlias" select="
@@ -190,17 +280,36 @@
                                     <xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
                                 </xsl:choose>
                             </xsl:attribute>
-                            <xsl:copy-of select="@label"/>
+                            <xsl:if test="not($column/@hidden)">
+                                <xsl:copy-of select="@label"/>
+                                <xsl:copy-of select="$column/@label"/>
+                            </xsl:if>
+                            <xsl:copy-of select="
+                                @placeHolder
+                                | @validationRe
+                                | @validationText"
+                            />
+                            <xsl:copy-of select="
+                                $column/@parent
+                                | $column/@editable
+                            "/>
+                            <xsl:apply-templates mode="metadata" select="$column/self::xi:print/*"/>
                         </column>
                     </xsl:for-each>
                     
                 </xsl:for-each></columns>
+                
+                <deps set-of="dep">
+                    <xsl:apply-templates select="xi:deps/xi:dep" mode="make-dep"/>
+                </deps>
                 
                 <xsl:for-each select="xi:sql">
                     <xsl:copy>
                         <xsl:value-of select="."/>
                     </xsl:copy>
                 </xsl:for-each>
+                
+                <xsl:apply-templates mode="metadata" select="xi:sencha-template"/>
                 
             </view>
             

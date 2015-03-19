@@ -36,6 +36,10 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
 
     $initName=isset($_GET['config'])?$_GET['config']:$config;
     $command='';
+    
+    if (!preg_match('/^[a-z]{1,8}$/', $initName)) {
+       die('invalid config');
+    }
 
     foreach (explode('/', $_SERVER['SCRIPT_NAME']) as $urlPart)
         switch($urlPart) {
@@ -304,8 +308,16 @@ function execute ($config = 'init', $pipelineName = 'main', $disableOutput = fal
         $Context -> save(
             $dir.'/0.context.xml'
         );
-        ini_set('xsl.security_prefs',0);
+        if (version_compare(PHP_VERSION,'5.4',"<")) {
+            $oldval = ini_set("xsl.security_prefs",0);
+        } else {
+            $oldval = $xslt->setSecurityPrefs(0);
+        }
     }
+    
+    $timeLimit = secureParm () -> PHP ['time_limit'];
+    
+    if ($timeLimit) set_time_limit (ceil($timeLimit));
 
     try { foreach ($config->pipeline as $pipeline) if ($pipeline['name'] == $pipelineName) {
         

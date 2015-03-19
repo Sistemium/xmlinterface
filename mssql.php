@@ -21,6 +21,8 @@
     $output->formatOutput = false;
     $output->appendChild($output->createElement('response'));
     
+    ini_set ( 'mssql.timeout', 120);
+    
     $args=$_POST;
     
     if (isset($args['request'])) try {

@@ -8,4 +8,8 @@
         -webkit-box-shadow: none !important;
     }
     
+    #session-wrapper {
+        display:none !important
+    }
+    
 }

@@ -41,7 +41,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         var targetVersion = metadata.version,
             name = metadata.name,
             me = this,
-            targetSize = metadata['expect-megabytes'] || 10,
+            targetSize = metadata['expect-megabytes'] || 4,
             
             checkSupports = function(db) {
                 
@@ -64,10 +64,6 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             ok = function (db) {
                 
-                Ext.each (metadata.views, function (view) {
-                    me.tables.push (Ext.apply(view, {type: 'view'}))
-                });
-                
                 Ext.each (me.tables, function(t,i,tables) {
                     t.viewName = t.id+'_browse';
                     
@@ -87,9 +83,9 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         var pname = '';
                         if (c.parent)
                             tables[c.parent].columns.forEach ( function (pcol, idx) {
-                                if (pcol.title || pcol.name == 'name' || pcol.name == 'ord') {
+                                if (pcol.title || pcol.name == 'name' || pcol.name == 'ord' || pcol.parent) {
                                     pname = c.parent+'_'+pcol.name;
-                                    t.columns.push ({
+                                    t.columns.push (t.columns.keyMap[pname] = {
                                         name: pname,
                                         id: t.id+pname,
                                         type: 'string',
@@ -101,17 +97,21 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                     })
                 });
                 
+                Ext.each (metadata.views, function (view) {
+                    me.tables.push (Ext.apply(view, {type: 'view'}))
+                });
+                
                 checkSupports(db);
             }
         ;
         
-        var iOS = parseFloat(
+        var iOS = parseInt(
 			('' + (/CPU.*OS ([0-9_]{1,5})|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent) || [0,''])[1])
 			.replace('undefined', '3_2').replace('_', '.').replace('_', '')
 			) || false
 		;
 		
-		if (iOS >= 7) targetSize = 1.0 / 1024.0;
+		if (iOS == 7) targetSize = 1.0 / 1024.0;
         
         me.metadata = metadata;
         me.tables = me.metadata.tables;
@@ -123,10 +123,10 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         
         Ext.each (me.tables, function(t,i,tables) {
             tables[t.id] = t;
-            t.columns.map = {};
+            t.columns.keyMap = {};
             Ext.each (t.columns, function(c) {
-                t.columns.map[c.name] = c;
-                (c.template || c.compute) && (c.virtual = true);
+                t.columns.keyMap[c.name] = c;
+                ((c.template && !c.type) || c.compute) && (c.virtual = true);
             })
         });
         
@@ -194,6 +194,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         me.executeDDL (t, 'Create table Entity ('
             +'name string primary key'
             +', hidden boolean'
+			+', contains int'
             +', ts datetime default current_timestamp)')
         ;
         
@@ -205,35 +206,60 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             +', ts datetime default current_timestamp)')
         ;
         
+        me.executeDDL (t, 'DROP table IF EXISTS PhantomDeleted');
+        me.executeDDL (t, 'Create table PhantomDeleted ('
+            +'id integer primary key autoincrement, table_name string, row_id string'
+            +', wasPhantom int'
+            +', cs string'
+            +', ts datetime default current_timestamp)')
+        ;
+        
         me.executeDDL (t, 'DROP view IF EXISTS ToUpload');
         me.executeDDL (t, 'create view ToUpload as select '
-            + 'p.table_name, p.row_id id, count(*) cnt, min (p.ts) ts, '
-            + ' max(p.wasPhantom) hasPhantom, max(p.id) pid, max(p.cs) cs, '
+            + 'p.table_name, p.row_id id, count(*) cnt, max (p.ts) ts, '
+            + ' case e.contains when 0 then \'false\' else p.wasPhantom end hasPhantom,'
+			+ ' max(p.id) pid, max(p.cs) cs, '
             + ' 1 - e.hidden visibleCnt'
             + ' from Phantom p join Entity e on e.name = p.table_name'
-            + ' where p.cs is null group by p.row_id, p.table_name'
+            + ' where p.cs is null'
+			+ ' group by p.row_id, p.table_name, '
+			+ ' case e.contains when 0 then \'false\' else p.wasPhantom end'
+			+ ' union all select p.table_name, p.row_id, 0, max(p.ts), '
+			+ ' max(p.wasPhantom), max(p.id), max(p.cs), 1 - e.hidden '
+			+ ' from PhantomDeleted p join Entity e on e.name = p.table_name '
+			+ ' where p.cs is null'
+			+ ' group by p.row_id, p.table_name '
         );
         
         me.executeDDL (t, 'create trigger commitUpload instead of update on ToUpload begin '
             + 'delete from Phantom where row_id = new.id and id <= new.pid; '
+			+ 'delete from PhantomDeleted where row_id = new.id; '
             + 'end'
         );
         
         Ext.each( dbSchema.tables, function (table, idx, tables) {
             
-            me.executeSQL(t, 'insert into Entity (name, hidden) values (?,?)', [table.id, table.name ? 0: 1]);
+			var contains = table.deps
+				? table.deps.filter(function (dep) { return dep.contains }).length
+				: 0
+			;
+			
+            me.executeSQL (t,
+				'insert into Entity (name, hidden, contains) values (?,?,?)',
+				[table.id, table.name ? 0: 1, contains]
+			);
             
-            me.executeDDL(t, 'DROP TABLE IF EXISTS '+table.id+';');
+            me.executeDDL(t, 'DROP TABLE IF EXISTS ' + table.id + ';');
             
             var columnsDDL='', fkDDL='', pkDDL='', hasId;
             
             Ext.each (table.columns, function (column, idx, columns) {
                 
-                if (column.template || column.compute) return;
+                if ((column.template && !column.type) || column.compute) return;
                 
                 if(column.parent){
-                    tables[column.parent] && tables[column.parent].columns.map['id'] && (
-                        column.type = tables[column.parent].columns.map['id'].type
+                    tables[column.parent] && tables[column.parent].columns.keyMap['id'] && (
+                        column.type = tables[column.parent].columns.keyMap['id'].type
                     )
                 };
                 
@@ -288,12 +314,25 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         +' where ' + table.id + ' = old.id; end')
             });
             
-            if (table.extendable) me.executeDDL (t,
-                'create trigger td_'+table.id+'_cascade_Phantom'
-                +' before delete on '+table.id
-                +' begin delete from Phantom' 
-                +' where row_id = old.xid; end')
-            ;
+            if (table.extendable) {
+				me.executeDDL (t,
+					'create trigger td_'+table.id+'_cascade_Phantom'
+					+' before delete on '+table.id
+					+' begin '
+					+ (table.deletable
+					    ?
+							' insert into PhantomDeleted (row_id, table_name)' 
+							+' select old.xid, \'' + table.id + '\''
+							+' where not exists ('
+							+' select * from Phantom'
+							+' where table_name = \'' + table.id +'\''
+							+' and row_id = old.xid and cs is null and wasPhantom = \'true\''
+							+');'
+						:	''
+					) + ' delete from Phantom where row_id = old.xid;'
+					+' end')
+				;
+			}
         });
         
         /* create views */
@@ -309,14 +348,19 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             Ext.each (table.columns, function (column, idx, columns) {
                 
-                if (column.compute || column.template) return;
+                if (column.compute || (column.template && !column.type)) return;
                 
                 var viewDDLplus = '';
                 
                 if (column.parent)
                     tables[column.parent].columns.forEach ( function (pcol, idx) {
-                        if (pcol.compute || pcol.template) return;
-                        viewDDLplus += ', '+column.parent+'.'+pcol.name+ ' as '+column.parent+'_'+pcol.name;
+						
+                        if (pcol.compute || (pcol.template && !pcol.type)) return;
+                        
+						viewDDLplus += ', '
+							+ column.parent+'.'+pcol.name
+							+ ' as '+column.parent+'_'+pcol.name
+						;
                     })
                 ;
                 

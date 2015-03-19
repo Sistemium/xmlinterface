@@ -26,7 +26,7 @@
     </xsl:template>
 
     <xsl:template match="xi:data-request//xi:column[@type='datetime' and not(@sql-compute)]" mode="sql-name" priority="1000">
-        <xsl:text>convert(varchar(19),</xsl:text>
+        <xsl:text>nullif(convert(varchar(19),</xsl:text>
         <xsl:apply-templates select="../@name" mode="doublequoted"/>
         <xsl:text>.</xsl:text>
         <xsl:apply-templates select="@sql-name|self::*[not(@sql-name)]/@name" mode="doublequoted"/>
@@ -39,7 +39,7 @@
         <xsl:apply-templates select="../@name" mode="doublequoted"/>
         <xsl:text>.</xsl:text>
         <xsl:apply-templates select="@sql-name|self::*[not(@sql-name)]/@name" mode="doublequoted"/>
-        <xsl:text>,8)</xsl:text>
+        <xsl:text>,8),'')</xsl:text>
     </xsl:template>
 
     <xsl:template match="xi:join/xi:on" mode="sql-name">

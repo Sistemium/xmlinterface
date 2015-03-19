@@ -129,7 +129,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     console.log('XmlInterface.request exception ('+(o.command || '')+'); status: ' + r.status + ' ('+r.statusText+')')
                     me.cleanDownloadSession (r);
                     
-                    if (typeof o.command == 'string')
+                    if (typeof o.command == 'string' && !o.noRetry)
                         setTimeout( function () {
                                 var rr = me.connection.request(
                                     Ext.applyIf({ failure: false }, o)
@@ -204,6 +204,9 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                 + ((options.params && options.params.filter)
                     ? ('&fv=' + options.params.filter)
                     : ''
+                )
+                + (
+                    '&seed='+String(Math.random()).replace('0.','')
                 )
             }
         ));
@@ -318,8 +321,26 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             if (node.nodeName=='tpl') {
                 result['template'] = new XMLSerializer().serializeToString(node);
                 result['template'] = result['template'].replace(/( xmlns="[^"]*")/,'');
+            } else if (node.nodeName=='xtpl') {
+                result['template'] = new XMLSerializer().serializeToString(node.childNodes[0]);
+                if (node.childNodes.length > 1)
+                    result['templateConfig'] = node.childNodes[1].textContent;
+                ;
+            }
+            
+            if (result['template']) {
+                
+                result['template'] = result['template']
+                    .replace(/ xmlns="[^"]*"/g,'')
+                    .replace(/<nbsp\/>/g,'&nbsp;')
+                    .replace(/\{\[[^\]\}]*\]\}/g,function(s) { return s.replace(/&gt;/g,'>') })                  
+                    .replace(/&amp;/g,'&')
+                    .replace(/(')/g,'"')
+                ;
+                
                 return;
             }
+
             
             if (node.childNodes.length > 0 || node.attributes)
                 o = me.xml2obj(node);
@@ -368,7 +389,9 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         
         var processSuccessfullResponse = function(response, opts) {
             
-            var nextRequestParams = me.downloadSession.requestsParams.pop();
+            var nextRequestParams = me.downloadSession && me.downloadSession.requestsParams
+                && me.downloadSession.requestsParams.pop()
+            ;
             
             engine.processDowloadData (response, opts);
             
@@ -469,7 +492,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     },
                     failure: function () {
                         
-                        var e = 'Обратитесь в теходдержку по инциденту SUP-99061';
+                        var e = 'Не удалось подключиться к серверу. Проверьте подключение к интернет.';
                         
                         if (typeof store.failureCb == 'function')
                             store.failureCb.call (xi, store,e)
@@ -519,7 +542,61 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         var me = this,
             record = store.getAt( store.position );
         
-        if (record) new Ext.data.Store ({
+        if (!record){
+            
+            console.log ('Ext.data.XmlInterface upload end');
+            
+            if (typeof store.successCb == 'function')
+                store.successCb.call (me, store)
+            ;
+            
+            me.fireEvent('upload', store);
+            
+            store.destroyStore();
+            
+            return;
+        }
+        
+        if (record.get('cnt') == 0) {
+            
+            var uploadXML = document.implementation.createDocument("http://unact.net/xml/xi", "upload", null),
+                dataElement = uploadXML.createElement('delete')
+            ;
+            
+            var modelName = record.get('table_name');
+            
+            dataElement.setAttribute ('name', modelName);
+            dataElement.setAttribute ('xid', record.get('id'));
+            uploadXML.documentElement.appendChild(dataElement);
+            
+            me.request({
+                
+                command: 'upload',
+                xmlData: uploadXML,
+                
+                success: function(ur){
+                    console.log ('Delete request success: xid = '+ record.get('id'));
+                    //xi.uploadPut (store, record, ur.responseXML);
+                    var form = Ext.DomQuery.select (modelName, ur.responseXML) [0];
+                    
+                    if (form) {
+                        
+                        var uploadStamp = form.getAttribute('ts'),
+                            deleteThis = form.getAttribute('delete-this'),
+                            xid = Ext.DomQuery.select ('xid',form)
+                        ;
+                        
+                        if (uploadStamp && deleteThis) {
+                            me.commitUpload (Ext.apply (record, {uploadStamp: uploadStamp}));
+                        }
+                        
+                    }
+                    
+                }
+                
+            });
+            
+        } else { new Ext.data.Store ({
             
             proxy: { type: 'sql', engine: store.proxy.engine },
             model: record.get('table_name'),
@@ -544,7 +621,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                         } catch (e) {
                             
                             Ext.Msg.alert(
-                                'Инцидент SUP-99061',
+                                'Загрузка не удалась',
                                 (e.message || 'Обратитесь в техподдержку') + ' S=' + e.stack,
                                 function() {
                                     //options.btn.enable();
@@ -560,18 +637,8 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                 }
             }
             
-        }); else {
-            
-            console.log ('Ext.data.XmlInterface upload end');
-            
-            if (typeof store.successCb == 'function')
-                store.successCb.call (me, store);
-                
-            me.fireEvent('upload', store);
-            
-            store.destroyStore();
-            
-        }
+        })}
+        
     },
 
     forwardUploadUponError: function (store, exception) {
@@ -651,7 +718,12 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         ;
         
         if (response){
-            var form = Ext.DomQuery.select (store.model.modelName, response) [0];
+            
+            var modelName = store.model.modelName,
+                form = Ext.DomQuery.select (modelName, response) [0],
+                eng = record.proxy.engine,
+                meta = eng.metadata.tables
+            ;
             
             if (form){
                 console.log ('response received: xid = ' + form.getAttribute('xid') + ', ts = '+form.getAttribute('ts'));
@@ -678,12 +750,23 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                     }
                 })
                 
+                Ext.each (meta[modelName].deps,
+                    function (dep) {
+                        dep.table_id && eng.persistTableData (
+                            meta [dep.table_id],
+                            form,
+                            xi,
+                            response
+                        )
+                    }
+                );
+                
                 record.save({
                     
                     uploadStamp: form.getAttribute('ts'),
                     success: function(r,o) {
                         xi.commitUpload (Ext.apply (store.toUploadRecord, {uploadStamp: o.uploadStamp}));
-                        xi.fireEvent ('uploadrecord', record);                
+                        xi.fireEvent ('uploadrecord', record);
                     },
                     failure: function (r,o) {
                         var e = o.getError();

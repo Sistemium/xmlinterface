@@ -9,6 +9,8 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             throw "No database reference was provided to the SQLite storage proxy. See Ext.data.SQLiteProxy documentation for details";
         };
         
+        this.logging = config.logging;
+        
     },
 
     update: function (operation, callback, scope) {
@@ -78,9 +80,24 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             me = this,
             model   = me.model,
             tableName = this.tableName || this.model.modelName,
-            meta = this.engine.tables[tableName],
+            meta = this.engine.tables[tableName]
+        ;
+        
+        if (!meta) {
+            var tableMeta = Ext.getStore('tables').getById(tableName),
+                saveTo = tableMeta && tableMeta.get('saveTo')
+            ;
             
+            if (saveTo) {
+                tableName = saveTo;
+                meta = this.engine.tables[tableName];
+            }
+        }
+        
+        var 
             fields = (meta)? meta.columns : model.prototype.fields.items,
+            
+            keyMap = fields.keyMap || (typeof fields.map == 'object' && fields.map),
             sql='', hostVars=[], sqlValues = '',
             updateKey = !record.phantom
         ;
@@ -91,8 +108,10 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         }
         
         Ext.each (record.fields.items, function (field) {
-            if ((!meta || fields.map[field.name]) && !(field.name == 'ts' || field.name == updateKey)) {
-                if (field.compute || field.template) return;
+            if ((!meta || keyMap && keyMap[field.name] && !keyMap[field.name].virtual)
+                && !(field.name == 'ts' || field.name == updateKey)
+            ){
+                if (field.compute || (field.template && (!field.type || field.type.type == 'auto'))) return;
                 sql += field.name
                     + (updateKey ? '=?' : '')
                     + ','
@@ -129,7 +148,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         t.executeSql(
             sql, hostVars,
             function(){
-                console.log('Ext.data.SQLiteProxy.setRecord success: ' +sql);
+                this.logging && console.log('Ext.data.SQLiteProxy.setRecord success: ' +sql);
                 var xid = record.get('xid');
                 
                 if (!t.operation.uploadStamp && xid) {
@@ -140,11 +159,11 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     })
                 }                
                 
-            } /*,
+            } ,
             function(t,e){
                 console.log('Ext.data.SQLiteProxy.setRecord error: ' +e+'; sql = ' + sql);
                 ecb(e);
-            }*/
+            }
         );
         
     },
@@ -199,7 +218,7 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             
             if ( sqlWhere.length > 0 ) sql += ' WHERE '+sqlWhere;
             
-            console.log(sql);
+            this.logging && console.log(sql);
             
             me.engine.db.transaction(
                 function(t){
@@ -236,13 +255,18 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
             meta = this.engine.tables[tableName],
             
             fields = (meta)? meta.columns : model.prototype.fields.items,
-            fieldNames = fields.keys ? fields.map : model.prototype.fields.map,
+            fieldsSrc = (typeof fields.keys == 'object') ? fields : model.prototype.fields,
+            fieldNames = fieldsSrc.keyMap || fieldsSrc.map,
             length  = fields.length,
             i, field, name, sqlSelectList=''
         ;
         
         scope || (scope = operation);
         operation.setStarted();
+        
+        if (meta && meta.viewName)
+            tableName = meta.viewName
+        ;
         
         switch (operation.action){
             case 'aggregate':
@@ -254,11 +278,8 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                 sqlSelectList += 'count(*) as cnt,';
                 break;
             default:
-                if (meta && meta.viewName)
-                    tableName = meta.viewName
-                ;
                 Ext.each (fields, function (field) {
-                    if (field.compute || field.template) return;
+                    if (field.compute || (field.template && (!field.type || field.type.type == 'auto'))) return;
                     if (field.name == 'serverPhantom')
                         sqlSelectList += '(select 1 from toUpload where hasPhantom = \'true\' and id = ' + tableName + '.xid) as '
                     ;
@@ -273,21 +294,33 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         
         if (!operation.remoteFilter && scope.isStore && !scope.remoteFilter) filters = false;
         
-        if (filters)
-            for (i = 0; i < filters.length; i++) if (!fieldNames || fieldNames[filters[i].property]) {
-                
-                sqlWhere += filters[i].property;
-                
-                if (filters[i].value == undefined)
-                    sqlWhere += ' is null'
+        Ext.each (filters, function (filter, i) {
+            if (!fieldNames || fieldNames[filter.property]) {
+                if (filter.useLike)
+                    operation.postLimits = true;
                 else {
-                    sqlWhere += ' = ?';
-                    hostVars.push(filters[i].value);
+                    
+                    sqlWhere += filter.property;
+                    
+                    if (filter.value == undefined)
+                        sqlWhere += ' is null'
+                    else {
+                        if (filter.useLike){
+                            sqlWhere += " like ?";
+                            hostVars.push('%'+filter.value+'%');
+                        } else {
+                            sqlWhere += ' '
+                            if (filter.gte) sqlWhere += '>';
+                            sqlWhere += '= ?';
+                            hostVars.push(filter.value);
+                        }
+                    }
+                    
+                    sqlWhere += (i < filters.length-1) ? ' and ' : ' ';
+                    
                 }
-                
-                sqlWhere += (i < filters.length-1) ? ' and ' : ' ';
-                
             }
+        });
         
         if (operation.id){
             sqlWhere += 'id = ?'
@@ -311,10 +344,13 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
         
         if ( sqlOrderBy.length > 0 ) sql += ' ORDER BY '+sqlOrderBy;
         
-        if (operation.limit) sql += ' LIMIT '+operation.limit;
-        if (operation.start) sql += ' OFFSET '+operation.start;
+        if (!operation.postLimits) {
+            if (operation.limit) sql += ' LIMIT '+operation.limit;
+            if (operation.start) sql += ' OFFSET '+operation.start;
+        }
         
-        console.log(sql);
+        operation.sql = sql; 
+        //console.log(sql);
         
         this.engine.db.transaction(
             function(t){
@@ -360,15 +396,40 @@ Ext.data.SQLiteProxy = Ext.extend(Ext.data.ClientProxy, {
                     t.operation.result = 0;
                     if (rows.length) t.operation.result = rows.item(0)['cnt'];
                 case 'read':
+                    
+                    var postFilters = [], op = t.operation;
+                    
+                    
+                    Ext.each (op.filters, function(f) {
+                        if (f.useLike && f.property && f.value) postFilters.push ({
+                            re: new RegExp(f.value,'i'),
+                            property: f.property
+                        });
+                    });
+                    
                     for(var i = 0; i < rows.length; i++) {
                         var data = new t.proxy.model(rows.item(i));
                         data.phantom = false;
-                        records.push(data);
+                        
+                        Ext.each (postFilters, function (f) {
+                            var val = data.get(f.property);
+                            if (!val || !val.match(f.re))
+                                data = undefined;
+                        });
+                        
+                        data && records.push(data);
                     };
+                    
+                    if (op.postLimits && op.limit) {
+                        console.log ('Ext.data.SQLiteProxy.dataReady postLimits: '
+                            + [records.length, op.start, op.limit].join(', ')
+                        );
+                        records = records.slice(op.start, op.start + op.limit)
+                    }
                     
                     t.operation.resultSet = new Ext.data.ResultSet({
                         "records": records,
-                        total  : records.length,
+                        total  : t.proxy.lastRowCount = records.length,
                         loaded : true
                     });
                     

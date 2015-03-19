@@ -69,11 +69,20 @@
                 </xsl:choose>
             </xsl:for-each>
             
+			<xsl:apply-templates mode="build-subrequest" select="
+				$form/xi:form[
+					current()/self::xi:preload
+						[not(parent::xi:data) and @recursive]
+				]
+			"/>
+			
             <xsl:if test="
-                    parent::xi:data
-                    and not(
-                        (@refresh-this or $head) and (parent::*[@is-new] or (@role and xi:datum[@type='parameter']))
-                    )
+				parent::xi:data
+				and not(
+					(@refresh-this or $head) and (
+						parent::*[@is-new] or (@role and xi:datum[@type='parameter'])
+					)
+				)
             ">
                 <xsl:apply-templates mode="join-on" select="
                         $concept/xi:role [@actor=$form/parent::xi:form[xi:field]/@concept]
