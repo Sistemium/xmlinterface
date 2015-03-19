@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    ns="http://unact.net/xml/xi"
+>
+    
+    <define name="sql-compute-attr">
+        <optional>
+            <attribute name="sql-compute"/>
+        </optional>
+    </define>
+    
+    <define name="label-attr">
+        <optional>
+            <attribute name="label"/>
+        </optional>
+    </define>
+    
+    <define name="type-attr">
+        <optional>
+            <attribute name="type">
+                <choice>
+                    <value>string</value>
+                    <value>date</value>
+                    <value>int</value>
+                    <value>decimal</value>
+                    <value>boolean</value>
+                    <value>datetime</value>
+                </choice>
+            </attribute>
+        </optional>
+    </define>
+    
+    <define name="BOOL-val">
+        <value>true</value>
+    </define>
+    
+    <define name="storage-name">
+        <optional>
+            <choice>
+                <attribute name="sql-name"/>
+                <attribute name="mdx-name"/>
+            </choice>
+        </optional>
+    </define>
+    
+    <define name="xpath-compute">
+        <choice>
+            <element name="xpath-compute">
+                <text/>
+            </element>
+            <attribute name="xpath-compute"/>
+        </choice>
+    </define>
+    
+    <define name="sql-compute">
+        <choice>
+            <element name="sql-compute">
+                <text/>
+            </element>
+            <attribute name="sql-compute"/>
+        </choice>
+    </define>
+    
+   
+</grammar>

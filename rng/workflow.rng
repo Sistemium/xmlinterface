@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    ns="http://unact.net/xml/xi"
+>
+    
+    <define name="step-elem">
+        <element name="step">
+            
+            <optional>
+                <attribute name="name"/>
+            </optional>
+            
+            <optional>
+                <attribute name="hidden">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <ref name="label-attr"/>
+            
+            <interleave>
+                
+                <optional>
+                    <element name="on">
+                        <element name="activation">
+                            <oneOrMore>
+                                <ref name="command-elem"/>
+                            </oneOrMore>
+                        </element>
+                    </element>
+                </optional>
+                
+                <optional>
+                    <element name="display">
+                        <oneOrMore>
+                            <ref name="display-content"/>
+                        </oneOrMore>
+                    </element>
+                </optional>
+                
+                <optional>
+                    <element name="choise">
+                        <oneOrMore>
+                            <ref name="option-elem"/>
+                        </oneOrMore>
+                    </element>
+                </optional>
+                
+                <optional>
+                    <element name="validate">
+                        <oneOrMore>
+                            <ref name="validate-elems"/>
+                        </oneOrMore>
+                    </element>
+                </optional>
+                
+            </interleave>
+            
+        </element>
+    </define>
+    
+    <define name="condition-elems">
+        
+        <element name="when">
+            <ref name="conditions-content"/>
+        </element>
+        
+        <element name="not-when">
+            <ref name="conditions-content"/>
+        </element>
+        
+    </define>
+
+    <define name="conditions-content">
+        <ref name="schema-ref"/>
+        <optional>
+            <choice>
+                <attribute name="equals"/>
+                <attribute name="not-equals"/>
+                <attribute name="counts-more"/>
+            </choice>
+        </optional>
+        <zeroOrMore>
+            <choice>
+                <ref name="display-content"/>
+                <ref name="option-elem"/>
+            </choice>
+        </zeroOrMore>
+    </define>
+    
+    <define name="display-content">
+        
+        <choice>
+            
+            <ref name="condition-elems"/>
+            
+            <element name="print">
+                <ref name="datum-view-content"/>
+            </element>
+            
+            <element name="input">
+                <ref name="datum-view-content"/>
+            </element>
+            
+            <element name="region">
+                <optional>
+                    <attribute name="name"/>
+                </optional>
+                <optional>
+                    <attribute name="class"/>
+                </optional>
+                <ref name="label-attr"/>
+                <zeroOrMore>
+                    <ref name="display-content"/>
+                </zeroOrMore>
+            </element>
+            
+            <element name="grid">
+                
+                <optional>
+                    <attribute name="form"/>
+                </optional>
+                
+                <ref name="label-attr"/>
+                
+                <zeroOrMore>
+                    <ref name="option-elem"/>
+                </zeroOrMore>
+                
+                <interleave>
+                    
+                    <optional>
+                        <element name="group">
+                            <oneOrMore>
+                                <element name="by">
+                                    <ref name="schema-ref"/>
+                                    <zeroOrMore>
+                                        <ref name="display-content"/>
+                                    </zeroOrMore>
+                                </element>
+                            </oneOrMore>
+                        </element>
+                    </optional>
+                    
+                    <optional>
+                        <element name="columns">
+                            <oneOrMore>
+                                <element name="column">
+                                    <ref name="schema-ref"/>
+                                    <ref name="label-attr"/>
+                                    <zeroOrMore>
+                                        <ref name="display-content"/>
+                                    </zeroOrMore>
+                                </element>
+                            </oneOrMore>
+                        </element>
+                    </optional>
+                    
+                </interleave>
+                
+            </element>
+            
+        </choice>
+    </define>
+    
+    <define name="schema-ref">
+        <optional>
+            <attribute name="form"/>
+        </optional>
+        <optional>
+            <attribute name="field"/>
+        </optional>
+    </define>
+    
+    <define name="datum-view-content">
+        <ref name="schema-ref"/>
+        <optional>
+            <attribute name="class"/>
+        </optional>
+        <ref name="label-attr"/>
+    </define>
+    
+    <define name="option-elem">
+        <element name="option">
+            <optional>
+                <attribute name="name"/>
+            </optional>
+            <ref name="label-attr"/>
+            <ref name="schema-ref"/>
+            <optional>
+                <attribute name="reuse"/>
+            </optional>
+            <oneOrMore>
+                <ref name="command-elem"/>
+            </oneOrMore>
+        </element>
+    </define>
+    
+    <define name="reusables">
+        <element name="reusables">
+            <zeroOrMore>
+                <choice>
+                    <ref name="display-content"/>
+                    <ref name="option-elem"/>
+                    <ref name="command-elem"/>
+                </choice>
+            </zeroOrMore>
+        </element>
+    </define>
+    
+    <define name="command-elem">
+        <element name="command">
+            <attribute name="name"/>
+            <ref name="schema-ref"/>
+            <optional>
+                <ref name="xpath-compute"/>
+            </optional>
+            <text/>
+        </element>
+    </define>
+    
+    <define name="validate-elems">
+        <choice>
+            <element name="empty">
+                <ref name="schema-ref"/>
+            </element>
+            <element name="nonempty">
+                <ref name="schema-ref"/>
+            </element>
+            <element name="equals">
+                <ref name="schema-ref"/>
+            </element>
+            <element name="when">
+                <oneOrMore>
+                    <ref name="validate-elems"/>
+                </oneOrMore>
+            </element>
+            <element name="not-when">
+                <oneOrMore>
+                    <ref name="validate-elems"/>
+                </oneOrMore>
+            </element>
+        </choice>
+    </define>
+    
+    
+</grammar>

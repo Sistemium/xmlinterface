@@ -272,7 +272,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                         );
                         
                         if (node.hasAttribute('username')) {
-                            me.username=node.getAttribute('username');
+                            me.username=node.getAttribute('user-login');
                         } else {
                             console.log ('XmlInterface.login no-username');
                         }

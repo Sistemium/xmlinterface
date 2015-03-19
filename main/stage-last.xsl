@@ -19,7 +19,7 @@
   
     <!--xsl:import href="stage-last-import.xsl"/-->
     
-    <xsl:template match="comment()"/>
+    <xsl:template match="comment()|xi:data-request"/>
     
     <xsl:output method="xml" indent="no" encoding="utf-8"/> 
     <xsl:template match="xi:views[not(xi:menu|xi:view)] | xi:menu[not(xi:option)]"/>

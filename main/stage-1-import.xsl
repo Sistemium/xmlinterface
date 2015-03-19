@@ -8,6 +8,8 @@
  extension-element-prefixes="dyn"
 >
     
+    <xsl:param name="config">../config/</xsl:param>
+    
     <xsl:template match="/*">
         <xsl:attribute name="pipeline">
             <xsl:value-of select="/*/xi:userinput/xi:command[@name='stage1']"/>
@@ -15,7 +17,7 @@
         <!--xsl:apply-templates select="document('init.xml')/*/xi:context-extension[xi:session]/*"/-->
         <xsl:if test="not(@label)">
             <xsl:attribute name="label">
-                <xsl:value-of select="document('../config/menu.xml')/*/@label"/>
+                <xsl:value-of select="document(concat('../',$config,'menu.xml'))/*/@label"/>
             </xsl:attribute>
         </xsl:if>
     </xsl:template>

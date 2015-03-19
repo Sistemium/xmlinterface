@@ -36,7 +36,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
         console.log('Database error: ' + msg);
         return true;
     },
-
+    
     startDatabase: function (metadata, forceRebuild){
         var targetVersion = metadata.version,
             name = metadata.name,
@@ -105,6 +105,14 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             }
         ;
         
+        var iOS = parseFloat(
+			('' + (/CPU.*OS ([0-9_]{1,5})|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent) || [0,''])[1])
+			.replace('undefined', '3_2').replace('_', '.').replace('_', '')
+			) || false
+		;
+		
+		if (iOS >= 7) targetSize = 1.0 / 1024.0;
+        
         me.metadata = metadata;
         me.tables = me.metadata.tables;
         
@@ -129,6 +137,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             var shortName = name;
             var displayName = name;
             var maxSize = targetSize*1024*1024; // in bytes
+            
             var db = openDatabase(shortName, "", displayName, maxSize);
             
             if (db.version<targetVersion || forceRebuild)
@@ -252,18 +261,9 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
             
             me.executeDDL(t, ddl);
             
-            var 
-                viewDDL = 'create view '+table.id+'_browse as select ' + table.id +'.*',
-                fromDDL =' from '+table.id
-            ;
-            
-            me.executeDDL(t, 'DROP VIEW IF EXISTS '+table.id+'_browse;');    
-            
             Ext.each (table.columns, function (column, idx, columns) {
                 
-                if (column.compute || column.template) return;
-                
-                var idxDDL = '', viewDDLplus = '';
+                var idxDDL = '';
                 
                 if (column.parent || column.name == 'id') 
                     idxDDL = 'create index '+table.id+'_'+column.name+' on '+ table.id + '('+column.name+')';
@@ -277,26 +277,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         +' begin update ' + table.id +' set '+column.name
                         +' = new.id where ' + column.name + ' = old.id; end')
                 ;
-                
-                if (column.parent)
-                    tables[column.parent].columns.forEach ( function (pcol, idx) {
-                        if (pcol.compute || pcol.template) return;
-                        viewDDLplus += ', '+column.parent+'.'+pcol.name+ ' as '+column.parent+'_'+pcol.name;
-                    })
-                ;
-                
-                if (viewDDLplus){
-                    viewDDL += viewDDLplus;
-                    fromDDL += (column.editable ? ' left' : '') +
-                            ' join ' + column.parent + ' on ' + column.parent + '.id = ' + table.id + '.' + column.name;
-                }
-                
-            })
-            
-            if (table.extendable)
-                viewDDL += ', (select max(1) from toUpload where id = ' + table.id + '.xid ) as needUpload ';
-                
-            me.executeDDL(t, viewDDL + fromDDL);
+            });
             
             Ext.each (table.deps, function (dep, idx, deps) {
                 if (dep.contains)
@@ -313,6 +294,45 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                 +' begin delete from Phantom' 
                 +' where row_id = old.xid; end')
             ;
+        });
+        
+        /* create views */
+        
+        Ext.each( dbSchema.tables, function (table, idx, tables) {
+            
+            var 
+                viewDDL = 'create view '+table.id+'_browse as select ' + table.id +'.*',
+                fromDDL =' from '+table.id
+            ;
+            
+            me.executeDDL(t, 'DROP VIEW IF EXISTS '+table.id+'_browse;');    
+            
+            Ext.each (table.columns, function (column, idx, columns) {
+                
+                if (column.compute || column.template) return;
+                
+                var viewDDLplus = '';
+                
+                if (column.parent)
+                    tables[column.parent].columns.forEach ( function (pcol, idx) {
+                        if (pcol.compute || pcol.template) return;
+                        viewDDLplus += ', '+column.parent+'.'+pcol.name+ ' as '+column.parent+'_'+pcol.name;
+                    })
+                ;
+                
+                if (viewDDLplus){
+                    viewDDL += viewDDLplus;
+                    fromDDL += (column.editable || column.optional ? ' left' : '') +
+                            ' join ' + column.parent + ' on ' + column.parent + '.id = ' + table.id + '.' + column.name;
+                }
+                
+            })
+            
+            if (table.extendable)
+                viewDDL += ', (select max(1) from toUpload where id = ' + table.id + '.xid ) as needUpload ';
+                
+            me.executeDDL(t, viewDDL + fromDDL);
+            
         });
         
         Ext.each ( dbSchema.views, function (table, idx) {

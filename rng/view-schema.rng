@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    ns="http://unact.net/xml/xi"
+>
+    
+    <define name="form-elem">
+        <element name="form">
+            
+            <attribute name="name"/>
+            
+            <optional>
+               <attribute name="concept"/> 
+            </optional>
+            
+            <ref name="label-attr"/>
+            
+            <optional>
+                <attribute name="what-label"/>
+            </optional>
+            
+            <optional>
+                <attribute name="is-set">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <attribute name="refreshable">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <attribute name="preload">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <optional>
+                    <attribute name="page-size">
+                        <data type="int"/>
+                    </attribute>
+                </optional>
+            </optional>
+            
+            <optional>
+                <attribute name="extendable">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <attribute name="deletable">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <attribute name="parent-sql-name"/>
+            </optional>
+            
+            <optional>
+                <attribute name="role"/>
+            </optional>
+            
+            <optional>
+                <attribute name="new-only">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <attribute name="choise"/>
+            </optional>
+            
+            <optional>
+                <attribute name="expect-choise">
+                    <choice>
+                        <value>true</value>
+                        <value>force</value>
+                    </choice>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <attribute name="build-blank">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <interleave>
+                <optional>
+                    <element name="add-labeled-fields">
+                        <empty/>
+                    </element>
+                </optional>
+                <zeroOrMore>
+                    <ref name="form-elem"/>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="parameter-elem"/>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="field-elem"/>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="where-elem"/>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="join-elem"/>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="order-by-elem"/>
+                </zeroOrMore>
+            </interleave>
+            
+        </element>
+    </define>
+    
+    <define name="where-elem">
+        <element name="where">
+            <attribute name="name"/>
+            <text/>
+        </element>
+    </define>
+    
+    <define name="order-by-elem">
+        <element name="order-by">
+            <attribute name="name"/>
+            <attribute name="dir">
+                <choice>
+                    <value>asc</value>
+                    <value>desc</value>
+                </choice>
+            </attribute>
+        </element>
+    </define>
+    
+    <define name="parameter-elem">
+        <element name="parameter">
+            <ref name="datum-prototype-elem-content"/>
+            <optional>
+                <attribute name="property"/>
+            </optional>
+            <optional>
+                <attribute name="optional">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="use-like">
+                    <choice>
+                        <value>true</value>
+                        <value>auto</value>
+                    </choice>
+                </attribute>
+            </optional>
+        </element>
+    </define>
+    
+    <define name="field-elem">
+        <element name="field">
+            
+            <ref name="datum-prototype-elem-content"/>
+            
+            <optional>
+                <attribute name="use-with-insert">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <attribute name="totals">
+                    <choice>
+                        <value>sum</value>
+                        <value>count</value>
+                    </choice>
+                </attribute>
+            </optional>
+            
+            <optional>
+                <choice>
+                    <attribute name="local-data">
+                        <ref name="BOOL-val"/>
+                    </attribute>
+                    <attribute name="do-not-persist">
+                        <ref name="BOOL-val"/>
+                    </attribute>
+                </choice>
+            </optional>
+            
+        </element>
+    </define>
+    
+    <define name="datum-prototype-elem-content">
+        
+        <attribute name="name"/>
+        
+        <optional>
+            <attribute name="key">
+                <ref name="BOOL-val"/>
+            </attribute>
+        </optional>
+        
+        <optional>
+            <choice>
+                <attribute name="editable">
+                    <ref name="BOOL-val"/>
+                </attribute>
+                <attribute name="modifiable">
+                    <ref name="BOOL-val"/>
+                </attribute>
+            </choice>
+        </optional>
+        
+        <ref name="type-attr"/>
+        <ref name="storage-name"/>
+        <optional>
+            <ref name="xpath-compute"/>
+        </optional>
+        <optional>
+            <ref name="sql-compute"/>
+        </optional>
+        <ref name="label-attr"/>
+        
+        <optional>
+            <element name="init">
+                
+                <attribute name="with">
+                    <choice>
+                        <value>const</value>
+                        <value>view-schema-version</value>
+                        <value>constant</value>
+                        <value>username</value>
+                        <value>today</value>
+                        <value>userid</value>
+                        <value>userinput</value>
+                        <value>role</value>
+                        <value>device-name</value>
+                    </choice>
+                </attribute>
+                
+                <text/>
+                
+            </element>
+        </optional>
+        
+    </define>
+    
+    <define name="join-elem">
+        <element name="join">
+            <attribute name="name"/>
+            <optional>
+                <attribute name="field"/>
+            </optional>
+            <optional>
+                <attribute name="property"/>
+            </optional>
+            <ref name="storage-name"/>
+        </element>
+    </define>
+    
+</grammar>

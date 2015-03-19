@@ -262,7 +262,7 @@
         
     </xsl:template>
 
-    <xsl:template match="xi:step//xi:when[@ref][not(@not-equals)]" mode="build-dialogue">
+    <xsl:template match="xi:step//xi:when[@ref]" mode="build-dialogue">
         <xsl:apply-templates mode="display-when" select="
             ancestor::xi:view/xi:view-data//xi:datum
                [@ref=current()/@ref]
@@ -271,6 +271,12 @@
         ">
             <xsl:with-param name="context" select="."/>
         </xsl:apply-templates>
+    </xsl:template>
+    
+    <xsl:template match="xi:step//xi:when[@ref][@counts-more]" mode="build-dialogue">
+        <xsl:if test="count(ancestor::xi:view/xi:view-data//xi:data[@ref=current()/@ref]) &gt; @counts-more">
+            <xsl:apply-templates select="*"  mode="build-dialogue"/>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="xi:step//xi:when[@ref][@not-equals]" mode="build-dialogue">

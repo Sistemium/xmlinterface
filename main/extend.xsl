@@ -41,7 +41,7 @@
 	
     <xsl:template match="
 		xi:view[xi:menu[xi:option[@chosen][@name='refresh']]]/xi:view-data/xi:data[not(@is-new) or xi:datum[@type='parameter']]
-		| xi:view-data//xi:data
+		| xi:view[not(xi:menu[xi:option[@chosen][@name='close']])]/xi:view-data//xi:data
 			[xi:datum[@type='parameter' and
 					  @modified and
 					  (not(@editable) or ancestor::xi:view/xi:dialogue//*/@ref = ancestor::xi:data/@ref|@id|@ref)

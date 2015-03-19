@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    ns="http://unact.net/xml/xi"
+>
+    
+    <start>
+        <element name="view-definition">
+            
+            <optional>
+                <attribute name="version"/>
+            </optional>
+            
+            <attribute name="name"/>
+            <attribute name="label"/>
+            
+            <element name="view-schema">
+                <ref name="form-elem"/>
+            </element>
+            
+            <element name="workflow">
+                <oneOrMore>
+                    <ref name="step-elem"/>
+                </oneOrMore>
+                <ref name="reusables"/>
+            </element>
+            
+        </element>
+    </start>
+    
+    <include href="xi.rng"/>
+    <include href="view-schema.rng"/>
+    <include href="workflow.rng"/>
+    
+</grammar>

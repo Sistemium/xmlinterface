@@ -71,7 +71,7 @@
 				)
                 or xi:datum[@type='field'][@modified]
                 or xi:data[((@modified or @ts) and @role)]
-		or (@persist-this and (xi:datum[@type='field'][@editable or @modifiable] or xi:data[@role][@ts]))
+		or (@persist-this and (xi:datum[@type='field'][@editable or @modifiable][@modified] or xi:data[@role][@ts]))
 		or (@is-new and xi:datum[@type='field' and @editable] and key('id',descendant::xi:data[@persist-this]/@ref)/xi:join/@name=@name)
 		][not(xi:data[@role and @required and not(*[key('id',@ref)/@key])]) and not(key('id',@ref)/@read-only)]
 		"
@@ -85,14 +85,17 @@
 			]
 		"/>
 		
-		<data-update program="{ancestor::xi:view/@name}">
+		<data-update program="{(ancestor::xi:view/@name|ancestor-or-self::*/@program)[1]}">
 			<xsl:variable name="this" select="."/>
 			<xsl:variable name="concept" select="key('id',current()/@ref)/@concept"/>
             
 			<xsl:attribute name="id"><xsl:value-of select="php:function('uuidSecure','')"/></xsl:attribute>
 			
-			<xsl:apply-templates select="$model/xi:concept[@name=$concept]/@*"/>
-				
+			<xsl:for-each select="$model/xi:concept[@name=$concept]">
+				<xsl:apply-templates select="parent::xi:domain/@server"/>
+				<xsl:apply-templates select="@*"/>
+			</xsl:for-each>
+			
 			<xsl:attribute name="type">
 				<xsl:choose>
 					<xsl:when test="@delete-this or $delete-null">
@@ -265,9 +268,14 @@
 						<xsl:value-of select="@name"/> 
 					</xsl:attribute>
 					<xsl:attribute name="name">
-						<xsl:if test="$form">
-							<xsl:value-of select="($joined|$form)[@concept=current()/../@name][last()]/@name"/> 
-						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="$form/self::xi:form">
+								<xsl:value-of select="($joined|$form)[@concept=current()/../@name][last()]/@name"/> 
+							</xsl:when>
+							<xsl:when test="$form/self::xi:exists">
+								<xsl:value-of select="$form/@concept"/> 
+							</xsl:when>
+						</xsl:choose>
 					</xsl:attribute>
 				</on>
 				<!--on concept="{../@name}" property="{@name}"/-->

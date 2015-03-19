@@ -64,7 +64,7 @@ begin
  
     body: begin
         
-        set @request=csconvert(@request,'os_charset','utf-8');
+        //set @request=csconvert(@request,'os_charset','utf-8');
         
         select query_name, if show_sql is not null then 1 endif,
                 sql_raw, username, ip, path, program, async

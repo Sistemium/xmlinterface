@@ -100,13 +100,13 @@
                 
                 <xsl:variable name="form" select="."/>
                 
-                <preload ref="{@id}" name="{@name}" retrieve="true">
+                <preload ref="{@id}" name="{@name}" retrieve="true" program="{ancestor::xi:view/@name}">
                     <datum type="parameter" name="xid">
                         <xsl:value-of select="$xid"/>
                     </datum>
                 </preload>
                 
-                <data ref="{@id}" name="{@name}">
+                <data ref="{@id}" name="{@name}" program="{ancestor::xi:view/@name}">
                     
                     <xsl:for-each select="xi:join|xi:parent-join[not(@name = parent::*/parent::*[not(@hidden)]/@name)]">
                         <xsl:variable name="parent" select="ancestor::xi:form[@name=current()/@name]/xi:field[@name='id']"/>
@@ -126,7 +126,7 @@
                                     <xsl:attribute name="name">
                                         <xsl:value-of select="@concept"/>
                                     </xsl:attribute>
-                                    <xsl:attribute name="editable">new-only</xsl:attribute>
+                                    <xsl:attribute name="editable">true</xsl:attribute>
                                     <xsl:attribute name="sql-name">
                                         <xsl:value-of select="$form/@parent-sql-name"/>
                                     </xsl:attribute>
@@ -138,7 +138,7 @@
                     
                 </data>
                 
-                <response-preload ref="{@id}" name="{@name}">
+                <response-preload ref="{@id}" name="{@name}" program="{ancestor::xi:view/@name}">
                     <datum type="parameter" name="xid">
                         <xsl:value-of select="$xid"/>
                     </datum>
@@ -164,7 +164,12 @@
     
     <xsl:template match="xi:datum[@editable or @modifiable][/*[@stage='set-modified']]" mode="extend">
         
-        <xsl:variable name="old" select="../preceding-sibling::xi:preload/descendant::xi:data[@name=current()/../@name]/xi:datum[@name=current()/@name]"/>
+        <xsl:variable name="old" select="
+            ../preceding-sibling::xi:preload
+            /descendant::xi:data[@name=current()/../@name]
+            /xi:datum[@name=current()/@name]
+        "/>
+        
         <xsl:if test="$old/text() != text() or (text() and not ($old/text()))">
             <xsl:if test="not(@editable='new-only' or ../preceding-sibling::xi:preload[descendant::xi:not-found])">
                 <xsl:attribute name="modified">true</xsl:attribute>
