@@ -14,7 +14,8 @@
     error_reporting(E_ALL);
     
     set_time_limit (180);
-    
+    ini_set ( 'mssql.timeout', 120);
+
     $output = new DOMDocument('1.0','UTF-8');
     $output->preserveWhiteSpace = false;
     $output->formatOutput = false;
@@ -36,7 +37,7 @@
         
         $query = mssql_query('SET ANSI_NULLS ON');
         $query = mssql_query('SET ANSI_WARNINGS ON');
-        $query = mssql_query('SET TEXTSIZE 40480000');
+        $query = mssql_query('SET TEXTSIZE 2147483646');
         $query = mssql_query($sql);
         
         if (!$query) throw new Exception(mssql_get_last_message());
@@ -61,7 +62,7 @@
         
     } catch (Exception $e) {
     
-        $output->documentElement->appendChild($output->createElement('exception',$e->getMessage()));
+        $output->documentElement->appendChild($output->createElement('exception','line:'.$e->getLine().': '.$e->getMessage().'::'.mssql_get_last_message()));
         
     }
     
