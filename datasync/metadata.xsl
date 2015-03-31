@@ -82,6 +82,7 @@
                     | @clsColumn
                     | @grouperColumn
                     | @sorterColumn
+                    | @sorterDir
                 "/>
                 
                 <xsl:if test="@mainMenu='false'">
