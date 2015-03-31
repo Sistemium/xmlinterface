@@ -414,12 +414,6 @@
         <xsl:apply-templates select="xi:choise[not(@place='menu')]"/>
     </xsl:template>
 
-    <xsl:template match="xi:choise|xi:options">
-        <div class="choise">
-            <xsl:apply-templates />
-        </div>
-    </xsl:template>
-
     <xsl:template match="xi:when[@ref]">
         <xsl:if test="ancestor::xi:view[1]/xi:view-data//xi:datum[@ref=current()/@ref]">
             <xsl:apply-templates/>

@@ -5,6 +5,16 @@
     xmlns="http://www.w3.org/1999/xhtml"
 >
 
+    <xsl:template match="xi:choise|xi:options">
+        <div class="choise">
+            <xsl:apply-templates select="@label|*"/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="xi:options/@label">
+       <div class="option"><xsl:value-of select="."/></div>
+    </xsl:template>
+
     <xsl:template match="xi:menu">
         <div>
             <xsl:attribute name="class">
