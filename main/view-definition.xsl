@@ -127,9 +127,15 @@
     <xsl:template match="xi:view-definition//*/@reuse">
         <xsl:variable name="this" select="."/>
         <xsl:for-each select="ancestor::xi:workflow/xi:reusables/*[@name=current()]">
-            <xsl:apply-templates select="@*[not(local-name()=local-name($this/../@*))]|*"/>
+            <xsl:apply-templates select="@*[not(local-name()=local-name($this/../@*))]|*" mode="reuse"/>
         </xsl:for-each>
     </xsl:template>
+
+    <xsl:template match="*|@*" mode="reuse">
+        <xsl:apply-templates select="."/>
+    </xsl:template>
+
+    <xsl:template match="xi:option/@name" mode="reuse"/>
 
     <xsl:template name="view-build-default" >
         <xsl:variable name="form" select="ancestor::xi:form[count(ancestor-or-self::xi:form) = count(current()/ancestor::xi:form)]"/>
