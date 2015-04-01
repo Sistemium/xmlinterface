@@ -104,8 +104,8 @@ function domready () {
 function xijax (url, data){
     if (!url) url='?';
     else url+='&';
-    
-    postUrl=url+'pipeline=xijax';
+
+    var postUrl=url+'pipeline=xijax';
 
     AjaxRequest.post(
       {
@@ -138,7 +138,7 @@ function xijaxSuccess (req){
             
             switch (nli.tagName){
                 case 'datum':
-                    newValue=nli.getAttribute('formatted');
+                    var newValue=nli.getAttribute('formatted');
                     if (!newValue) {
                         if (nli.childNodes.length) newValue=nli.childNodes[0].nodeValue
                         else newValue=''
@@ -157,7 +157,7 @@ function xijaxSuccess (req){
                     $(obj).removeAttr('name');
                     break;
                 case 'option':
-                    adv = nli.getAttribute ('advisor');
+                    var adv = nli.getAttribute ('advisor');
                     $(obj.parentNode).addClass(adv);
                     switch (adv) {
                         case 'recommended':
@@ -217,8 +217,8 @@ function itemChanged (element) {
     
     if (element.type == 'file') {
         //alert(element.value);
-        fname = document.getElementById ($(element).attr('xi:file-name'));
-        
+        var fname = document.getElementById ($(element).attr('xi:file-name'));
+
         if (fname) {
                 fname.value = element.value.length ? element.value.split(/(\\|\/)/g).pop() : 'file.txt';
                 $(fname).attr('name',$(fname).attr('id'));
@@ -228,9 +228,9 @@ function itemChanged (element) {
         element.form.enctype='multipart/form-data';
         element.form.submit();
     } else if (!element.name ) {
-        
-        href=element.id+'='+element.value;
-        
+
+        var href=element.id+'='+element.value;
+
         $(element.form).addClass('xiSent');
         
         $(element).attr('name',$(element).attr('id'));
@@ -272,7 +272,7 @@ function TurnAutocompleteOff(){
 
 function setfocus(elementId){
 //  TurnAutocompleteOff();
-    obj=document.getElementById(elementId);
+    var obj=document.getElementById(elementId);
     if (obj){
         obj.focus();
         if (obj.type=='text') obj.select();
@@ -290,8 +290,8 @@ function pingSnaps (){
 }
 
 function autofill(elementId, newValue) {
-    obj=document.getElementById(elementId);
-    
+    var obj=document.getElementById(elementId);
+
     if (obj) {
         if (!newValue) newValue=obj.getAttribute('xi:autofill');
         if (newValue != obj.value) {
@@ -428,7 +428,7 @@ function onFocus(element){
 
 
 function keepFocus(element){
-    cnt=0;
+    var cnt=0;
     for (i=element.form.elements.length-1;i>=0;i--)
     if (element.form.elements[i].type=='text') cnt++;
     
@@ -453,11 +453,11 @@ function roundNumber(rnum, rlength) { // Arguments: number to round, number of d
 
 function nowTime() { 
     var now = new Date();
-    hh=now.getHours();
+    var hh=now.getHours();
     hh=hh>=10?hh:'0'+hh;
-    mm=now.getMinutes();
+    var mm=now.getMinutes();
     mm=mm>=10?mm:'0'+mm;
-    ss=now.getSeconds();
+    var ss=now.getSeconds();
     ss=ss>=10?ss:'0'+ss;
     
     return hh+':'+mm+':'+ss;
