@@ -7,11 +7,11 @@
  xmlns:rule="http://unact.net/rules"
  xmlns="http://www.w3.org/1999/xhtml"
  >
- 
+
     <!--
-    
+
     build-name, build-inner
-    
+
     -->
 
     <xsl:output method="xml"
@@ -20,24 +20,24 @@
                 omit-xml-declaration="yes"
                 encoding="utf-8"
                 cdata-section-elements="xi:cdata"
-    />  
-    
+    />
+
     <xsl:param name="userinput" select="/*/xi:userinput/xi:command"/>
     <xsl:param name="developer" select="/*/xi:userinput[contains(@host,'macbook')]"/>
     <xsl:param name="livechat" select="/*/xi:session[/*/xi:session/xi:role[@name='livechat']][@authenticated and not(/*/xi:userinput/@mobile-agent)]"/>
     <xsl:param name="geo" select="descendant::xi:workflow[@geolocate] and /*/xi:userinput/@safari-agent"/>
-    
+
     <xsl:include href="html/html-grid.xsl"/>
     <xsl:include href="html/html-choose.xsl"/>
     <xsl:include href="html/html-inputprint.xsl"/>
     <xsl:include href="html/html-session.xsl"/>
     <xsl:include href="html/html-menu.xsl"/>
     <xsl:include href="html/html-region.xsl"/>
-    
+
     <xsl:key name="id" match="*" use="@id"/>
-    
+
     <xsl:template match="xi:command" mode="links"/>
-    
+
     <xsl:template match="xi:command[@name='as-svg' or @name='interface']" mode="links">
         <xsl:value-of select="@name"/>
         <xsl:if test="text()">
@@ -46,10 +46,10 @@
         </xsl:if>
         <xsl:text>&amp;</xsl:text>
     </xsl:template>
-    
+
     <xsl:decimal-format zero-digit="0" grouping-separator=","/>
 
-    
+
     <xsl:template match="xi:interface|xi:context">
     <html xmlns="http://www.w3.org/1999/xhtml" lang="rus">
         <!--ontouchmove="event.preventDefault();"-->
@@ -59,7 +59,7 @@
             <title><xsl:value-of select="/*/@label"/></title>
             <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
             <link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
-            
+
             <xsl:for-each select="xi:userinput/@*|.|*">
                 <xsl:variable name="css-file">
                     <xsl:choose>
@@ -73,7 +73,7 @@
                     <link rel="stylesheet" type="text/css" href="{$css-file}.css"/>
                 </xsl:if>
             </xsl:for-each>
-            
+
             <script type="text/javascript" src="js/xi-common.js"></script>
             <xsl:if test="descendant::xi:dialogue//xi:input[key('id',@ref)/@name='barcode']">
                 <meta http-equiv="scanner" content="enabled"/>
@@ -144,10 +144,10 @@
                 </xsl:if>
                 <script type="text/javascript" src="../libs/jquery-for-xi/js/jquery.ui.datepicker-ru.js"></script>
                 <script type="text/javascript">$(document).ready(domready);</script>
-                
+
                 <link href="../libs/loadmask/jquery.loadmask.css" rel="stylesheet" type="text/css" />
                 <script type="text/javascript" src="../libs/loadmask/jquery.loadmask.min.js"></script>
-                
+
             </xsl:if>
             <xsl:for-each select="xi:views/xi:view[not(@hidden) and xi:view-schema/@client-js]">
                 <script type="text/javascript" src="views/{@name}.js"></script>
@@ -211,7 +211,7 @@
                 <xsl:text>)</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="class">
-                
+
                 <xsl:choose>
                     <xsl:when test="/*/xi:userinput/@mobile-agent">
                         <xsl:text>mobile</xsl:text>
@@ -226,13 +226,13 @@
                         </xsl:if>
                     </xsl:otherwise>
                 </xsl:choose>
-                
+
                 <xsl:if test="/*/xi:userinput/@android-agent">
                     <xsl:text> android</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:value-of select="concat(' ',local-name(/*/xi:userinput/@iphone-agent))"/>
-                
+
                 <xsl:choose>
                     <xsl:when test="descendant::xi:option[@chosen] or descendant::xi:menu[@chosen] or descendant::xi:view">
                         <xsl:text> sub-page</xsl:text>
@@ -248,9 +248,9 @@
                     <xsl:text> not-ie</xsl:text>
                 </xsl:if>
             </xsl:attribute>
-            
+
             <xsl:call-template name="build-canvas"/>
-            
+
         	<xsl:if test="$livechat and /*/xi:session/@livechat">
                 <script type="text/javascript">
                 <xsl:text>
@@ -265,12 +265,12 @@
                 </xsl:if>
                 </script>
             </xsl:if>
-            
+
         </body>
     </html>
     </xsl:template>
-    
-    
+
+
     <xsl:template name="build-canvas">
         <div id="canvas">
             <!--xsl:if test="count(xi:views) &gt; 1">
@@ -287,7 +287,7 @@
                  <div id="geomap" class="unset"/>
             </xsl:if>
             <xsl:apply-templates/>
-        </div>        
+        </div>
     </xsl:template>
 
     <xsl:template match="xi:views-">
@@ -295,8 +295,8 @@
             <xsl:apply-templates/>
         </div>
     </xsl:template>
- 
- 
+
+
     <xsl:template match="node()|@*" name="rename" mode="rename">
         <xsl:param name="name" select="name()"/>
         <xsl:element name="{$name}">
@@ -311,7 +311,7 @@
             <xsl:value-of select="."/>
         </xsl:attribute>
     </xsl:template>
-    
+
     <xsl:template match="/*[xi:userinput/@spb-agent]/xi:views[xi:menu/xi:option[2]]/xi:view/@label" mode="build-text">
         <xsl:variable name="this" select=".."/>
         <div class="{local-name()}">
@@ -327,7 +327,7 @@
             </select>
         </div>
     </xsl:template>
- 
+
 
     <xsl:template match="@*|*" mode="build-text">
         <xsl:param name="class" select="local-name()"/>
@@ -337,12 +337,12 @@
             </span>
         </div>
     </xsl:template>
- 
+
     <xsl:template match="@name">
         <xsl:attribute name="id">
             <xsl:value-of select="."/>
             <xsl:text>-</xsl:text>
-            <xsl:value-of select="local-name(..)"/>            
+            <xsl:value-of select="local-name(..)"/>
         </xsl:attribute>
     </xsl:template>
 
@@ -419,7 +419,7 @@
             <xsl:apply-templates/>
         </xsl:if>
     </xsl:template>
-        
+
     <xsl:template match="xi:dialogue">
         <xsl:apply-templates select="key('id',@current-step)" mode="render"/>
         <div class="dialogue">
@@ -430,7 +430,7 @@
     <xsl:template match="*[@label]" mode="label">
         <xsl:value-of select="@label"/>
     </xsl:template>
-    
+
     <xsl:template match="*[not(@label) and @ref]" mode="label">
         <xsl:apply-templates select="key('id',@ref)" mode="label"/>
     </xsl:template>
@@ -441,7 +441,7 @@
 
 
     <xsl:template match="xi:spin" mode="render">
-        
+
         <xsl:param name="datum"/>
         <xsl:for-each select="*">
             <td class="spin">
@@ -459,7 +459,7 @@
             </a>
             </td>
         </xsl:for-each>
-        
+
     </xsl:template>
 
     <xsl:template match="xi:spin/xi:more" mode="label">+</xsl:template>
@@ -494,8 +494,8 @@
     </xsl:template>
 
     <xsl:template match="text()" mode="class"/>
-    
-    
+
+
     <xsl:template match="xi:view-schema//*[@type or @choise] | xi:data[@choise]" mode="class">
         <xsl:attribute name="class">
             <xsl:value-of select="@type"/>
@@ -514,7 +514,7 @@
 
 
     <xsl:template match="
-        
+
         xi:view-schema
         | xi:view-data
         | xi:workflow
@@ -523,20 +523,20 @@
         | xi:view[@hidden]
         | xi:userinput
     "/>
-    
+
     <xsl:template match="xi:data">
         <div class="data">
-            <xsl:apply-templates select="key('id',@ref)/@label" mode="build-text"/>        
+            <xsl:apply-templates select="key('id',@ref)/@label" mode="build-text"/>
             <xsl:apply-templates select="*"/>
         </div>
-    </xsl:template>    
+    </xsl:template>
 
     <xsl:template match="xi:rows-affected">
         <div class="message">
             <span>Данные успешно сохранены</span><span>Изменено записей:<xsl:value-of select="."/></span>
         </div>
     </xsl:template>
- 
+
     <xsl:template match="xi:form/*/@label">
         <xsl:value-of select="concat(.,':')"/>
     </xsl:template>
@@ -557,11 +557,11 @@
         </div>
     </xsl:template>
 
-    
+
     <xsl:template match="xi:iframe">
         <!--iframe src="https://info.unact.ru" width="600px" height="400px" scrolling="yes"/-->
     </xsl:template>
-    
+
 
     <xsl:template match="xi:content" name="content">
         <div class="content">
@@ -620,11 +620,11 @@
     </xsl:template>
 
     <xsl:template match="xi:session"/>
-    
+
     <xsl:template match="xi:SQLSTATE"/>
-    
+
     <xsl:template match="xi:exception/xi:message/xi:result"/>
-    
+
     <xsl:template match="xi:ErrorText|xi:exception/xi:message/xi:for-human">
         <div>
             <xsl:attribute name="class">
@@ -661,7 +661,7 @@
            <xsl:apply-templates select="xi:expire"/>
        </div>
     </xsl:template>
-    
+
     <xsl:template match="xi:thead">
        <thead>
            <xsl:for-each select="xi:column">
@@ -669,7 +669,7 @@
            </xsl:for-each>
        </thead>
     </xsl:template>
-    
+
     <xsl:template match="xi:tbody">
        <tbody>
            <xsl:for-each select="xi:row">
@@ -683,17 +683,17 @@
            </xsl:for-each>
        </tbody>
     </xsl:template>
-    
+
     <xsl:template match="xi:column|xi:row/@sum|xi:row/@name">
        <td class="{local-name()}">
            <xsl:value-of select="."/>
        </td>
     </xsl:template>
-    
+
     <xsl:template match="node()|@*" mode="td">
        <td><xsl:value-of select="."/></td>
     </xsl:template>
-    
+
     <xsl:template match="xi:page//xi:image/@src">
        <xsl:attribute name="src">
            <xsl:value-of select="concat(.,'.png')"/>
@@ -701,7 +701,7 @@
        <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@width"/>
        <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@height"/>
     </xsl:template>
-    
+
     <xsl:template match="xi:page//xi:image/@src" mode="object">
        <xsl:attribute name="data">
            <xsl:value-of select="concat(.,'.svg')"/>
@@ -709,7 +709,7 @@
        <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@width"/>
        <xsl:copy-of select="document(concat('images/',../@name,'.svg'))/*/@height"/>
     </xsl:template>
-    
+
     <xsl:template match="xi:image" name="image-default">
        <img id="{@name}">
            <xsl:apply-templates select="@width|@height|@src"/>
@@ -718,31 +718,31 @@
            </xsl:apply-templates>
        </img>
     </xsl:template>
-    
+
     <xsl:template match="xi:image" mode="image-object" name="image-object">
        <object id="{@name}" type="image/svg+xml" class="svg">
            <xsl:apply-templates select="@src" mode="object"/>
        </object>
     </xsl:template>
-    
+
     <xsl:template match="xi:legend">
        <div class="legend">
            <xsl:apply-templates select= "../@columns-label"/>
            <xsl:apply-templates />
        </div>
     </xsl:template>
-    
+
     <xsl:template match="@columns-label">
        <span class="label"><xsl:value-of select="."/>:</span>
     </xsl:template>
-    
+
     <xsl:template match="xi:serie">
        <span class="serie obj{position()}">
            <span class="serie-box"/>
            <span class="serie-label"><xsl:value-of select="@name"/></span>
        </span>
     </xsl:template>
-    
+
     <xsl:template match="xi:page//xi:image" xi:attention="bullshit">
        <a id="the-{@name}"/>
        <div class="datagram">

@@ -12,7 +12,7 @@ function domready () {
 //    isiPhone() ||
         $('input.date').prop('readonly', true)
     ;
-    
+
     $('input.date').datepicker({
             showOn: 'button',
             buttonImage: 'images/calendar.gif',
@@ -25,7 +25,7 @@ function domready () {
                 }
             }
     });
-    
+
     $('div.tabs').each(function(tabNumber, tab) {
         var viewId = $(tab).parents('.view').first().attr('id')
             , uiId = $(tab).attr('id')
@@ -42,34 +42,34 @@ function domready () {
             selected: tabToSelect
         });
     });
-    
+
     $('div.tabs .ui-tabs-nav').removeClass('ui-corner-all');
     $('div.tabs .ui-tabs-nav').addClass('ui-corner-top');
-    
+
     $('.collapsable').addClass('collapsed');
-    
+
     $('.collapsable > .label').click(function() {
         $(this).nextAll().toggle();
         $(this).parent().toggleClass('expanded');
         $(this).parent().toggleClass('collapsed');
     });
-    
+
     $('.accordeon tr.group .cnt').addClass('x-button collapsed');
-    
+
     $('.accordeon tr.group .cnt').click(function() {
         $(this).toggleClass('expanded');
         $(this).toggleClass('collapsed');
         $(this).parents('tr.group').first().nextUntil('tr.group','tr.data').toggle();
     });
-    
+
     $('body').delegate('.boolean input, input.radio, a.button','click',
         function(e) {$(e.target).parents('.view').mask('Загрузка ...');}
     );
-    
+
     $('body').delegate('input.text','keydown',
         function(e) {return keypress(e.target,e)}
     );
-    
+
     $('body').delegate('input.text','blur',
         function(e) {return onBlur(e.target)}
     );
@@ -77,26 +77,26 @@ function domready () {
     $('body').delegate('input.text','click',
         function(e) {return onClick(e.target)}
     );
-    
+
     $('div.view').delegate('input.text, input.file, textarea','change',
         function(e) {return itemChanged(e.target)}
     );
-    
+
     $('tfoot .tools').hide();
-    
+
     var showTools = function(evt){
         if (evt.ctrlKey)
             $(this).find('.tools').show();
     };
-    
+
     $('tfoot').mouseenter(showTools);
     $('thead').mouseenter(showTools);
-    
+
     $('div.grid').mouseleave(function() {
        $(this).find('.tools').hide();
     });
-    
-    
+
+
 //    setTimeout (loadClientData, 100);
 }
 
@@ -127,15 +127,15 @@ function xijaxSuccess (req){
     for( var i = 0; i < nl.length; i++ )
     {
         var nli = nl.item( i );
-        var elementId = nli.getAttribute ( 'id' ); 
+        var elementId = nli.getAttribute ( 'id' );
         var obj = document.getElementById(elementId);
-        
+
         if (obj) {
             $(obj).removeAttr('disabled');
             $(obj).removeClass('xiSent');
-            
+
             if (obj.form) if (!$(obj.form.elements).hasClass('xiSent')) $(obj.form).removeClass('xiSent');
-            
+
             switch (nli.tagName){
                 case 'datum':
                     var newValue=nli.getAttribute('formatted');
@@ -143,7 +143,7 @@ function xijaxSuccess (req){
                         if (nli.childNodes.length) newValue=nli.childNodes[0].nodeValue
                         else newValue=''
                     }
-                    
+
                     if (nli.getAttribute('xpath-compute'))
                         $(obj).text(newValue);
                     else {
@@ -166,20 +166,20 @@ function xijaxSuccess (req){
                         case 'avoid':
                              $(obj.parentNode).removeClass('recommended');
                              break;
-                    }              
+                    }
             }
-            
+
         } else if (nli.tagName=='deleted' || nli.tagName=='inserted') fullReload();
     }
-    
+
 }
 
 function fullReload() {
-    location.replace(location.protocol+'//'+location.host+location.pathname);                   
+    location.replace(location.protocol+'//'+location.host+location.pathname);
 }
 
 function showMap() {
-    
+
     if ($('#geomap').hasClass('hidden')) {
         $('#geomap').addClass('shown');
         $('#geomap').removeClass('hidden');
@@ -190,7 +190,7 @@ function showMap() {
         YMaps.load(yMapInit);
         $('#geomap').addClass('shown');
     };
-    
+
     return false;
 }
 
@@ -199,7 +199,7 @@ function yMapInit () {
     var lng=55.76;
     // Создание экземпляра карты и его привязка к созданному контейнеру
     map = new YMaps.Map(YMaps.jQuery("#geomap")[0]);
-    
+
     // Установка для карты ее центра и масштаба
     //  map.setCenter(new YMaps.GeoPoint(lat, lng), 15);
 }
@@ -208,13 +208,13 @@ function yMapInit () {
 function initialize(targetFocus, geolocate){
     if (targetFocus) setfocus(targetFocus);
 
-    if (geolocate) setTimeout(geoloc,5000);    
+    if (geolocate) setTimeout(geoloc,5000);
 }
 
 
 
 function itemChanged (element) {
-    
+
     if (element.type == 'file') {
         //alert(element.value);
         var fname = document.getElementById ($(element).attr('xi:file-name'));
@@ -223,7 +223,7 @@ function itemChanged (element) {
                 fname.value = element.value.length ? element.value.split(/(\\|\/)/g).pop() : 'file.txt';
                 $(fname).attr('name',$(fname).attr('id'));
         }
-        
+
         $(element).attr('name',$(element).attr('id'));
         element.form.enctype='multipart/form-data';
         element.form.submit();
@@ -232,28 +232,28 @@ function itemChanged (element) {
         var href=element.id+'='+element.value;
 
         $(element.form).addClass('xiSent');
-        
+
         $(element).attr('name',$(element).attr('id'));
         $(element).addClass('xiSent');
-        
+
         $(element).parents('.view').mask('Загрузка');
-        
+
         xijax(undefined, href);
-        
+
     }
-    
+
 }
 
 function selectChanged(element){
     var href='';
-    
+
     href=element.id+'='+element.options[element.selectedIndex].value;
-    
+
     $(element).attr('name',$(element).attr('id'));
     $(element).addClass('xiSent');
-    
+
 //    element.disabled='disabled';
-    
+
     xijax(undefined, href);
 
 }
@@ -280,10 +280,10 @@ function setfocus(elementId){
 }
 
 function pingSnaps (){
-    var ImageObject = new Image(); 
+    var ImageObject = new Image();
     ImageObject.src= "https://snapabug.appspot.com/snapabug.js/img/logo/snapabug_tagline.png";
 
-    if(ImageObject.height>0){ 
+    if(ImageObject.height>0){
     return true ;
     }
     return false;
@@ -314,7 +314,7 @@ function keypress(element, event) {
   var autofill = element.getAttribute('xi:autofill');
   var beingEdited =  false;
   var oldvalue=element.getAttribute('xi:oldvalue');
-  
+
   if (element.getAttribute('xi:editinprogress')=='true') beingEdited=true;
 
   switch (event.keyCode){
@@ -410,12 +410,12 @@ function toggleEdit(element){
     var oldValue=element.value;
 
     element.setAttribute('xi:editinprogress', 'true');
-    
+
     if (oldValue){
         element.value='';
         element.value=oldValue;
     };
-    
+
     return false;
 
 }
@@ -431,7 +431,7 @@ function keepFocus(element){
     var cnt=0;
     for (i=element.form.elements.length-1;i>=0;i--)
     if (element.form.elements[i].type=='text') cnt++;
-    
+
     if (cnt==1) setfocus(element.id);
 }
 
@@ -444,14 +444,14 @@ function onBlur(element){
 function geoloc() {
     navigator.geolocation.watchPosition(foundLocation, noLocation, {enableHighAccuracy:true,timeout:20000,maximumAge:0});
 //    navigator.geolocation.getCurrentPosition(foundLocation, noLocation, {enableHighAccuracy:true,timeout:60000,maximumAge:30000});
-    
+
 }
 
 function roundNumber(rnum, rlength) { // Arguments: number to round, number of decimal places
   return newnumber = Math.round(rnum*Math.pow(10,rlength))/Math.pow(10,rlength);
 }
 
-function nowTime() { 
+function nowTime() {
     var now = new Date();
     var hh=now.getHours();
     hh=hh>=10?hh:'0'+hh;
@@ -459,7 +459,7 @@ function nowTime() {
     mm=mm>=10?mm:'0'+mm;
     var ss=now.getSeconds();
     ss=ss>=10?ss:'0'+ss;
-    
+
     return hh+':'+mm+':'+ss;
 }
 
@@ -473,22 +473,22 @@ function setMap(lat,lng) {
 function foundLocation(position) {
     var lat = roundNumber(position.coords.latitude,9);
     var lng = roundNumber(position.coords.longitude,9);
-    
+
     var longSpan = document.getElementById('longitude');
     var latSpan = document.getElementById('latitude');
     var accSpan = document.getElementById('geoacc');
     var tsSpan = document.getElementById('geots');
-    
+
     latSpan.innerText=roundNumber(lat,6);
     longSpan.innerText=roundNumber(lng,6);
     accSpan.innerText=Math.round(position.coords.accuracy);
-    
+
 
     tsSpan.innerText=nowTime();
-    
+
     setMap(lat,lng);
 //    setTimeout(geoloc,10000);
-    
+
 //  alert('Found location: ' + lat + ', ' + long);
     var postUrl='?pipeline=geomonitor&long='+lng+'&lat='+lat+'&acc'+position.coords.accuracy;
 //    alert (postUrl);
@@ -499,7 +499,7 @@ function foundLocation(position) {
         ,'onError':function(req){ alert('Error!\nStatusText='+req.statusText+'\nContents='+req.responseText); }
     }
     );
-  */  
+  */
 }
 
 function noLocation() {
@@ -514,16 +514,16 @@ function noLocation() {
     function init() {
         // quit if this function has already been called
         if (arguments.callee.done) return;
-        
+
         // flag this function so we don't do the same thing twice
         arguments.callee.done = true;
-        
+
         // kill the timer
         if (_timer) {
             clearInterval(_timer);
             _timer = null;
         }
-        
+
         // create the "page loaded" message
         var text = document.createTextNode("Page loaded!");
         var message = document.getElementById("canvas");
@@ -532,9 +532,9 @@ function noLocation() {
 //        initChat(username);
 
     }
-    
-    
-    
+
+
+
     function initChat () {
         return SnapABug.startLink();
     }

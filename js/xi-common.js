@@ -3,7 +3,7 @@ var currentFocus=false;
 
 function getIndex(element){
 
-    for (i=element.form.elements.length-1;i>=0;i--)
+    for (var i=element.form.elements.length-1;i>=0;i--)
         if (element.id == element.form.elements[i].id) return i;
 
     return -1;
@@ -11,13 +11,13 @@ function getIndex(element){
 }
 
 function getParent(element) {
-    if (mobileIE) return element.parentElement; else return element.parentNode;  
+    if (mobileIE) return element.parentElement; else return element.parentNode;
 }
 
 function moveFocus (element, dir, vdir) {
     var htmlobj=getParent(element);
     htmlobj=getParent(htmlobj);
-    
+
     if (htmlobj.tagName.toLowerCase() == 'td' && vdir){
 
        var htmlrow=getParent(htmlobj);
@@ -31,7 +31,7 @@ function moveFocus (element, dir, vdir) {
              var targetNode=targetCell.childNodes[i];
              var targetTag= new String (targetNode.tagName);
              targetTag=targetTag.toLowerCase()
-             
+
              if (targetTag=='input') { targetNode.focus(); targetNode.select();  return false; }
          }
        }
@@ -49,7 +49,7 @@ function moveFocus (element, dir, vdir) {
             break;
         }
     }
-    
+
     return false;
 }
 
@@ -59,11 +59,11 @@ function viewChange(element){
 
 
 function menupad (menuObj, menuId, mode) {
-    
+
     var frm;
 
     if (menuId) frm=document.getElementById(menuId);
-    
+
     if (frm && menuId){
         var command=menuObj.getAttribute('href');
         if (!mode || !command) {
@@ -79,7 +79,7 @@ function menupad (menuObj, menuId, mode) {
         } else
             xijax(menuObj.getAttribute('href'));
     }
-    
+
     return false;
 }
 
@@ -97,4 +97,3 @@ function getStyle(oElm, strCssRule){
 	}
 	return strValue;
 }
-

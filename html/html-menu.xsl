@@ -42,11 +42,11 @@
             "/>
         </div>
     </xsl:template>
-    
+
     <xsl:template match="
-        
+
         xi:views[xi:view]/xi:menu
-        
+
         | xi:option[@disabled]
         | xi:choise/xi:option
             [xi:command [text()='next' or text()='unchoose']
@@ -65,10 +65,10 @@
                     or ancestor::xi:view/xi:view-data//*/@ref=@ref
                 )]
             ]
-        
+
     "/>
 
-    
+
     <xsl:template match="xi:option | xi:data/@deletable | xi:data/@removable">
         <xsl:param name="option-value" select="@name"/>
         <div>
@@ -101,7 +101,7 @@
                 <xsl:attribute name="class">button</xsl:attribute>
                 <xsl:attribute name="type">button</xsl:attribute>
                 <!--xsl:attribute name="accesskey"><xsl:value-of select="count(preceding-sibling::xi:option)+1"/></xsl:attribute-->
-                
+
                 <xsl:if test="not(@iframe)">
                     <xsl:attribute name="href">
                         <xsl:text>?</xsl:text>
@@ -124,18 +124,18 @@
                         </xsl:for-each>
                     </xsl:attribute>
                 </xsl:if>
-                
+
                 <xsl:if test="/*/xi:userinput/@spb-agent">
                     <xsl:attribute name="onfocus">return onFocus(this)</xsl:attribute>
                 </xsl:if>
-                
+
                 <xsl:if test="$element='input'">
                     <xsl:attribute name="value">
                         <xsl:value-of select="@label"/>
                         <xsl:if test="parent::xi:data[@deletable or @removable]">x</xsl:if>
                     </xsl:attribute>
                 </xsl:if>
-                
+
                 <xsl:attribute name="onclick">
                     <xsl:choose>
                         <xsl:when test="@iframe">
@@ -154,7 +154,7 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:attribute>
-                
+
                 <xsl:if test="$element='a'">
                     <xsl:attribute name="title">
                         <xsl:value-of select="@label"/>
@@ -165,10 +165,10 @@
                         <xsl:if test="parent::xi:data[@deletable or @removable]">x</xsl:if>
                     </span>
                 </xsl:if>
-                
+
             </xsl:element>
             <xsl:apply-templates select="xi:menu|*/xi:menu" />
         </div>
     </xsl:template>
- 
+
 </xsl:transform>

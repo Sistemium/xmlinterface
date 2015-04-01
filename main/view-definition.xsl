@@ -8,9 +8,9 @@
 >
 
     <xsl:param name="model" />
- 
+
     <xsl:template match="xi:view-definition" mode="build-secure" priority="1000">
-        
+
         <view justopen="true">
             <xsl:apply-templates select="@name|@label"/>
             <menu>
@@ -33,7 +33,7 @@
             </menu>
             <xsl:apply-templates/>
         </view>
-        
+
     </xsl:template>
 
     <xsl:template match="xi:view-schema//*[not(@what-label)]/@label" mode="extend">
@@ -60,7 +60,7 @@
         <xsl:variable name="form" select="ancestor::xi:form[count(ancestor-or-self::xi:form) = count(current()/ancestor::xi:form)]"/>
         <xsl:variable name="form-concept" select="$form/@concept|$form[not(@concept)]/@name"/>
         <xsl:variable name="sort-by" select="@sort-by"/>
-        
+
         <xsl:for-each select="$model/xi:concept[@name=$form-concept]/xi:property[@label]
                              [not($this/self::xi:add-labeled-fields/../xi:field/@name = @name)]">
             <xsl:sort select="@*[local-name()=$sort-by]" data-type="text"/>
@@ -70,9 +70,9 @@
                 <xsl:apply-templates select="$this/../xi:field[@name=current()/@name]/@*"/>
             </field>
         </xsl:for-each>
-        
+
     </xsl:template>
-    
+
     <xsl:template match="xi:view-definition/xi:view-schema//*[xi:all-labeled-fields]/xi:field" priority="1000"/>
 
     <xsl:template match="xi:view-definition/xi:view-schema//*[not(@autofill-form)]/@autofill">
@@ -84,15 +84,15 @@
 
     <xsl:template match="xi:view-definition/xi:view-schema//xi:markable">
         <field sql-compute="null">
-            
+
             <xsl:attribute name="name">
                 <xsl:value-of select="@for"/>
             </xsl:attribute>
-            
+
             <xsl:attribute name="type">mark</xsl:attribute>
-            
-            <xsl:call-template name="view-build-default"/>            
-            
+
+            <xsl:call-template name="view-build-default"/>
+
         </field>
     </xsl:template>
 
@@ -102,10 +102,10 @@
             <xsl:call-template name="view-build-default"/>
         </xsl:copy>
     </xsl:template>
-    
+
     <xsl:template match="xi:view-definition/xi:view-schema//*[@hide='remove']" mode="build-secure"/>
     <xsl:template match="xi:view-definition/xi:view-schema//*[@hide='remove']"/>
-    
+
     <xsl:template match="xi:view-definition/xi:view-schema//*">
         <xsl:copy>
             <xsl:call-template name="view-build-default"/>
@@ -144,9 +144,9 @@
         <xsl:variable name="concept" select="self::xi:form[not(@concept)]/@name|self::xi:form/@concept"/>
         <xsl:variable name="domain-concept" select="$model/xi:concept[@name=$form-concept]"/>
         <xsl:variable name="this" select="."/>
-        
+
         <xsl:apply-templates select="." mode="build-id"/>
-        
+
         <xsl:if test="self::xi:form">
             <xsl:attribute name="concept"><xsl:value-of select="@name"/></xsl:attribute>
             <xsl:for-each select="$model/xi:concept[@name=$role]/xi:role[@actor=$form-concept]/@sql-name">
@@ -155,61 +155,61 @@
                 </xsl:attribute>
             </xsl:for-each>
         </xsl:if>
-        
+
         <!--xsl:copy-of select="$domain-concept/parent::xi:domain/@server"/>
         <xsl:copy-of select="$domain-concept/@server"/-->
-        
+
         <xsl:apply-templates select="$model/xi:concept[@name=$form-concept]/*[@name=$role]" mode="build-schema"/>
         <xsl:apply-templates select="$model/xi:concept[@name=$model/xi:concept[@name=current()/../../@name]/xi:role[@name=current()/../@name]/@actor]/*[@name=current()/@name]" mode="build-schema"/>
-        
+
         <xsl:for-each select="self::xi:field/ancestor::xi:form/descendant::*[@autofill=current()/@name and @autofill-form=current()/parent::*/@name]
                              |self::xi:field/parent::xi:form/xi:field[@autofill=current()/@name and not (@autofill-form) ]">
             <xsl:call-template name="build-id">
                 <xsl:with-param name="name">autofill-for</xsl:with-param>
             </xsl:call-template>
         </xsl:for-each>
-        
+
         <xsl:apply-templates select="xi:sql-compute|xi:xpath-compute" mode="as-attribute"/>
-        
+
         <xsl:if test="(@choise or @expect-choise or not(@is-set)) and not(@choise-label)">
             <xsl:attribute name="choise-label">name</xsl:attribute>
         </xsl:if>
-        
+
         <xsl:apply-templates select="@*|self::xi:field[@editable]/parent::xi:form/@autosave"/>
-        
+
         <xsl:apply-templates select=".|@*" mode="extend"/>
-        
+
         <xsl:if test="self::xi:form[@name='sysuser'][xi:parameter and not(xi:parameter[@name='device-name'])]">
             <parameter name="device-name">
                 <init with="device-name"/>
             </parameter>
         </xsl:if>
-        
+
         <!--xsl:if test="self::xi:form[@expect-choise or ../descendant::xi:join[not(@field)]/@name=@name]
                      [not(xi:field[@name='id']) and $model/xi:concept[@name=$form-concept]/xi:property[@name='id']]
                      ">
            <field name="id" key="true"/>
         </xsl:if-->
-        
+
         <xsl:if test="self::xi:field[@name='xid']">
             <xsl:attribute name="key">true</xsl:attribute>
             <xsl:if test="not(xi:init)">
                 <init with="uuid"/>
             </xsl:if>
         </xsl:if>
-        
+
         <xsl:apply-templates select="node()"/>
         <!--xsl:apply-templates select="node()" mode="extend"/-->
-        
+
         <xsl:if test="self::*[@name='username'][not(xi:init)]">
             <init with="username"/>
         </xsl:if>
-        
+
         <xsl:if test="self::xi:spin">
             <less id="spin-{generate-id()}-less"/>
             <more id="spin-{generate-id()}-more"/>
         </xsl:if>
-        
+
         <xsl:if test="self::xi:form[not(@role)]">
             <xsl:if test="not (xi:order-by or xi:natural-order)">
                 <xsl:for-each select="xi:field[@name='name']">
@@ -217,7 +217,7 @@
                 </xsl:for-each>
             </xsl:if>
         </xsl:if>
-        
+
         <xsl:if test="self::xi:form">
             <xsl:for-each select=
                  "$model/xi:concept[@name=$form-concept]/xi:role[@name=@role]
@@ -236,9 +236,9 @@
                 </parent-join>
             </xsl:for-each>
         </xsl:if>
-        
+
     </xsl:template>
-    
+
     <xsl:template match="xi:form/xi:sql-compute"/>
 
     <xsl:template match="xi:view-definition/xi:view-schema">
@@ -254,7 +254,7 @@
             </dialogue>
         </xsl:if>
     </xsl:template>
-    
+
     <xsl:template match="xi:view-definition/xi:view-schema//*/@set">
         <xsl:attribute name="is-set"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
@@ -266,8 +266,8 @@
             <xsl:attribute name="concept"><xsl:value-of select="@actor"/></xsl:attribute>
         </xsl:if>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="xi:view-definition" mode="build-option">
         <xsl:apply-templates select="@*|*" mode="build-option"/>
     </xsl:template>
