@@ -231,7 +231,7 @@ set_time_limit (180);
         if (!$address) {
             $address = 'https://soa.unact.ru/AuthenticationService/Default.aspx';
         }
-        
+
         $http = new HTTPRetriever();
 
         try { if ( $http->post(
