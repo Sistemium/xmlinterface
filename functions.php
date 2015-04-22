@@ -112,6 +112,9 @@ set_time_limit (180);
             $http->stream_timeout = 120;
             $private=simplexml_load_file(localPath('../secure.xml'));
 
+            $timeLimit = secureParm () -> PHP ['time_limit'];
+            if ($timeLimit) $http->stream_timeout = (int) $timeLimit;
+
             $src=$request[0]->ownerDocument->documentElement->getAttribute('storage');
             $db=$request[0]->ownerDocument->documentElement->getAttribute('db');
             $server=$request[0]->ownerDocument->documentElement->getAttribute('server');
