@@ -5,7 +5,9 @@
     xmlns="http://unact.net/xml/xi"
     xmlns:xi="http://unact.net/xml/xi"
     xmlns:php="http://php.net/xsl"
-    exclude-result-prefixes="php"
+    xmlns:str="http://exslt.org/strings"
+    extension-element-prefixes="str"
+    exclude-result-prefixes="php str"
 >
     <!--  Templates for building strings of values  -->
 
@@ -87,7 +89,8 @@
     <xsl:template match="*" mode="sqlvalue">
         <xsl:param name="datum" select="."/>
         <xsl:variable name="q">'</xsl:variable>
-        <xsl:value-of select="translate($datum,$q,' ')"/>
+        <xsl:variable name="q2">''</xsl:variable>
+        <xsl:value-of select="str:replace($datum,$q,$q2)"/>
     </xsl:template>
     
     <xsl:template match="*[@use-like]" mode="sqlvalue">
