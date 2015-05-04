@@ -14,7 +14,7 @@
     <xsl:template match="*[not(*)][not(text()) or text()='']" mode="value" priority="1000">
         <xsl:text>NULL</xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="*[@type='xml']" mode="value">
         <xsl:text>'</xsl:text>
         <xsl:copy-of select="*"/>
@@ -29,21 +29,21 @@
     <xsl:template match="*[@type='number' or @type='int' or @type='decimal']" mode="value">
         <xsl:value-of select="."/>
     </xsl:template>
-    
+
     <xsl:template match="*[@type='boolean']" mode="value">
         <xsl:value-of select="."/>
     </xsl:template>
 
     <xsl:template match="*[xi:less-than]" mode="value" priority="1000">
         <xsl:text>&lt;</xsl:text>
-        <xsl:apply-templates select="xi:less-than/text()" mode="value"/>        
+        <xsl:apply-templates select="xi:less-than/text()" mode="value"/>
     </xsl:template>
-        
+
     <xsl:template match="*[xi:more-than]" mode="value" priority="1000">
         <xsl:text>&gt;</xsl:text>
-        <xsl:apply-templates select="xi:more-than/text()" mode="value"/>        
+        <xsl:apply-templates select="xi:more-than/text()" mode="value"/>
     </xsl:template>
-        
+
     <xsl:template match="xi:use" mode="value" priority="1001">
         <xsl:param name="datum" select="
             (ancestor::xi:data-request|ancestor::*/xi:etc/xi:data)[@name=current()/@concept]
@@ -54,7 +54,7 @@
             <xsl:text>null</xsl:text>
         </xsl:if>
     </xsl:template>
-    
+
     <xsl:template match="*" mode="value">
         <xsl:apply-templates select="." mode="quoted">
             <xsl:with-param name="value">
@@ -92,7 +92,7 @@
         <xsl:variable name="q2">''</xsl:variable>
         <xsl:value-of select="str:replace($datum,$q,$q2)"/>
     </xsl:template>
-    
+
     <xsl:template match="*[@use-like]" mode="sqlvalue">
         <xsl:param name="datum" select="."/>
         <xsl:value-of select="translate($datum,'*','%')"/>
@@ -103,6 +103,6 @@
         <xsl:variable name="numbers" select="translate($datum,'./-','')"/>
         <xsl:value-of select="concat(substring($numbers,5),substring($numbers,3,2),substring($numbers,1,2))"/>
     </xsl:template>
-    
-    
+
+
 </xsl:transform>
