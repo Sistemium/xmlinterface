@@ -95,9 +95,14 @@
 
     <xsl:template match="*[@use-like]" mode="sqlvalue">
         <xsl:param name="datum" select="."/>
-        <xsl:if test="@use-like='force'">%</xsl:if>
         <xsl:value-of select="translate($datum,'*','%')"/>
-        <xsl:if test="@use-like='force'">%</xsl:if>
+    </xsl:template>
+
+    <xsl:template match="*[@use-like='force']" mode="sqlvalue">
+        <xsl:param name="datum" select="."/>
+        <xsl:text>%</xsl:text>
+        <xsl:value-of select="translate($datum,'* %','%%')"/>
+        <xsl:text>%</xsl:text>
     </xsl:template>
 
     <xsl:template match="*[@type='date']" mode="sqlvalue">
