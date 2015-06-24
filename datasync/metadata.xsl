@@ -168,6 +168,7 @@
                 | @placeHolder
                 | @validationRe
                 | @validationText
+                | @cls
             "/>
 
             <xsl:apply-templates mode="metadata" select="*">
