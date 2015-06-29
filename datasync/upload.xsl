@@ -215,7 +215,13 @@
         </data>
     </xsl:template>
 
-    <xsl:template match="/*[@stage='build-xmlq' or @stage='build-response']//xi:preload">
+    <xsl:template match="/*[@stage='build-xmlq' or @stage='build-response']/xi:upload[*/xi:response/xi:exception[xi:ErrorText]]//xi:preload">
+        <xsl:copy>
+            <xsl:copy-of select="/*/xi:upload/xi:data/xi:response/xi:exception"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="/*[@stage='build-xmlq' or @stage='build-response']//xi:preload[not(preceding-sibling::*/xi:response/xi:exception[xi:ErrorText])]">
         <xsl:copy>
             <xsl:copy-of select="@*[not(local-name()='retrieve')]"/>
             <xsl:apply-templates select="." mode="build-request"/>
