@@ -83,7 +83,7 @@ Ext.data.Engine = Ext.extend(Ext.util.Observable, {
                         var pname = '';
                         if (c.parent)
                             tables[c.parent].columns.forEach ( function (pcol, idx) {
-                                if (pcol.title || pcol.name == 'name' || pcol.name == 'ord' || pcol.parent) {
+                                if (pcol.title || pcol.name == 'name' || pcol.name == 'ord' || pcol.parent || pcol.name == 'isEditable') {
                                     pname = c.parent+'_'+pcol.name;
                                     t.columns.push (t.columns.keyMap[pname] = {
                                         name: pname,
