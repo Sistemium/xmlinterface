@@ -170,6 +170,7 @@
                 | @validationText
                 | @cls
                 | @filterByModel
+                | @placeholder
             "/>
 
             <xsl:apply-templates mode="metadata" select="*">
