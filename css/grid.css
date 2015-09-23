@@ -3,7 +3,7 @@
 }
 
 td .bool {
-	display:block;
+	display: inline-block;
 }
 
 td.spin a {width:20px;
