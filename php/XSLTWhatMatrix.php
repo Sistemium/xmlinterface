@@ -63,9 +63,10 @@
                     $task['result-path'] = $this->newUploadFileName($this->resultPath)
                 );
                 
-                if ($xsl = $task['xsl']){
+                if ($xslStr = $task['xsl']){
                     
-                    $xsl = DOMDocument::load (changeDirectory(dirname($_SERVER['SCRIPT_FILENAME']),$xsl));
+                    $xsl = new DOMDocument('1.0');
+                    $xsl -> load (changeDirectory(dirname($_SERVER['SCRIPT_FILENAME']),$xslStr));
                     
                     foreach ($task->include as $param) {
                         $newElement = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform','xsl:include');
@@ -116,6 +117,12 @@
                         $xml ? $xml->saveXML() : false,
                         array('Authorization'=>$this->auth)
                     );
+                    
+                    if (strlen($result) == 0) {
+                        $result = false;
+                        //die('Server busy');
+                        return 0;
+                    }
                     
                     $task['response-size'] = strlen($result);
                     file_put_contents($file . '.server-task' . '.xml', $result);
@@ -177,12 +184,12 @@
             
             $httpStatus = curl_getinfo($curlRequest, CURLINFO_HTTP_CODE);
             
-            if ($httpStatus != 200) {
-                header ('System-error: '.$urlString, 1 ,$httpStatus);
-                die($ret."\n");
-            }
-            
             curl_close($curlRequest);
+            
+            if ($httpStatus != 200) {
+                header ('System-error: 500',1,500);
+                die ('Error:'.$ret);
+            }
             
             return $ret;
             

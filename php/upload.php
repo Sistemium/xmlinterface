@@ -3,6 +3,15 @@
     require_once ('XSLTWhatMatrix.php');
     require_once ('UOAuthClient.php');
     require_once ('../functions.php');
+    
+    function http_exceptions_error_handler ($errno, $errstr, $errfile, $errline ) {
+        header ('System-error: 500',1,500);
+        die($errstr."\n".'lineno:'.$errline."\n".'file:'.$errfile."\n");
+    }
+    
+    set_error_handler( 'http_exceptions_error_handler' );
+    
+    
 
     set_time_limit(180);
     
@@ -21,6 +30,11 @@
     
     if ($_SERVER['CONTENT_TYPE'] != 'text/xml') {
         header ('System-error: 400',1,400);
+        $path = localPath('../data/upload/' . uniqid('err.400-') . '.headers.txt');
+        $headersString = var_export($headers,true);
+        file_put_contents ($path, $headersString);
+        $path = localPath('../data/upload/' . uniqid('err.400-') . '.rawpost.txt');
+        file_put_contents ($path, $rawPost);
         die ("'Content-type' must be text/xml\n");
     }
     
@@ -46,10 +60,12 @@
     
     $xml = new DOMDocument ('1.0');
     $xml->loadXML($rawPost);
+    $instructions = new DOMDocument ('1.0');
+    $instructions -> load (localPath('../../config/xsl/upload.instructions.xsl'));
     
     $matrix = new XSLTWhatMatrix (
         $xml,
-        DOMDocument::load (localPath('../../config/xsl/upload.instructions.xsl')),
+        $instructions,
         array("org" => $org)
     );
     $matrix->auth = $authToken;
@@ -63,7 +79,12 @@
     }
     
     $instructions = simplexml_import_dom ($matrix -> instructions);
-    $matrix ->apply ($instructions, $xml);
+    $jobDone = $matrix ->apply ($instructions, $xml);
+    
+    if (!$jobDone) {
+        header ('System-error: 500',1,500);
+        die("Server busy\n");
+    }
     
     header('Content-type: text/xml', true);
     
