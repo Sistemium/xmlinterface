@@ -129,7 +129,7 @@
 
                         <datum type="field" name="{@role|@property}" editable="new-only">
                             <!--xsl:apply-templates select="." mode="build-ref"/-->
-                            <xsl:copy-of select="@sql-name"/>
+                            <xsl:copy-of select="@sql-name|@editable"/>
                             <xsl:value-of select="
                                 ancestor::xi:view/xi:view-data//xi:datum[@ref=$parent/@id]/text()
                             "/>
