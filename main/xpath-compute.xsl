@@ -31,6 +31,10 @@
                     </xsl:otherwise>
                </xsl:choose>
             </xsl:variable>
+
+            <xsl:if test="@type='parameter' and @modifiable='true' and not (. = $val)">
+                <xsl:attribute name="modified">true</xsl:attribute>
+            </xsl:if>
             
             <xsl:if test="@original-value and not(format-number(@original-value,'0.0#','totals') = $val) and key('id',@ref)/@type='decimal'">
               <xsl:attribute name="modified">true</xsl:attribute>

@@ -150,6 +150,7 @@ function xijaxSuccess (req){
                         $(obj).attr('value',newValue);
                         $(obj).attr('xi:oldvalue',newValue);
                     }
+
                 case 'data':
                     if ($(nli).children('data').length) fullReload();
                     if (nli.getAttribute ('modified')) $(obj).addClass('modified')
@@ -169,7 +170,10 @@ function xijaxSuccess (req){
                     }
             }
 
-        } else if (nli.tagName=='deleted' || nli.tagName=='inserted') fullReload();
+        } else if (
+            nli.tagName=='deleted' || nli.tagName=='inserted'
+            || (nli.tagName == 'datum' && nli.getAttribute('modifiable') == 'true' && nli.getAttribute('modified') == 'true')
+        ) fullReload();
     }
 
 }
