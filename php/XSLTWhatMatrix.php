@@ -126,8 +126,11 @@
                     
                     $task['response-size'] = strlen($result);
                     file_put_contents($file . '.server-task' . '.xml', $result);
-                    
-                    $result = DOMDocument::loadXML($result);
+
+                    $nres = new DOMDocument('1.0');
+                    $nres -> loadXML ($result);
+
+                    $result = $nres;
                     
                 }
                 

@@ -13,7 +13,7 @@
             
             $this->server = $server;
             $this->token = $token;
-            @$this->roles = $_SESSION['UAC-roles'];
+            //@$this->roles = $_SESSION['UAC-roles'];
             
             if (!$this->roles) {
                 $_SESSION['UAC-roles'] = $this->getRoles();

@@ -11,10 +11,10 @@ td.spin a {width:20px;
 }
 
 .grid {text-align:center;}
-table {border-spacing:2px; margin:0px auto;}
+table {border-spacing:2px; margin:0 auto;}
 
 th {padding-bottom: 6px;}
-th.options {padding:0px;}
+th.options {padding:0;}
 
 td {text-align:left;}
 
@@ -22,7 +22,7 @@ td span.decimal, span.decimal input, td span.int, span.int input, td.int {text-a
 th span.decimal, th span.int{text-align:right;}
 tfoot th {padding:1px;}
 
-td > span , tfoot th span {display:block; padding:0px 2px;}
+td > span , tfoot th span {display:block; padding:0 2px;}
 tr.page-control span {
 	display: inline;
 }
@@ -32,7 +32,7 @@ tr.group td {padding: 1em 0 0.75em;}
 tr.delete-this span,  tr.delete-this span input{
     text-decoration: line-through !important; color: darkgray !important; background-color:inherit;
     }
-tr.data .options input {padding:0px 6px;}
+tr.data .options input {padding:0 6px;}
 
 /*tr.is-new {background-color: lightgreen;}*/
 
@@ -40,7 +40,7 @@ td input.button, td input.text, td select {width:100%;}
 td input.text.date {width:auto;}
 td input.text { border:none;}
 
-td div.option {margin:0px auto;}
+td div.option {margin:0 auto;}
 
 td .editable input {position:relative; left:-3px;}
 
