@@ -58,3 +58,7 @@ tr.group td .option {
 tr.data.selected .text {
 	font-weight: bold;
 }
+
+tr.group.exception {
+	color: red;
+}

@@ -110,8 +110,25 @@
         <xsl:param name="rows" select="/.."/>
         <xsl:param name="cnt" select="count($rows)"/>
         <xsl:param name="cnt-show"/>
+
+        <xsl:variable name="this" select="."/>
         
-        <tr class="group" name="{@name}">
+        <tr name="{@name}">
+
+            <xsl:attribute name="class">
+
+                <xsl:text>group</xsl:text>
+
+                <xsl:for-each select="$group/xi:class">
+                    <xsl:variable name="class-datum" select="
+                        $this/ancestor::xi:data/xi:datum [text()] [@ref=current()/@ref]
+                    "/>
+                    <xsl:if test="$class-datum">
+                        <xsl:value-of select="concat(' ', @name | $class-datum[not(current()/@name)])"/>
+                    </xsl:if>
+                </xsl:for-each>
+
+            </xsl:attribute>
             
             <xsl:for-each select="parent::xi:data/@removable">
                 <td class="options">
