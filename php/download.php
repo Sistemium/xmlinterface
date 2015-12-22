@@ -4,6 +4,14 @@
     require_once ('UOAuthClient.php');
     require_once ('../functions.php');
 
+    function getLastPathSegment($url) {
+        $path = parse_url($url, PHP_URL_PATH); // to get the path from a whole URL
+        $pathTrimmed = trim($path, '/'); // normalise with no leading or trailing slash
+        $pathTokens = explode('/', $pathTrimmed); // get segments delimited by a slash
+
+        return end($pathTokens); // get the last segment
+    }
+
     $headers = apache_request_headers ();
     
     $auth = isset ($headers['Authorization'])
@@ -18,7 +26,16 @@
         header ('System-error: 401',1,401);
         die ('Unauthorized'."\n");
     }
-    
+
+    $collection = $_REQUEST['collection'];
+
+    if (!$collection) {
+        $collection = getLastPathSegment ($_SERVER['REQUEST_URI']);
+        if ($collection == 'download') {
+            $collection = false;
+        }
+    }
+
     $result = false;
     
     session_name('UOAuthClient');
@@ -35,13 +52,19 @@
         header ('System-error: 403',1,403);
         die ('<h1>Not authorized</h1>'."\n");
     }
+
+    $params = array("org" => $org);
+
+    if ($collection) {
+        $params['collection'] = $collection;
+    }
     
     $matrix = new XSLTWhatMatrix ();
     
     $matrix = new XSLTWhatMatrix (
         DOMDocument::load (localPath('../../secure.xml')),
         DOMDocument::load (localPath('../../config/xsl/download.instructions.xsl')),
-        array("org" => $org)
+        $params
     );
     $matrix->auth = $auth;
     $matrix->resultPath = '../data/download/' . $org . '.';
