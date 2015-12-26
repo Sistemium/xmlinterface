@@ -4,14 +4,6 @@
     require_once ('UOAuthClient.php');
     require_once ('../functions.php');
 
-    function getLastPathSegment($url) {
-        $path = parse_url($url, PHP_URL_PATH); // to get the path from a whole URL
-        $pathTrimmed = trim($path, '/'); // normalise with no leading or trailing slash
-        $pathTokens = explode('/', $pathTrimmed); // get segments delimited by a slash
-
-        return end($pathTokens); // get the last segment
-    }
-
     $headers = apache_request_headers ();
     
     $auth = isset ($headers['Authorization'])

@@ -12,6 +12,15 @@ set_time_limit (180);
 
     };
 
+    function getLastPathSegment($url) {
+        $path = parse_url($url, PHP_URL_PATH); // to get the path from a whole URL
+        $pathTrimmed = trim($path, '/'); // normalise with no leading or trailing slash
+        $pathTokens = explode('/', $pathTrimmed); // get segments delimited by a slash
+
+        return end($pathTokens); // get the last segment
+    }
+
+
     function dumpNice ($array) {
         foreach ($array as $key=>$value)
             print $key .' = '. $value."<br/>";

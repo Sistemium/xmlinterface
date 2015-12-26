@@ -57,17 +57,33 @@
         header ('System-error: 400',1,400);
         die ("Post data not found\n");
     }
+
+    $site = isset($_REQUEST['site']) ? $_REQUEST['site'] : false;
+
+    if (!$site) {
+        $site = getLastPathSegment ($_SERVER['REQUEST_URI']);
+        if ($site == 'upload') {
+            $site = '1';
+        }
+    }
     
     $xml = new DOMDocument ('1.0');
     $xml->loadXML($rawPost);
     $instructions = new DOMDocument ('1.0');
     $instructions -> load (localPath('../../config/xsl/upload.instructions.xsl'));
-    
+
+    $params = array("org" => $org);
+
+    if ($site) {
+        $params['site'] = $site;
+    }
+
     $matrix = new XSLTWhatMatrix (
         $xml,
         $instructions,
-        array("org" => $org)
+        $params
     );
+
     $matrix->auth = $authToken;
     $matrix->resultPath = '../data/upload/' . $org . '.';
     
