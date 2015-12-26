@@ -58,6 +58,8 @@
         die ("Post data not found\n");
     }
 
+    $siteRole = $uac->hasRole('site');
+
     $site = isset($_REQUEST['site']) ? $_REQUEST['site'] : false;
 
     if (!$site) {
@@ -65,6 +67,11 @@
         if ($site == 'upload') {
             $site = '1';
         }
+    }
+
+    if ($siteRole && $siteRole != $site) {
+        header ('System-error: 401',1,401);
+        die ('<h1>Not authorized on this site</h1>'."\n");
     }
     
     $xml = new DOMDocument ('1.0');
