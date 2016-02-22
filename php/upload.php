@@ -42,7 +42,7 @@
     session_id($authToken);
     session_start();
     
-    $uac = new UOAuthClient ('https://uoauth.sistemium.com/a/uoauth', $authToken);
+    $uac = new UOAuthClient ('http://uoauth.sistemium.net/a/uoauth', $authToken);
     
     session_write_close();
     
