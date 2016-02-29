@@ -3,20 +3,27 @@
     require_once ('XSLTWhatMatrix.php');
     require_once ('UOAuthClient.php');
     require_once ('../functions.php');
-    
+
+    setlocale(LC_CTYPE, array('ru_RU.utf8'));
+    setlocale(LC_ALL, array('ru_RU.utf8'));
+
     function http_exceptions_error_handler ($errno, $errstr, $errfile, $errline ) {
         header ('System-error: 500',1,500);
         die($errstr."\n".'lineno:'.$errline."\n".'file:'.$errfile."\n");
     }
-    
+
+    function cleanX ($search) {
+      return preg_replace('/[^А-Яа-яЁё[:print:]\x00-\xFF]/iu', '', $search);
+    }
+
     set_error_handler( 'http_exceptions_error_handler' );
     
     
 
     set_time_limit(180);
     
-    $rawPost = file_get_contents('php://input');
-    
+    $rawPost = cleanX(file_get_contents('php://input'));
+
     $headers = apache_request_headers ();
     $authToken = $headers ['Authorization'];
     
