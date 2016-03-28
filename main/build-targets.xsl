@@ -8,7 +8,7 @@
     
 >
 
-    <xsl:key match="xi:datum" name="ref" use="@ref"/>
+    <xsl:key match="xi:datum[not(ancestor::xi:set-of[@is-choise])]" name="ref" use="@ref"/>
 
     <xsl:template match="xi:userinput">
         
@@ -68,7 +68,7 @@
         
         <xsl:param name="command" select="/.."/>
         
-        <xsl:for-each select="key('ref',@id)/self::xi:datum">
+        <xsl:for-each select="key('ref',@id)/self::xi:datum[not(ancestor::xi:set-of[@is-choise])]">
             <xsl:call-template name="build-target">
                 <xsl:with-param name="target-id" select="@id"/>
                 <xsl:with-param name="payload" select="$command"/>
@@ -101,10 +101,12 @@
             , self::*[not(xi:xpath-compute)]/@xpath-compute
             | xi:xpath-compute
         )">
-            <xsl:call-template name="build-target">
-                <xsl:with-param name="target-id" select="current()/@id|current()[not(@id)]"/>
-                <xsl:with-param name="payload" select="$this"/>
-            </xsl:call-template>
+            <xsl:if test="not(ancestor::xi:set-of[@is-choise])">
+                <xsl:call-template name="build-target">
+                    <xsl:with-param name="target-id" select="current()/@id|current()[not(@id)]"/>
+                    <xsl:with-param name="payload" select="$this"/>
+                </xsl:call-template>
+            </xsl:if>
         </xsl:for-each>
         
     </xsl:template>

@@ -294,7 +294,7 @@
 
     <xsl:template match="
         xi:view [not(@hidden)]
-        //xi:datum [@editable or (@modifiable and not(@xpath-compute))]
+        //xi:datum [@editable or (@modifiable and not(@xpath-compute))] [not(ancestor::xi:set-of[@is-choise])]
     ">
 
         <xsl:variable name="ui" select="
