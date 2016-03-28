@@ -668,7 +668,8 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
             record.fields.each(function (field,i,d) {
                 
                 var rv = record.get(field.name),
-                    metaField = metadata.columnsStore.getById(store.model.modelName+field.name)
+                    metaField = metadata.columnsStore.getById(store.model.modelName+field.name),
+                    parsed
                 ;
                 
                 if (metaField && field.name[0] == lowercaseFirstLetter(field.name[0])){
@@ -677,10 +678,15 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                             rv = rv ? 1: 0;
                             break;
                         case 'date':
-                            rv && (typeof rv.format == 'function') && (rv = rv.format('d.m.Y'))
+                            rv && (typeof rv.format == 'function') && (rv = rv.format('d.m.Y'));
                             break;
                     }
-                    
+
+                    if (rv && metaField.get('type') === 'datetime') {
+                        parsed = Date.parseDate(rv, 'd.m.Y H:i:s');
+                        if (parsed) rv = parsed.format('Y/m/d H:i:s');
+                    }
+
                     var e = uploadXML.createElement ('datum'),
                         parentName = metaField.get('parent')
                     ;
@@ -748,7 +754,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                         case 'serverPhantom':
                             record.set (f.name, false);
                     }
-                })
+                });
                 
                 Ext.each (meta[modelName].deps,
                     function (dep) {
