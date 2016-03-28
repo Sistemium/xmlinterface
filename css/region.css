@@ -59,7 +59,13 @@
 	max-width: 40%;
 }
 
-
 .desktop .region.block {
 	display: block;
+}
+
+.region.bordered  {
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border: solid 1px #BBf0C0;
+	margin: 1em;
 }

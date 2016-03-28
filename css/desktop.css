@@ -243,3 +243,6 @@ label {padding:0px 0.2em;}
 	padding: 0.5em;
 }
 
+.text.editable {
+	padding: 1em;
+}
