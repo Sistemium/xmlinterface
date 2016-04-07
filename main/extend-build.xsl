@@ -111,12 +111,13 @@
 			</xsl:attribute>
 				
 			<xsl:if test="not(@type='delete')">
-				
+
 				<xsl:apply-templates mode="build-set" select="
 					self::xi:data[not(@role)][@is-new or @ts or @modified]
 					/ancestor::xi:data[1][key('id',@ref)/@concept=$model/xi:concept[@name=$concept]/*/@actor]
 				">
 					<xsl:with-param name="sql-name" select="key('id',@ref)/@parent-sql-name"/>
+					<xsl:with-param name="name" select="key('id',@ref)/xi:parent-join/@role"/>
 				</xsl:apply-templates>
 				
 				<xsl:apply-templates mode="build-set" select="
@@ -150,8 +151,9 @@
 
     <xsl:template match="xi:data" mode="build-set">
         <xsl:param name="sql-name" select="key('id',@ref)/@sql-name"/>
+		<xsl:param name="name" select="/.."/>
         <xsl:apply-templates select="*[key('id',@ref)/@key='true' and not(@name='xid')]" mode="build-set">
-            <xsl:with-param name="name" select="@role|self::*[not(@role)]/@name"/>
+            <xsl:with-param name="name" select="$name|@role|self::*[not(@role)]/@name"/>
             <xsl:with-param name="sql-name" select="$sql-name"/>
         </xsl:apply-templates>
 	</xsl:template>
