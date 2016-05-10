@@ -122,7 +122,7 @@
 				
 				<xsl:apply-templates mode="build-set" select="
 					xi:datum [@type='field']
-						[@modified or @modifiable or ((../@is-new and (@editable or key('id',@ref)/@use-with-insert)) and text()!='')]
+						[@modified or @modifiable or ((key('id',@ref)/@always-set or (../@is-new and (@editable or key('id',@ref)/@use-with-insert))) and text()!='')]
 					| xi:data [key('id',@ref)/@role]
 						[@modified or @ts or (current()/@is-new and descendant::xi:datum[@type='field'])]
 				"/>
