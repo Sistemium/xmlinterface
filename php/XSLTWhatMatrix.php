@@ -132,6 +132,8 @@
 
                     $result = $nres;
                     
+                } elseif ($task['ignore']) {
+                    return true;
                 }
                 
                 if ($result) {
