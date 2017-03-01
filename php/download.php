@@ -20,7 +20,7 @@
         die ('Unauthorized'."\n");
     }
 
-    $collection = $_REQUEST['collection'];
+    @$collection = $_REQUEST['collection'];
 
     if (!$collection) {
         $collection = getLastPathSegment ($_SERVER['REQUEST_URI']);
