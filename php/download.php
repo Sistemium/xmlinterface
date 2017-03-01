@@ -1,5 +1,6 @@
 <?php
 
+    require_once ('headers.php');
     require_once ('XSLTWhatMatrix.php');
     require_once ('UOAuthClient.php');
     require_once ('../functions.php');

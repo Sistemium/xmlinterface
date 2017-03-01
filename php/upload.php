@@ -1,5 +1,6 @@
 <?php
 
+    require_once ('headers.php');
     require_once ('XSLTWhatMatrix.php');
     require_once ('UOAuthClient.php');
     require_once ('../functions.php');
@@ -22,7 +23,7 @@
 
     set_time_limit(180);
     
-    $rawPost = cleanX(file_get_contents('php://input'));
+    $rawPost = file_get_contents('php://input');
 
     $headers = apache_request_headers ();
     $authToken = $headers ['Authorization'];
