@@ -560,7 +560,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         if (record.get('cnt') == 0) {
             
             var uploadXML = document.implementation.createDocument("http://unact.net/xml/xi", "upload", null),
-                dataElement = uploadXML.createElement('delete')
+                dataElement = uploadXML.createElementNS('http://unact.net/xml/xi', 'delete')
             ;
             
             var modelName = record.get('table_name');
@@ -659,7 +659,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
         
         if (record && metadata && store.model && store.model.modelName) {
             var uploadXML = document.implementation.createDocument("http://unact.net/xml/xi", "upload", null),
-                dataElement = uploadXML.createElement('data')
+                dataElement = uploadXML.createElementNS('http://unact.net/xml/xi', 'data')
             ;
             
             dataElement.setAttribute ('name', store.model.modelName);
@@ -687,7 +687,7 @@ Ext.data.XmlInterface = Ext.extend( Ext.util.Observable, {
                         if (parsed) rv = parsed.format('Y/m/d H:i:s');
                     }
 
-                    var e = uploadXML.createElement ('datum'),
+                    var e = uploadXML.createElementNS('http://unact.net/xml/xi', 'datum'),
                         parentName = metaField.get('parent')
                     ;
                     
