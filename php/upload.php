@@ -19,8 +19,7 @@
 
     set_error_handler( 'http_exceptions_error_handler' );
 
-
-
+    ini_set('memory_limit', '256M');
     set_time_limit(180);
 
     $rawPost = file_get_contents('php://input');
