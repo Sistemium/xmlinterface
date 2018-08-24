@@ -9,7 +9,7 @@
             curl_setopt($curlRequest, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curlRequest, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curlRequest, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 160);
+            curl_setopt($curlRequest, CURLOPT_TIMEOUT, 160);
 
             $dataToPost = '';
 
