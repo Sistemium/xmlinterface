@@ -65,6 +65,8 @@
         die ("Post data not found\n");
     }
 
+    $params = array("org" => $org);
+
     $siteRole = $uac->hasRole('site');
 
     $site = isset($_REQUEST['site']) ? $_REQUEST['site'] : $siteRole;
@@ -89,7 +91,6 @@
 
     try {
 
-        $params = array("org" => $org);
         file_put_contents($logFolder . uniqid('log-') . '.rawpost.xml', $rawPost);
 
         $xml = new DOMDocument ('1.0');
